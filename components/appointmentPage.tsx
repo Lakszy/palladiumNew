@@ -21,8 +21,8 @@ export function CalendarDemo() {
     return timeSlots;
   }
   return (
-    <div className="w-full rounded-3xl border-2 flex flex-col p-3 ">
-      <h3 className="text-xl">Appointment</h3>
+    <div className="w-full mainT overflow-auto rounded-3xl border-2 flex flex-col p-3 ">
+      <h3 className="text-xl ">Appointment</h3>
       <div className="flex gap-x-2  rounded-3xl">
         <img
           src="https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg"
@@ -36,14 +36,14 @@ export function CalendarDemo() {
         </div>
       </div>
       <div className="flex flex-1">
-        <div className="flex-1 border-2 rounded-3xl p-2">
+        <div className="flex-1 border-2 h-full rounded-3xl p-2">
           <Calendar
             mode="single"
             selected={date}
             onSelect={setDate}
             className="rounded-md" />
         </div>
-        <div className="border-2 rounded-3xl p-3 space-y-10 flex-1">
+        <div className="border-2 ml-3  rounded-3xl p-3 space-y-10 flex-1">
           <div className="flex items-center gap-x-2">
             <div className="p-4 bg-white rounded-full border border-stone-200 gap w-fit">
               <FiSunrise size={20} />
@@ -62,7 +62,7 @@ export function CalendarDemo() {
             </div>
             <div>
               <p className="font-medium">Evening</p>
-              <p className="font-medium text-gray-500 whitespace-nowrap">
+              <p className="font-medium text-gray-500 whitespace-nowrap justify-center items-center">
                 {`6:00 PM to 10:00 PM`}
               </p>
             </div>

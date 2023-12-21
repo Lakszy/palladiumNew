@@ -79,6 +79,12 @@ body, html {
   height: 100%;
   margin: 0;
 }
+.body::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+.mainT::-webkit-scrollbar {
+  display: none;
+}
 
 .leftpane {
     width: 25%;
@@ -139,4 +145,29 @@ h3::before {
 h3::after {
   left: 0.5em;
   margin-right: -50%;
+}
+.pagination-container {
+  display: flex;
+  margin-top: 10px;
+}
+
+.pagination-button {
+  margin-left: 5px;
+  background-color: lightgray;
+  color: black;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 5px 12px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.pagination-button:hover {
+  background-color: #e0e0e0;
+}
+
+.pagination-button.active {
+  background-color: gray;
+  color: white;
+  font-weight: bold;
 }

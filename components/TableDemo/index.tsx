@@ -34,7 +34,7 @@ export function TableDemo({ header, data }: { header: any[]; data: any[] }) {
             ))}
           </TableRow>
         </TableHeader>
-        <TableBody className='-z-10 relative'>
+        <TableBody className='-z-10 relative '>
           {paginatedData.map((row: any, index: number) => (
             <Row
               header={header}
@@ -45,17 +45,12 @@ export function TableDemo({ header, data }: { header: any[]; data: any[] }) {
           ))}
         </TableBody>
       </Table>
-      <div>
-        <span>Page {currentPage} of {totalPages}</span>
+      <div className='flex justify-center items-center'>
         {Array.from({ length: totalPages }, (_, index) => (
           <button
-          className='-z-10 relative' 
+            className={`pagination-button space-around ${index + 1 === currentPage ? 'active' : ''}`}
             key={`pagination-button-${index + 1}`}
             onClick={() => handlePageChange(index + 1)}
-            style={{
-              marginLeft: '5px',
-              fontWeight: index + 1 === currentPage ? 'bold' : 'normal',
-            }}
           >
             {index + 1}
           </button>

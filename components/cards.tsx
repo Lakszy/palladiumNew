@@ -18,7 +18,7 @@ const CardItem: React.FC<CardItemProps> = ({ title, value, icon, colorClass }) =
         <div className={`rounded-md ${colorClass} p-3`}>{icon}</div>
         <div className=" gap-y-1">
           <CardTitle className="text-xl text-gray-500">{title}</CardTitle>
-          <CardTitle className="text-md font-semibold">{value}</CardTitle>
+          <CardTitle className="text-md font-semibold ">{value}</CardTitle>
         </div>
       </div>
     </div>
