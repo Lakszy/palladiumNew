@@ -11,11 +11,11 @@ import IconComponent from "./generics/IconButton";
 
 function NavBar() {
   return (
-    <div className="flex items-center justify-between gap-x-4 border px-4 py-4 z-50">
+    <div className="flex items-center justify-between gap-x-4 border-l px-4 py-4 z-50">
       <div className="flex items-center gap-x-4">
         <div className="h-16 w-full min-w-[400px] rounded-xl">
           <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+            <div className="absolute inset-y-0 start-0 flex items-center ps-3 ">
               <IoMdSearch size={26} />
             </div>
             <Input
