@@ -1,10 +1,8 @@
 import { BiDollarCircle } from "react-icons/bi";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { User, CalendarDays } from "lucide-react";
-import { SlGraph } from "react-icons/sl";
-
+import { Card, CardTitle } from "@/components/ui/card";
+import { CalendarDays,Stethoscope  } from "lucide-react";
+import { GoPerson } from "react-icons/go";
 type CardProps = React.ComponentProps<typeof Card>;
-
 interface CardItemProps {
   title: string;
   value: string;
@@ -12,37 +10,37 @@ interface CardItemProps {
   colorClass: string;
 }
 const CardItem: React.FC<CardItemProps> = ({ title, value, icon, colorClass }) => (
-  <CardHeader>
-    <div className="rounded-xl border-[3px] border-gray-300 px-2 py-3">
+  <div className="py-2">
+    <div className="w-[310px] h-[95px] p-4 bg-white rounded-2xl border border-stone-200 flex-col justify-start items-start gap-2.5 inline-flex">
       <div className="flex justify gap-x-2 items-center">
         <div className={`rounded-md ${colorClass} p-3`}>{icon}</div>
         <div className=" gap-y-1">
-          <CardTitle className="text-xl text-gray-500">{title}</CardTitle>
-          <CardTitle className="text-md font-semibold ">{value}</CardTitle>
+          <CardTitle className="text-zinc-800 text-opacity-80 text-xl font-medium  leading-7">{title}</CardTitle>
+          <CardTitle className="text-lg">{value}</CardTitle>
         </div>
       </div>
     </div>
-  </CardHeader>
+  </div>
 );
 export function CardDemo({ }: CardProps) {
   return (
-    <div className="grid grid-cols-[1fr_1fr_1fr_max-content]">
+    <div className="gap-x-6 ml-7 flex mb-1">
       {[
-        { title: "Appointments", value: "672", icon: <CalendarDays size={28} />, colorClass: "bg-orange-400" },
-        { title: "Patients", value: "672", icon: <SlGraph size={28} />, colorClass: "bg-green-600" },
-        { title: "Optimizations", value: "672", icon: <User size={28} />, colorClass: "bg-red-400" },
+        { title: "Appointments", value: "672", icon: <CalendarDays size={28} />, colorClass: "bg-stone-100" },
+        { title: "Patients", value: "422", icon: <GoPerson size={28} />, colorClass: "bg-stone-100" },
+        { title: "Optimizations", value: "672", icon: <Stethoscope  size={28} />, colorClass: "bg-stone-100" },
       ].map((item, index) => (
         <CardItem key={index} {...item} />
       ))}
-      <div className="flex flex-col h-full rounded-2xl items-center justify-center border-2 bg-green-100 border-green-300 px-2">
+      <div className="mt-2 w-[188px] h-[95px]  border border-stone-200 flex-col justify-center items-center gap-2.5 inline-flex bg-green-100 rounded-2xl px-2.5 gap-y-[0.5px]">
         <div className="justify-center items-center">
           <BiDollarCircle size={32} />
         </div>
         <div>
-          <h1 className="text-gray-500 text-xl">Total Earning</h1>
+          <h1 className="text-gray-500 text-lg">Total Earning</h1>
         </div>
         <div>
-          <CardTitle className="font-base text-md">$8966</CardTitle>
+          <CardTitle className="font-base text-sm">$8966</CardTitle>
         </div>
       </div>
     </div>

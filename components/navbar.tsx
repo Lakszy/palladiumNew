@@ -1,5 +1,5 @@
-// NavBar.tsx
 import React from "react";
+import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { FaRegBell } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -11,11 +11,11 @@ import IconComponent from "./generics/IconButton";
 
 function NavBar() {
   return (
-    <div className="flex items-center justify-between gap-x-4 border-l px-4 py-4 z-50">
+    <div className="flex bg-stone-50 border border-black border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50">
       <div className="flex items-center gap-x-4">
-        <div className="h-16 w-full min-w-[400px] rounded-xl">
+        <div className="w-full min-w-[400px] rounded-xl">
           <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 ">
+            <div className="absolute inset-y-0 start-0 flex items-center ps-3 w-[100px] ">
               <IoMdSearch size={26} />
             </div>
             <Input
@@ -27,18 +27,24 @@ function NavBar() {
             />
           </div>
         </div>
-        <div className="hidden sm:flex items-center text-center justify-center bg-black rounded-2xl font-medium border-2 lg:w-72 text-white ">
-          <div className="p-3 flex items-center gap-x-1">
-            <AiOutlinePlus size={18} />
-            <span className="text-sm">Appointment</span>
-          </div>
-        </div>
+        <Link href="/appointment">
+          <button className="w-[216px] h-[66px] px-[60px] py-4 bg-[#0D1821] rounded-lg flex-col justify-center items-start inline-flex cursor-pointer">
+            <div className="justify-center items-center inline-flex">
+              <div className="flex text-white">
+                <AiOutlinePlus />
+              </div>
+              <div className="justify-center items-center flex">
+                <div className="text-white text-lg font-semibold whitespace-nowrap items-center">Add patient</div>
+              </div>
+            </div>
+          </button>
+        </Link>
       </div>
       <div className="flex items-center gap-x-4">
         <IconComponent icon={<IoSettingsOutline />} />
         <IconComponent icon={<FiMessageSquare />} />
         <IconComponent icon={<FaRegBell />} />
-        <div className="h-12 w-12 rounded-lg ">
+        <div className="w-[65px] h-[59.01px] rounded-lg ">
           <Avatar className="w-full h-full hover:cursor-pointer hover:scale-105">
             <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>

@@ -121,12 +121,12 @@ body, html {
   height: 80px;
 }
 
-h3{
+h6{
   overflow: hidden;
   text-align: center;
 }
 
-h3::before , h3::after {
+h6::before , h6::after {
   background-color: #e2e1e1;
   content: "";
   display: inline-block;
@@ -137,12 +137,12 @@ h3::before , h3::after {
   z-index: -10;
 }
 
-h3::before {
+h6::before {
   right: 0.5em;
   margin-left: -50%;
 }
 
-h3::after {
+h6::after {
   left: 0.5em;
   margin-right: -50%;
 }

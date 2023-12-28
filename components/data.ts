@@ -21,7 +21,7 @@ export const PATIENTS = [
     "disease": "Disease 8",
     "age": "77",
     "schedule": "2022-01-04T16:21:20.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 3,
@@ -81,7 +81,7 @@ export const PATIENTS = [
     "disease": "Disease 10",
     "age": "45",
     "schedule": "2020-05-25T18:48:33.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 8,
@@ -105,7 +105,7 @@ export const PATIENTS = [
     "disease": "Disease 8",
     "age": "68",
     "schedule": "2020-08-06T11:36:06.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 10,
@@ -129,7 +129,7 @@ export const PATIENTS = [
     "disease": "Disease 10",
     "age": "27",
     "schedule": "2020-03-22T17:21:34.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 12,
@@ -153,7 +153,7 @@ export const PATIENTS = [
     "disease": "Disease 3",
     "age": "49",
     "schedule": "2021-05-24T10:07:35.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 14,
@@ -237,7 +237,7 @@ export const PATIENTS = [
     "disease": "Disease 4",
     "age": "21",
     "schedule": "2020-09-20T10:21:40.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 21,
@@ -261,7 +261,7 @@ export const PATIENTS = [
     "disease": "Disease 10",
     "age": "25",
     "schedule": "2022-02-11T19:18:42.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 23,
@@ -273,7 +273,7 @@ export const PATIENTS = [
     "disease": "Disease 10",
     "age": "53",
     "schedule": "2023-08-16T20:16:44.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 24,
@@ -357,7 +357,7 @@ export const PATIENTS = [
     "disease": "Disease 6",
     "age": "30",
     "schedule": "2022-07-06T16:50:46.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 31,
@@ -405,7 +405,7 @@ export const PATIENTS = [
     "disease": "Disease 4",
     "age": "44",
     "schedule": "2022-09-11T06:07:33.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 35,
@@ -417,7 +417,7 @@ export const PATIENTS = [
     "disease": "Disease 3",
     "age": "79",
     "schedule": "2022-06-16T10:11:43.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 36,
@@ -465,7 +465,7 @@ export const PATIENTS = [
     "disease": "Disease 6",
     "age": "49",
     "schedule": "2021-04-03T21:38:52.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 40,
@@ -513,7 +513,7 @@ export const PATIENTS = [
     "disease": "Disease 9",
     "age": "55",
     "schedule": "2021-02-05T19:43:26.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 44,
@@ -525,7 +525,7 @@ export const PATIENTS = [
     "disease": "Disease 6",
     "age": "38",
     "schedule": "2022-12-27T16:51:06.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 45,
@@ -585,7 +585,7 @@ export const PATIENTS = [
     "disease": "Disease 1",
     "age": "19",
     "schedule": "2023-05-14T09:42:28.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 50,
@@ -621,7 +621,7 @@ export const PATIENTS = [
     "disease": "Disease 7",
     "age": "22",
     "schedule": "2020-11-01T13:37:34.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 53,
@@ -645,7 +645,7 @@ export const PATIENTS = [
     "disease": "Disease 8",
     "age": "72",
     "schedule": "2023-01-08T16:33:56.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 55,
@@ -705,7 +705,7 @@ export const PATIENTS = [
     "disease": "Disease 2",
     "age": "46",
     "schedule": "2021-04-06T16:14:40.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 60,
@@ -753,7 +753,7 @@ export const PATIENTS = [
     "disease": "Disease 6",
     "age": "63",
     "schedule": "2022-11-29T18:09:20.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 64,
@@ -765,7 +765,7 @@ export const PATIENTS = [
     "disease": "Disease 9",
     "age": "69",
     "schedule": "2020-06-24T00:16:13.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 65,
@@ -777,7 +777,7 @@ export const PATIENTS = [
     "disease": "Disease 7",
     "age": "38",
     "schedule": "2020-05-17T03:29:23.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 66,
@@ -789,7 +789,7 @@ export const PATIENTS = [
     "disease": "Disease 10",
     "age": "61",
     "schedule": "2021-09-24T05:21:43.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 67,
@@ -801,7 +801,7 @@ export const PATIENTS = [
     "disease": "Disease 9",
     "age": "78",
     "schedule": "2021-05-15T22:09:48.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 68,
@@ -837,7 +837,7 @@ export const PATIENTS = [
     "disease": "Disease 9",
     "age": "19",
     "schedule": "2021-04-19T12:14:18.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 71,
@@ -921,7 +921,7 @@ export const PATIENTS = [
     "disease": "Disease 5",
     "age": "58",
     "schedule": "2020-05-16T05:12:34.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 78,
@@ -933,7 +933,7 @@ export const PATIENTS = [
     "disease": "Disease 9",
     "age": "32",
     "schedule": "2020-08-26T23:32:05.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 79,
@@ -981,7 +981,7 @@ export const PATIENTS = [
     "disease": "Disease 2",
     "age": "38",
     "schedule": "2023-05-17T16:39:20.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 83,
@@ -1017,7 +1017,7 @@ export const PATIENTS = [
     "disease": "Disease 4",
     "age": "53",
     "schedule": "2023-09-23T00:00:25.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 86,
@@ -1029,7 +1029,7 @@ export const PATIENTS = [
     "disease": "Disease 10",
     "age": "80",
     "schedule": "2021-04-19T18:02:20.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 87,
@@ -1041,7 +1041,7 @@ export const PATIENTS = [
     "disease": "Disease 5",
     "age": "22",
     "schedule": "2020-12-08T03:22:44.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 88,
@@ -1065,7 +1065,7 @@ export const PATIENTS = [
     "disease": "Disease 7",
     "age": "32",
     "schedule": "2022-02-16T23:32:22.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 90,
@@ -1101,7 +1101,7 @@ export const PATIENTS = [
     "disease": "Disease 2",
     "age": "19",
     "schedule": "2020-12-08T11:37:47.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 93,
@@ -1149,7 +1149,7 @@ export const PATIENTS = [
     "disease": "Disease 8",
     "age": "42",
     "schedule": "2023-11-25T04:19:13.000000",
-    "payment_status": "Cancelled"
+    "payment_status": "Done"
   },
   {
     "id": 97,
@@ -1232,8 +1232,8 @@ export const PATIENTS_HEADER = [
     title: "Schedule",
     objectProperty: "schedule",
     type: "SCHEDULE",
-    newStr:{
-      
+    newStr: {
+
     }
   },
   {

@@ -21,20 +21,14 @@ export default function Home() {
           <div className="grid  grid-cols-[1fr_max-content] gap-x-5">
             <div className="flex flex-col gap-y">
               <CardDemo />
-              <div className="ml-3  mr-3">
+              <div className="ml-7">
                 <CenterBar />
               </div>
             </div>
           </div>
         </div>
-        <div className="rounded-3xl ttable mainT border-[3px] overflow-y-scroll h-[420px] p-2 m-2 ">
+        <div className="rounded-3xl ttable mainT border ml-7  overflow-y-scroll h-[420px] p-2 mt-3 mr-6">
           <TableDemo data={PATIENTS} header={PATIENTS_HEADER} />
-        </div>
-        <div className="rounded-3xl p-3">
-          < BottomBar />
-        </div>
-        <div className="rounded-3xl p-3 ">
-        <CalendarDemo/>
         </div>
       </div>
     </div>

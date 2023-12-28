@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { XCircle, MoveLeft } from 'lucide-react';
 
 interface MenuItem {
   title: string;
@@ -16,8 +17,11 @@ const menuItems: MenuItem[] = [
   { title: 'Address', placeholder: 'Enter patient address', inputType: 'text' },
   { title: 'City', placeholder: 'Enter patient city', inputType: 'text' },
   { title: 'Zip Code', placeholder: 'Enter patient city', inputType: 'text' },
-  { title: 'State', placeholder: 'Select patient State', inputType: 'select',
-   options: [
+  {
+    title: 'State',
+    placeholder: 'Select patient State',
+    inputType: 'select',
+    options: [
       'Andhra Pradesh',
       'Arunachal Pradesh',
       'Assam',
@@ -59,43 +63,71 @@ const menuItems: MenuItem[] = [
 
 export const BottomBar = () => {
   const [selectedState, setSelectedState] = useState('');
+  const [inputValues, setInputValues] = useState<{ [key: string]: string }>({});
+
+  const handleInputChange = (key: string, value: string) => {
+    setInputValues((prev) => {
+      const updatedValues = { ...prev, [key]: value };
+      console.log(updatedValues);
+      return updatedValues;
+    });
+  };
+
+  const clearInput = (key: string) => {
+    setInputValues((prev) => ({ ...prev, [key]: '' }));
+  };
 
   return (
-    <div className='border-2 rounded-3xl p-2'>
-      <h3>Basic Details</h3>
-      <div className="grid lg:grid-cols-[1fr_1fr] gap-8 p-3 ">
+    <div className="text-zinc-800 border-2 rounded-3xl p-2">
         <div className="flex items-center gap-x-2">
-          <div className="p-4 bg-white rounded-[30px] border border-stone-200 justify-start items-center gap-2 flex">
-            <FaArrowLeft size={20} />
+          <div className="p-3 bg-white rounded-[30px] border border-stone-200 justify-start items-center gap-2 flex">
+            <MoveLeft size={24} className="ps-0.5" />
           </div>
           <div className="text-xl font-semibold">Create new appointment</div>
         </div>
-        <div></div>
+        <div>
+          <h6 className='relative mt-5 md:top-1/2 md:transform md:translate-y-6 md:left-1'>Basic Details</h6>
+        </div>
+      <div className="grid lg:grid-cols-[1fr_1fr] gap-y-8 p-3 mt-5 md:mt-12">
 
         {menuItems.map((menuItem) => (
-          <div key={menuItem.title} className="items-center gap-x-1">
-            <div className="text-xl font-semibold">{menuItem.title}</div>
+          <div key={menuItem.title} className="text-zinc-800 items-center gap-x-1">
+            <div className="text-xl font-">{menuItem.title}</div>
             {menuItem.inputType === 'select' ? (
               <select
-                className="pl-3.5 w-11/12 lg:w-9/12 py-4 white-nowrap bg-white rounded-2xl border border-stone-200 justify-center items-center  inline-flex"
+                className="pl-3.5 w-[19.75rem] lg:w-[35.25rem] py-4 white-nowrap bg-white rounded-2xl border border-stone-200 justify-center items-center inline-flex text-zinc-800"
                 value={selectedState}
-                onChange={(e) => setSelectedState(e.target.value)}
+                onChange={(e) => {
+                  setSelectedState(e.target.value);
+                  handleInputChange(menuItem.title, e.target.value);
+                }}
               >
                 <option value="" disabled hidden>
                   {menuItem.placeholder}
                 </option>
-                {menuItem.options && menuItem.options.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
+                {menuItem.options &&
+                  menuItem.options.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
               </select>
             ) : (
-              <input
-                className="pl-2.5 w-11/12 lg:w-9/12 py-4 white-nowrap bg-white rounded-2xl border border-stone-200 justify-center items-center gap-2.5 inline-flex"
-                placeholder={menuItem.placeholder}
-                type={menuItem.inputType}
-              />
+              <div className="relative text-zinc-800 ">
+                <input
+                  className="pl-2.5 w-[19.75rem] lg:w-[35.25rem] py-4 white-nowrap bg-white rounded-2xl text-zinc-800 border border-stone-200 justify-center items-center gap-2.5 inline-flex px-2"
+                  placeholder={menuItem.placeholder}
+                  type={menuItem.inputType}
+                  value={inputValues[menuItem.title] || ''}
+                  onChange={(e) => handleInputChange(menuItem.title, e.target.value)}
+                />
+                {inputValues[menuItem.title] && (
+                  <XCircle
+                    className="absolute top-1/2 transform -translate-y-1/2 -translate-x-10 right-0.5 cursor-pointer text-orange-300"
+                    onClick={() => clearInput(menuItem.title)}
+                  />
+                )}
+              </div>
             )}
           </div>
         ))}

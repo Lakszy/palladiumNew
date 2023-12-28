@@ -29,15 +29,16 @@ export const TabsDemo: React.FC<TabsDemoProps> = ({ className, ...props }) => {
     id: string;
     icon: React.ElementType;
     title: string;
+    link: string;
   }
 
   const menuItems: MenuItem[] = [
-    { id: "Summary", icon: LayoutGrid , title: "Overview" },
-    { id: "Inventory", icon: MdOutlineInventory2, title: "Messages" },
-    { id: "Estimate", icon: BiDollar, title: "Patients" },
-    { id: "Billing", icon: RiBillLine, title: "Billing" },
-    { id: "Finance", icon: GoGraph, title: "Appointment" },
-    { id: "Photos", icon: TbPhoto, title: "Payment" },
+    { id: "Summary", icon: LayoutGrid, title: "Overview", link: "/" },
+    { id: "Inventory", icon: MdOutlineInventory2, title: "Messages", link: "/messages" },
+    { id: "Estimate", icon: BiDollar, title: "Patients", link: "/patients" },
+    { id: "Billing", icon: RiBillLine, title: "Billing", link: "/billing" },
+    { id: "Finance", icon: GoGraph, title: "Appointment", link: "/appointment" },
+    { id: "Photos", icon: TbPhoto, title: "Payment", link: "/payment" },
   ];
 
   return (
@@ -52,23 +53,21 @@ export const TabsDemo: React.FC<TabsDemoProps> = ({ className, ...props }) => {
       </div>
       <nav className="flex flex-col gap-y-4 px-4">
         {menuItems.map((menuItem) => (
-          <div
-            key={menuItem.id}
-            className={`cursor-pointer menu flex min-w-[200px] items-center gap-x-3 rounded-full p-2 ${
-              isMenuSelected(menuItem.id) ? "bg-white text-black" : " text-white"
-            }`}
-            onClick={() => handleMenuClick(menuItem.id)}
-          >
-            <div
-              key={menuItem.id}
-              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${
+          <Link legacyBehavior key={menuItem.id} href={menuItem.link}>
+            <a
+              className={`cursor-pointer menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${
                 isMenuSelected(menuItem.id) ? "bg-white text-black" : " text-white"
               }`}
-              >
-              {React.createElement(menuItem.icon, { size: 22 })}
-            </div>
-            <span className="font-medium">{menuItem.title}</span>
-          </div>
+              onClick={() => handleMenuClick(menuItem.id)}
+            >
+              <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${
+                isMenuSelected(menuItem.id) ? "bg-white text-black" : " text-white"
+              }`}>
+                {React.createElement(menuItem.icon, { size: 22 })}
+              </div>
+              <span className="font-medium">{menuItem.title}</span>
+            </a>
+          </Link>
         ))}
       </nav>
       <Separator className="my-4" />
