@@ -171,3 +171,7 @@ h6::after {
   color: white;
   font-weight: bold;
 }
+
+.options::-webkit-scrollbar {
+  display: none;
+}

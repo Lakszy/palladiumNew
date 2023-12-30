@@ -16,7 +16,7 @@ const TimeSlot: React.FC<{
 
   return (
     <div
-      className={`rounded-lg border px-4 py-2 cursor-pointer ${
+      className={`rounded-lg border border-[#F0E4E4] px-4 py-2 cursor-pointer ${
         isSelected ? "bg-blue-100 text-[#0053F4]" : ""
       }`}
       onClick={handleClick}

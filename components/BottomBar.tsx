@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 import { XCircle, MoveLeft } from 'lucide-react';
+import Link from 'next/link';
 
 interface MenuItem {
   title: string;
@@ -9,7 +10,6 @@ interface MenuItem {
   options?: string[];
   icon?: React.ElementType;
 }
-
 const menuItems: MenuItem[] = [
   { title: 'Name', placeholder: 'Enter patient name', inputType: 'text' },
   { title: 'Date of Birth', placeholder: 'DD/MM/YYYY', inputType: 'date' },
@@ -78,44 +78,48 @@ export const BottomBar = () => {
   };
 
   return (
-    <div className="text-zinc-800 border-2 rounded-3xl p-2">
-        <div className="flex items-center gap-x-2">
-          <div className="p-3 bg-white rounded-[30px] border border-stone-200 justify-start items-center gap-2 flex">
-            <MoveLeft size={24} className="ps-0.5" />
-          </div>
-          <div className="text-xl font-semibold">Create new appointment</div>
+    <div className="text-zinc-800 border border-[#F0E4E4] rounded-3xl p-2">
+      <div className="flex items-center gap-x-2">
+        <div className="p-3 bg-white rounded-[30px] border border-[#F0E4E4] justify-start items-center gap-2 flex">
+          <Link href="/">
+            <MoveLeft size={24} className="ps-0.5 cursor-pointer" />
+          </Link>
         </div>
-        <div>
-          <h6 className='relative mt-5 md:top-1/2 md:transform md:translate-y-6 md:left-1'>Basic Details</h6>
-        </div>
+        <div className="text-xl font-semibold">Create new appointment</div>
+      </div>
+      <div>
+        <h6 className="relative text-lg mt- md:top-1/2 md:transform md:translate-y-6 md:left-1">Basic Details</h6>
+      </div>
       <div className="grid lg:grid-cols-[1fr_1fr] gap-y-8 p-3 mt-5 md:mt-12">
-
         {menuItems.map((menuItem) => (
           <div key={menuItem.title} className="text-zinc-800 items-center gap-x-1">
-            <div className="text-xl font-">{menuItem.title}</div>
+            <div className="text-xl font-semibold">{menuItem.title}</div>
             {menuItem.inputType === 'select' ? (
-              <select
-                className="pl-3.5 w-[19.75rem] lg:w-[35.25rem] py-4 white-nowrap bg-white rounded-2xl border border-stone-200 justify-center items-center inline-flex text-zinc-800"
-                value={selectedState}
-                onChange={(e) => {
-                  setSelectedState(e.target.value);
-                  handleInputChange(menuItem.title, e.target.value);
-                }}
-              >
-                <option value="" disabled hidden>
-                  {menuItem.placeholder}
-                </option>
-                {menuItem.options &&
-                  menuItem.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-              </select>
+              <div className="relative">
+                <select
+                  className={`w-[19.75rem] lg:w-[35.25rem] py-4 bg-white rounded-2xl border border-stone-200 justify-around text-zinc-400 ${selectedState ? '' : 'text-black'
+                    }`}
+                  value={selectedState}
+                  onChange={(e) => {
+                    setSelectedState(e.target.value);
+                    handleInputChange(menuItem.title, e.target.value);
+                  }}
+                >
+                  <option value="" disabled hidden>
+                    {menuItem.placeholder}
+                  </option>
+                  {menuItem.options &&
+                    menuItem.options.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                </select>
+              </div>
             ) : (
-              <div className="relative text-zinc-800 ">
+              <div className="relative text-zinc-800">
                 <input
-                  className="pl-2.5 w-[19.75rem] lg:w-[35.25rem] py-4 white-nowrap bg-white rounded-2xl text-zinc-800 border border-stone-200 justify-center items-center gap-2.5 inline-flex px-2"
+                  className="pl-2.5 justify-around w-[19.75rem] lg:w-[35.25rem] py-4 white-nowrap bg-white rounded-2xl text-zinc-800 border border-[#F0E4E4] items-center gap-2.5 inline-flex px-2"
                   placeholder={menuItem.placeholder}
                   type={menuItem.inputType}
                   value={inputValues[menuItem.title] || ''}
@@ -131,7 +135,6 @@ export const BottomBar = () => {
             )}
           </div>
         ))}
-
         <div className="flex flex-col">
           <div className="w-[135px] h-[55px] px-[36px] py-[3px] bg-gray-900 bg-opacity-60 rounded-[30px] justify-start items-center gap-2 inline-flex">
             <div className="text-white text-lg font-semibold">Next</div>

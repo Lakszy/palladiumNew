@@ -7,8 +7,9 @@ import { BiDollar } from "react-icons/bi";
 import { RiBillLine } from "react-icons/ri";
 import { RiLogoutBoxLine } from "react-icons/ri";
 import Link from "next/link";
-import { Separator } from "./ui/separator";
 import { LayoutGrid } from "lucide-react";
+import Image from "next/image";
+import gift from "../app/assets/images/svgviewer-output (2).svg"
 
 interface TabsDemoProps {
   className?: string;
@@ -51,18 +52,16 @@ export const TabsDemo: React.FC<TabsDemoProps> = ({ className, ...props }) => {
           </Link>
         </div>
       </div>
-      <nav className="flex flex-col gap-y-4 px-4">
+      <nav className="flex flex-col gap-y-2 px-4">
         {menuItems.map((menuItem) => (
           <Link legacyBehavior key={menuItem.id} href={menuItem.link}>
             <a
-              className={`cursor-pointer menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${
-                isMenuSelected(menuItem.id) ? "bg-white text-black" : " text-white"
-              }`}
+              className={`cursor-pointer menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isMenuSelected(menuItem.id) ? "bg-white text-black" : " text-white"
+                }`}
               onClick={() => handleMenuClick(menuItem.id)}
             >
-              <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${
-                isMenuSelected(menuItem.id) ? "bg-white text-black" : " text-white"
-              }`}>
+              <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isMenuSelected(menuItem.id) ? "bg-white text-black" : " text-white"
+                }`}>
                 {React.createElement(menuItem.icon, { size: 22 })}
               </div>
               <span className="font-medium">{menuItem.title}</span>
@@ -70,11 +69,24 @@ export const TabsDemo: React.FC<TabsDemoProps> = ({ className, ...props }) => {
           </Link>
         ))}
       </nav>
-      <Separator className="my-4" />
-      <div className="items-center justify-center flex text-lg">
-        <RiLogoutBoxLine />
-        <h1>Logout</h1>
+      <div className="w-[217px] h-[198px] relative mt-16 ml-7 bg-neutral-600 rounded-[18px] border border-white">
+        <div className="p-2.5 left-[46px] top-[-65px] absolute flex-col justify-start items-start gap-2.5 inline-flex">
+          <Image className="w-[142px] h-[136px]" src={gift} alt="gift" />
+        </div>
+        <div className="left-[12px] top-[80px] absolute flex-col justify-start items-center gap-5 inline-flex">
+          <div className="flex-col justify-start items-center gap-2 flex">
+            <div className="text-white text-base font-bold  leading-7">Unlock winters gift</div>
+            <div className="text-white text-opacity-70 text-xs font-medium leading-7">Subscribe and get our special gift</div>
+            <div className="justify-start items-center gap-1 inline-flex">
+            </div>
+            {/* <h1>Logout</h1> */}
+          </div>
+        </div>
       </div>
+        <div className="flex items-center justify-center text-white text-[19px] mt-2">
+          <RiLogoutBoxLine/>
+          <h1>Logout</h1>
+        </div>
     </div>
   );
 };

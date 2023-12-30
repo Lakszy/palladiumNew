@@ -3,6 +3,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { FiSunrise, FiSunset } from "react-icons/fi";
 import TimeSlots from '../components/generics/TimeSlots';
 import { BsChevronRight } from "react-icons/bs";
+import { MdClose } from "react-icons/md";
 
 export function CalendarDemo() {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
@@ -22,9 +23,9 @@ export function CalendarDemo() {
     return timeSlots;
   }
   return (
-    <div className="w-full mainT overflow-auto rounded-3xl border flex flex-col p-4 ">
-      <h6 className="text-xl mb-4">Appointment</h6>
-      <div className="flex gap-x-2 border mb-2 rounded-3xl justify-between px-3 items-center">
+    <div className="w-full mainT overflow-auto rounded-3xl border border-[#F0E4E4] flex flex-col p-4 ">
+      <h6 className="text-xl mt-5  mb-8">Appointment</h6>
+      <div className="flex gap-x-2 border border-[#F0E4E4] mb-2 rounded-3xl justify-between px-3 items-center">
         <div className="flex items-center">
           <img
             src="https://sm.ign.com/ign_nordic/cover/a/avatar-gen/avatar-generations_prsz.jpg"
@@ -37,19 +38,19 @@ export function CalendarDemo() {
             <p className="text-gray-400">Age:30 yr</p>
           </div>
         </div>
-        <div className="border-2  rounded-full w-fit h-fit p-3">
+        <div className="border-2 border-[#F0E4E4]  rounded-full w-fit h-fit p-3">
           <BsChevronRight />
         </div>
       </div>
       <div className="flex flex-1 py-2">
-        <div className="flex-1 border h-full rounded-3xl p-2">
+        <div className="flex-1 border border-[#F0E4E4] h-full rounded-3xl p-2">
           <Calendar
             mode="single"
             selected={date}
             onSelect={setDate}
             className="rounded-md" />
         </div>
-        <div className="border ml-3  rounded-3xl p-3 space-y-10 flex-1">
+        <div className="border border-[#F0E4E4] ml-3  rounded-3xl p-3 space-y-10 flex-1">
           <div className="flex items-center gap-x-2">
             <div className="p-4 bg-white rounded-full border border-stone-200 gap w-fit">
               <FiSunrise className="text-yellow-500" size={20} />
@@ -63,12 +64,12 @@ export function CalendarDemo() {
           </div>
           <TimeSlots timeSlots={morningTimeSlots} />
           <div className="flex items-center gap-x-2">
-            <div className="p-4 bg-white rounded-full border border-stone-200 gap w-fit">
+            <div className="p-4 bg-white rounded-full border border-[#F0E4E4] gap w-fit">
               <FiSunset className="text-orange-700" size={20} />
             </div>
             <div>
               <p className="font-medium">Evening</p>
-              <p className="font-sm text-gray-500 whitespace-nowrap justify-center items-center">
+              <p className="font-sm text-gray-500 border-[#F0E4E4] whitespace-nowrap justify-center items-center">
                 {`6:00 PM to 10:00 PM`}
               </p>
             </div>
@@ -78,21 +79,34 @@ export function CalendarDemo() {
       </div>
       <div>
 
-        <div className=" mt-4 grid grid-cols-2 w-full gap-x-2">
-        <div>
-          <h1 className="text-xl text-gray-600 font-medium t">Reason For Visit</h1>
-          <div className="border px-2 items-center justify-between h-14 rounded-xl flex whitespace-nowrap">
-            <h1>Diabetes,back pain, anxiety</h1>
-            <BsChevronRight />
+        <div className="mt-4 grid grid-cols-2 w-full gap-x-2">
+          <div>
+            <h1 className="text-xl text-gray-800 font-medium t">Reason For Visit</h1>
+            <div className="border border-[#F0E4E4] px-2 items-center justify-between h-14 rounded-xl flex whitespace-nowrap">
+              <h1 className="font-medium p-1">Headache</h1>
+              <BsChevronRight />
+            </div>
           </div>
-        </div>
-        <div>
-          <h1 className="text-xl text-gray-600 font-medium t">Reason For Visit</h1>
-          <div className="border px-2 items-center justify-between h-14 rounded-xl flex whitespace-nowrap">
-            <h1>Diabetes,back pain, anxiety</h1>
-            <BsChevronRight />
+          <div>
+            <h1 className="text-xl text-gray-800 font-medium border-[#F0E4E4] ">Reason For Visit</h1>
+            <div className="border px-2 items-center gap-x-8 h-14 rounded-xl flex whitespace-nowrap w-[410px]">
+
+              <div className="bg-blue-200 flex items-center gap-x-1 rounded-lg px-1 py-0.5 w-fit">
+                <h1 className="text-blue-500 font-medium">Antacids</h1>
+                <MdClose className="bg-white rounded-full" />
+              </div>
+              <div className="bg-blue-200 flex items-center gap-x-1 rounded-lg px-1 py-0.5 w-fit">
+                <h1 className="text-blue-500 font-medium">Antacids</h1>
+                <MdClose className="bg-white rounded-full" />
+              </div>
+              <div className="bg-blue-200 flex items-center gap-x-1 rounded-lg px-1 py-0.5 w-fit">
+                <h1 className="text-blue-500 font-medium">Antacids</h1>
+                <MdClose className="bg-white rounded-full" />
+              </div>
+              <BsChevronRight />
+            </div>
+
           </div>
-        </div>
         </div>
       </div>
     </div>

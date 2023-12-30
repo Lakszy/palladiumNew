@@ -14,7 +14,7 @@ export default function Home() {
     <div className="grid h-screen mainT w-full grid-cols-[max-content_1fr] overflow text-white">
       <TabsDemo />
       <div className="body text-black  overflow-y-scroll ">
-        <div className="sticky z-50 mainT top-0 bg-gray-800 overflow-auto">
+        <div className="sticky z-50 mainT top-0  overflow-auto">
           <NavBar />
         </div>
         <div className="flex mt-2 flex-col mainT overflow-x-auto">

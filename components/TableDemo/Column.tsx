@@ -1,5 +1,5 @@
 import { cn } from "../../lib/utils"
-import { TableCell, TableHead } from "../ui/table";
+import { TableCell } from "../ui/table";
 import { FaTruckPickup } from "react-icons/fa";
 export type ColumnProps = {
   value: any;
@@ -11,7 +11,6 @@ export type ColumnProps = {
 };
 export default function Column({
   value,
-  objectProperty,
   type,
   colorPlate,
 }: ColumnProps) {
@@ -31,11 +30,13 @@ export default function Column({
         </TableCell>
       );
       case "SCHEDULE":
-        return (
-          <TableCell>
-            <div className={cn( "")}>{value}</div>
-          </TableCell>
-        );
+  // Assuming `value` is a string in the format "2023-03-26T20:39:39.000000"
+  const formattedDate = value.slice(0, 10); // Extracts characters from index 0 to 9
+  return (
+    <TableCell>
+      <div className={cn("whitespace-nowrap")}>{formattedDate}</div>
+    </TableCell>
+  );
     case "PAYMENT":
       return <TableCell className="flex items-center gap-x-1 bg-gray-100 rounded-3xl font-medium  w-28 h-10 justify-center"><FaTruckPickup className="text-green-400" />{value}</TableCell>;
     default:
