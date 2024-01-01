@@ -89,21 +89,28 @@ export function CalendarDemo() {
           </div>
           <div>
             <h1 className="text-xl text-gray-800 font-medium border-[#F0E4E4] ">Reason For Visit</h1>
-            <div className="border px-2 items-center gap-x-8 h-14 rounded-xl flex whitespace-nowrap w-[410px]">
+            <div className="border px-2 items-center gap-x-8 h-14 rounded-xl flex whitespace-nowrap min-w-[480px]">
 
-              <div className="bg-blue-200 flex items-center gap-x-1 rounded-lg px-1 py-0.5 w-fit">
-                <h1 className="text-blue-500 font-medium">Antacids</h1>
-                <MdClose className="bg-white rounded-full" />
+
+              <div className="w-[121px] h-10 px-3.5 py-3 bg-blue-700 bg-opacity-10 rounded-xl justify-center items-center gap-2.5 inline-flex">
+                <div className="text-blue-700 text-base font-medium  leading-7">Antacids</div>
+                <div className="self-stretch justify-start items-start gap-2.5 flex">
+                  <MdClose className="bg-white rounded-full" />
+                </div>
               </div>
-              <div className="bg-blue-200 flex items-center gap-x-1 rounded-lg px-1 py-0.5 w-fit">
-                <h1 className="text-blue-500 font-medium">Antacids</h1>
-                <MdClose className="bg-white rounded-full" />
+              <div className="w-[121px] h-10 px-3.5 py-3 bg-blue-700 bg-opacity-10 rounded-xl justify-center items-center gap-2.5 inline-flex">
+                <div className="text-blue-700 text-base font-medium  leading-7">Antacids</div>
+                <div className="self-stretch justify-start items-start gap-2.5 flex">
+                  <MdClose className="bg-white rounded-full" />
+                </div>
               </div>
-              <div className="bg-blue-200 flex items-center gap-x-1 rounded-lg px-1 py-0.5 w-fit">
-                <h1 className="text-blue-500 font-medium">Antacids</h1>
-                <MdClose className="bg-white rounded-full" />
+              <div className="w-[121px] h-10 px-3.5 py-3 bg-blue-700 bg-opacity-10 rounded-xl justify-center items-center gap-2.5 inline-flex">
+                <div className="text-blue-700 text-base font-medium  leading-7">Antacids</div>
+                <div className="self-stretch justify-start items-start gap-2.5 flex">
+                  <MdClose className="bg-white rounded-full" />
+                </div>
               </div>
-              <BsChevronRight />
+              <BsChevronRight className="-" />
             </div>
 
           </div>

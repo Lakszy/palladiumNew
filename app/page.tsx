@@ -6,7 +6,7 @@ import NavBar from "@/components/navbar";
 import { CenterBar } from "@/components/centerBar";
 import { TableDemo } from "@/components/TableDemo";
 import { PATIENTS, PATIENTS_HEADER } from "../components/data"
-import { BottomBar } from '@/components/BottomBar';
+import BottomBar from "@/components/BottomBar";
 import { CalendarDemo } from "@/components/appointmentPage";
 
 export default function Home() {

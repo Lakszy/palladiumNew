@@ -1,13 +1,13 @@
 import { cn } from "../../lib/utils"
 import { TableCell } from "../ui/table";
-import { FaTruckPickup } from "react-icons/fa";
+import { IoCheckmarkDoneCircle } from "react-icons/io5";
 export type ColumnProps = {
   value: any;
   objectProperty: string;
   title: string;
   type: string;
   colorPlate: any;
-  schedule:any;
+  schedule: any;
 };
 export default function Column({
   value,
@@ -26,19 +26,26 @@ export default function Column({
       const colorClass = !!color && `bg-${color}-300 text-${color}-700 font-semibold `;
       return (
         <TableCell>
-          <div className={cn(colorClass,"rounded-2xl whitespace-nowrap p-2 w-fit flex")}>{value}</div>
+          <div className={cn(colorClass, "rounded-2xl whitespace-nowrap p-2 w-fit flex")}>{value}</div>
         </TableCell>
       );
-      case "SCHEDULE":
-  // Assuming `value` is a string in the format "2023-03-26T20:39:39.000000"
-  const formattedDate = value.slice(0, 10); // Extracts characters from index 0 to 9
-  return (
-    <TableCell>
-      <div className={cn("whitespace-nowrap")}>{formattedDate}</div>
-    </TableCell>
-  );
+    case "SCHEDULE":
+      // Assuming `value` is a string in the format "2023-03-26T20:39:39.000000"
+      const formattedDate = value.slice(0, 10); // Extracts characters from index 0 to 9
+      return (
+        <TableCell> 
+          <div className={cn("whitespace-nowrap")}>{formattedDate}</div>
+        </TableCell>
+      ); 
     case "PAYMENT":
-      return <TableCell className="flex items-center gap-x-1 bg-gray-100 rounded-3xl font-medium  w-28 h-10 justify-center"><FaTruckPickup className="text-green-400" />{value}</TableCell>;
+      return <TableCell >
+        <div className="flex items-center  bg-gray-100 rounded-3xl font-medium  w-28 h-10 ">
+        <span className="w-fit ml-1 ">
+          <IoCheckmarkDoneCircle className="text-green-400  " size={25} />
+        </span> 
+        <span className="flex-1 ml-1 ">{value} </span>
+        </div>
+      </TableCell>;
     default:
       return <TableCell>{value}</TableCell>;
   }

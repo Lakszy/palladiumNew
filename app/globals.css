@@ -175,3 +175,7 @@ h6::after {
 .options::-webkit-scrollbar {
   display: none;
 }
+.no-border .MuiOutlinedInput-notchedOutline {
+  border-radius: 1rem;
+  
+}
