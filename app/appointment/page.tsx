@@ -1,15 +1,10 @@
 "use client"
-
 import React from 'react'
 import BottomBar from '@/components/BottomBar';
 import { CalendarDemo } from "@/components/appointmentPage";
 import NavBar from '@/components/navbar';
 import { TabsDemo } from '@/components/sidebar';
-
-
-type Props = {}
-
-function index({ }: Props) {
+function index() {
   return (
     <div className="grid h-screen mainT w-full grid-cols-[max-content_1fr] overflow text-white">
       <TabsDemo />
@@ -27,5 +22,4 @@ function index({ }: Props) {
     </div>
   )
 }
-
 export default index
