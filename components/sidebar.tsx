@@ -35,9 +35,9 @@ export const TabsDemo: React.FC<TabsDemoProps> = ({ className, ...props }) => {
 
   const menuItems: MenuItem[] = [
     { id: "Summary", icon: LayoutGrid, title: "Overview", link: "/" },
-    { id: "Inventory", icon: MdOutlineInventory2, title: "Messages", link: "/messages" },
+    { id: "Inventory", icon: MdOutlineInventory2, title: "Patient Profile", link: "/patient-profile" },
     { id: "Estimate", icon: BiDollar, title: "Patients Details", link: "/patientsdetails" },
-    { id: "Billing", icon: RiBillLine, title: "Billing", link: "/billing" },
+    { id: "Billing", icon: RiBillLine, title: "Detailed Overview", link: "/detailedOverview" },
     { id: "Finance", icon: GoGraph, title: "Appointment", link: "/appointment" },
     { id: "Photos", icon: TbPhoto, title: "Payment", link: "/payment" },
   ];
