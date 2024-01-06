@@ -1,6 +1,6 @@
-import UiWrapper from "../../importedCompo/components/wrapper/uiWrapper";
+import UiWrapper from "@/importedCompo/components/wrapper/uiWrapper";
 import { IoIosArrowRoundBack } from "react-icons/io";
-import patient1 from "../assets/images/patient1.svg";
+import patient1 from "@/app/assets/images/patient1.svg";
 import Image from "next/image";
 import { FiPhone } from "react-icons/fi";
 import { MdOutlineMail } from "react-icons/md";

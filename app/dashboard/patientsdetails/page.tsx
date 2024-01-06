@@ -4,21 +4,16 @@ import NavBar from "@/components/navbar";
 import { TabsDemo } from "@/components/sidebar";
 import { HiArrowLongLeft } from "react-icons/hi2";
 import { MdSaveAlt } from "react-icons/md";
-import patient from "../../app/assets/images/patient.svg";
-import hand from "../../app/assets/images/injection.svg";
-import lady from "../../app/assets/images/ladyPatient.svg";
+import patient from "@/app/assets/images/patient.svg";
+import hand from "@/app/assets/images/injection.svg";
+import lady from "@/app/assets/images/ladyPatient.svg";
 import Image from "next/image";
-import heart from "../assets/images/heart.svg";
+import heart from "@/app/assets/images/heart.svg";
 import { ArrowBigRight, Heart, MessageCircle, PhoneCall } from "lucide-react";
 import { FaChevronRight } from "react-icons/fa";
 function index() {
   return (
-    <div className="grid h-screen mainT w-full grid-cols-[max-content_1fr] overflow text-white overflow-y-scroll">
-      <TabsDemo />
-      <div className="body text-black grid grid-rows-[max-content_max-content-max_content]  overflow-y-scroll ">
-        <div className="sticky z-50 mainT top-0 bg-gray-800 overflow-auto">
-          <NavBar />
-        </div>
+    <>
         <div className="p-4 ">
           <div className="flex justify-between">
             <div className="flex items-center gap-x-2">
@@ -277,8 +272,7 @@ function index() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </>
   );
 }
 export default index;

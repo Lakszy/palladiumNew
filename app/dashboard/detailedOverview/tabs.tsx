@@ -1,12 +1,12 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
-import calender from "../assets/images/calander.svg";
-import icon from "../assets/images/icon.svg";
-import skeleton from '../assets/images/skeleton.svg';
-import girl from "../assets/images/girl.svg";
+import calender from "@/app/assets/images/calander.svg";
+import icon from "@/app/assets/images/icon.svg";
+import skeleton from '@/app/assets/images/skeleton.svg';
+import girl from "@/app/assets/images/girl.svg";
 import { IoIosArrowForward } from "react-icons/io";
-import rightTick from "../assets/images/rightTick.svg";
-import loader from "../assets/images/loader.svg";
+import rightTick from "@/app/assets/images/rightTick.svg";
+import loader from "@/app/assets/images/loader.svg";
 
 export default function Tab() {
   return (

@@ -1,8 +1,8 @@
-import UiWrapper from "../../importedCompo/components/wrapper/uiWrapper";
+import UiWrapper from "../../../importedCompo/components/wrapper/uiWrapper";
 import { IoIosArrowRoundBack, IoMdSearch } from "react-icons/io";
-import pills from "../assets/images/pills.svg";
+import pills from "@/app/assets/images/pills.svg";
 import Image from "next/image";
-import { PrimaryButton } from "../../importedCompo/components/Button";
+import { PrimaryButton } from "../../../importedCompo/components/Button";
 import { GoDownload } from "react-icons/go";
 
 
