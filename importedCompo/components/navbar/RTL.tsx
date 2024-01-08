@@ -1,5 +1,5 @@
 import React from "react";
-import Dropdown from "components/dropdown";
+import Dropdown from "../dropdown";
 import { FiAlignJustify } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import navbarimage from "assets/img/layout/Navbar.png";
@@ -184,7 +184,7 @@ const Navbar = (props: {
           button={
             <img
               className="h-10 w-10 rounded-full"
-              src={avatar}
+              // src={avatar}
               alt="Elon Musk"
             />
           }

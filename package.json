@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.2",
@@ -27,10 +28,13 @@
     "lucide-react": "^0.292.0",
     "next": "^14.0.3",
     "react": "^18",
+    "react-apexcharts": "^1.4.1",
     "react-app-polyfill": "^3.0.0",
+    "react-calendar": "^4.7.0",
     "react-day-picker": "^8.9.1",
     "react-dom": "^18",
     "react-icons": "^4.11.0",
+    "react-redux": "^9.0.4",
     "react-router-dom": "^6.18.0",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
