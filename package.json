@@ -27,6 +27,7 @@
     "formik": "^2.4.5",
     "lucide-react": "^0.292.0",
     "next": "^14.0.3",
+    "primereact": "^10.3.0",
     "react": "^18",
     "react-apexcharts": "^1.4.1",
     "react-app-polyfill": "^3.0.0",
