@@ -15,7 +15,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, placeholder, inputType, 
         {label}
       </div>
       <input
-        className="pl-2.5 justify-around w-[19.75rem] lg:w-[35.25rem] py-4 white-nowrap bg-white rounded-2xl text-zinc-800 border border-gray-300 items-center gap-2.5 inline-flex px-2"
+        className="pl-2.5 justify-around w-[19.75rem] lg:w-[33.25rem] py-4 white-nowrap bg-white rounded-2xl text-zinc-800 border border-gray-300 items-center overflow-x-auto salts gap-2.5 inline-flex px-2"
         placeholder={placeholder}
         type={inputType}
         value={value}
@@ -23,7 +23,7 @@ const InputField: React.FC<InputFieldProps> = ({ label, placeholder, inputType, 
       />
       {value && onClear && (
         <XCircle
-          className="absolute top-1/2 transform -translate-y-1/2 -translate-x-10 right-0.5 cursor-pointer text-orange-300"
+          className="absolute transform -translate-y-10 -translate-x-10 right-0.5 cursor-pointer text-orange-300"
           onClick={onClear}
         />
       )}

@@ -183,3 +183,6 @@ h6::after {
 .patientInpt{
   color: black;
 }
+.salts::-webkit-scrollbar {
+  display: none;
+}
