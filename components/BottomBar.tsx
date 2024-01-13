@@ -99,7 +99,7 @@ const BottomBar = () => {
           <FaArrowRight className="text-white" />
         </div>
       </div>
-      <div className="grid lg:grid-cols-[1fr_1fr] gap-y-8 p-3 mt-5 md:mt-12">
+      <div className="grid lg:grid-cols-2 gap-x-14  gap-y-8 p-3 mt-5 md:mt-12">
         {menuItems.map((menuItem) => (
           <div key={menuItem.title} className="text-zinc-800 items-center gap-x-1">
             {menuItem.inputType === 'select' ? (
@@ -107,7 +107,7 @@ const BottomBar = () => {
                 <div style={{ fontSize: '1.3rem', fontWeight: '500', fontFamily: "'-apple-system', 'BlinkMacSystemFont', 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif" }}>
                   {menuItem.title}
                 </div>
-                <div className=' justify-around w-[19.75rem] lg:w-[35.25rem]  white-nowrap bg-white rounded-2xl text-zinc-800 items-center'>
+                <div className=' justify-around   white-nowrap bg-white rounded-2xl text-zinc-800 items-center'>
                   <FormControl fullWidth className="no-border ">
                     <Select
                       labelId={`select-label-${menuItem.title}`}

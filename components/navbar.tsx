@@ -1,14 +1,12 @@
 import React from "react";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
 import { FaRegBell } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FiMessageSquare } from "react-icons/fi";
-import { IoMdSearch } from "react-icons/io";
 import { AiOutlinePlus } from "react-icons/ai";
 import IconComponent from "./generics/IconButton";
-import { PrimaryInput } from "./Input";
+import { Search } from "lucide-react";
 
 function NavBar() {
   return (
@@ -16,20 +14,24 @@ function NavBar() {
       <div className="flex items-center gap-x-4">
         <div className="w-full min-w-[400px] rounded-xl">
           <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3 w-[100px] ">
-              <IoMdSearch size={26} />
+            <div className="flex w-[600px] items-center gap-[12px] p-[24px] relative bg-[#fefefe] rounded-[22px] overflow-hidden border border-solid border-[#f0e4e4]">
+              <div
+                className="relative w-[20.5px] h-[22.5px] mt-[-0.75px] mb-[-0.75px] ml-[-0.75px]"
+              ><Search /></div>
+              <input className="relative w-full h-full [font-family:'Manrope-Medium',Helvetica] font-medium text-[#2b2b2bb2] text-[20px] whitespace-nowrap"
+                placeholder="Search patients, appointment.."
+              />
             </div>
-            <PrimaryInput placeholder="Search" />
           </div>
         </div>
-        <Link href="/appointment">
-          <button className="w-[216px] h-[66px] px-[60px] py-4 bg-[#0D1821] rounded-lg flex-col justify-center items-start inline-flex cursor-pointer">
-            <div className="justify-center items-center inline-flex">
-              <div className="flex text-white">
-                <AiOutlinePlus />
-              </div>
-              <div className="justify-center items-center flex">
-                <div className="text-white text-lg font-semibold whitespace-nowrap items-center">Add patient</div>
+        <Link href="appointment">
+          <button className="relative w-[216px] h-[66px] bg-[#243241] rounded-[22px]">
+            <div className="inline-flex text-white items-center relative">
+              <AiOutlinePlus className='font-bold' size={30}/>
+              <div className="inline-flex items-center justify-center gap-[10px] p-[10px] relative">
+                <div className="relative w-fit mt-[-1.00px] [font-family:'Manrope-SemiBold',Helvetica] font-semibold text-white text-[18px] tracking-[0] leading-[32px] whitespace-nowrap">
+                  Add patient
+                </div>
               </div>
             </div>
           </button>

@@ -2,7 +2,6 @@ import React from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import DoughnutChartDemo from './ui/pieChart';
 import StatsCard from './StatsCard';
-import { CardTitle } from "@/components/ui/card";
 import LineChart from './ui/lineGraph';
 
 export const CenterBar: React.FC = () => {
@@ -18,7 +17,7 @@ export const CenterBar: React.FC = () => {
         label: 'First Dataset',
         data: [20, 60, 50, 70, 80, 90],
         fill: false,
-        borderColor: '#22C55E', // Use the CSS variable here
+        borderColor: '#22C55E',
         tension: 0.4,
       },
     ],

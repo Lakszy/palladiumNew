@@ -347,11 +347,11 @@ function index() {
                                 placeholder="Reduce salt intake and Exercise Regularly"
                                 rows={10}
                                 cols={500}
-                                style={{ width: '100%', padding: '10px', margin: '10px' }}
+                                style={{ width: '100%', padding: '10px', margin: '10px',border:'none' }}
                             />
                         </div>
                         <div className="text-[22px] font-semibold text-gray-500  p-2 pl-6 pt-3">Test Requested</div>
-                        <div className=" ml-5 overflow-x-auto salts grid grid-cols-[1fr_1fr] gap-x-5">
+                        <div className=" ml-5 overflow-x-auto salts grid grid-cols-[max-content_max-content] gap-x-5">
                             <div>
                                 <h1 className="text-xl text-gray-800 font-medium border-[#F0E4E4] mb-2"></h1>
                                 <div className="border w-fit px-2 items-center gap-x-8 h-[5.5rem] rounded-xl flex whitespace-nowrap min-w-[30rem]">
@@ -437,11 +437,11 @@ function index() {
 
                         </div>
                         <div className="mx-6  gap-x-4 mt-5 salts">
-                            <div className="flex gap-x-10 overflow-x-auto salts">
+                            <div className="grid grid-cols-2 gap-x-10 overflow-x-auto salts">
                                 {menuItems.map((menuItem) => (
                                     <div key={menuItem.title} className="text-zinc-800 items-center gap-x-1">
                                         <InputField
-                                           
+
                                             label={menuItem.title}
                                             placeholder={menuItem.placeholder}
                                             inputType={menuItem.inputType}
@@ -452,7 +452,7 @@ function index() {
                                     </div>
                                 ))}
                             </div>
-                            <div className="max-w-full  salts overflow-x-auto mt-3 whitespace-nowrap inline-flex gap-3 gap-x-4 ml">
+                            <div className="max-w-full salts overflow-x-auto mt-3 whitespace-nowrap inline-flex gap-3 gap-x-4 ml">
                                 <div className="bg-white border hover:cursor-pointer border-stone-200 rounded-[30px]  px-2 py-2">
                                     <div className="text-zinc-800 text-opacity-80 text-lg font-medium rounded-2xl  ">
                                         Days
@@ -474,8 +474,7 @@ function index() {
                         <div className="text-[22px] font-semibold text-gray-500 mt-5 p-2 pl-7">Reffered to</div>
                         <div>
                             <div className="bg-green-500 salts bg-opacity-20 rounded-[22px] pb-6 mx-7 mb-4 overflow-x-auto">
-                                {/* <div className="p-5"> */}
-                                <div className="grid grid-cols-[1fr_1fr] p-5 gap-x-10">
+                                <div className="grid grid-cols-2 p-5 gap-x-10">
                                     {menuItems2.map((menuItem) => (
                                         <div key={menuItem.title} className="text-zinc-800 items-center gap-x-1">
                                             <InputField
@@ -504,7 +503,7 @@ function index() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
             {/* </div> */}
         </>
     );
