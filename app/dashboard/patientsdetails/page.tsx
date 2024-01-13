@@ -162,7 +162,7 @@ const lineData = {
           </div>
           <div className="h-[32rem] p-2 rounded-lg">
             <div className="w-[731px] ml-4 h-full relative bg-white rounded-[22px] border border-stone-200">
-            <VerticalBarDemo/>
+            {/* <VerticalBarDemo/> */}
             </div>
           </div>
         </div>
