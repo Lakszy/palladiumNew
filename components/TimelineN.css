@@ -1,0 +1,41 @@
+.p-timeline-event-separator {
+    border-top: 5px solid #ccc; 
+  }
+  
+  .p-timeline-event-marker {
+    background-color: #e7c84e;
+    position: absolute; 
+    color: #e7c84e; 
+    border:10px solid #e7c84e; 
+    border-radius: 100%;
+    margin-top: -0.7rem;
+  }
+  
+.timeline-item {
+    display: flex;
+}
+
+.timeline-content {
+    display: flex;
+    align-items: center;
+}
+
+.timeline-container {
+  position: relative;
+}
+
+.images-timeline {
+  position: absolute;
+  top: -60px; /* Adjust this value as needed */
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.image-item {
+  text-align: center;
+}
+
+.timeline-container .p-timeline {
+  margin-top: 50px; /* Adjust this value as needed */
+}
