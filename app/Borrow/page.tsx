@@ -13,10 +13,8 @@ export default function Home() {
           <NavBar />
         </div>
 
-        <div className="" style={{ backgroundColor: "#272315" }}>
-          <div className="flex ">
-            <Borrow />
-          </div>
+        <div className="h-screen" style={{ backgroundColor: "#272315" }}>
+          <Borrow />
         </div>
       </div>
     </div>

@@ -244,25 +244,29 @@ export const OpenTrove = () => {
     Number(Number(userInputs.collatoral) || 1);
 
   return (
-    <div className=" h-full font-mono pl-5 pr-10 pt-10 pb-10">
+    <div className="h-full font-mono pl-5 pr-10 pt-10 pb-10">
       <div
         className="ml-2 border p-2 border-yellow-300"
         style={{ backgroundColor: "#3f3b2d" }}
       >
-        <div className="flex gap-x-4 ">
+        <div className="flex gap-x-4">
           <div className="h-[192px]  w-1/3">
             <Image src={img1} alt="home" />
           </div>
-          <div className="">
-            <p className="font-mono  text-white text-center text-3xl font-bold mb-[1.25rem]">
-              You dont have an existing trove
-            </p>
-            <p className=" font-mono text-yellow-300 text-left text-2xl mb-2">
-              Open a zero interest trove
-            </p>
-            <p className="text-white font-mono font-semibold text-left text-lg">
-              Borrow against BTCs interest free
-            </p>
+          <div className=" h-fit space-y-20">
+            <div>
+              <p className="text-white font-mono text-center text-2xl font-bold ">
+                You dont have an existing trove
+              </p>
+            </div>
+            <div>
+              <p className="text-yellow-300 font-mono text-left text-xl mb-2">
+                Open a zero interest trove
+              </p>
+              <p className="text-white font-mono text-left text-base">
+                Borrow against BTCs interest free
+              </p>
+            </div>
           </div>
         </div>
       </div>
@@ -331,13 +335,13 @@ export const OpenTrove = () => {
               )}
             </div>
           </div>
-          <Button onClick={() =>
+          <button onClick={() =>
             handleConfirmClick(userInputs.borrow, userInputs.collatoral)
           }
-            className="mt-10 w-[22rem] h-[3rem] bg-yellow-300 text-black font-bold"
+            className="mt-10 w-[22rem] h-[3rem] bg-yellow-300 hover:bg-yellow-400 text-black font-bold"
           >
             Open Trove
-          </Button>
+          </button>
         </div>
 
         <div className="w-4/5 mt-8 p-5 border-yellow-200 h-fit space-y-10  text-white"

@@ -481,7 +481,7 @@ const Portfolio = () => {
                 <Progress total={totalSupply} supplied={suppliedAmount} />
                 <h1 className="text-white text-sm ">
                   <div className="flex flex-row justify-between">
-                    
+
                     <div className="text-white flex flex-col">
                       <span>Borrowed</span>
                       <span>{Number(entireDebtAndColl.debt)} PUSD</span>
@@ -509,7 +509,7 @@ const Portfolio = () => {
                   className="  flex flex-row justify-between p-5"
                   style={{ backgroundColor: "#3d3f37" }}
                 >
-                  <span className="text-white">TROVE</span>
+                  <span className="text-white font-mono">TROVE</span>
 
                   <button
                     style={{ backgroundColor: "#f5d64e" }}
@@ -566,7 +566,7 @@ const Portfolio = () => {
                 style={{ backgroundColor: "#3f3b2d" }}
               >
                 <div
-                  className="  flex flex-row justify-between p-5"
+                  className=" flex flex-row justify-between p-5"
                   style={{ backgroundColor: "#3d3f37" }}
                 >
                   <span className="text-white">STABILITY POOL</span>
@@ -596,52 +596,52 @@ const Portfolio = () => {
           </div>
         )}
         {/* INACTIVE */}
+
+
+
         {troveStatus === "INACTIVE" && (
-          <div className="mt-10 flex flex-row justify-between gap-10">
+          <div className="pt-10 gap-x-[5rem] flex w-[100%]">
             <div
-              className="w-[35rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
+              className="w-[55%] border border-black shadow-lg  ml-[2.5rem] rounded-sm"
               style={{ backgroundColor: "#3f3b2d" }}
             >
               <div
                 className="  flex flex-row justify-between p-5"
                 style={{ backgroundColor: "#3d3f37" }}
               >
-                <span className="text-white">TROVE</span>
+                <span className="text-white font-mono text-xl">TROVE</span>
 
                 <button
                   style={{ backgroundColor: "#f5d64e" }}
-                  className="h-10 px-8 bg-yellow-300 text-black font-bold"
+                  className="h-10 px-8 bg-yellow-300 text-black font-bold font-mono"
                 >
-                  <Link href="/Borrow">OPEN TROVE</Link>
+                  <Link className="font-mono" href="/Borrow">OPEN TROVE</Link>
                 </button>
               </div>
-              <div className="grid place-items-center">
+              <div className="grid place-items-center p-3">
                 <Image src={img1} alt="home" width={200} />
-                <p className="text-white text-center font-semibold text-lg mt-4">
+                <p className="text-white font-mono text-center font-semibold text-lg pt-5">
                   You don't have an Active Trove
                 </p>
               </div>
             </div>
             <div
-              className="w-[22rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
+              className="w-[30%] border border-black shadow-lg rounded-sm"
               style={{ backgroundColor: "#3f3b2d" }}
             >
-              <div
-                className="  flex flex-row justify-between p-5"
-                style={{ backgroundColor: "#3d3f37" }}
-              >
-                <span className="text-white">STABILITY POOL</span>
+              <div className=" items-center flex flex-row justify-between p-4" style={{ backgroundColor: "#3d3f37" }}>
+                <span className="text-white font-mono">STABILITY POOL</span>
 
                 <button
                   style={{ backgroundColor: "#f5d64e" }}
                   className="h-10 px-6 bg-yellow-300 text-black font-bold"
                 >
-                  <Link href="/Stake">STAKE PUSD</Link>
+                  <Link className="font-mono" href="/Stake">STAKE PUSD</Link>
                 </button>
               </div>
               <div className="grid place-items-center mt-[1rem]">
                 <Image src={port2} alt="home" width={200} />
-                <p className="text-white text-center font-semibold text-lg mt-4">
+                <p className="text-white font-mono text-center font-semibold text-lg mt-4">
                   You have not Staked
                 </p>
               </div>
@@ -658,7 +658,7 @@ const Portfolio = () => {
                 className="  flex flex-row justify-between p-5"
                 style={{ backgroundColor: "#3d3f37" }}
               >
-                <span className="text-white">TROVE</span>
+                <span className="text-white font-mono">TROVE</span>
 
                 <button
                   style={{ backgroundColor: "#f5d64e" }}
