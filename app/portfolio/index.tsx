@@ -464,15 +464,15 @@ const Portfolio = () => {
       <Layout>
         {/* ACTIVE */}
         {troveStatus === "ACTIVE" && (
-          <div className="container h-auto flex flex-col gap-10 my-[2.5rem] ml-[2.5rem] ">
+          <div className="container h-auto flex flex-col">
             {/* Hesading */}
-            <div className="flex  flex-row justify-between">
+            <div className="flex flex-row justify-between">
               <div>
-                <p className="text-white text-sm mt-2 mb-4 ml-[1.25rem]">
+                <p className="text-white font-mono text-lg mt-1 mb-4 ml-[1.25rem]">
                   Portfolio Value
                 </p>
 
-                <span className="text-white text-2xl font-bold ml-[1.25rem] flex justify-between">
+                <span className="text-white font-mono text-2xl font-bold ml-[1.25rem] flex justify-between">
                   ${availableToBorrow} PUSD
                 </span>
               </div>
@@ -483,25 +483,21 @@ const Portfolio = () => {
                   <div className="flex flex-row justify-between">
 
                     <div className="text-white flex flex-col">
-                      <span>Borrowed</span>
-                      <span>{Number(entireDebtAndColl.debt)} PUSD</span>
+                      <span className="font-mono">Borrowed</span>
+                      <span className="font-mono">{Number(entireDebtAndColl.debt)} PUSD</span>
                     </div>
                     <div className="text-white flex flex-col">
-                      <span>Supplied</span>
-                      <span>{Number(entireDebtAndColl.coll)} BTC</span>
+                      <span className="font-mono">Supplied</span>
+                      <span className="font-mono">{Number(entireDebtAndColl.coll)} BTC</span>
                     </div>
                   </div>
                 </h1>
               </div>
             </div>
-            {/* Boxes */}
             <div className=" mt-10 flex flex-row justify-between gap-10 mx-auto">
-              {/* <div className="container mx-auto flex flex-col lg:flex-row lg:justify-between lg:gap-10"> */}
-              {/* box1 */}
-              {/* w-[35rem] h-[23.6rem] */}
+
               <div
                 className="flex-1 lg:w-[35rem] h-auto rounded-sm"
-                // className=" h-auto ml-[2.5rem] rounded-sm"
                 style={{ backgroundColor: "#3f3b2d" }}
               >
                 {/* nav */}
@@ -513,7 +509,7 @@ const Portfolio = () => {
 
                   <button
                     style={{ backgroundColor: "#f5d64e" }}
-                    className="h-10 px-8 bg-yellow-300 text-black font-bold"
+                    className="h-10 px-8 bg-yellow-300 text-black font-mono font-bold"
                   >
                     Details
                   </button>
@@ -527,32 +523,32 @@ const Portfolio = () => {
                     <Knob
                       value={value}
                       onChange={(e) => setValue(e.value)}
-                      size={100}
+                      size={150}
                       // showValue={false}
                       rangeColor="#78887f"
                       valueColor="#3dde84"
-                      strokeWidth={10}
+                      strokeWidth={20}
                     />
-                    <span className="text-xs ml-[0.5rem]">{value}%</span>
-                    <span className="text-xs ml-[0.5rem]">/100%</span>
-                    <span className="text-xs ml-[0.5rem]">YOUR LTV</span>
+                    <span className="text-xs ml-[0.5rem] font-mono text-md">{value}%</span>
+                    <span className="text-xs ml-[0.5rem] font-mono">/100%</span>
+                    <span className="text-xs ml-[0.5rem] font-mono">YOUR LTV</span>
                   </div>
                   <div className="text-white flex flex-row justify-between mx-[2.5rem]">
                     {" "}
                     <div className="flex flex-col">
-                      <span>Collateral</span>
-                      <span>{entireDebtAndColl.coll} BTC</span>
-                      <span className="text-xs">${price}</span>
+                      <span className="font-mono">Collateral</span>
+                      <span className="font-mono">{entireDebtAndColl.coll} BTC</span>
+                      <span className="text-xs font-mono">${price}</span>
                     </div>
                     <div className="flex flex-col">
                       {" "}
-                      <span>Debt</span>
-                      <span>{entireDebtAndColl.debt} PUSD</span>
+                      <span className="font-mono">Debt</span>
+                      <span className="font-mono">{entireDebtAndColl.debt} PUSD</span>
                     </div>
                     <div className="flex flex-col">
                       {" "}
-                      <span>Debt Ahead</span>
-                      <span>{entireDebtAndColl.pendingETHReward} PUSD</span>
+                      <span className="font-mono">Debt Ahead</span>
+                      <span className="font-mono">{entireDebtAndColl.pendingETHReward} PUSD</span>
                     </div>
                   </div>
                 </div>
@@ -569,24 +565,24 @@ const Portfolio = () => {
                   className=" flex flex-row justify-between p-5"
                   style={{ backgroundColor: "#3d3f37" }}
                 >
-                  <span className="text-white">STABILITY POOL</span>
+                  <span className="text-white font-mono">STABILITY POOL</span>
 
                   <button
                     style={{ backgroundColor: "#f5d64e" }}
-                    className="h-10 px-6 bg-yellow-300 text-black font-bold"
+                    className="h-10 px-6 font-mono bg-yellow-300 text-black font-bold"
                   >
                     Details
                   </button>
                 </div>
                 <div className="text-white ml-3">
                   <div className="mb-[2rem] mt-2">
-                    <p>Deposited</p>
-                    <p>0 PUSD</p>
+                    <p className="font-mono">Deposited</p>
+                    <p className="font-mono">0 PUSD</p>
                   </div>
                   <div className="flex flex-row gap-10">
                     <div className="flex flex-col">
-                      <span>Claimable</span>
-                      <span>{lr} PUSD</span>
+                      <span className="font-mono">Claimable</span>
+                      <span className="font-mono">{lr} PUSD</span>
                     </div>
                     <Image src={port2} alt="home" width={200} />
                   </div>
