@@ -169,7 +169,7 @@ export default function Redeem() {
                     <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-yellow-900"></div>
                 </div>
             )}
-            <div className="grid items-start h-64 gap-2 mx-auto border-[2px] border border-yellow-400 p-5">
+            <div className="grid items-start h-64 gap-2 mx-auto border-[2px] border-yellow-400 p-5">
                 <div>
                     <div className="flex -mt-2 mb-2 items-center">
                         <Input
