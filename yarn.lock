@@ -9234,9 +9234,9 @@ viem@^1.1.4:
     ws "8.13.0"
 
 viem@2.x:
-  version "2.9.13"
-  resolved "https://registry.npmjs.org/viem/-/viem-2.9.13.tgz"
-  integrity sha512-TxNZOWFwr2Pc6CeY4tViFL2NRq9v86HofAPkhBgScP8DUn3EeSbQhmDXbjMZNkZvXoMqWVl0AZM81rEOlaKrbg==
+  version "2.9.26"
+  resolved "https://registry.npmjs.org/viem/-/viem-2.9.26.tgz"
+  integrity sha512-WWYsZfxDsvVsbQF9v3i0M7A2TYTtQl+pwiF5UP8/5dr15XEMGB0MJDhH3esU7jJnBd/JMjkJH/DQRAKuqYS23Q==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.2.0"
