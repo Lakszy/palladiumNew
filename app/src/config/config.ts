@@ -1,9 +1,10 @@
 "use client"
 
 import { Chain, getDefaultConfig } from "@rainbow-me/rainbowkit";
-import { mainnet } from "wagmi/chains";
-import '@rainbow-me/rainbowkit/styles.css'
+import { http, createConfig } from '@wagmi/core'
+import { mainnet, sepolia } from '@wagmi/core/chains'
 
+import '@rainbow-me/rainbowkit/styles.css'
 
 const botanixChain: Chain = {
 	id: 3636,
@@ -29,3 +30,12 @@ export const wagmiConfig = getDefaultConfig({
 	projectId: "ee56c353983496c87480ff2ae841a933",
 	chains: [botanixChain],
 });
+
+
+export const config = createConfig({
+	chains: [botanixChain],
+	transports: {
+	  [mainnet.id]: http(),
+	  [sepolia.id]: http(),
+	},
+  })

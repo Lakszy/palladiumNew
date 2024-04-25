@@ -3,6 +3,7 @@ import React from "react";
 import { TabsDemo } from "@/components/sidebar";
 import NavBar from "@/components/navbar";
 import Redeem from "../Redeem/index"
+import "../App.css"
 
 export default function Home() {
   return (
@@ -13,23 +14,23 @@ export default function Home() {
           <NavBar />
         </div>
 
-        <div className="h-screen" style={{ backgroundColor: '#272315' }}>
+        <div className="md:h-screen " style={{ backgroundColor: '#272315' }}>
           <div className="text-center">
-            <h1 className="text-4xl pt-20 font-semibold font-sans text-yellow-300">Exchange 1 PUSD For $1 Worth Of BTC</h1>
+            <h1 className="text-4xl  md:w-full w-[24rem] pt-12 font-semibold text-yellow-300 title-text">Exchange 1 PUSD For $1 Worth Of BTC</h1>
           </div>
-          <div className="flex mt-40 gap-x-10">
+          <div className="flex md:flex-row flex-col mt-12 md:mt-28 justify-between">
             <Redeem />
-            <div className="w-1/2 mr-10 -mt-10">
-              <h1 className="text-3xl font-semibold font-sans text-yellow-300">About Redemptions</h1>
-              <h3 className="text-gray-400 text-xl whitespace-normal leading-normal mt-2">
-                Redemptions are one of Palladium’s most unique and important protocol features. The redemption mechanism gives PUSD holders the ability to redeem the underlying BTC collateral at face value at any time.
-                <span className="mt-2 block">
+            <div className="md:-mt-10 w-1/2 p-6">
+              <h1 className="text-3xl font-semibold font-sans text-yellow-300 title-text">About Redemptions</h1>
+              <div className="text-gray-400 md:w-full w-screen body-text leading-normal mt-2">
+                Redemptions are one of Palladium’s most unique and important title-text protocol features. The redemption mechanism gives PUSD holders the ability to redeem the underlying BTC collateral at face value at any time.
+                <span className="mt-10 block body-text">
                   Redemptions pay off debt of lowest collateral vaults, in return for their collateral.
                 </span>
-                <span className="mt-2 block">
+                <span className="mt-10 block body-text">
                   IMPORTANT: Redemptions are not the same as paying back your debt. To repay your loan, adjust your Trove on the Repay tab of the Borrow PUSD page
                 </span>
-              </h3>
+              </div>
             </div>
           </div>
         </div>

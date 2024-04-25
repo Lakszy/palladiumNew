@@ -23,6 +23,10 @@ export const StabilityStats = () => {
 	const [liquidGains, setLiquidGains] = useState("0");
 
 	const [totalStakedValue, setTotalStakedValue] = useState("0");
+	const [totalStabilityPool, setTotalStabilityPool] = useState("0");
+	const [totalPoolShare, setTotalPoolShare] = useState("0");
+
+
 
 	const { data: walletClient } = useWalletClient();
 
@@ -33,29 +37,6 @@ export const StabilityStats = () => {
 	);
 
 	const { toWei, toBigInt } = web3.utils;
-	// const stabilityPoolContract = getContract(
-	// 	botanixTestnet.addresses.stabilityPool,
-	// 	stabilityPoolAbi,
-	// 	walletClient
-	// );
-
-	// useEffect(() => {
-	// 	const fetchedData = async () => {
-	// 		try {
-	// 			if (!walletClient) return null;
-	// 		} catch (error) {
-	// 			console.error(error);
-	// 		}
-	// 		if (!walletClient) return null;
-	// 		const fetchedLiquidGains =
-	// 			await stabilityPoolContractReadOnly.getDepositorETHGain(
-	// 				walletClient?.account.address
-	// 			);
-	// 		setLiquidGains(fetchedLiquidGains);
-	// 		console.log(fetchedLiquidGains, "fetchedLiquidGains");
-	// 	};
-	// 	fetchedData();
-	// }, [walletClient]);
 
 	useEffect(() => {
 		const getStakedValue = async () => {
@@ -72,81 +53,62 @@ export const StabilityStats = () => {
 			console.log(fetchedTotalStakedValue, "fetchedTotalStakedValue");
 			console.log(totalStakedValue, "totalStaked");
 		};
+
+		const totalStabilityPool = async () => {
+			if (!walletClient) return null;
+			const fetchedTotalStakedValue =
+				await stabilityPoolContractReadOnly.getTotalLUSDDeposits();
+
+			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
+			setTotalStabilityPool(fixedtotal);
+			console.log(fixedtotal, "Lkahsya");
+			console.log(fetchedTotalStakedValue, "fetchedTotalStakedValue");
+			console.log(totalStakedValue, "totalStaked");
+		};
+
 		getStakedValue();
+		totalStabilityPool();
 	}, [walletClient]);
 
-	const handleConfirmClick = async () => {
-		const pow = Decimal.pow(10, 18);
-		const _1e18 = toBigInt(pow.toFixed());
-		try {
-			if (!walletClient) return null;
-			const fetchedLiquidGains =
-				await stabilityPoolContractReadOnly.getDepositorETHGain(
-					walletClient?.account.address
-				);
-			setLiquidGains(fetchedLiquidGains);
-			console.log(fetchedLiquidGains, "fetchedLiquidGains");
-
-			const fetchedLoanReward =
-				await stabilityPoolContractReadOnly.getDepositorLQTYGain(
-					walletClient.account.address
-				);
-			setLoanRewards(fetchedLoanReward);
-			console.log(fetchedLoanReward, "fetchedLoanReward");
-
-			// const fetchedTotalStakedValue =
-			// 	await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
-			// 		walletClient.account.address
-			// 	);
-			// console.log(fetchedTotalStakedValue, "fetchedTotalStakedValue");
-			// const fixedtotal = (toBigInt(fetchedTotalStakedValue) / _1e18).toString();
-			// const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
-			// setTotalStakedValue(fixedtotal);
-			// console.log(fixedtotal, "fixedtotal");
-			// console.log(fetchedTotalStakedValue, "fetchedTotalStakedValue");
-			// console.log(totalStakedValue, "totalStaked");
-		} catch (error) {
-			console.error(error);
-		}
-	};
+	const stakedValue = parseFloat(totalStakedValue);
+	const stabilityPoolValue = parseFloat(totalStabilityPool);
+	const poolShare = (stakedValue / stabilityPoolValue)*100;
 
 	return (
-		<div className="min-w-96">
-			<h2 className="font-bold text-xl my-3 text-yellow-400">Stability Pool</h2>
-
-			<div className="flex justify-between py-2">
-				<span className="text-yellow-100 text-lg ">Your Total Staking Balance</span>
-				<span className="text-white font-medium ml-7">{totalStakedValue.toString()} PUSD</span>
-			</div>
-
-			<div className="flex justify-between py-2">
-				<span className="text-yellow-100 text-lg font-medium">Your Pool Share</span>
-				<span className="text-white font-medium">0.00 PUSD</span>
-			</div>
-
-			<h2 className="font-bold text-xl text-yellow-400 my-3">Your Rewards</h2>
-			<div className="flex justify-between py-2">
-				<span className="text-yellow-100 text-lg">Liquidation Gains</span>
-				<span className="text-white font-medium">{liquidGains.toString()} PUSD</span>
-			</div>
-
-			<div className="flex justify-between py-2">
-				<span className="text-yellow-100 text-lg">PDM Rewards</span>
-				<span className="text-white font-medium">{loanRewards.toString()} PUSD</span>
-			</div>
-			{isConnected ? (
-				<div className="">
-					<button
-						style={{ backgroundColor: "#f5d64e" }}
-						onClick={handleConfirmClick}
-						className="mt-5 text-black text-md font-semibold w-full border border-black h-10 border-none"
-					>
-						Claim
-					</button>
+		<div className="">
+			<div>
+				<div className="flex justify-center">
+					<h2 className="font-bold text-xl my-3 text-yellow-400 title-text">Stability Pool</h2>
 				</div>
-			) : (
-				<CustomConnectButton />
-			)}
+
+				<div className="flex justify-between py-2">
+					<span className="text-yellow-100 font-medium text-base ml body-text">Your Total Staking Balance</span>
+					<span className="text-white font-medium ml-7 body-text whitespace-nowrap">{(Number(totalStakedValue).toFixed(2)).toString()} PUSD</span>
+				</div>
+
+				<div className="flex justify-between py-2">
+					<span className="text-yellow-100 text-base font-medium body-text">Total Stability Pool Staked</span>
+					<span className="text-white font-medium body-text">{(Number(totalStabilityPool).toFixed(2)).toString()} PUSD</span>
+				</div>
+
+				<div className="flex justify-between py-2">
+					<span className="text-yellow-100 text-lg font-medium body-text">Your Pool Share</span>
+					<span className="text-white font-medium body-text">{isNaN(poolShare) ? "0" : poolShare.toFixed(2)} %</span>
+				</div>
+
+				<div className="flex justify-center">
+					<h2 className="font-bold text-xl text-yellow-400 my-3 title-text">Your Rewards</h2>
+				</div>
+				<div className="flex justify-between py-2">
+					<span className="text-yellow-100 text-lg font-medium body-text">Liquidation Gains</span>
+					<span className="text-white font-medium body-text">{liquidGains.toString()} BTC</span>
+				</div>
+
+				<div className="flex justify-between py-2">
+					<span className="text-yellow-100 text-lg font-medium body-text">PDM Rewards</span>
+					<span className="text-white font-medium body-text">{loanRewards.toString()} PDM</span>
+				</div>
+			</div>
 		</div>
 	);
 };

@@ -186,7 +186,7 @@ export const OpenTrove = () => {
     console.log(borrowBigint, "borrowBigint");
 
     // Finally, call openTrove with the exact upperHint and lowerHint
-    const maxFee = "5".concat("0".repeat(16)); // Slippage protection: 5%
+    const maxFee = "6".concat("0".repeat(16)); // Slippage protection: 5%
     await borrowerOperationsContract.openTrove(
       maxFee,
       borrowBigint,
@@ -244,43 +244,46 @@ export const OpenTrove = () => {
     Number(Number(userInputs.collatoral) || 1);
 
   return (
-    <div className="h-full font-mono pl-5 pr-10 pt-10 pb-10">
-      <div
-        className="ml-2 border p-2 border-yellow-300"
-        style={{ backgroundColor: "#3f3b2d" }}
-      >
-        <div className="flex gap-x-4">
-          <div className="h-[192px]  w-1/3">
-            <Image src={img1} alt="home" />
-          </div>
-          <div className=" h-fit space-y-20">
-            <div>
-              <p className="text-white font-mono text-center text-2xl font-bold ">
-                You dont have an existing trove
-              </p>
+    <div className="h-full body-text ">
+      <div className="p-4 ">
+        <div
+          className="ml-1 md:ml-2 p-4 md:w-full w-[22rem]"
+          style={{ backgroundColor: "#3f3b2d" }}
+        >
+          <div className="flex  w-full">
+            <div className="h-[172px] notMobileDevice w-[22%]">
+              <Image src={img1} alt="home" className="-mt-5" />
             </div>
-            <div>
-              <p className="text-yellow-300 font-mono text-left text-xl mb-2">
-                Open a zero interest trove
-              </p>
-              <p className="text-white font-mono text-left text-base">
-                Borrow against BTCs interest free
-              </p>
+            <div className=" h-fit py-2 space-y-10">
+              <div>
+                <p className="text-white title-text  text-2xl font-bold ">
+                  You dont have an existing trove
+                </p>
+              </div>
+              <div>
+                <p className="text-yellow-300 body-text text-left text-xl mb-2">
+                  Open a zero interest trove
+                </p>
+                <p className="text-gray-200 body-text text-left text-base">
+                  Borrow against BTCs interest free
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container  flex flex-row justify-between gap-32 mt-2">
 
-        <div className="grid w-1/2 items-start gap-2 mx-auto  text-white p-5">
-          <div className="pb-3">
-            <Label htmlFor="items" className="font-mono mb-2">
+      <div className="container flex flex-row justify-between gap-x-24 mt-2">
+
+        <div className="grid w-1/2 items-start gap-2 text-white md:p-5">
+          <div className="pb-3 w-[20rem] md:w-full">
+            <Label htmlFor="items" className="body-text mb-2 text-gray-500">
               Deposit Collatoral
             </Label>
             <div className="flex p-1 items-center space-x-2 border border-yellow-300">
               <Image src={img3} alt="home" />
-              <span className="text-white text-sm">BTC</span>
+              <span className="text-white body-text text-sm">BTC</span>
               <input
                 id="items"
                 placeholder="0.000 BTC"
@@ -294,20 +297,20 @@ export const OpenTrove = () => {
                 className="w-[23.75rem] h-[4rem] text-white"
                 style={{ backgroundColor: "#272315" }}
               />
-              <span className="w-[5rem] p-2 h-full">{totalCollateral}</span>
+              <span className="md:max-w-[5rem] md:p-2  h-full">{totalCollateral.toFixed(3)}</span>
             </div>
             <div className="pt-2">
-              <span>
+              <span className="body-text  text-gray-500">
                 Available {Number(balanceData?.formatted).toFixed(3)}{" "}
                 {balanceData?.symbol}
               </span>
             </div>
           </div>
-          <div className="">
-            <Label className="font-mono mb-2" htmlFor="quantity">Borrow PUSD</Label>
-            <div className="flex p-1 items-center space-x-2 border border-yellow-300">
+          <div className="w-[20rem] md:w-full">
+            <Label className="body-text mb-2" htmlFor="quantity">Borrow PUSD</Label>
+            <div className="flex p-1 items-center md:space-x-2 border border-yellow-300">
               <Image className="" src={img4} alt="home" />
-              <span className="text-white text-sm">PSUD</span>
+              <span className="text-white body-text text-sm">PSUD</span>
               <input
                 id="quantity"
                 placeholder="Enter Borrow Amount"
@@ -322,14 +325,14 @@ export const OpenTrove = () => {
                   );
                 }}
 
-                className="w-[23.75rem] h-[4rem] text-white"
+                className="md:w-[23.75rem] h-[4rem] text-white body-text"
                 style={{ backgroundColor: "#272315" }}
               />
             </div>
             <div className="pt-2 flex items-center justify-between borde2 p-2">
-              <span className="w-1/2">Available {maxBorrow}</span>{" "}
+              <span className="w-1/2 body-text text-gray-500">Available {maxBorrow.toFixed(2)}</span>{" "}
               {Number(userInputs.borrow) < 500 && (
-                <span className="text-red-500 ml-1 font-mono w-1/2">
+                <span className="text-red-500 ml-1 body-text md:w-1/2">
                   Borrow amount should be greater than 500
                 </span>
               )}
@@ -338,36 +341,36 @@ export const OpenTrove = () => {
           <button onClick={() =>
             handleConfirmClick(userInputs.borrow, userInputs.collatoral)
           }
-            className="mt-10 w-[22rem] h-[3rem] bg-yellow-300 hover:bg-yellow-400 text-black font-bold"
+            className="mt-10 h-[3rem] bg-yellow-300 hover:bg-yellow-400 body-text text-black font-bold"
           >
             Open Trove
           </button>
         </div>
 
-        <div className="w-4/5 mt-8 p-5 border-yellow-200 h-fit space-y-10  text-white"
+        <div className="w-4/5 notMobileDevice mt-8 p-5 border-yellow-200 h-fit space-y-10  text-white"
           style={{ backgroundColor: "#3f3b2d" }}
         >
           <div className="flex whitespace-nowrap justify-between">
-            <span className="">Loan-To-Value</span>
-            <span className=" overflow-x-clip">{loanToValue.toFixed(2)} % </span>
+            <span className="body-text text-sm text-gray-500">Loan-To-Value</span>
+            <span className=" overflow-x-clip text-sm body-text">{loanToValue.toFixed(2)} % </span>
           </div>
-          <div className="flex whitespace-nowrap justify-between">
-            <span>Liq. Reserve</span>
-            <span>
+          <div className="flex body-text whitespace-nowrap justify-between">
+            <span className="body-text text-sm text-gray-500">Liq. Reserve</span>
+            <span className="body-text text-sm body-text">
               {Number(calculatedValues.liquidationReserve).toFixed(2)}
             </span>
           </div>
           <div className="flex justify-between">
-            <span>Liquidation Price</span>
-            <span>{liquidationPrice} USD</span>
+            <span className=" text-sm text-gray-500">Liquidation Price</span>
+            <span className=" text-sm body-text">{liquidationPrice.toFixed(2)} USD</span>
           </div>
           <div className="flex justify-between">
-            <span>Borrowing Fee</span>
-            <span>{calculatedValues.expectedFee}</span>
+            <span className=" text-gray-500">Borrowing Fee</span>
+            <span className=" text-sm body-text">{calculatedValues.expectedFee}</span>
           </div>
           <div className="flex justify-between">
-            <span>Total Debt</span>
-            <span>{calculatedValues.expectedDebt}</span>
+            <span className=" text-sm body-text text-gray-500">Total Debt</span>
+            <span className=" text-sm body-text">{calculatedValues.expectedDebt}</span>
           </div>
         </div>
       </div>

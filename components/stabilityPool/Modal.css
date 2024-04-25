@@ -1,0 +1,28 @@
+.waiting-container {
+    display: flex;
+    flex-direction: column;
+    /* Display items in a column */
+    align-items: center;
+    background-color: #000;
+    padding: 20px;
+    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+.waiting-image {
+    width: 100px;
+    height: auto;
+}
+
+
+.p-dialog-draggable .p-dialog-header {
+    background-color: #fbbf24;
+    border-radius: 5px 5px 0 0;
+    padding: 15px;
+    border-bottom: none;
+}
+.p-dialog-header-close-icon{
+    display: none;
+}

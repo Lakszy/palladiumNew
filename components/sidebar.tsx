@@ -1,11 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { GoGraph } from "react-icons/go";
 import { MdOutlineInventory2 } from "react-icons/md";
-import { TbPhoto } from "react-icons/tb";
 import { BiDollar } from "react-icons/bi";
 import { RiBillLine } from "react-icons/ri";
-import { RiLogoutBoxLine } from "react-icons/ri";
 import Link from "next/link";
 import { LayoutGrid } from "lucide-react";
 import Image from "next/image";
@@ -14,10 +11,11 @@ import zeally from "../app/assets/images/zeally.svg"
 import tweet from "../app/assets/images/tweet.svg"
 import discord from "../app/assets/images/discord.svg"
 import medium from "../app/assets/images/medium.svg"
-import side1 from "../app/assets/images/side1.svg"
-import side2 from "../app/assets/images/side2.svg"
-import side3 from "../app/assets/images/side3.svg"
-import side4 from "../app/assets/images/side4.svg"
+// import side1 from "../app/assets/images/side1.svg"
+// import side2 from "../app/assets/images/side2.svg"
+// import side3 from "../app/assets/images/side3.svg"
+// import side4 from "../app/assets/images/side4.svg"
+import "../app/App.css"
 
 
 interface TabsDemoProps {
@@ -51,7 +49,7 @@ export const TabsDemo: React.FC<TabsDemoProps> = ({ className, ...props }) => {
   ];
 
   return (
-    <div className={`sidebar font-mono font-extrabold  w-72 grid h-screen grid-rows-[max-content_fr_max-content] 2c2819 text-white ${className}`} style={{ backgroundColor: '#2c2819' }}>
+    <div className={`sidebar notMobileDevice font-mono font-extrabold  w-72 grid h-screen grid-rows-[max-content_fr_max-content] 2c2819 text-white ${className}`} style={{ backgroundColor: '#2c2819' }}>
       <div className="flex items-center gap-x-1 justify-center">
         <Link href="/">
           <Image src={logo} alt="Logo" className="mr-10 w-56" />
@@ -69,19 +67,34 @@ export const TabsDemo: React.FC<TabsDemoProps> = ({ className, ...props }) => {
                 }`}>
                 {React.createElement(menuItem.icon, { size: 22 })}
               </div>
-              <span className="font-medium">{menuItem.title}</span>
+              <span className="font-medium body-text">{menuItem.title}</span>
             </a>
           </Link>
         ))}
       </nav>
-      <div className="ml-4 -mb-16">
-        <Image src={zeally} alt="zeally" className="w-[247px] h-[210px]" />
+      <div className="space-y-1">
+        <div className="ml-6 w-fit h-fit">
+          <Link href="https://zealy.io/cw/palladiumlabs/questboard">
+            <Image src={zeally} alt="zeally" className="w-[227px] h-[100px]" />
+          </Link>
+        </div>
+        <div className="flex items-center justify-center text-white gap-x-7 text-[19px] -mt-10">
+
+          <Link href="https://twitter.com/PalladiumLabs">
+            <Image src={tweet} alt="twitter" />
+          </Link>
+
+          <Link href="https://discord.com/invite/9MMEyJ4JDz">
+            <Image src={discord} alt="twitter" />
+          </Link>
+
+          <Link href="https://medium.com/palladium-labs">
+            <Image src={medium} alt="twitter" />
+          </Link>
+
+        </div>
       </div>
-      <div className="flex items-center justify-center text-white gap-x-7 text-[19px] -mt-10">
-        <Image src={tweet} alt="twitter" />
-        <Image src={discord} alt="twitter" />
-        <Image src={medium} alt="twitter" />
-      </div>
+
     </div>
   );
 };

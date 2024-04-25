@@ -1,4 +1,29 @@
-  :root {
+@font-face {
+  /* font-family: 'Inter';
+  src: local('Inter'),
+       url('./fonts/Inter/Inter-Regular.ttf') format('ttf') */
+  font-family: "Montech";
+  src: local("Montech"), url(./src/config/fonts/Montech/MONTECHV01-Bold.otf);
+}
+
+@font-face {
+  /* font-family: 'Inter';
+  src: local('Inter'),
+       url('./fonts/Inter/Inter-Regular.ttf') format('ttf') */
+  font-family: "Montserrat";
+  src: local("Montserrat"), url(./src/config/fonts/Montserrat-VariableFont_wght.ttf);
+}
+
+.title-text {
+  font-family: "Montech";
+}
+
+.body-text {
+  font-family: "Montserrat";
+}
+
+
+:root {
     --body_background: white;
     --manage:rgb(235, 223, 255);
     --body_color: black;
@@ -426,7 +451,6 @@
   }
   
   .outer_section_detail {
-    border: 1px solid var(--border_color);
     padding: 15px;
     margin: 10px;
   }
@@ -2983,3 +3007,67 @@
   .margTop{
     margin-top: 3rem !important;
   }
+
+
+.p-knob .p-knob-text {
+  font-size: 19px;
+  color: white !important;
+  font-family: "Montech";
+}
+.p-tabview-title{
+  font-family: "Montech";
+
+}
+
+
+.hex-loader {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin-left: 9rem;
+  
+}
+
+.hex-loader::before,
+.hex-loader::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-color: #b4ad23; 
+  transform-origin: 50% 50%;
+}
+
+.hex-loader::before {
+  transform: skewY(60deg);
+}
+
+.hex-loader::after {
+  transform: skewY(-60deg);
+  left: 10%;
+  
+}
+
+@keyframes pulse-animation {
+  0% {
+    transform: scaleX(0);
+  }
+  10% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+.hex-loader::before,
+.hex-loader::after {
+  animation: pulse-animation 2.5s infinite;
+}
+
+
+.react-responsive-carousel .carousel .slide {
+  transition: transform 0.5s ease; /* Adjust the duration (0.5s) to your desired speed */
+}

@@ -14,8 +14,8 @@ export default function Home() {
           <NavBar />
         </div>
 
-        <div className="h-full" style={{ backgroundColor: "#272315" }}>
-          <div className="h-screen" style={{ backgroundColor: "#272315" }}>
+        <div className="h-full w-screen md:w-full" style={{ backgroundColor: "#272315" }}>
+          <div style={{ backgroundColor: "#272315" }}>
             <Portfolio />
           </div>
         </div>

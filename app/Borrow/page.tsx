@@ -13,7 +13,7 @@ export default function Home() {
           <NavBar />
         </div>
 
-        <div className="h-screen" style={{ backgroundColor: "#272315" }}>
+        <div className="h-screen md:w-full w-screen " style={{ backgroundColor: "#272315" }}>
           <Borrow />
         </div>
       </div>

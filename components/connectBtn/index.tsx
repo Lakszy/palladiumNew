@@ -39,8 +39,10 @@ export const CustomConnectButton = () => {
 							if (!connected) {
 								return (
 									<Button onClick={openConnectModal}
-										style={{ display: "flex", alignItems: "center", backgroundColor: "#383427", height: 50, borderRadius: 3, border: "1px solid white", borderWidth: "2px" }}>
-										Connect Wallet
+										style={{ display: "flex", alignItems: "center", backgroundColor: "#383427", height: 50, borderRadius: 3, border: "1px solid gray", borderWidth: "2px" }}>
+										<h2 className="body-text">
+											Connect Wallet
+										</h2>
 									</Button>
 								);
 							}
@@ -51,7 +53,9 @@ export const CustomConnectButton = () => {
 										type="button"
 										variant={"destructive"}
 									>
-										Wrong network
+										<h2 className="body-text">
+											Wrong network
+										</h2>
 									</Button>
 								);
 							}
@@ -59,7 +63,7 @@ export const CustomConnectButton = () => {
 								<div style={{ display: "flex", gap: 12 }}>
 									<Button
 										onClick={openChainModal}
-										style={{ display: "flex", alignItems: "center", backgroundColor: "#383427", height: 50, border: "1px solid white", borderWidth: "1px" }}>
+										style={{ display: "flex", alignItems: "center", backgroundColor: "#383427", height: 50, border: "1px solid gray", borderWidth: "1px" }}>
 
 										{chain.hasIcon && (
 											<div
@@ -80,14 +84,20 @@ export const CustomConnectButton = () => {
 												)}
 											</div>
 										)}
+										<h2 className="body-text">
 										{chain.name}
+										</h2>
 									</Button>
 									<Button onClick={openAccountModal}
-										style={{ display: "flex", alignItems: "center", backgroundColor: "#383427", height: 50, border: "1px solid white", borderWidth: "1px" }}>
-										{account.displayName}
-										{account.displayBalance
-											? ` (${account.displayBalance})`
-											: ""}
+
+										style={{ display: "flex", alignItems: "center", backgroundColor: "#383427", height: 50, border: "1px solid gray", borderWidth: "1px" }}>
+										<h2 className="body-text">
+
+											{account.displayName}
+											{account.displayBalance
+												? ` (${account.displayBalance})`
+												: ""}
+										</h2>
 									</Button>
 								</div>
 							);

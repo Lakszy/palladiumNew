@@ -1,0 +1,31 @@
+.waiting-container {
+    display: flex;
+    flex-direction: column;
+    /* Display items in a column */
+    align-items: center;
+    background-color: #000;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.waiting-message {
+    color: white;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    font-family: "Montserrat";
+    font-weight: 500;
+}
+
+.waiting-image {
+    width: 100px;
+    height: auto;
+}
+
+
+.p-dialog-draggable .p-dialog-header {
+    background-color: #fbbf24;
+    border-radius: 5px 5px 0 0;
+    padding: 15px;
+    border-bottom: none;
+}
