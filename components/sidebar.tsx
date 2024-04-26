@@ -11,18 +11,11 @@ import zeally from "../app/assets/images/zeally.svg"
 import tweet from "../app/assets/images/tweet.svg"
 import discord from "../app/assets/images/discord.svg"
 import medium from "../app/assets/images/medium.svg"
-// import side1 from "../app/assets/images/side1.svg"
-// import side2 from "../app/assets/images/side2.svg"
-// import side3 from "../app/assets/images/side3.svg"
-// import side4 from "../app/assets/images/side4.svg"
+
 import "../app/App.css"
 
 
-interface TabsDemoProps {
-  className?: string;
-}
-
-export const TabsDemo: React.FC<TabsDemoProps> = ({ className, ...props }) => {
+export const TabsDemo = () => {
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
 
   const handleMenuClick = (menu: string) => {
@@ -49,7 +42,7 @@ export const TabsDemo: React.FC<TabsDemoProps> = ({ className, ...props }) => {
   ];
 
   return (
-    <div className={`sidebar notMobileDevice font-mono font-extrabold  w-72 grid h-screen grid-rows-[max-content_fr_max-content] 2c2819 text-white ${className}`} style={{ backgroundColor: '#2c2819' }}>
+    <div className={`sidebar notMobileDevice font-mono font-extrabold  w-72 grid h-screen grid-rows-[max-content_fr_max-content] 2c2819 text-white `} style={{ backgroundColor: '#2c2819' }}>
       <div className="flex items-center gap-x-1 justify-center">
         <Link href="/">
           <Image src={logo} alt="Logo" className="mr-10 w-56" />

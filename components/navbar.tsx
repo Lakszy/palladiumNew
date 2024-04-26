@@ -13,37 +13,35 @@ import web3 from "web3";
 import { getContract } from "@/app/src/utils/getContract";
 import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
 import "../app/App.css"
+import MobileNav from "./MobileNav";
 
 function NavBar() {
-  const [price, setPrice] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [fetchedPrice, setFetchedPrice] = useState("0");
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-  
+
   const priceFeedContract = getContract(
     botanixTestnet.addresses.priceFeed,
     priceFeedAbi,
     provider
   );
 
-  const { toWei, toBigInt } = web3.utils;
+  const { toBigInt } = web3.utils;
 
 
   useEffect(() => {
     const fetchPrice = async () => {
-    const pow = Decimal.pow(10, 18);
-    const _1e18 = toBigInt(pow.toFixed());
+      const pow = Decimal.pow(10, 18);
+      const _1e18 = toBigInt(pow.toFixed());
       try {
         const fetchPrice: bigint = await priceFeedContract.getPrice();
 
-        const fetchPriceDecimal = new Decimal(fetchPrice.toString()); // Convert coll to a Decimal
+        const fetchPriceDecimal = new Decimal(fetchPrice.toString());
         const fetchPriceFormatted = fetchPriceDecimal
           .div(_1e18.toString())
           .toString();
-        // setPriceBTC()
         setFetchedPrice(fetchPriceFormatted);
-        console.log(fetchedPrice,"fetchedPrice navbar")
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -56,9 +54,9 @@ function NavBar() {
   }, []);
 
   return (
-    <div className="md:flex border-2 hidden  border-gray-100 h-28  border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50" style={{ backgroundColor: "#272315" }}>
+    <div className="md:flex border-2 hidde w-full  border-gray-100 h-28  border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50" style={{ backgroundColor: "#272315" }}>
       <div className="flex items-center gap-x-4">
-        <div className="w-full  flex gap-x-10  notMobileDevice rounded-xl">
+        <div className="w-full flex gap-x-10  notMobileDevice rounded-xl">
           <div className="items-center flex gap-x-2">
             <Image src={pusdbtc} alt="btc" width={40} />
             <div>
@@ -75,7 +73,8 @@ function NavBar() {
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-x-4">
+      <div className="flex justify-between items-center gap-x-4">
+        <MobileNav/>
         <CustomConnectButton />
       </div>
     </div>

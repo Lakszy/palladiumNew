@@ -12,7 +12,9 @@ export default function Home() {
         <div className="sticky z-50 mainT top-0  overflow-auto">
           <NavBar />
         </div>
+        <div className=" w-full">
         <CardDemo />
+        </div>
       </div>
     </div>
   );

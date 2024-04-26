@@ -223,9 +223,9 @@ export function CardDemo() {
   };
 
   return (
-    <div>
-      <div className="title-text h-full pt-10 pb-10 pl-4 pr-4" style={{ backgroundColor: '#1C1A0F' }}>
-        <div className="w-[24.5rem] md:w-full h-[20rem] gap-3 flex border-2 pl-2 border-yellow-300 mb-10 justify-between items-center">
+    <div className="w-[25rem] md:w-full  ">
+      <div className="title-text h-full w-full -mt-28 pt-10 pb-10 pl-4 pr-4" style={{ backgroundColor: '#1C1A0F' }}>
+        <div className="w-full h-[20rem] gap-3 flex border-2 pl-2 border-yellow-300 mb-10 justify-between items-center">
           <div className="flex w-1/3 p-2 notMobileDevice">
             <Image src={robo} alt="robot" className="mt-16 -ml-[3rem]" />
             <Image src={circuitBreaker} alt="text" className="-ml-12 mt-20" />
@@ -258,7 +258,7 @@ export function CardDemo() {
             </div>
           </div>
         </div>
-        <div className="md:w-full w-[24.5rem] mb-10 upper mr-10 border-yellow-300 pt-10 mt-10  p-6  border items-center justify-center" style={{ backgroundColor: '#272315' }}>
+        <div className="w-full  mb-10 upper mr-10 border-yellow-300 pt-10 mt-10  p-6  border items-center justify-center" style={{ backgroundColor: '#272315' }}>
           <ProgBar />
           <div className="mt-10 h-20 md flex gap-x-3">
             <div className=" h-20 w-1/4 flex justify-between p-2">
@@ -279,7 +279,7 @@ export function CardDemo() {
         </div>
 
         <div className="w-full md:gap-y-0 gap-y-5 pt-10 md:pl-5 gap-x-5 pr-5 flex flex-col md:flex-row">
-          <div className="w-[24.5rem] md:w-[30%] border border-yellow-300 pl-1 pb-7" style={{ backgroundColor: '#272315' }}>
+          <div className="w-full md:w-[30%] border border-yellow-300 pl-1 pb-7" style={{ backgroundColor: '#272315' }}>
             <div className="p-2 gap-x-1 flex justify-between">
               <h1 className="title-text text-yellow-300 text-2xl font-bold">Trove Status</h1>
               {isConnected ? (
@@ -320,7 +320,7 @@ export function CardDemo() {
               </div>
             </div>
           </div>
-          <div className="w-[24.5rem] md:w-2/3 border border-yellow-300 pb-[4.5rem] h-fit" style={{ backgroundColor: '#272315' }}>
+          <div className="w-full md:w-2/3 border border-yellow-300 pb-[4.5rem] h-fit" style={{ backgroundColor: '#272315' }}>
             <div className="p-2 gap-x-1 flex  justify-between">
               <h1 className="font-mono text-yellow-300 text-2xl font-bold">ACTIVITIES STATS</h1>
               <Image src={botanixLogo} alt="logo" className="-mt-4" />
@@ -363,7 +363,7 @@ export function CardDemo() {
             </div>
           </div>
         </div>
-        <div className="p-5">
+        <div className="p-3">
           <NFT />
         </div>
 

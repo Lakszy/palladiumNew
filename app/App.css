@@ -247,24 +247,25 @@
   
   /* Ensure higher specificity */
   body .p-button.p-component {
-    background-color: var(--body_background);
-    color: var(--text);
-    border: 1px solid var(--border_color); /* Border added */
-    border-radius: 0px !important;
-    padding: 12px 20px;
-    cursor: pointer;
+      background-color: #ffd300;
+      border-radius: 0px !important;
+      margin-top: 0.5rem;
+      width: 9rem;
+      padding: 12px 20px;
   }
   @media (max-width: 768px) {
     .p-button.p-component {
+      background-color: #ffd300;
+      border-radius: 0px !important;
       margin-top: 0.5rem;
       width: 9rem;
+      padding: 12px 20px;
+      /* 
       background-color: var(--body_background);
-      border-radius: 0px !important;
       border-right: 1px solid var(--border_color) !important;
       color: var(--text);
-      padding: 12px 20px;
       cursor: pointer;
-      margin-left: 0.5rem !important;
+      margin-left: 0.5rem !important; */
     }
     .mobiletMarTop {
       background-color: red !important;
@@ -272,13 +273,13 @@
   }
   
   body .p-button.p-component:hover {
-    background-color: var(--body_background);
-    background: #914de5;
+    background-color: #ffd300;
+    background: #ffd300;
   }
   
   body .p-button.p-component:focus {
     /* outline: #000; */
-    background: #914de5;
+    background: #ffd300;
     /* box-shadow: 5px 5px 0px var(--body_color); */
   }
   
@@ -3070,4 +3071,17 @@
 
 .react-responsive-carousel .carousel .slide {
   transition: transform 0.5s ease; /* Adjust the duration (0.5s) to your desired speed */
+}
+
+.p-sidebar-close {
+  color: yellow;
+  width: 3rem;
+  height: 3rem;
+  top:0%;
+  left:85%;
+  position: absolute;
+  border: 3px solid yellow;
+  border-radius: 50%;
+  font-weight: bold; /* Increase font weight */
+  font-size: 1.5rem;
 }

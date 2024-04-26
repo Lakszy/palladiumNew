@@ -84,7 +84,7 @@ export const CustomConnectButton = () => {
 												)}
 											</div>
 										)}
-										<h2 className="body-text">
+										<h2 className="body-text notMobileDevice">
 										{chain.name}
 										</h2>
 									</Button>

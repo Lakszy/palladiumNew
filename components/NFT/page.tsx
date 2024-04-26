@@ -91,7 +91,7 @@ export default function Redeem() {
     return (
         <>
 
-            <div className="md:w-full w-[24.5rem] -ml-4 md:-ml-0 upper mr-10 border-yellow-300  p-6 border items-center justify-center" style={{ backgroundColor: '#272315' }}>
+            <div className="w-full -ml-1.5 md:-ml-0 upper mr-10 border-yellow-300  p-6 border items-center justify-center" style={{ backgroundColor: '#272315' }}>
                 <div className="flex flex-col md:flex-row justify-between  ">
                     <div className="box-1 w-[20rem] space-y-3 pb-24">
                         <Image src={CB} alt="circuit breaker" />
@@ -106,15 +106,16 @@ export default function Redeem() {
                         <div className="flex items-center justify-center max-sm:px-5">
                             <div className="md:mr-8 md:mt-[4rem] ">
                                 {mint.toString() === "0" ? (
-                                    <></>
-                                    // <Image src={crate} width={300} height={250} alt="home" />
+                                    <>
+                                    {/* <Image src={crate} width={300} height={250} alt="home" /> */}
+                                    </>
                                 ) : (
                                     <div className=" h-[24rem] -mt-24">
                                         <Image src={crate} alt="home" />
                                         <p className="text-amber-400 font-mono text-2xl font-extrabold text-center mt-2">
                                             Token ID:{apiResponse}
                                         </p>
-                                        <button disabled className="w-full md:w-[15rem] bg-amber-400 ml-9 text-black text-lg cursor-not-allowed font-bold title-text mt-4 md:mt-[2rem] px-4 py-2">
+                                        <button disabled className="w-full md:w-[15rem] bg-amber-400 md:ml-9 text-black text-lg cursor-not-allowed font-bold title-text mt-8 md:mt-[2rem] px-4 py-2">
                                             ALREADY MINTED
                                         </button>
                                     </div>
