@@ -38,9 +38,10 @@ export const CustomConnectButton = () => {
 						{(() => {
 							if (!connected) {
 								return (
-									<Button onClick={openConnectModal}
+									<Button className="md:mr-0 mr-8" onClick={openConnectModal}
+									
 										style={{ display: "flex", alignItems: "center", backgroundColor: "#383427", height: 50, borderRadius: 3, border: "1px solid gray", borderWidth: "2px" }}>
-										<h2 className="body-text">
+										<h2 className="title-text">
 											Connect Wallet
 										</h2>
 									</Button>

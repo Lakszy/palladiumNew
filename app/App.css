@@ -2688,23 +2688,7 @@
       display: none !important;
     }
   }
-  
-  /* Add this CSS to your stylesheet */
-  .sidebar-menu {
-    list-style-type: none; /* Remove default list-style dots */
-    padding: 0;
-    margin: 0;
-  }
-  
-  .sidebar-menu li {
-    padding: 0;
-    margin: 0;
-  }
-  
-  .sidebar-menu .submenu {
-    margin-left: 20px; /* Adjust indentation for submenu items */
-  }
-  
+    
   .my-div {
     margin-left: 10px;
   }
@@ -2739,17 +2723,6 @@
     list-style-type: none;
   }
   
-  /* ////////////////////////////// */
-  .sidebar-menu {
-    list-style-type: none; /* Remove default bullet points */
-    padding: 0;
-    margin: 0;
-  }
-  
-  .sidebar-menu > li {
-    margin: 0;
-    padding: 0;
-  }
   
   .submenu {
     list-style-type: none;
@@ -2759,13 +2732,13 @@
     position: relative;
   }
   
-  .sidebar-icon {
+  /* .sidebar-icon {
     width: 44px;
     height: 90px;
     margin-right: 5px;
     align-items: center;
     margin-left: 8px;
-  }
+  } */
   
   .imSub {
     margin-left: 2rem !important;
@@ -3084,4 +3057,13 @@
   border-radius: 50%;
   font-weight: bold; /* Increase font weight */
   font-size: 1.5rem;
+}
+
+
+.p-sidebar .p-sidebar-content {
+  padding: 0rem;
+}
+
+.p-sidebar-header{
+background-color: #2c2819;
 }

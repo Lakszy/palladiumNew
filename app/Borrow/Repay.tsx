@@ -511,7 +511,7 @@ export default function Repay() {
         </div>
       </div>
 
-      <div className="w-auto  p-10   md:mt-10 text-sm" style={{ backgroundColor: "#3f3b2d" }}>
+      <div className="w-auto  p-10   md:mt-10 mx-2 md:mx-0 border border-black text-sm" style={{ backgroundColor: "#3f3b2d" }}>
         <div className="mb-4 space-y-4 ">
 
           <div className="flex  text-white mb-2 justify-between">

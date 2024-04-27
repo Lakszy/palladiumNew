@@ -44,9 +44,9 @@ export default function MobileNav() {
         { id: "Redeem", icon: RiBillLine, title: "Redeem PUSD", link: "Redeem" },
     ];
     return (
-        <div className="w-10 h-10 flex">
-            <Sidebar  visible={visible} onHide={() => setVisible(false)}>
-                <div className={`sidebar h-full pt-[4rem] font-mono font-extrabold  w-full grid-rows-[max-content_fr_max-content] text-white`} style={{ backgroundColor: '#2c2819' }}>
+        <div className="w-12 h-12 title-text flex">
+            <Sidebar visible={visible} onHide={() => setVisible(false)} >
+                <div className={`sidebar bg-red-90 h-full font-mono font-extrabold  w-full grid-rows-[max-content_fr_max-content] text-white`} style={{ backgroundColor: '#2c2819' }}>
                     <div className="flex items-center gap-x-1  justify-center">
                         <Link href="/">
                             <Image src={logo} alt="Logo" className="mr-10 w-56" />
@@ -94,7 +94,7 @@ export default function MobileNav() {
 
                 </div>
             </Sidebar>
-            <Button icon="pi pi-arrow-right z-10" onClick={() => setVisible(true)} />
+            <Button className="title-text font-bold" icon="pi pi-bars z-10" onClick={() => setVisible(true)} />
         </div>
     )
 }

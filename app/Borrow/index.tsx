@@ -670,7 +670,7 @@ const Borrow = () => {
                                 </div>
                               </div>
                             </div>
-                            <div className="w-auto p-10 border  md:mt-10 text-sm"
+                            <div className="w-auto p-10 border mx-2 md:mx-0 border-black  md:mt-10 text-sm"
                               style={{ backgroundColor: "#3f3b2d" }}>
 
                               <div className="mb-4 space-y-4">
@@ -781,37 +781,17 @@ const Borrow = () => {
               </div>
             </div>
           )}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          
-
           {troveStatus === "INACTIVE" && (
             <div className="w-full h-auto" style={{ backgroundColor: "#272315" }}>
               <OpenTrove />
             </div>
           )}
-
           {!isConnected && (
             <>
-              <div className="pt-10 p-5 h-screen">
+              <div className="md:pt-10 w-fu md:p-5 h-full px-2 pt-4 md:h-screen">
                 <div className=" border border-black shadow-lg w-full" style={{ backgroundColor: "#3f3b2d" }}>
-                  <div className="flex flex-row m-1  gap-x-12">
-                    <div>
+                  <div className="flex flex-col md:flex-row m-1  gap-x-12">
+                    <div className="n">
                       <Image src={img1} alt="home" />
                     </div>
 
@@ -832,7 +812,7 @@ const Borrow = () => {
                     </div>
                   </div>
                 </div>
-                <div className="container pt-2 body-text flex flex-row justify-between">
+                <div className="pt-2 body-text flex flex-col md:flex-row justify-between">
                   <div>
                     <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
                       <div className="">
@@ -840,7 +820,7 @@ const Borrow = () => {
                           Deposit Collatoral
                         </Label>
                         <div
-                          className="flex items-center border border-yellow-300 "
+                          className="flex items-center border md:w-full w-[20rem] border-yellow-300 "
                           style={{ backgroundColor: "#3f3b2d" }}
                         >
                           <input
@@ -856,7 +836,7 @@ const Borrow = () => {
                                 depositCollateral: newCollValue,
                               });
                             }}
-                            className="w-[23.75rem] body-text text-sm text-gray-400 whitespace-nowrap cursor-not-allowed ml-1 h-[4rem] "
+                            className="md:w-[23.75rem] body-text text-sm text-gray-400 whitespace-nowrap cursor-not-allowed ml-1 h-[4rem] "
                             style={{ backgroundColor: "#3f3b2d" }}
                           />
 
@@ -873,7 +853,7 @@ const Borrow = () => {
                           Borrow
                         </Label>
                         <div
-                          className="flex items-center border border-yellow-300 "
+                          className="flex items-center md:w-full w-[20rem] border border-yellow-300 "
                           style={{ backgroundColor: "#3f3b2d" }}
                         >
                           <input
@@ -889,7 +869,7 @@ const Borrow = () => {
                                 borrow: newBorrowValue,
                               });
                             }}
-                            className="w-[23.75rem] ml-1 body-text text-base text-gray-400 whitespace-nowrap cursor-not-allowed h-[4rem]"
+                            className="md:w-[23.75rem] ml-1 body-text text-base text-gray-400 whitespace-nowrap cursor-not-allowed h-[4rem]"
                             style={{ backgroundColor: "#3f3b2d" }}
                           />
                         </div>
@@ -902,7 +882,7 @@ const Borrow = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="h-fit w-auto p-10 shadow-lg space-y-6 mt-2 " style={{ backgroundColor: "#3f3b2d" }}>
+                  <div className="h-fit  w-auto p-10 shadow-lg space-y-6 mt-2 " style={{ backgroundColor: "#3f3b2d" }}>
                     <div className="flex gap-40 body-text text-white justify-between">
                       <span className="body-text text-sm whitespace-nowrap text-gray-500">Loan-To-Value</span>
                       <span className="body-text text-sm">{Number(ltv).toFixed(2)} %</span>

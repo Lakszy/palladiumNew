@@ -619,9 +619,9 @@ const Portfolio = () => {
               </div>
             )}
             {!isConnected && (
-              <div className="p-10 flex flex-row justify-between gap-10">
+              <div className="md:p-10 flex flex-col md:flex-row justify-between gap-y-8 md:gap-10">
                 <div
-                  className="w-[35rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
+                  className="md:w-[35rem] md:h-[23.6rem] md:mx-0 mx-3 mt-4 md:ml-[2.5rem] rounded-sm"
                   style={{ backgroundColor: "#3f3b2d" }}
                 >
                   <div
@@ -640,7 +640,7 @@ const Portfolio = () => {
                   </div>
                 </div>
                 <div
-                  className="w-[22rem] h-[23.6rem] ml-[2.5rem] rounded-sm"
+                  className="md:w-[22rem] md:h-[23.6rem] md:ml-[2.5rem] md:mx-0 mx-3 rounded-sm"
                   style={{ backgroundColor: "#3f3b2d" }}
                 >
                   <div

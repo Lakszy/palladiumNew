@@ -74,7 +74,9 @@ function NavBar() {
         </div>
       </div>
       <div className="flex justify-between items-center gap-x-4">
+      <div className="mobileDevice ">
         <MobileNav/>
+      </div>
         <CustomConnectButton />
       </div>
     </div>
