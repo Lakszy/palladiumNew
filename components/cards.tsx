@@ -301,21 +301,21 @@ export function CardDemo() {
                 <Image src={btc} alt="coin" />
                 <div className="">
                   <h1 className="text-gray-500 font-bold title-text">Collateral</h1>
-                  <h1 className="text-gray-100 font-bold text-lg title-text">{Number(entireDebtAndColl.coll).toFixed(4)} BTC</h1>
+                  <h1 className="text-gray-100 font-bold text-lg title-text">{Number(entireDebtAndColl.coll).toFixed(6)} BTC</h1>
                 </div>
               </div>
               <div className=" flex gap-x-6">
                 <Image src={doubleCoin} alt="coin" />
                 <div className="">
                   <h1 className="text-gray-500 font-bold title-text">Debt</h1>
-                  <h1 className="text-gray-100 font-bold text-lg title-text">{entireDebtAndColl.debt} PUSD</h1>
+                  <h1 className="text-gray-100 font-bold text-lg title-text">{Number(entireDebtAndColl.debt).toFixed(2)} PUSD</h1>
                 </div>
               </div>
               <div className="flex gap-x-10">
                 <Image src={tripleCoin} alt="coin" />
                 <div className="">
                   <h1 className="text-gray-500 font-bold title-text">YOUR LTV</h1>
-                  <h1 className="text-gray-100 font-bold text-lg title-text">{isNaN(Number(value)) ? "0 %" : `${value} %`}</h1>
+                  <h1 className="text-gray-100 font-bold text-lg title-text">{isNaN(Number(value)) ? "0.00 %" : `${value} %`}</h1>
                 </div>
               </div>
             </div>
@@ -330,24 +330,24 @@ export function CardDemo() {
                 <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                   <Image src={giftBox} alt="giftBox" />
                   <h6 className="font-bold text-gray-400">Active Deposit</h6>
-                  <h6 className="font-bold  text-gray-100">{activitiesData?.continuousActivity.activeDeposit || 0}{" "} BTC</h6>
+                  <h6 className="font-bold  text-gray-100">{(activitiesData?.continuousActivity.activeDeposit)?.toFixed(6) || 0}{" "} BTC</h6>
                 </div>
                 <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                   <Image src={giftBox} alt="giftBox" />
                   <h6 className="font-bold text-gray-400">Trove Volume</h6>
-                  <h6 className="font-bold text-gray-100">{activitiesData?.continuousActivity.troveVolume || 0}{" "} BTC</h6>
+                  <h6 className="font-bold text-gray-100">{(activitiesData?.continuousActivity.troveVolume)?.toFixed(6) || 0}{" "} BTC</h6>
                 </div>
                 <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                   <Image src={giftBox} alt="giftBox" />
                   <h6 className="font-bold text-gray-400">Staking Volume</h6>
-                  <h6 className="font-bold text-gray-100">{activitiesData?.continuousActivity.stakingVolume || 0}{" "} BTC</h6>
+                  <h6 className="font-bold text-gray-100">{(activitiesData?.continuousActivity.stakingVolume)?.toFixed(2) || 0}{" "} PUSD</h6>
                 </div>
               </div>
               <div className="w-full h-24 flex">
                 <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                   <Image src={giftBox} alt="giftBox" />
                   <h6 className="font-bold text-gray-400">3rd Party Volume</h6>
-                  <h6 className="font-bold text-gray-100">{activitiesData?.continuousActivity["3rdPartyVolume"] || 0}{" "}PUSD</h6>
+                  <h6 className="font-bold text-gray-100">{(activitiesData?.continuousActivity["3rdPartyVolume"])?.toFixed(2) || 0}{" "}PUSD</h6>
                 </div>
                 <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                   <Image src={giftBox} alt="giftBox" />

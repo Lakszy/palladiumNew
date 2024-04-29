@@ -2,8 +2,6 @@
 
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import borrowerOperationAbi from "../src/constants/abi/BorrowerOperations.sol.json";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
@@ -14,16 +12,17 @@ import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
+import { readContract } from '@wagmi/core'
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
 import { useBalance, useWalletClient } from "wagmi";
 import Image from "next/image";
 import img1 from "../assets/images/Group 771.png";
-import img2 from "../assets/images/Group 663.png";
 import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
-import web3 from "web3";
+import { wagmiConfig } from "../src/config/config";
+import { borrowerOperations } from "../src/constants/abi/borrowerOperations";
 
 export const OpenTrove = () => {
   const [userInputs, setUserInputs] = useState({
@@ -41,6 +40,7 @@ export const OpenTrove = () => {
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [price, setPrice] = useState<number>(0);
   const [hasPriceFetched, setHasPriceFetched] = useState(false);
+  const [minimumBorrow, setMinimumBorrow] = useState("0");
 
   const { data: walletClient } = useWalletClient();
 
@@ -83,15 +83,24 @@ export const OpenTrove = () => {
   const pow20 = Decimal.pow(10, 20);
 
   useEffect(() => {
-    // const _1e18 = toBigInt(pow.toFixed());
     const getPrice = async () => {
       try {
         if (!provider || hasPriceFetched) return null;
         const fetchedPrice = await priceFeedContract.getPrice();
-        // const convertedFetchedPrice = (fetchedPrice / _1e18).toString();
         const convertedFetchedPrice = ethers.formatUnits(fetchedPrice, 18);
         setPrice(Number(convertedFetchedPrice));
-      } catch (error) {
+
+        const minDebt = await readContract(wagmiConfig, {
+          abi: borrowerOperations,
+          address: '0x46ECf770a99d5d81056243deA22ecaB7271a43C7',
+          functionName: 'MIN_NET_DEBT',
+        })
+        const formattedMInDebt = ethers.formatUnits(minDebt, 18)
+        setMinimumBorrow(formattedMInDebt)
+
+
+      }
+      catch (error) {
         console.error(error, "error");
       } finally {
         setHasPriceFetched(true);
@@ -99,13 +108,13 @@ export const OpenTrove = () => {
     };
 
     const getRecoveryModeStatus = async () => {
+      const fetchPrice: bigint = await priceFeedContract.getPrice();
       const status: boolean = await troveManagerContract.checkRecoveryMode(
-        price
+        fetchPrice
       );
       setIsRecoveryMode(status);
     };
 
-    console.log(walletClient, "walletClient");
     getRecoveryModeStatus();
     getPrice();
   }, []);
@@ -114,11 +123,9 @@ export const OpenTrove = () => {
     () => {
       makeCalculations(userInputs.borrow, userInputs.collatoral);
     },
-    1000,
+    10,
     [userInputs.borrow, userInputs.collatoral]
   );
-
-  const { toBigInt } = web3.utils;
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
     const collValue = Number(xCollatoral);
@@ -130,34 +137,21 @@ export const OpenTrove = () => {
       ethers.formatUnits(liquidationReserve, 18)
     );
 
-    const expectedBorrowingRate =
-      await troveManagerContract.getBorrowingRateWithDecay();
+    const expectedBorrowingRate = await troveManagerContract.getBorrowingRateWithDecay();
 
     const borrowingRate = Number(ethers.formatUnits(expectedBorrowingRate, 18));
 
     const expectedFeeFormatted = (borrowingRate * borrowValue) / 100;
-    console.log(expectedFeeFormatted, "fefeefefef", xBorrow);
 
-    const expectedDebt =
-      borrowValue + expectedFeeFormatted + liquidationReserveFormated;
-
-    // let NICR = collValue / borrowValue;
-    // console.log(NICR, "NICR");
+    const expectedDebt = borrowValue + expectedFeeFormatted + liquidationReserveFormated;
 
     let NICR = collValue / expectedDebt;
-    console.log(NICR, "NICR");
 
     const NICRDecimal = new Decimal(NICR.toString());
     const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed());
-    console.log(NICRBigint, "NICRBigint");
-
-    // const bigNICRWithDecimals = BigInt(ethers.parseUnits(NICR.toString(), 20));
-
-    // console.log(bigNICRWithDecimals);
 
     const numTroves = await sortedTrovesContract.getSize();
     const numTrials = numTroves * BigInt("15");
-    console.log(numTrials, "numTrials");
 
     const { 0: approxHint } = await hintHelpersContract.getApproxHint(
       NICRBigint,
@@ -165,9 +159,6 @@ export const OpenTrove = () => {
       42
     ); // random seed of 42
 
-    console.log(approxHint, "approxHint");
-
-    // Use the approximate hint to get the exact upper and lower hints from the deployed SortedTroves contract
     const { 0: upperHint, 1: lowerHint } =
       await sortedTrovesContract.findInsertPosition(
         NICRBigint,
@@ -175,17 +166,12 @@ export const OpenTrove = () => {
         approxHint
       );
 
-    console.log(upperHint, lowerHint, "upperHint", "lowerHint");
-
     const collDecimal = new Decimal(collValue.toString());
     const collBigint = BigInt(collDecimal.mul(pow18).toFixed());
-    console.log(collBigint, "collBigint");
 
     const borrowDecimal = new Decimal(borrowValue.toString());
     const borrowBigint = BigInt(borrowDecimal.mul(pow18).toFixed());
-    console.log(borrowBigint, "borrowBigint");
 
-    // Finally, call openTrove with the exact upperHint and lowerHint
     const maxFee = "6".concat("0".repeat(16)); // Slippage protection: 5%
     await borrowerOperationsContract.openTrove(
       maxFee,
@@ -194,6 +180,7 @@ export const OpenTrove = () => {
       lowerHint,
       { value: collBigint }
     );
+
   };
 
   const makeCalculations = async (xBorrow: string, xCollatoral: string) => {
@@ -205,20 +192,12 @@ export const OpenTrove = () => {
     const liquidationReserveFormated = Number(
       ethers.formatUnits(liquidationReserve, 18)
     );
-
-    const expectedBorrowingRate =
-      await troveManagerContract.getBorrowingRateWithDecay();
+    const expectedBorrowingRate = await troveManagerContract.getBorrowingRateWithDecay();
 
     const borrowingRate = Number(ethers.formatUnits(expectedBorrowingRate, 18));
-
     const expectedFeeFormatted = (borrowingRate * borrowValue) / 100;
-    console.log(expectedFeeFormatted, "fefeefefef", xBorrow);
-
-    const expectedDebt =
-      borrowValue + expectedFeeFormatted + liquidationReserveFormated;
-
+    const expectedDebt = borrowValue + expectedFeeFormatted + liquidationReserveFormated;
     const collRatio = (collValue * price * 100) / expectedDebt;
-    console.log(collRatio, "collRatio");
 
     setCalculatedValues({
       ...calculatedValues,
@@ -232,17 +211,13 @@ export const OpenTrove = () => {
   const totalCollateral = Number(userInputs.collatoral) * price;
 
   const divideBy = isRecoveryMode ? 1.5 : 1.1;
-  const maxBorrow =
-    totalCollateral / divideBy -
-    (calculatedValues.liquidationReserve + calculatedValues.expectedFee);
+  const maxBorrow = totalCollateral / divideBy - (calculatedValues.liquidationReserve + calculatedValues.expectedFee);
 
-  const loanToValue =
-    (calculatedValues.expectedDebt * 100) / (totalCollateral || 1);
+  const loanToValue = (calculatedValues.expectedDebt * 100) / (totalCollateral || 1);
 
-  const liquidationPrice =
-    (divideBy * calculatedValues.expectedDebt) /
-    Number(Number(userInputs.collatoral) || 1);
+  const liquidationPrice = (1.1 * calculatedValues.expectedDebt) / (Number(Number(userInputs.collatoral)) || 1);
 
+  const bothInputsEntered = userInputs.collatoral !== "0" && userInputs.borrow !== "0";
   return (
     <div className="h-full body-text ">
       <div className="p-4 ">
@@ -273,7 +248,6 @@ export const OpenTrove = () => {
         </div>
       </div>
 
-
       <div className="container flex flex-row justify-between gap-x-24 mt-2">
 
         <div className="grid w-1/2 items-start gap-2 text-white md:p-5">
@@ -297,11 +271,11 @@ export const OpenTrove = () => {
                 className="w-[23.75rem] h-[4rem] text-white"
                 style={{ backgroundColor: "#272315" }}
               />
-              <span className="md:max-w-[5rem] md:p-2  h-full">{totalCollateral.toFixed(3)}</span>
+              <span className="md:max-w-[5rem] md:p-2  h-full">{totalCollateral.toFixed(2)}</span>
             </div>
             <div className="pt-2">
               <span className="body-text  text-gray-500">
-                Available {Number(balanceData?.formatted).toFixed(3)}{" "}
+                Available {Number(balanceData?.formatted).toFixed(6)}{" "}
                 {balanceData?.symbol}
               </span>
             </div>
@@ -324,55 +298,54 @@ export const OpenTrove = () => {
                     userInputs.collatoral
                   );
                 }}
-
                 className="md:w-[23.75rem] h-[4rem] text-white body-text"
                 style={{ backgroundColor: "#272315" }}
               />
             </div>
             <div className="pt-2 flex items-center justify-between borde2 p-2">
               <span className="w-1/2 body-text text-gray-500">Available {maxBorrow.toFixed(2)}</span>{" "}
-              {Number(userInputs.borrow) < 500 && (
+              {Number(userInputs.borrow) < Number(minimumBorrow) && (
                 <span className="text-red-500 ml-1 body-text md:w-1/2">
-                  Borrow amount should be greater than 500
+                  Borrow amount should be greater than {Number(minimumBorrow).toFixed(0)}
                 </span>
               )}
             </div>
           </div>
-          <button onClick={() =>
-            handleConfirmClick(userInputs.borrow, userInputs.collatoral)
-          }
-            className="mt-10 h-[3rem] bg-yellow-300 hover:bg-yellow-400 body-text text-black font-bold"
-          >
+          <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
+            className="mt-10 h-[3rem] bg-yellow-300 hover:bg-yellow-400 body-text text-black font-bold">
             Open Trove
           </button>
         </div>
-
-        <div className="w-4/5 notMobileDevice mt-8 p-5 border-yellow-200 h-fit space-y-10  text-white"
-          style={{ backgroundColor: "#3f3b2d" }}
-        >
-          <div className="flex whitespace-nowrap justify-between">
-            <span className="body-text text-sm text-gray-500">Loan-To-Value</span>
-            <span className=" overflow-x-clip text-sm body-text">{loanToValue.toFixed(2)} % </span>
+        {bothInputsEntered && Number(userInputs.borrow) >= 500 ? (
+          <div className="w-4/5 notMobileDevice mt-8 p-5 border-yellow-200 h-fit space-y-10  text-white"
+            style={{ backgroundColor: "#3f3b2d" }}
+          >
+            <div className="flex whitespace-nowrap justify-between">
+              <span className="body-text text-sm text-gray-500">Loan-To-Value</span>
+              <span className={`overflow-x-clip text-sm body-text ${loanToValue > 91 ? 'text-red-500' : ''}`}>{loanToValue.toFixed(2)} % </span>
+            </div>
+            <div className="flex body-text whitespace-nowrap justify-between">
+              <span className="body-text text-sm text-gray-500">Liq. Reserve</span>
+              <span className="body-text text-sm body-text">
+                {Number(calculatedValues.liquidationReserve).toFixed(2)} {" "} PUSD
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span className=" text-sm text-gray-500">Liquidation Price</span>
+              <span className=" text-sm body-text">{liquidationPrice.toFixed(2)} PUSD</span>
+            </div>
+            <div className="flex justify-between">
+              <span className=" text-gray-500">Borrowing Fee</span>
+              <span className=" text-sm body-text">{(Number(calculatedValues.expectedFee) * 100).toFixed(2)} {" "} PUSD</span>
+            </div>
+            <div className="flex justify-between">
+              <span className=" text-sm body-text text-gray-500">Total Debt</span>
+              <span className=" text-sm body-text">{(calculatedValues.expectedDebt).toFixed(2)} {" "} PUSD</span>
+            </div>
           </div>
-          <div className="flex body-text whitespace-nowrap justify-between">
-            <span className="body-text text-sm text-gray-500">Liq. Reserve</span>
-            <span className="body-text text-sm body-text">
-              {Number(calculatedValues.liquidationReserve).toFixed(2)}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span className=" text-sm text-gray-500">Liquidation Price</span>
-            <span className=" text-sm body-text">{liquidationPrice.toFixed(2)} USD</span>
-          </div>
-          <div className="flex justify-between">
-            <span className=" text-gray-500">Borrowing Fee</span>
-            <span className=" text-sm body-text">{calculatedValues.expectedFee}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className=" text-sm body-text text-gray-500">Total Debt</span>
-            <span className=" text-sm body-text">{calculatedValues.expectedDebt}</span>
-          </div>
-        </div>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

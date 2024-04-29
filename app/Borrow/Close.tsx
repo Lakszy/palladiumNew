@@ -10,7 +10,7 @@ import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { useWalletClient } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import web3 from "web3";
 import { Dialog } from 'primereact/dialog';
 import Image from "next/image";
@@ -19,7 +19,7 @@ import "../../app/App.css"
 import "../../components/stabilityPool/Modal.css"
 
 interface Props {
-  entireDebtAndColl: number; 
+  entireDebtAndColl: number;
 }
 
 export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl }) => {
@@ -33,6 +33,8 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl }) => {
   });
   const [isLowBalance, setIsLowBalance] = useState(false);
   const { data: walletClient } = useWalletClient();
+	const { address, isConnected } = useAccount();
+	const [pusdBalance, setPusdBalance] = useState("0");
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 
   const troveManagerContract = getContract(
@@ -44,7 +46,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl }) => {
   const borrowerOperationsContract = getContract(
     botanixTestnet.addresses.borrowerOperations,
     borrowerOperationAbi,
-    walletClient 
+    walletClient
   );
 
   const erc20Contract = getContract(
@@ -74,15 +76,23 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl }) => {
         liquidationReserve: (liquidationReserve / _1e18).toString(),
       });
 
-      const pusdBalance = await erc20Contract.balanceOf(
-        walletClient.account.address
-      );
+      const pusdBalance = await erc20Contract.balanceOf(walletClient.account.address);
       if (pusdBalance <= balance) {
         setIsLowBalance(true);
       }
     };
     getInfo();
   }, [walletClient]);
+
+  useEffect(() => {
+		const fetchPrice = async () => {
+			const pusdBalanceValue = await erc20Contract.balanceOf(address);
+			const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
+			setPusdBalance(pusdBalanceFormatted);
+		};
+		fetchPrice();
+		// setIsLoading(false)
+	}, [address, walletClient]);
 
   const handleConfirmClick = async () => {
     try {
@@ -100,21 +110,22 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl }) => {
     <div className="md:w-[60rem] flex md:-ml-0  ">
       <div className="relative text-white text-base flex flex-col gap-2 md:pl-20  pr-[32rem] py-20">
         <div className="space-y-7 ">
-          <div className="flex  justify-between">
-            <span className=" md:ml-0 ml-1 title-text text-gray-500">Collateral</span>
-            <span className="title-text md:mr-0 mr-4">{Number(entireDebtAndColl).toFixed(4)} BTC</span>
+          <div className="flex md:gap-40 justify-between">
+            <span className=" md:ml-0 ml-1  title-text text-gray-500">Collateral</span>
+            <span className="title-text md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(6)} BTC</span>
           </div>
           <div className="flex justify-between">
             <span className=" md:ml-0 ml-1 title-text text-gray-500">Debt</span>
-            <span className="title-text md:mr-0 mr-4">{debtCollValue.debt.toString()} PUSD</span>
+            <span className="title-text md:mr-0 mr-4">{Number(debtCollValue.debt).toFixed(2)} PUSD</span>
           </div>
           <div className="flex justify-between">
             <span className=" md:ml-0 ml-1 title-text text-gray-500">Liquidation Reserve</span>
-            <span className="title-text md:mr-0 mr-4">{debtCollValue.liquidationReserve.toString()} PUSD</span>
+            <span className="title-text md:mr-0 mr-4">{Number(debtCollValue.liquidationReserve).toFixed(2)} PUSD</span>
           </div>
+
           <div className="flex justify-between">
-            <span className=" md:ml-0 ml-1 title-text text-gray-500">Balance</span>
-            <span className="title-text md:mr-0 mr-4">{debtCollValue.balance.toString()} PUSD</span>
+            <span className=" md:ml-0 ml-1 title-text text-gray-500">Wallet Balance</span>
+            <span className="title-text md:mr-0 mr-4">{Number(pusdBalance).toFixed(2)} PUSD</span>
           </div>
         </div>
         <button

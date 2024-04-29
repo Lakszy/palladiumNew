@@ -6,23 +6,24 @@ import erc20Abi from "../src/constants/abi/ERC20.sol.json";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import priceFeedAbi from "../src/constants/abi/PriceFeedTestnet.sol.json";
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
-import stabilityPoolAbi from "../src/constants/abi/StabilityPool.sol.json";
 import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
+import { readContract } from '@wagmi/core'
 import { ethers, toBigInt } from "ethers";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
 import { useAccount, useWalletClient } from "wagmi";
-import { Dialog } from 'primereact/dialog';
-import BotanixLOGO from "../../app/assets/images/newpalladium.svg"
 import Image from "next/image";
-import "../../components/stabilityPool/Modal.css"
-import "../../app/App.css"
 import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
+import "../../components/stabilityPool/Modal.css"
+import "../../app/App.css"
+import { wagmiConfig } from "../src/config/config";
+import { borrowerOperations } from "../src/constants/abi/borrowerOperations";
+
 
 export default function Repay() {
   const [userInputs, setUserInputs] = useState({
@@ -51,6 +52,15 @@ export default function Repay() {
 
   const [newAvailColl, setNewAvailColl] = useState(0)
 
+  // Separate Loaders State
+
+  const [isLtvLoading, setIsLtvLoading] = useState(false);
+  const [isPayableDebtLoading, setIsPayableDebtLoading] = useState(false);
+  const [isLiquidationPriceLoading, setIsLiquidationPriceLoading] = useState(false);
+  const [isTotalDebtLoading, setIsTotalDebtLoading] = useState(false);
+  const [isTotalCollateralLoading, setIsTotalCollateralLoading] = useState(false);
+
+
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
     debt: "0",
     coll: "0",
@@ -66,6 +76,8 @@ export default function Repay() {
   const [staticLtv, setStaticLtv] = useState(0);
   const [staticPayableDebt, setStaticPayableDebt] = useState(0);
   const [staticTotalDebt, setStaticTotalDebt] = useState(0);
+  const [minimumBorrow, setMinimumBorrow] = useState("0");
+
 
   const { data: walletClient } = useWalletClient();
 
@@ -118,14 +130,21 @@ export default function Repay() {
     const _1e18 = toBigInt(pow.toFixed());
 
     const getRecoveryModeStatus = async () => {
+      const fetchPrice: bigint = await priceFeedContract.getPrice();
       const status: boolean = await troveManagerContract.checkRecoveryMode(
-        price
+        fetchPrice
       );
+      const minDebt = await readContract(wagmiConfig, {
+        abi: borrowerOperations,
+        address: '0x46ECf770a99d5d81056243deA22ecaB7271a43C7',
+        functionName: 'MIN_NET_DEBT',
+      })
+      const formattedMInDebt = ethers.formatUnits(minDebt, 18)
+      setMinimumBorrow(formattedMInDebt)
       setIsRecoveryMode(status);
     };
 
     const fetchedData = async () => {
-      console.log(walletClient?.account.address, "walletClient");
       if (!walletClient) return null;
       const { 0: debt, 1: coll, 2: pendingLUSDDebtReward, 3: pendingETHReward,
       } = await troveManagerContract.getEntireDebtAndColl(
@@ -144,24 +163,15 @@ export default function Repay() {
       if (!hasPriceFetched) {
         try {
           const fetchPrice: bigint = await priceFeedContract.getPrice();
-          console.log(fetchPrice, "Fetching price");
-
           const fetchPriceDecimal = new Decimal(fetchPrice.toString()); // Convert coll to a Decimal
           const fetchPriceFormatted = fetchPriceDecimal
             .div(_1e18.toString())
             .toString();
           setFetchedPrice(fetchPriceFormatted);
-
-          // Multiply collFormatted with fetchPrice
           const updatedCollFormatted = new Decimal(collFormatted).mul(
             fetchPriceFormatted
           );
-          console.log(updatedCollFormatted, "updatedCollFormatted");
-
-          // Convert the result back to a number before setting the state
           const updatedPrice = parseFloat(updatedCollFormatted.toString());
-
-          // Update state with the multiplied value
           setPrice(updatedPrice);
           console.log(updatedPrice, "Multiplied collFormatted");
           setHasPriceFetched(true);
@@ -191,11 +201,8 @@ export default function Repay() {
         );
       const newDebt = toBigInt(debt) - toBigInt(LUSDRepayment);
       const newColl = toBigInt(coll) - toBigInt(collIncrease);
-      console.log(newDebt, newColl, "newDebt", "newColl");
 
       const minDebt = await borrowerOperationsContractReadOnly.MIN_NET_DEBT();
-      console.log(minDebt, "minDebt");
-
       if (minDebt <= newDebt) {
         return setIsLowDebt(true);
       }
@@ -205,7 +212,6 @@ export default function Repay() {
       try {
         if (!provider || hasPriceFetched) return null;
         const fetchedPrice = await priceFeedContract.getPrice();
-        // const convertedFetchedPrice = (fetchedPrice / _1e18).toString();
         const convertedFetchedPrice = ethers.formatUnits(fetchedPrice, 18);
         setPrice(Number(convertedFetchedPrice));
         console.log(convertedFetchedPrice, "Fetched price");
@@ -220,7 +226,6 @@ export default function Repay() {
       const lr = await troveManagerContract.LUSD_GAS_COMPENSATION();
       const lrFormatted = Number(ethers.formatUnits(lr, 18));
       setLr(lrFormatted);
-      console.log({ lr, lrFormatted });
     };
 
     const getStaticData = async () => {
@@ -252,18 +257,14 @@ export default function Repay() {
       const ltvValue = (debtFormatted * 100) / (collTotal || 1); // if collTotal is 0/null/undefined then it will be divided by 1
       setStaticLtv(ltvValue);
 
-      //liquidationPrice
       const divideBy = isRecoveryMode ? 1.5 : 1.1;
-      const liquidationPriceValue = (divideBy * debtFormatted) / collFormatted;
+      const liquidationPriceValue = (1.1 * debtFormatted) / collFormatted;
       setStaticLiquidationPrice(liquidationPriceValue);
 
-      //payable debt
       const payableDebtValue = debtFormatted - lr;
       setStaticPayableDebt(payableDebtValue);
       setHasGotStaticData(true);
-
     };
-
     getRecoveryModeStatus();
     checkDebt();
     fetchedData();
@@ -276,7 +277,7 @@ export default function Repay() {
     () => {
       makeCalculations(userInputs.lusdAmount, userInputs.coll);
     },
-    1000,
+    10,
     [userInputs.lusdAmount, userInputs.coll]
   );
 
@@ -356,67 +357,81 @@ export default function Repay() {
   };
 
   const makeCalculations = async (xLusdAmount: string, xColl: string) => {
-    const lusdValue = Number(xLusdAmount);
-    const collValue = Number(xColl);
+    try {
+      setIsLtvLoading(true);
+      setIsTotalCollateralLoading(true);
+      setIsPayableDebtLoading(true);
+      setIsLiquidationPriceLoading(true);
+      setIsTotalDebtLoading(true);
 
-    if (!walletClient) return null;
+      const lusdValue = Number(xLusdAmount);
+      const collValue = Number(xColl);
 
-    const { 0: debt, 1: coll } =
-      await troveManagerContract.getEntireDebtAndColl(
+      if (!walletClient) return null;
+
+      const { 0: debt, 1: coll } =
+        await troveManagerContract.getEntireDebtAndColl(
+          walletClient.account.address
+        );
+
+      const expectedBorrowingRate =
+        await troveManagerContract.getBorrowingRateWithDecay();
+
+      const borrowingRate = Number(ethers.formatUnits(expectedBorrowingRate, 18));
+      const debtFormatted = Number(ethers.formatUnits(debt, 18));
+      const collFormatted = Number(ethers.formatUnits(coll, 18));
+
+      setCollAmount(collFormatted);
+
+      const expectedFeeFormatted = (borrowingRate * lusdValue) / 100;
+
+      const pusdBalanceValue = await erc20Contract.balanceOf(
         walletClient.account.address
       );
+      const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
+      setPusdBalance(Number(Number(pusdBalanceFormatted).toFixed(2)));
 
-    const expectedBorrowingRate =
-      await troveManagerContract.getBorrowingRateWithDecay();
+      const debtTotal = debtFormatted - lusdValue;
+      setTotalDebt(debtTotal);
 
-    const borrowingRate = Number(ethers.formatUnits(expectedBorrowingRate, 18));
-    const debtFormatted = Number(ethers.formatUnits(debt, 18));
-    const collFormatted = Number(ethers.formatUnits(coll, 18));
+      const collTotal = (collFormatted - collValue);
+      setTotalColl(collTotal);
 
-    setCollAmount(collFormatted);
+      //ltv
+      const ltvValue = (debtTotal * 100) / ((collTotal || 1) * Number(fetchedPrice));
+      setLtv(ltvValue);
 
-    const expectedFeeFormatted = (borrowingRate * lusdValue) / 100;
+      //liquidationPrice
+      const divideBy = isRecoveryMode ? 1.5 : 1.1;
+      const liquidationPriceValue = (1.1 * debtTotal) / (collFormatted - collValue);
+      setLiquidationPrice(liquidationPriceValue);
 
-    //pusd balance
-    const pusdBalanceValue = await erc20Contract.balanceOf(
-      walletClient.account.address
-    );
-    const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
-    setPusdBalance(Number(Number(pusdBalanceFormatted).toFixed(2)));
+      const availCollTotalValue = collValue * price;
+      const newAvailColl = collValue * Number(fetchedPrice);
 
-    // total debt
-    const debtTotal = debtFormatted - lusdValue;
-    setTotalDebt(debtTotal);
+      setNewAvailColl(newAvailColl)
 
-    // total coll
-    const collTotal = (collFormatted - collValue);
-    setTotalColl(collTotal);
+      setAvailCollTotal(availCollTotalValue);
 
-    //ltv
-    const ltvValue = (debtTotal * 100) / ((collTotal || 1) * Number(fetchedPrice));
-    setLtv(ltvValue);
-
-    //liquidationPrice
-    const divideBy = isRecoveryMode ? 1.5 : 1.1;
-    const liquidationPriceValue = (divideBy * debtTotal) / (collFormatted - collValue);
-    setLiquidationPrice(liquidationPriceValue);
-
-    //available total collateral
-    const availCollTotalValue = collValue * price;
-    const newAvailColl = collValue * Number(fetchedPrice);
-
-    setNewAvailColl(newAvailColl)
-
-    setAvailCollTotal(availCollTotalValue);
-
-    //payable debt
-    const payableDebtValue = debtTotal - lr;
-    setPayableDebt(payableDebtValue);
+      // Payable debt
+      const payableDebtValue = debtTotal - lr;
+      setPayableDebt(payableDebtValue);
+    } catch (error) {
+      console.error(error, "Error in makeCalculations");
+    } finally {
+      // Set loading states to false after calculations complete
+      setIsLtvLoading(false);
+      setIsTotalCollateralLoading(false);
+      setIsPayableDebtLoading(false);
+      setIsLiquidationPriceLoading(false);
+      setIsTotalDebtLoading(false);
+    }
   };
+
 
   const divideBy = isRecoveryMode ? 1.5 : 1.1;
   const availableToBorrow = price / divideBy - Number(entireDebtAndColl.debt);
-  const liquidation = divideBy * (Number(entireDebtAndColl.debt) / Number(entireDebtAndColl.coll));
+  const liquidation = 1.1 * (Number(entireDebtAndColl.debt) / Number(entireDebtAndColl.coll));
 
   const getTroveStatus = async () => {
     if (!walletClient) return null;
@@ -431,7 +446,7 @@ export default function Repay() {
   };
   getTroveStatus();
 
-
+  const isUpdateDisabled = parseFloat(userInputs.coll) > collAmount || parseFloat(userInputs.lusdAmount) > pusdBalance && parseFloat(userInputs.coll) !== 0 && parseFloat(userInputs.lusdAmount) !== 0 && parseFloat(userInputs.lusdAmount) >= pusdBalance;
   return (
     <div className=" flex-col flex md:flex-row justify-between gap-32">
       <div>
@@ -448,24 +463,11 @@ export default function Repay() {
                 <Image src={img4} alt="home" />{" "}
                 <span className=" body-text text-xs whitespace-nowrap ml-05">PUSD</span>
               </div>
-              <input
-                id="items"
-                placeholder="0.000 BTC"
-                type="number"
-                disabled={!isConnected}
-                value={userInputs.lusdAmount}
-                onChange={(e) => {
-                  const newCollValue = e.target.value;
-                  setUserInputs({ ...userInputs, lusdAmount: newCollValue });
-                  // makeCalculations(userInputs.borrow, newCollValue || "0");
-                }}
-                className="w-[23.75rem] ml-1 body-text text-base whitespace-nowrap text-gray-500 h-[4rem] "
-                style={{ backgroundColor: "#3f3b2d" }}
-              />
+              <input id="items" placeholder="0.00 PUSD" type="number" disabled={!isConnected} value={userInputs.lusdAmount} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newCollValue }); }} className="w-[23.75rem] ml-1 body-text text-base whitespace-nowrap text-gray-500 h-[4rem] " style={{ backgroundColor: "#3f3b2d" }} />
             </div>
           </div>
-          <span className="text-white text-sm body-text  whitespace-nowrap ">
-            Available {pusdBalance} PUSD
+          <span className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.lusdAmount) > pusdBalance ? 'text-red-500' : 'text-white'}`}>
+            Available {staticTotalDebt - lr - Number(minimumBorrow)} PUSD
           </span>
           <div className="relative">
             <Label htmlFor="quantity" className="body-text text-base text-gray-500 whitespace-nowrap">
@@ -478,117 +480,66 @@ export default function Repay() {
               {" "}
               <Image src={img3} alt="home" />
               <span className="text-white  body-text text-xs whitespace-nowrap md:-ml-0 -ml-2">BTC</span>
-              <input
-                id="quantity"
-                placeholder="0.00 PUSD"
-                type="number"
-                disabled={!isConnected}
-                value={userInputs.coll}
-                onChange={(e) => {
-                  const newBorrowValue = e.target.value;
-                  setUserInputs({ ...userInputs, coll: newBorrowValue });
-                  // makeCalculations(newBorrowValue || "0", userInputs.collatoral);
-                }}
-                className="w-[23.75rem] h-[4rem] ml-1 text-gray-500 body-text text-base whitespace-nowrap"
-                style={{ backgroundColor: "#3f3b2d" }}
+              <input id="quantity" placeholder="0.00 PUSD" type="number" disabled={!isConnected} value={userInputs.coll} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, coll: newBorrowValue }); }} className="w-[23.75rem] h-[4rem] ml-1 text-gray-500 body-text text-base whitespace-nowrap" style={{ backgroundColor: "#3f3b2d" }}
               />
               <span className="text-white  body-text text-xs whitespace-nowrap">
                 ${Number(newAvailColl).toFixed(2)}
               </span>
             </div>
-            <div className="text-white text-sm body-text mt-0.5 whitespace-nowrap">
+            <div className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.coll) > collAmount ? 'text-red-500' : 'text-white'}`}>
               Available {collAmount.toFixed(4)}
             </div>
-            <button
-              onClick={() =>
-                handleConfirmClick(userInputs.lusdAmount, userInputs.coll)
-              }
-              className="mt-5 w-full title-text h-[3rem] bg-yellow-300 text-black "
-            >
+            <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)} className={`mt-5 w-full title-text h-[3rem] ${isUpdateDisabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-yellow-300'} text-black`} disabled={isUpdateDisabled} >
               UPDATE TROVE
             </button>
           </div>
         </div>
       </div>
 
-      <div className="w-auto  p-10   md:mt-10 mx-2 md:mx-0 border border-black text-sm" style={{ backgroundColor: "#3f3b2d" }}>
+      <div className="w-auto  p-10   md:mt-10 mx-2 md:mx-4 border border-black text-sm" style={{ backgroundColor: "#3f3b2d" }}>
         <div className="mb-4 space-y-4 ">
-
-          <div className="flex  text-white mb-2 justify-between">
-            <span className="body-text text-xs whitespace-nowrap">Loan-To-Value</span>
-
-            <span className="text-xs whitespace-nowrap body-text text-right">{Number(value)} %</span>
-          </div>
-
-          <div className="flex  text-white mb-2 justify-between">
-            <span className="body-text text-xs whitespace-nowrap">Liq. Reserve</span>
-
-            <span className="text-xs whitespace-nowrap body-text text-right">{Number(lr).toFixed(2)} PUSD</span>
-          </div>
-          <div className="flex  text-white mb-2 justify-between">
-            <span className="body-text text-xs whitespace-nowrap text">Liquidation Price</span>
-
-            <span className="body-text text-xs whitespace-nowrap text-right">
-              {Number(liquidation).toFixed(2)} PUSD
+          <div className="flex  text-white mb-2 justify-between">  <span className="body-text text-xs whitespace-nowrap">Loan-To-Value</span>
+            <span className="text-xs whitespace-nowrap body-text text-right">{Number(value)} %
+              <span>{`-->`}</span><span className="">{isLtvLoading ? (
+                <h2 className="title-text animate-ping">--</h2>
+              ) : (
+                <span className="body-text text-xs whitespace-nowrap">{Number(ltv).toFixed(2)} %</span>
+              )}</span>
             </span>
           </div>
-          <div className="flex  text-white mb-2 justify-between">
-            <span className="body-text text-xs whitespace-nowrap">Total Debt</span>
-            <span className="body-text text-xs whitespace-nowrap">
-              {Number(staticTotalDebt).toFixed(2)} PUSD
+          <div className="flex  text-white mb-2 justify-between">  <span className="body-text text-xs whitespace-nowrap">Liq. Reserve</span>
+            <span className="text-xs whitespace-nowrap body-text text-right">{Number(lr).toFixed(2)} PUSD
+
             </span>
           </div>
-          <div className="flex  text-white mb-2 justify-between">
-            <span className="text-xs whitespace-nowrap body-text">Total Collateral</span>
-            <span className="body-text text-xs whitespace-nowrap text-left -ml-9">
-              {Number(entireDebtAndColl.coll).toFixed(4)} BTC
+          <div className="flex  text-white mb-2 justify-between">  <span className="body-text text-xs whitespace-nowrap text">Liq. Price
+          </span>
+            <span className="body-text text-xs whitespace-nowrap text-right">{Number(liquidation).toFixed(2)} PUSD
+              <span>{`-->`}</span><span>{Number(liquidationPrice).toFixed(2)} PUSD</span>
             </span>
+          </div>
+          <div className="flex  text-white mb-2 justify-between">  <span className="body-text text-xs whitespace-nowrap">Total Debt</span>  <span className="body-text text-xs whitespace-nowrap">{Number(staticTotalDebt).toFixed(2)} PUSD
+            <span>{`-->`}</span><span>
+              {isTotalDebtLoading ? (
+                <h1 className="animate-ping">--</h1>
+              ) : (
+                <span className="body-text text-xs whitespace-nowrap">{Number(totalDebt).toFixed(2)} PUSD</span>
+              )}
+            </span>
+          </span>
+          </div>
+          <div className="flex  text-white mb-2 justify-between">  <span className="text-xs whitespace-nowrap body-text">Total Collateral</span>  <span className="body-text text-xs whitespace-nowrap text-left -ml-9">    {Number(entireDebtAndColl.coll).toFixed(6)} BTC
+            <span>{`-->`}</span><span>
+              {isTotalCollateralLoading ? (
+                <span className="animate-ping">--</span>
+              ) : (
+                <span className="body-text text-xs whitespace-nowrap">{Number(totalColl).toFixed(6)} BTC</span>
+              )}
+            </span>
+          </span>
           </div>
         </div>
-
-        <div className="w-50 border mb-4 "></div>
-
-        <div className="space-y-4 ">
-          <div className="flex md:gap-40 mb-2 justify-between">
-            <span className="body-text text-xs whitespace-nowrap">Loan-To-Value</span>
-            <span className="body-text text-xs whitespace-nowrap">{Number(ltv).toFixed(2)} %</span>
-          </div>
-          <div className="flex md:gap-40 mb-2 justify-between">
-            <span className="body-text text-xs whitespace-nowrap">Liq. Reserve</span>
-            <span className="body-text text-xs whitespace-nowrap">{Number(lr).toFixed(2)} PUSD</span>
-          </div>
-          <div className="flex mb-2 md:gap-20 justify-between">
-            <span className="body-text text-xs whitespace-nowrap">Payable Debt</span>
-            <span className="body-text text-xs whitespace-nowrap">{Number(payableDebt).toFixed(2)} PUSD</span>
-          </div>
-          <div className="flex mb-2 md:gap-40 justify-between">
-            <span className="body-text text-xs whitespace-nowrap">Liquidation Price</span>
-            <h6 className="body-text text-xs whitespace-nowrap b">
-              {Number(liquidationPrice).toFixed(2)} PUSD
-            </h6>
-          </div>
-          <div className="flex mb-2 md:gap-40 justify-between">
-            <span className="body-text text-xs whitespace-nowrap">Total Debt</span>
-            <span className="body-text text-xs whitespace-nowrap">{Number(totalDebt).toFixed(2)} PUSD</span>
-          </div>
-          <div className="flex mb-2 md:gap-40 justify-between">
-            <span className="body-text text-xs whitespace-nowrap">Total Collateral</span>
-            <span className="body-text text-xs whitespace-nowrap">{Number(totalColl).toFixed(4)} BTC</span>
-          </div>
-        </div>
-
       </div>
-
-
-
-      <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
-        <>
-          <div className="waiting-container bg-white">
-            <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for COnformation... ✨.</div>
-            <Image src={BotanixLOGO} className="waiting-image" alt="gif" />
-          </div>
-        </>
-      </Dialog>
     </div>
   );
 }

@@ -113,7 +113,6 @@ export default function Redeem() {
                 args: [fetchedPrice],
             }) as boolean
             setIsRecoveryMode(result);
-            console.log(result, "101010101101010")
         };
 
         getPrice();
