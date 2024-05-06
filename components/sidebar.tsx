@@ -1,4 +1,4 @@
-"use client";
+
 import React, { useState } from "react";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { BiDollar } from "react-icons/bi";
@@ -35,8 +35,8 @@ export const TabsDemo = () => {
 
   const menuItems: MenuItem[] = [
     { id: "Dashboard", icon: LayoutGrid, title: "Dashboard", link: "/" },
-    { id: "Portfolio", icon: MdOutlineInventory2, title: "Portfolio", link: "portfolio" },
-    { id: "Borrow", icon: RiBillLine, title: "Borrow PUSD", link: "Borrow" },
+    { id: "Portfolio", icon: MdOutlineInventory2, title: "Portfolio", link: "/portfolio" },
+    { id: "Borrow", icon: RiBillLine, title: "Borrow PUSD", link: "/Borrow" },
     { id: "Stake-pusd", icon: BiDollar, title: "Stake PUSD", link: "Stake" },
     { id: "Redeem", icon: RiBillLine, title: "Redeem PUSD", link: "Redeem" },
   ];

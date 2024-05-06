@@ -127,7 +127,6 @@ export const Unstake = () => {
 					<Input
 						id="items"
 						placeholder="0.000 BTC"
-						type="number"
 						disabled={!isConnected}
 						value={userInput}
 						onChange={(e) => {
@@ -157,7 +156,7 @@ export const Unstake = () => {
 					</button>
 				</div>
 			) : (
-				<CustomConnectButton />
+				<CustomConnectButton className="" />
 			)}
 			<Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
 				<>

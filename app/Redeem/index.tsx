@@ -165,7 +165,6 @@ export default function Redeem() {
             })
 
             const numTrials = numTroves * toBigInt("15");
-            console.log(numTrials, "numTRials")
 
             const approxPartialRedemptionHint = await readContract(wagmiConfig, {
                 abi: HintHelpers,
@@ -183,7 +182,6 @@ export default function Redeem() {
                 functionName: 'findInsertPosition',
                 args: [partialRedemptionNewICR, approxPartialRedemptionHintString, approxPartialRedemptionHintString]
             })
-            console.log(exactPartialRedemptionHint, "exactPartialRedemptionHint")
 
             const maxFee = "6".concat("0".repeat(17));
 
@@ -222,7 +220,6 @@ export default function Redeem() {
                             <Input
                                 id="items"
                                 placeholder="0.000 BTC"
-                                type="number"
                                 disabled={!isConnected}
                                 value={userInput}
                                 onChange={(e) => {
@@ -264,7 +261,7 @@ export default function Redeem() {
                             </div>
                         </div>
                     ) : (
-                        <CustomConnectButton />
+                        <CustomConnectButton className="" />
                     )}
                     <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
                         <>

@@ -148,7 +148,7 @@ export default function Redeem() {
                                 ) : (
                                     <div className="items-center  h-[19rem] flex flex-col justify-between -mt-10">
                                         <Image src={crate} alt="home" className="-mt-10" />
-                                        <CustomConnectButton />
+                                        <CustomConnectButton className="" />
                                     </div>
                                 )}
                             </div>

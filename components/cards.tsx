@@ -62,8 +62,8 @@ interface ActivitiesData {
 
 export function CardDemo() {
   const { data: walletClient } = useWalletClient();
-  const { address, isConnected } = useAccount();
   const [troveStatus, setTroveStatus] = useState("");
+  const { address, isConnected } = useAccount();
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const [activitiesData, setActivitiesData] = useState<ActivitiesData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -154,7 +154,7 @@ export function CardDemo() {
   const fetchActivitiesData = async () => {
     try {
       const response = await fetch(
-        "https://api.palladiumlabs.org/users/activities/0x6c47dcbe1985b717488a2aa6aeed209618d93c5"
+        `https://api.palladiumlabs.org/users/activities/${address}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch activities data");
@@ -250,7 +250,7 @@ export function CardDemo() {
             <div className="absolute p-2 md:p-0 ml-[20rem] md:ml-[28rem] mt-[12rem] h-24 md:w-[16rem] bg-gradient-to-l from-yellow-100 border-yellow-200">
               <div className="flex justify-between items-center">
                 <div>
-                  <h5 className="text-5xl text-yellow-300 title-text">{activitiesData &&  countClaimedBadges(activitiesData) || 0 }</h5>
+                  <h5 className="text-5xl text-yellow-300 title-text">{activitiesData && countClaimedBadges(activitiesData) || 0}</h5>
                   <h6 className="text-3xl text-yellow-300 title-text">BAGDES</h6>
                 </div>
                 <Image src={card0} alt="robo2" className="notMobileDevice" />
@@ -292,7 +292,7 @@ export function CardDemo() {
                   <h6>{troveStatus}</h6>
                 </div>
               ) : (
-                <CustomConnectButton />
+                <CustomConnectButton className="" />
               )}
               <div className="bent-corner"></div>
             </div>
@@ -301,7 +301,7 @@ export function CardDemo() {
                 <Image src={btc} alt="coin" />
                 <div className="">
                   <h1 className="text-gray-500 font-bold title-text">Collateral</h1>
-                  <h1 className="text-gray-100 font-bold text-lg title-text">{Number(entireDebtAndColl.coll).toFixed(6)} BTC</h1>
+                  <h1 className="text-gray-100 font-bold text-lg title-text">{Number(entireDebtAndColl.coll).toFixed(8)} BTC</h1>
                 </div>
               </div>
               <div className=" flex gap-x-6">
@@ -330,12 +330,12 @@ export function CardDemo() {
                 <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                   <Image src={giftBox} alt="giftBox" />
                   <h6 className="font-bold text-gray-400">Active Deposit</h6>
-                  <h6 className="font-bold  text-gray-100">{(activitiesData?.continuousActivity.activeDeposit)?.toFixed(6) || 0}{" "} BTC</h6>
+                  <h6 className="font-bold  text-gray-100">{(activitiesData?.continuousActivity.activeDeposit)?.toFixed(8) || 0}{" "} BTC</h6>
                 </div>
                 <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                   <Image src={giftBox} alt="giftBox" />
                   <h6 className="font-bold text-gray-400">Trove Volume</h6>
-                  <h6 className="font-bold text-gray-100">{(activitiesData?.continuousActivity.troveVolume)?.toFixed(6) || 0}{" "} BTC</h6>
+                  <h6 className="font-bold text-gray-100">{(activitiesData?.continuousActivity.troveVolume)?.toFixed(8) || 0}{" "} BTC</h6>
                 </div>
                 <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                   <Image src={giftBox} alt="giftBox" />

@@ -266,7 +266,7 @@ const Portfolio = () => {
 
       //liquidationPrice
       const divideBy = isRecoveryMode ? 1.5 : 1.1;
-      const liquidationPriceValue = (1.1 * debtFormatted) / collFormatted;
+      const liquidationPriceValue = (divideBy * debtFormatted) / collFormatted;
       setStaticLiquidationPrice(liquidationPriceValue);
       setHasGotStaticData(true);
     };
@@ -400,20 +400,20 @@ const Portfolio = () => {
 
     const ltvValue = (debtTotal * 100) / (totalColl || 1);
     const divideBy = isRecoveryMode ? 1.5 : 1.1;
-    const liquidationPriceValue = (1.1 * debtTotal) / (collFormatted + collValue);
+    const liquidationPriceValue = (divideBy * debtTotal) / (collFormatted + collValue);
     const availBorrowValue = totalColl / divideBy - debtFormatted - expectedFeeFormatted;
-    setAvailableBorrow(Number(availBorrowValue.toFixed(3)));
+    setAvailableBorrow(Number(availBorrowValue.toFixed(2)));
 
-    setBorrowingFee(Number(expectedFeeFormatted.toFixed(3)));
-    setTotalDebt(Number(debtTotal.toFixed(3)));
-    setLtv(Number(ltvValue.toFixed(3)));
-    setLiquidationPrice(Number(liquidationPriceValue.toFixed(3)));
+    setBorrowingFee(Number(expectedFeeFormatted.toFixed(2)));
+    setTotalDebt(Number(debtTotal.toFixed(2)));
+    setLtv(Number(ltvValue.toFixed(2)));
+    setLiquidationPrice(Number(liquidationPriceValue.toFixed(2)));
   };
 
   const divideBy = isRecoveryMode ? 1.5 : 1.1;
   const availableToBorrow = price / divideBy - Number(entireDebtAndColl.debt) || 0;
 
-  const liquidation = 1.1 * (Number(entireDebtAndColl.debt) / Number(entireDebtAndColl.coll));
+  const liquidation = divideBy * (Number(entireDebtAndColl.debt) / Number(entireDebtAndColl.coll));
   const getTroveStatus = async () => {
     console.log("nitu1", walletClient?.account.address);
     if (!walletClient) return null;
@@ -425,7 +425,7 @@ const Portfolio = () => {
     setTroveStatus(troveStatus);
 
     console.log("nitu3", { troveStatusBigInt, troveStatus });
-    setValue((Number(entireDebtAndColl.debt) / (Number(entireDebtAndColl.coll) * Number(fetchedPrice)) * 100).toFixed(3));
+    setValue((Number(entireDebtAndColl.debt) / (Number(entireDebtAndColl.coll) * Number(fetchedPrice)) * 100).toFixed(2));
 
   };
 
@@ -466,7 +466,7 @@ const Portfolio = () => {
                           <div className="w-2 rounded-full h-2  bg-green-400"></div>
                           <span className="body-text">Supplied</span>
                         </div>
-                        <span className="body-text text-right whitespace-nowrap">{Number(entireDebtAndColl.coll).toFixed(6)} BTC</span>
+                        <span className="body-text text-right whitespace-nowrap">{Number(entireDebtAndColl.coll).toFixed(8)} BTC</span>
                       </div>
                     </div>
                   </h1>
@@ -496,7 +496,7 @@ const Portfolio = () => {
                   <div>
                     <div className="flex flex-col mb-2 items-center">
                       <Knob
-                        value={Number(value) || 0}
+                        value={Number(value)}
                         showValue={true}
                         size={175}
                         rangeColor="#78887f"
@@ -506,7 +506,7 @@ const Portfolio = () => {
                         className="text-white"
                       />
                       <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
-                        <span className="text-lg text-white  ml-[0.5rem] body-text">{value || 0}%</span>
+                        <span className="text-lg text-white  ml-[0.5rem] body-text">{Number(value).toFixed(2) || 0}%</span>
                         <span className="text-xs ml-[0.5rem] text-gray-500 body-text">/100%</span>
                         <span className="text-xs text-gray-500 body-text ">YOUR LTV</span>
                       </div>
@@ -515,7 +515,7 @@ const Portfolio = () => {
                       {" "}
                       <div className="flex flex-col">
                         <span className="body-text text-gray-500">Collateral</span>
-                        <span className="body-text ">{Number(entireDebtAndColl.coll).toFixed(6)} BTC</span>
+                        <span className="body-text ">{Number(entireDebtAndColl.coll).toFixed(8)} BTC</span>
                         <span className="text-xs body-text text-gray-500">${price.toFixed(2)}</span>
                       </div>
                       <div className="flex  flex-col">
@@ -623,7 +623,7 @@ const Portfolio = () => {
                 >
                   <span className="text-white title-text">TROVE</span>
 
-                  <CustomConnectButton />
+                  <CustomConnectButton className="" />
                 </div>
                 <div className="grid place-items-center">
                   <Image src={img1} alt="home" width={200} />
@@ -641,7 +641,7 @@ const Portfolio = () => {
                   style={{ backgroundColor: "#3d3f37" }}
                 >
                   <span className="text-white title-text">STABILITY POOL</span>
-                  <CustomConnectButton />
+                  <CustomConnectButton className="" />
                 </div>
                 <div className="grid place-items-center mt-[1rem]">
                   <Image src={port2} alt="home" width={200} />

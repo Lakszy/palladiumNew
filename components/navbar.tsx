@@ -17,9 +17,8 @@ import "../app/App.css"
 import MobileNav from "./MobileNav";
 
 function NavBar() {
-  const [loading, setLoading] = useState<boolean>(true);
   const [fetchedPrice, setFetchedPrice] = useState("0");
-  const [systemLTV, setSystemLTV] = useState("0");
+  const [systemLTV, setSystemLTV] = useState(0);
   const [isRecoveryMode, setIsRecoveryMode] = useState<boolean>(false);
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
@@ -35,9 +34,7 @@ function NavBar() {
     troveManagerAbi,
     provider
   );
-
   const { toBigInt } = web3.utils;
-
 
   useEffect(() => {
     const pow = Decimal.pow(10, 18);
@@ -65,15 +62,14 @@ function NavBar() {
         .div(_1e18.toString())
         .toString();
 
-      const systemLTV = await troveManagerContract.getTCR(fetchPriceFormatted);
-      console.log(systemLTV, "systemLTV")
+      const entColl = await troveManagerContract.getEntireSystemColl()
+      const entDebt = await troveManagerContract.getEntireSystemDebt()
 
-      const systemLTVDecimal = new Decimal(systemLTV.toString());
-      const systemLTVFormatted = systemLTVDecimal
-        .times(10)
-        .toString();
-      console.log(systemLTVDecimal, "systemLTVFormatted")
-      setSystemLTV(systemLTVFormatted);
+      const debtFormatted = Number(ethers.formatUnits(entDebt, 18));
+      const collFormatted = Number(ethers.formatUnits(entColl, 18));
+
+      const systemLtv = (debtFormatted * 100) / (collFormatted * Number(fetchPriceFormatted))
+      setSystemLTV(systemLtv);
     };
 
     const getRecoveryModeStatus = async () => {
@@ -81,24 +77,12 @@ function NavBar() {
       const status: boolean = await troveManagerContract.checkRecoveryMode(
         fetchPrice
       );
-      console.log(status, "status")
       setIsRecoveryMode(status);
     };
 
     fetchPrice();
     getSystemLTV();
     getRecoveryModeStatus();
-
-
-    // const one = await troveManagerContract.getEntireSystemColl() * fetchPrice
-    // console.log(one, "l1")
-    // const two = await troveManagerContract.getEntireSystemDebt() * 100n
-    // console.log(two, "l2")
-    // const oneDec = new Decimal(one.toString())
-    // const twoDec = new Decimal(two.toString())
-    // const three = twoDec.div(oneDec)
-    // console.log(three, "l3")
-
     const intervalId = setInterval(fetchPrice, 50000);
 
     return () => clearInterval(intervalId);
@@ -138,7 +122,7 @@ function NavBar() {
         <div className="mobileDevice ">
           <MobileNav />
         </div>
-        <CustomConnectButton />
+        <CustomConnectButton className=""  />
       </div>
     </div>
   );

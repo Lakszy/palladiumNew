@@ -226,7 +226,6 @@ export const OpenTrove = () => {
 					<Input
 						id="items"
 						placeholder="0.000 BTC"
-						type="number"
 						value={userInputs.collatoral}
 						onChange={(e) => {
 							handleValueChange({
@@ -246,7 +245,6 @@ export const OpenTrove = () => {
 					<Input
 						id="quantity"
 						placeholder="0.00 PUSD"
-						type="number"
 						value={userInputs.borrow}
 						onChange={(e) => {
 							handleValueChange({ ...userInputs, borrow: e.target.value });

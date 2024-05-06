@@ -23,9 +23,16 @@ import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import { wagmiConfig } from "../src/config/config";
 import { borrowerOperations } from "../src/constants/abi/borrowerOperations";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+interface Props {
+  coll: number;
+  debt: number;
+  lr: number;
+  fetchedPrice: number
+}
 
-
-export default function Repay() {
+export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
   const [userInputs, setUserInputs] = useState({
     lusdAmount: "0",
     coll: "0",
@@ -42,32 +49,15 @@ export default function Repay() {
   const [totalColl, setTotalColl] = useState(0);
   const [collAmount, setCollAmount] = useState(0);
   const [availCollTotal, setAvailCollTotal] = useState(0);
-  const [lr, setLr] = useState(0);
   const [payableDebt, setPayableDebt] = useState(0);
   const [pusdBalance, setPusdBalance] = useState(0);
   const { address, isConnected } = useAccount();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [fetchedPrice, setFetchedPrice] = useState("0");
   const [value, setValue] = useState("0");
 
+  const [userInputColl, setUserInputColl] = useState(0)
+  const [userInputDebt, setUserInputDebt] = useState(0)
+
   const [newAvailColl, setNewAvailColl] = useState(0)
-
-  // Separate Loaders State
-
-  const [isLtvLoading, setIsLtvLoading] = useState(false);
-  const [isPayableDebtLoading, setIsPayableDebtLoading] = useState(false);
-  const [isLiquidationPriceLoading, setIsLiquidationPriceLoading] = useState(false);
-  const [isTotalDebtLoading, setIsTotalDebtLoading] = useState(false);
-  const [isTotalCollateralLoading, setIsTotalCollateralLoading] = useState(false);
-
-
-  const [entireDebtAndColl, setEntireDebtAndColl] = useState({
-    debt: "0",
-    coll: "0",
-    pendingLUSDDebtReward: "0",
-    pendingETHReward: "0",
-  });
-
 
   //static
   const [staticCollAmount, setStaticCollAmount] = useState(0);
@@ -77,6 +67,11 @@ export default function Repay() {
   const [staticPayableDebt, setStaticPayableDebt] = useState(0);
   const [staticTotalDebt, setStaticTotalDebt] = useState(0);
   const [minimumBorrow, setMinimumBorrow] = useState("0");
+
+  const [formattedMCR, setFormattedMCR] = useState("0")
+  const [formattedCCR, setFormattedCCR] = useState("0")
+
+
 
 
   const { data: walletClient } = useWalletClient();
@@ -128,149 +123,65 @@ export default function Repay() {
   useEffect(() => {
     const pow = Decimal.pow(10, 18);
     const _1e18 = toBigInt(pow.toFixed());
-
-    const getRecoveryModeStatus = async () => {
-      const fetchPrice: bigint = await priceFeedContract.getPrice();
-      const status: boolean = await troveManagerContract.checkRecoveryMode(
-        fetchPrice
-      );
-      const minDebt = await readContract(wagmiConfig, {
-        abi: borrowerOperations,
-        address: '0x46ECf770a99d5d81056243deA22ecaB7271a43C7',
-        functionName: 'MIN_NET_DEBT',
-      })
-      const formattedMInDebt = ethers.formatUnits(minDebt, 18)
-      setMinimumBorrow(formattedMInDebt)
-      setIsRecoveryMode(status);
-    };
-
     const fetchedData = async () => {
       if (!walletClient) return null;
-      const { 0: debt, 1: coll, 2: pendingLUSDDebtReward, 3: pendingETHReward,
+
+      const {
+        0: debt,
+        1: coll,
+        2: pendingLUSDDebtReward,
+        3: pendingETHReward,
       } = await troveManagerContract.getEntireDebtAndColl(
         walletClient?.account.address
       );
       const collDecimal = new Decimal(coll.toString()); // Convert coll to a Decimal
       const collFormatted = collDecimal.div(_1e18.toString()).toString(); // Divide coll by _1e18 and convert to string
 
-      setEntireDebtAndColl({
-        debt: (debt / _1e18).toString(),
-        coll: collFormatted,
-        pendingLUSDDebtReward: (pendingLUSDDebtReward / _1e18).toString(),
-        pendingETHReward: (pendingETHReward / _1e18).toString(),
-      });
+      const expectedBorrowingRate = await troveManagerContract.getBorrowingRateWithDecay();
+      const expectedFeeForm = ethers.formatUnits(expectedBorrowingRate, 18)
 
-      if (!hasPriceFetched) {
-        try {
-          const fetchPrice: bigint = await priceFeedContract.getPrice();
-          const fetchPriceDecimal = new Decimal(fetchPrice.toString()); // Convert coll to a Decimal
-          const fetchPriceFormatted = fetchPriceDecimal
-            .div(_1e18.toString())
-            .toString();
-          setFetchedPrice(fetchPriceFormatted);
-          const updatedCollFormatted = new Decimal(collFormatted).mul(
-            fetchPriceFormatted
-          );
-          const updatedPrice = parseFloat(updatedCollFormatted.toString());
-          setPrice(updatedPrice);
-          console.log(updatedPrice, "Multiplied collFormatted");
-          setHasPriceFetched(true);
-        } catch (error) {
-          console.error(error, "Error fetching price");
-          setHasPriceFetched(true);
-        }
-      }
+      const minDebt = await readContract(wagmiConfig, {
+        abi: borrowerOperations,
+        address: '0x1a45fEEe34a2fcfB39f28c57A1df08756f5d3A97',
+        functionName: 'MIN_NET_DEBT',
+      })
+      const formattedMInDebt = ethers.formatUnits(minDebt, 18)
+      setMinimumBorrow(formattedMInDebt)
+
+
+      const divideBy = isRecoveryMode ? formattedCCR : formattedMCR;
+      const liquidationPriceValue = (Number(divideBy) * Number(debt)) / Number(coll);
+      setStaticLiquidationPrice(liquidationPriceValue);
+
     };
 
-    const checkDebt = async () => {
-      const pow = Decimal.pow(10, 18);
-
-      const collateralBeforeConv = new Decimal(userInputs.lusdAmount);
-      const borrowBeforeConv = new Decimal(userInputs.coll);
-
-      const collIncrease: string = collateralBeforeConv.mul(pow).toFixed();
-      const LUSDRepayment: string = borrowBeforeConv.mul(pow).toFixed();
-
-      console.log("Collatoral Value:", collIncrease, typeof collIncrease);
-      console.log("Borrow Value:", LUSDRepayment, typeof LUSDRepayment);
-
-      if (!walletClient) return null;
-      const { 0: debt, 1: coll } =
-        await troveManagerContract.getEntireDebtAndColl(
-          walletClient.account.address
-        );
-      const newDebt = toBigInt(debt) - toBigInt(LUSDRepayment);
-      const newColl = toBigInt(coll) - toBigInt(collIncrease);
-
-      const minDebt = await borrowerOperationsContractReadOnly.MIN_NET_DEBT();
-      if (minDebt <= newDebt) {
-        return setIsLowDebt(true);
-      }
-    };
-
-    const getPrice = async () => {
-      try {
-        if (!provider || hasPriceFetched) return null;
-        const fetchedPrice = await priceFeedContract.getPrice();
-        const convertedFetchedPrice = ethers.formatUnits(fetchedPrice, 18);
-        setPrice(Number(convertedFetchedPrice));
-        console.log(convertedFetchedPrice, "Fetched price");
-      } catch (error) {
-        console.error(error, "error");
-      } finally {
-        setHasPriceFetched(true);
-      }
-    };
-
-    const getLiquidationReserve = async () => {
-      const lr = await troveManagerContract.LUSD_GAS_COMPENSATION();
-      const lrFormatted = Number(ethers.formatUnits(lr, 18));
-      setLr(lrFormatted);
+    const getRecoveryModeStatus = async () => {
+      const fetchPrice: bigint = await priceFeedContract.getPrice();
+      const status: boolean = await troveManagerContract.checkRecoveryMode(
+        fetchPrice
+      );
+      setIsRecoveryMode(status);
     };
 
     const getStaticData = async () => {
       if (!walletClient) return null;
       if (!provider || hasGotStaticData) return null;
 
-      const { 0: debt, 1: coll } =
-        await troveManagerContract.getEntireDebtAndColl(
-          walletClient.account.address
-        );
+      const MCR = await troveManagerContract.MCR();
+      const CCR = await troveManagerContract.CCR();
 
-      const expectedBorrowingRate =
-        await troveManagerContract.getBorrowingRateWithDecay();
+      setFormattedMCR(ethers.formatUnits(MCR, 18))
+      setFormattedCCR(ethers.formatUnits(CCR, 18))
 
-      const borrowingRate = Number(
-        ethers.formatUnits(expectedBorrowingRate, 18)
-      );
-      const debtFormatted = Number(ethers.formatUnits(debt, 18));
-      const collFormatted = Number(ethers.formatUnits(coll, 18));
-
-      setStaticCollAmount(collFormatted);
-
-      // total coll
-      const collTotal = collFormatted * price;
-      setStaticTotalColl(collTotal);
-      setStaticTotalDebt(debtFormatted);
-
-      //ltv
-      const ltvValue = (debtFormatted * 100) / (collTotal || 1); // if collTotal is 0/null/undefined then it will be divided by 1
+      const ltvValue = (Number(debt) * 100) / ((Number(coll) * Number(fetchedPrice)) || 1); // if collTotal is 0/null/undefined then it will be divided by 1
       setStaticLtv(ltvValue);
-
-      const divideBy = isRecoveryMode ? 1.5 : 1.1;
-      const liquidationPriceValue = (1.1 * debtFormatted) / collFormatted;
-      setStaticLiquidationPrice(liquidationPriceValue);
-
-      const payableDebtValue = debtFormatted - lr;
-      setStaticPayableDebt(payableDebtValue);
       setHasGotStaticData(true);
     };
-    getRecoveryModeStatus();
-    checkDebt();
+
+    getTroveStatus();
     fetchedData();
-    getPrice();
-    getLiquidationReserve();
     getStaticData();
+    getRecoveryModeStatus();
   }, [walletClient]);
 
   useDebounce(
@@ -290,17 +201,9 @@ export default function Repay() {
       const collValue = Number(xColl);
 
       if (!walletClient) return null;
-      const { 0: debt, 1: coll } =
-        await troveManagerContract.getEntireDebtAndColl(
-          walletClient.account.address
-        );
 
-      const debtFormatted = Number(ethers.formatUnits(debt, 18));
-      const collFormatted = Number(ethers.formatUnits(coll, 18));
-
-      const newDebt = debtFormatted - lusdValue;
-      const newColl = collFormatted - collValue;
-
+      const newDebt = Number(debt) - lusdValue;
+      const newColl = Number(coll) - collValue;
       const minDebt = await borrowerOperationsContractReadOnly.MIN_NET_DEBT();
 
       if (minDebt <= newDebt) {
@@ -310,7 +213,7 @@ export default function Repay() {
       let NICR = newColl / newDebt;
 
       const NICRDecimal = new Decimal(NICR.toString());
-      const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
+      const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed());
 
       const numTroves = await sortedTrovesContract.getSize();
       const numTrials = numTroves * BigInt("15");
@@ -330,7 +233,6 @@ export default function Repay() {
           approxHint
         );
 
-
       const maxFee = "6".concat("0".repeat(16));
       const collDecimal = new Decimal(collValue.toString());
       const collBigint = BigInt(collDecimal.mul(pow18).toFixed());
@@ -338,6 +240,7 @@ export default function Repay() {
       const lusdDecimal = new Decimal(lusdValue.toString());
       const lusdBigint = BigInt(lusdDecimal.mul(pow18).toFixed());
 
+      console.log("tsxn start")
       // Call adjustTrove with the exact upperHint and lowerHint
       const borrowOpt = await borrowerOperationsContract.adjustTrove(
         maxFee,
@@ -358,43 +261,16 @@ export default function Repay() {
 
   const makeCalculations = async (xLusdAmount: string, xColl: string) => {
     try {
-      setIsLtvLoading(true);
-      setIsTotalCollateralLoading(true);
-      setIsPayableDebtLoading(true);
-      setIsLiquidationPriceLoading(true);
-      setIsTotalDebtLoading(true);
 
       const lusdValue = Number(xLusdAmount);
       const collValue = Number(xColl);
 
       if (!walletClient) return null;
 
-      const { 0: debt, 1: coll } =
-        await troveManagerContract.getEntireDebtAndColl(
-          walletClient.account.address
-        );
-
-      const expectedBorrowingRate =
-        await troveManagerContract.getBorrowingRateWithDecay();
-
-      const borrowingRate = Number(ethers.formatUnits(expectedBorrowingRate, 18));
-      const debtFormatted = Number(ethers.formatUnits(debt, 18));
-      const collFormatted = Number(ethers.formatUnits(coll, 18));
-
-      setCollAmount(collFormatted);
-
-      const expectedFeeFormatted = (borrowingRate * lusdValue) / 100;
-
-      const pusdBalanceValue = await erc20Contract.balanceOf(
-        walletClient.account.address
-      );
-      const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
-      setPusdBalance(Number(Number(pusdBalanceFormatted).toFixed(2)));
-
-      const debtTotal = debtFormatted - lusdValue;
+      const debtTotal = Number(debt) - lusdValue;
       setTotalDebt(debtTotal);
 
-      const collTotal = (collFormatted - collValue);
+      const collTotal = Number(coll) - collValue;
       setTotalColl(collTotal);
 
       //ltv
@@ -402,36 +278,57 @@ export default function Repay() {
       setLtv(ltvValue);
 
       //liquidationPrice
-      const divideBy = isRecoveryMode ? 1.5 : 1.1;
-      const liquidationPriceValue = (1.1 * debtTotal) / (collFormatted - collValue);
+      const liquidationPriceValue = (divideBy * debtTotal) / collTotal;
       setLiquidationPrice(liquidationPriceValue);
 
-      const availCollTotalValue = collValue * price;
-      const newAvailColl = collValue * Number(fetchedPrice);
+      const newAvailColl = Number(coll) - ((divideBy * debtTotal) / Number(fetchedPrice))
 
       setNewAvailColl(newAvailColl)
 
-      setAvailCollTotal(availCollTotalValue);
+      { parseFloat(userInputs.coll) > 0 ? setUserInputColl(1) : setUserInputColl(0) }
+      { parseFloat(userInputs.lusdAmount) > 0 ? setUserInputDebt(1) : setUserInputDebt(0) }
+
 
       // Payable debt
       const payableDebtValue = debtTotal - lr;
       setPayableDebt(payableDebtValue);
+
     } catch (error) {
       console.error(error, "Error in makeCalculations");
-    } finally {
-      // Set loading states to false after calculations complete
-      setIsLtvLoading(false);
-      setIsTotalCollateralLoading(false);
-      setIsPayableDebtLoading(false);
-      setIsLiquidationPriceLoading(false);
-      setIsTotalDebtLoading(false);
+    }
+  };
+
+  const handlePercentageClick = (percentage: any) => {
+    const percentageDecimal = new Decimal(percentage).div(100);
+    const pusdBalanceNumber = parseFloat(totalAvailableRepay.toString());
+    if (!isNaN(pusdBalanceNumber)) {
+      const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
+      const stakeFixed = maxStake.toFixed(2);
+      setUserInputs({ coll: userInputs.coll, lusdAmount: stakeFixed });
+
+    } else {
+      console.error("Invalid PUSD balance:", availableToBorrow);
+    }
+  };
+
+  const handlePercentageClickBTC = (percentage: any) => {
+    const percentageDecimal = new Decimal(percentage).div(100);
+
+    const pusdBalanceNumber = newAvailColl
+
+    if (!isNaN(pusdBalanceNumber)) {
+      const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
+      const stakeFixed = maxStake.toFixed(8);
+      setUserInputs({ coll: stakeFixed, lusdAmount: userInputs.lusdAmount });
+    } else {
+      console.error("Invalid PUSD balance:");
     }
   };
 
 
   const divideBy = isRecoveryMode ? 1.5 : 1.1;
-  const availableToBorrow = price / divideBy - Number(entireDebtAndColl.debt);
-  const liquidation = 1.1 * (Number(entireDebtAndColl.debt) / Number(entireDebtAndColl.coll));
+  const availableToBorrow = price / divideBy - Number(debt);
+  const liquidation = 1.1 * (Number(debt) / Number(coll));
 
   const getTroveStatus = async () => {
     if (!walletClient) return null;
@@ -441,105 +338,181 @@ export default function Repay() {
     const troveStatus =
       troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
 
-    setValue((Number(entireDebtAndColl.debt) / (Number(entireDebtAndColl.coll) * Number(fetchedPrice)) * 100).toFixed(3));
+    setValue((Number(debt) / (Number(coll) * Number(fetchedPrice)) * 100).toFixed(3));
 
   };
   getTroveStatus();
+  const isUpdateDisabled = parseFloat(userInputs.coll) > collAmount && parseFloat(userInputs.lusdAmount) > pusdBalance && parseFloat(userInputs.coll) !== 0 && parseFloat(userInputs.lusdAmount) !== 0 && parseFloat(userInputs.lusdAmount) >= pusdBalance;
+  const totalAvailableRepay = Number(debt) - Number(minimumBorrow) - lr
+  const isCollInValid = parseFloat(userInputs.coll) > newAvailColl
+  const isDebtInValid = parseFloat(userInputs.lusdAmount) > totalAvailableRepay
 
-  const isUpdateDisabled = parseFloat(userInputs.coll) > collAmount || parseFloat(userInputs.lusdAmount) > pusdBalance && parseFloat(userInputs.coll) !== 0 && parseFloat(userInputs.lusdAmount) !== 0 && parseFloat(userInputs.lusdAmount) >= pusdBalance;
+  const newLTV = ((Number(debt) * 100) / ((Number(coll) * Number(fetchedPrice)))).toFixed(2)
+
+
+
+
   return (
-    <div className=" flex-col flex md:flex-row justify-between gap-32">
-      <div>
-        <div className="grid space-y-5 w-full max-w-sm items-start gap-2 mx-auto   p-5">
-          <div className="relative">
-            <Label htmlFor="items" className=" body-text text-base text-gray-500 whitespace-nowrap ">
-              Repay PUSD
-            </Label>
-            <div
-              className="flex items-center border border-yellow-300  w-[20rem] md:w-full md:-ml-0 -ml-3 "
-              style={{ backgroundColor: "#3f3b2d" }}
-            >
-              <div className="p-1">
-                <Image src={img4} alt="home" />{" "}
-                <span className=" body-text text-xs whitespace-nowrap ml-05">PUSD</span>
+    <>
+      <div className="flex-col flex md:flex-row justify-between gap-32">
+        <div>
+          <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
+            <div className="relative">
+              <Label htmlFor="quantity" className="text-white body-text text-sm mb-2">
+                Repay PUSD
+              </Label>
+
+              <div className="flex items-center w-[20rem] md:w-full md:-ml-0 -ml-3  border border-yellow-300 " style={{ backgroundColor: "#3f3b2d" }}>
+                <div className='flex items-center h-[3.5rem] '>
+                  <Image src={img4} alt="home" className='ml-1' />
+                  <h3 className='text-white body-text ml-1 '>PUSD</h3>
+                  <h3 className='h-full border mx-4'></h3>
+                </div>
+                <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.lusdAmount} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }} className="w-[23.75rem] ml-1 h-[4rem] body-text text-sm whitespace-nowrap text-white" style={{ backgroundColor: "#3f3b2d" }} />
               </div>
-              <input id="items" placeholder="0.00 PUSD" type="number" disabled={!isConnected} value={userInputs.lusdAmount} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newCollValue }); }} className="w-[23.75rem] ml-1 body-text text-base whitespace-nowrap text-gray-500 h-[4rem] " style={{ backgroundColor: "#3f3b2d" }} />
+              <div className="flex flex-col  md:flex-row gap-x-5  justify-between">
+                <span className="text-white gap-x-2 flex md:flex-row  md:w-full w-20 flex-col">
+                  <h6 className="text-gray-500 body-text  text-sm">
+                    Available{" "}
+                  </h6>
+                  {Number(totalAvailableRepay) >= 0 && (
+                    <h6 className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.lusdAmount) > totalAvailableRepay ? 'text-red-500' : 'text-white'}`}>
+                      {Number(totalAvailableRepay).toFixed(2)}
+                    </h6>
+                  )}
+                </span>
+                <div className="flex w-full gap-x-3 mt-2">
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                </div>
+              </div>
+
             </div>
-          </div>
-          <span className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.lusdAmount) > pusdBalance ? 'text-red-500' : 'text-white'}`}>
-            Available {staticTotalDebt - lr - Number(minimumBorrow)} PUSD
-          </span>
-          <div className="relative">
-            <Label htmlFor="quantity" className="body-text text-base text-gray-500 whitespace-nowrap">
-              Withdraw Collateral
-            </Label>
-            <div
-              className="flex items-center border w-[20rem] md:w-full md:-ml-0 -ml-3  border-yellow-300 "
-              style={{ backgroundColor: "#3f3b2d" }}
-            >
-              {" "}
-              <Image src={img3} alt="home" />
-              <span className="text-white  body-text text-xs whitespace-nowrap md:-ml-0 -ml-2">BTC</span>
-              <input id="quantity" placeholder="0.00 PUSD" type="number" disabled={!isConnected} value={userInputs.coll} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, coll: newBorrowValue }); }} className="w-[23.75rem] h-[4rem] ml-1 text-gray-500 body-text text-base whitespace-nowrap" style={{ backgroundColor: "#3f3b2d" }}
-              />
-              <span className="text-white  body-text text-xs whitespace-nowrap">
-                ${Number(newAvailColl).toFixed(2)}
-              </span>
+            <div className="relative">
+              <Label
+                htmlFor="items"
+                className="text-white body-text text-sm mb-2"
+              >
+                Withdraw Collatoral
+              </Label>
+              <div className="flex items-center  md:w-full md:-ml-0 -ml-3  border border-yellow-300 " style={{ backgroundColor: "#3f3b2d" }}>
+                <div className='flex items-center h-[3.5rem] '>
+                  <Image src={img3} alt="home" className='ml-1' />
+                  <h3 className='text-white body-text ml-1 '>BTC</h3>
+                  <h3 className='h-full border mx-4'></h3>
+                </div>
+                <div className=" justify-between items-center flex gap-x-24">
+                  <input id="items" placeholder='Enter Collateral Amount'
+                    disabled={!isConnected} value={userInputs.coll}
+                    onChange={(e) => {
+                      const newCollValue = e.target.value;
+                      setUserInputs({ ...userInputs, coll: newCollValue, });
+                    }}
+                    className="body-text text-sm whitespace-nowrap ml-1 h-[4rem] text-white" style={{ backgroundColor: "#3f3b2d" }}
+                  />
+                  <span className="text-sm body-text">
+                    ${(parseFloat(userInputs.coll) * Number(fetchedPrice)).toFixed(2)}
+                  </span>
+                </div>
+
+              </div>
+              <div className="flex flex-col md:flex-row gap-x-5 justify-between">
+                <span className="text-white gap-x-2 flex md:flex-row md:w-full w-20 flex-col ">
+                  <span className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.coll) > newAvailColl ? 'text-red-500' : 'text-white'}`}>
+                    Available {(newAvailColl).toFixed(8)}
+                  </span>
+                </span>
+                <div className="flex w-full gap-x-3 mt-2">
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                </div>
+              </div>
             </div>
-            <div className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.coll) > collAmount ? 'text-red-500' : 'text-white'}`}>
-              Available {collAmount.toFixed(4)}
-            </div>
-            <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)} className={`mt-5 w-full title-text h-[3rem] ${isUpdateDisabled ? 'bg-gray-300 cursor-not-allowed' : 'bg-yellow-300'} text-black`} disabled={isUpdateDisabled} >
+            <button
+              onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}
+              className={`mt-5 w-full title-text h-[3rem]
+                                   ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
+                  ? 'bg-gray-300 cursor-not-allowed' : 'cursor-pointer bg-yellow-300 text-black'}`}
+              disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
               UPDATE TROVE
             </button>
           </div>
         </div>
-      </div>
+        <div className="w-fit p-10 border mx-2 md:mx-4 border-black  md:mt-10 text-sm"
+          style={{ backgroundColor: "#" }}>
 
-      <div className="w-auto  p-10   md:mt-10 mx-2 md:mx-4 border border-black text-sm" style={{ backgroundColor: "#3f3b2d" }}>
-        <div className="mb-4 space-y-4 ">
-          <div className="flex  text-white mb-2 justify-between">  <span className="body-text text-xs whitespace-nowrap">Loan-To-Value</span>
-            <span className="text-xs whitespace-nowrap body-text text-right">{Number(value)} %
-              <span>{`-->`}</span><span className="">{isLtvLoading ? (
-                <h2 className="title-text animate-ping">--</h2>
-              ) : (
-                <span className="body-text text-xs whitespace-nowrap">{Number(ltv).toFixed(2)} %</span>
-              )}</span>
-            </span>
-          </div>
-          <div className="flex  text-white mb-2 justify-between">  <span className="body-text text-xs whitespace-nowrap">Liq. Reserve</span>
-            <span className="text-xs whitespace-nowrap body-text text-right">{Number(lr).toFixed(2)} PUSD
-
-            </span>
-          </div>
-          <div className="flex  text-white mb-2 justify-between">  <span className="body-text text-xs whitespace-nowrap text">Liq. Price
-          </span>
-            <span className="body-text text-xs whitespace-nowrap text-right">{Number(liquidation).toFixed(2)} PUSD
-              <span>{`-->`}</span><span>{Number(liquidationPrice).toFixed(2)} PUSD</span>
-            </span>
-          </div>
-          <div className="flex  text-white mb-2 justify-between">  <span className="body-text text-xs whitespace-nowrap">Total Debt</span>  <span className="body-text text-xs whitespace-nowrap">{Number(staticTotalDebt).toFixed(2)} PUSD
-            <span>{`-->`}</span><span>
-              {isTotalDebtLoading ? (
-                <h1 className="animate-ping">--</h1>
-              ) : (
-                <span className="body-text text-xs whitespace-nowrap">{Number(totalDebt).toFixed(2)} PUSD</span>
-              )}
-            </span>
-          </span>
-          </div>
-          <div className="flex  text-white mb-2 justify-between">  <span className="text-xs whitespace-nowrap body-text">Total Collateral</span>  <span className="body-text text-xs whitespace-nowrap text-left -ml-9">    {Number(entireDebtAndColl.coll).toFixed(6)} BTC
-            <span>{`-->`}</span><span>
-              {isTotalCollateralLoading ? (
-                <span className="animate-ping">--</span>
-              ) : (
-                <span className="body-text text-xs whitespace-nowrap">{Number(totalColl).toFixed(6)} BTC</span>
-              )}
-            </span>
-          </span>
+          <div className="mb-4 space-y-4">
+            <div className="flex md:gap-40 text-white mb-2 justify-between">
+              <span className="body-text text-xs whitespace-nowrap">Loan-To-Value</span>
+              <span className="text-xs whitespace-nowrap body-text">
+                <div className="flex items-center gap-x-3">
+                  {Number(newLTV).toFixed(2)} %
+                  <>
+                    {(userInputColl + userInputDebt >= 1) && (parseFloat(userInputs.coll) < Number(coll)) && (parseFloat(userInputs.lusdAmount) < Number(debt)) && (
+                      <>
+                        {`--->`}
+                        <span className={`overflow-x-clip text-sm body-text ${ltv > (100 / Number(divideBy)) ? 'text-red-500' : ''}`}>{" "}{Number(ltv).toFixed(2)} %</span>
+                      </>
+                    )}
+                  </>
+                </div>
+              </span>
+            </div>
+            <div className="flex md:gap-30 text-white mb-2 justify-between">
+              <span className="body-text text-xs whitespace-nowrap">Liquidation Price</span>
+              <span className="body-text text-xs whitespace-nowrap">
+                <div className="flex items-center gap-x-3">
+                  {Number(liquidation).toFixed(2)} PUSD
+                  <>
+                    {(userInputColl + userInputDebt >= 1) && (parseFloat(userInputs.coll) < Number(coll)) && (parseFloat(userInputs.lusdAmount) < Number(debt)) && (
+                      <>
+                        {`--->`}
+                        <span className="body-text text-xs whitespace-nowrap">{" "}{Number(liquidationPrice).toFixed(2)} PUSD</span>
+                      </>
+                    )}
+                  </>
+                </div>
+              </span>
+            </div>
+            <div className="flex md:gap-40 text-white mb-2 justify-between">
+              <span className="body-text text-xs whitespace-nowrap">Total Debt</span>
+              <span className="body-text text-xs whitespace-nowrap">
+                <div className="flex items-center gap-x-3">
+                  {Number(debt).toFixed(2)} PUSD
+                  <>
+                    {(userInputDebt == 1) && (parseFloat(userInputs.lusdAmount) < Number(debt)) && (
+                      <>
+                        {`--->`}
+                        <span className="ml-05">{" "}{Number(totalDebt).toFixed(2)} PUSD</span>
+                      </>
+                    )}
+                  </>
+                </div>
+              </span>
+            </div>
+            <div className="flex md:gap-40 text-white mb-2 justify-between">
+              <span className="text-xs whitespace-nowrap body-text">Total Collateral</span>
+              <span className="body-text text-xs whitespace-nowrap">
+                <div className="flex items-center gap-x-3">
+                  {Number(coll).toFixed(8)} BTC
+                  <>
+                    {(userInputColl == 1) && (parseFloat(userInputs.coll) < Number(coll)) && (
+                      <>
+                        {`--->`}
+                        <span className="ml-05">{" "}{Number(totalColl).toFixed(8)} BTC</span>
+                      </>
+                    )}
+                  </>
+                </div>
+              </span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

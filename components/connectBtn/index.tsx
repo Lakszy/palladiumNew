@@ -5,8 +5,13 @@
 
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Button } from "../ui/button";
+import React from "react";
 
-export const CustomConnectButton = () => {
+interface Props {
+	className: string
+  }
+
+export const CustomConnectButton: React.FC<Props>  = ({ className }) => {
 	return (
 		<ConnectButton.Custom>
 			{({
@@ -38,8 +43,7 @@ export const CustomConnectButton = () => {
 						{(() => {
 							if (!connected) {
 								return (
-									<Button className="md:mr-0 mr-8" onClick={openConnectModal}
-									
+									<Button className={className} onClick={openConnectModal}
 										style={{ display: "flex", alignItems: "center", backgroundColor: "#383427", height: 50, borderRadius: 3, border: "1px solid gray", borderWidth: "2px" }}>
 										<h2 className="title-text">
 											Connect Wallet
@@ -86,7 +90,7 @@ export const CustomConnectButton = () => {
 											</div>
 										)}
 										<h2 className="body-text notMobileDevice">
-										{chain.name}
+											{chain.name}
 										</h2>
 									</Button>
 									<Button onClick={openAccountModal}
