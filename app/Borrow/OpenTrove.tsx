@@ -5,14 +5,11 @@
 import { Label } from "@/components/ui/label";
 import borrowerOperationAbi from "../src/constants/abi/BorrowerOperations.sol.json";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
-import priceFeedAbi from "../src/constants/abi/PriceFeedTestnet.sol.json";
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
-import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
-import { readContract } from '@wagmi/core'
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
@@ -21,8 +18,6 @@ import Image from "next/image";
 import img1 from "../assets/images/Group 771.png";
 import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
-import { wagmiConfig } from "../src/config/config";
-import { borrowerOperations } from "../src/constants/abi/borrowerOperations";
 import { Button } from "@/components/ui/button";
 
 export const OpenTrove = () => {
@@ -30,9 +25,17 @@ export const OpenTrove = () => {
     collatoral: "",
     borrow: "",
   });
-  const [formattedMCR, setFormattedMCR] = useState("0")
-  const [formattedCCR, setFormattedCCR] = useState("0")
   const [isloading, setIsLoading] = useState(false)
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [minDebt, setMinDebt] = useState(0)
+  const [borrowRate, setBorrowRate] = useState(0)
+  const [lr, setLR] = useState(0)
+  const [cCr, setCCR] = useState(0)
+  const [mCR, setMCR] = useState(0)
+  const [fetchedPrice, setFetchedPrice] = useState(0)
+  const [recoveryMode, setRecoveryMode] = useState<boolean>()
+
 
   const [calculatedValues, setCalculatedValues] = useState({
     expectedFee: 0,
@@ -40,27 +43,13 @@ export const OpenTrove = () => {
     collateralRatio: 0,
   });
 
-  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const { data: isConnected } = useWalletClient();
-  const [price, setPrice] = useState<number>(0);
-  const [hasPriceFetched, setHasPriceFetched] = useState(false);
-  const [minimumBorrow, setMinimumBorrow] = useState("0");
-  const [liquidationReserveFormated, setLiquidationReserveFormated] = useState("0")
-  const [borrowingRate, setBorrowingRate] = useState("0")
-
   const { data: walletClient } = useWalletClient();
-
   const { data: balanceData } = useBalance({
     address: walletClient?.account.address,
   });
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-
-  const troveManagerContract = getContract(
-    botanixTestnet.addresses.troveManager,
-    troveManagerAbi,
-    provider
-  );
 
   const sortedTrovesContract = getContract(
     botanixTestnet.addresses.sortedTroves,
@@ -80,83 +69,45 @@ export const OpenTrove = () => {
     walletClient
   );
 
-  const priceFeedContract = getContract(
-    botanixTestnet.addresses.priceFeed,
-    priceFeedAbi,
-    provider
-  );
   const pow18 = Decimal.pow(10, 18);
   const pow20 = Decimal.pow(10, 20);
 
+
   useEffect(() => {
-    const getPrice = async () => {
+    const fetchData = async () => {
       try {
-        if (!provider || hasPriceFetched) return null;
-        const fetchedPrice = await priceFeedContract.getPrice();
-        const convertedFetchedPrice = ethers.formatUnits(fetchedPrice, 18);
-        setPrice(Number(convertedFetchedPrice));
+        const response = await fetch("https://api.palladiumlabs.org/protocol/metrics");
+        const data = await response.json();
+        const protocolMetrics = data[0];
 
-        const minDebt = await readContract(wagmiConfig, {
-          abi: borrowerOperations,
-          address: '0x1a45fEEe34a2fcfB39f28c57A1df08756f5d3A97',
-          functionName: 'MIN_NET_DEBT',
-        })
-        const formattedMInDebt = ethers.formatUnits(minDebt, 18)
-        setMinimumBorrow(formattedMInDebt)
-
-        const MCR = await troveManagerContract.MCR();
-        const CCR = await troveManagerContract.CCR();
-
-        setFormattedMCR(ethers.formatUnits(MCR, 18))
-        setFormattedCCR(ethers.formatUnits(CCR, 18))
-
-        const expectedBorrowingRate = await troveManagerContract.getBorrowingRateWithDecay();
-        setBorrowingRate(ethers.formatUnits(expectedBorrowingRate, 18))
-
-
-        const liquidationReserve = await troveManagerContract.LUSD_GAS_COMPENSATION();
-        setLiquidationReserveFormated(ethers.formatUnits(liquidationReserve, 18))
-      }
-      catch (error) {
-        console.error(error, "error");
-      } finally {
-        setHasPriceFetched(true);
+        setRecoveryMode(protocolMetrics.recoveryMode);
+        setFetchedPrice(protocolMetrics.priceBTC);
+        setMCR(protocolMetrics.MCR)
+        setCCR(protocolMetrics.CCR)
+        setLR(protocolMetrics.LR)
+        setBorrowRate(protocolMetrics.borrowRate)
+        setMinDebt(protocolMetrics.minDebt)
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
     };
-    const getRecoveryModeStatus = async () => {
-      const fetchPrice: bigint = await priceFeedContract.getPrice();
-      const status: boolean = await troveManagerContract.checkRecoveryMode(
-        fetchPrice
-      );
-      setIsRecoveryMode(status);
-    };
-    getRecoveryModeStatus();
-    getPrice();
+    fetchData();
   }, []);
 
+
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
+
+    setIsModalVisible(true);
     const collValue = Number(xCollatoral);
     const borrowValue = Number(xBorrow);
 
-    const liquidationReserve =
-      await troveManagerContract.LUSD_GAS_COMPENSATION();
-    const liquidationReserveFormated = Number(
-      ethers.formatUnits(liquidationReserve, 18)
-    );
-
-    const expectedBorrowingRate = await troveManagerContract.getBorrowingRateWithDecay();
-
-    const borrowingRate = Number(ethers.formatUnits(expectedBorrowingRate, 18));
-
-    const expectedFeeFormatted = (borrowingRate * borrowValue) / 100;
-
-    const expectedDebt = borrowValue + expectedFeeFormatted + liquidationReserveFormated;
+    const expectedFeeFormatted = (borrowRate * borrowValue) / 100;
+    const expectedDebt = borrowValue + expectedFeeFormatted + lr;
 
     let NICR = collValue / expectedDebt;
 
     const NICRDecimal = new Decimal(NICR.toString());
     const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed());
-
     const numTroves = await sortedTrovesContract.getSize();
     const numTrials = numTroves * BigInt("15");
 
@@ -179,7 +130,7 @@ export const OpenTrove = () => {
     const borrowDecimal = new Decimal(borrowValue.toString());
     const borrowBigint = BigInt(borrowDecimal.mul(pow18).toFixed());
 
-    const maxFee = "6".concat("0".repeat(16)); 
+    const maxFee = "6".concat("0".repeat(16));
     await borrowerOperationsContract.openTrove(
       maxFee,
       borrowBigint,
@@ -188,6 +139,7 @@ export const OpenTrove = () => {
       { value: collBigint }
     );
 
+    setIsModalVisible(false)
   };
 
   const makeCalculations = async (xBorrow: string, xCollatoral: string) => {
@@ -196,13 +148,10 @@ export const OpenTrove = () => {
       const collValue = Number(xCollatoral);
       const borrowValue = Number(xBorrow);
 
-      const expectedFeeFormatted = (Number(borrowingRate) * borrowValue);
-      const expectedDebt = Number(borrowValue + expectedFeeFormatted + Number(liquidationReserveFormated));
+      const expectedFeeFormatted = (borrowRate * borrowValue);
+      const expectedDebt = Number(borrowValue + expectedFeeFormatted + lr);
 
-      console.log(borrowValue, expectedFeeFormatted, liquidationReserveFormated, "pppp")
-      console.log(borrowingRate)
-
-      const collRatio = (collValue * price * 100) / Number(expectedDebt);
+      const collRatio = (collValue * fetchedPrice * 100) / Number(expectedDebt);
 
       setCalculatedValues({
         ...calculatedValues,
@@ -219,7 +168,6 @@ export const OpenTrove = () => {
     }
   };
 
-
   const handlePercentageClick = (percentage: any) => {
     const percentageDecimal = new Decimal(percentage).div(100);
     const pusdBalanceNumber = parseFloat(maxBorrow.toString());
@@ -233,7 +181,6 @@ export const OpenTrove = () => {
     }
   };
 
-
   const handlePercentageClickBTC = (percentage: any) => {
     const percentageDecimal = new Decimal(percentage).div(100);
 
@@ -241,7 +188,7 @@ export const OpenTrove = () => {
 
     if (!isNaN(pusdBalanceNumber)) {
       const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
-      const stakeFixed = maxStake.toFixed(6);
+      const stakeFixed = maxStake.toFixed(8);
 
       setUserInputs({ collatoral: stakeFixed, borrow: userInputs.borrow });
     } else {
@@ -249,28 +196,18 @@ export const OpenTrove = () => {
     }
   };
 
-
   useDebounce(() => {
     makeCalculations(userInputs.borrow, userInputs.collatoral);
   }, 10, [userInputs.borrow, userInputs.collatoral]
   );
 
-  const totalCollateral = Number(userInputs.collatoral) * price;
-  const divideBy = isRecoveryMode ? formattedCCR : formattedMCR;
-  const maxBorrow = totalCollateral / Number(divideBy) - (Number(liquidationReserveFormated) + calculatedValues.expectedFee);
+  const totalCollateral = Number(userInputs.collatoral) * fetchedPrice;
+  const divideBy = recoveryMode ? cCr : mCR;
+  const maxBorrow = totalCollateral / Number(divideBy) - (lr + calculatedValues.expectedFee);
   const loanToValue = (calculatedValues.expectedDebt * 100) / (totalCollateral || 1);
   const liquidationPrice = (Number(divideBy) * calculatedValues.expectedDebt) / (Number(Number(userInputs.collatoral)) || 1);
-
   const bothInputsEntered = userInputs.collatoral !== "0" && userInputs.borrow !== "0";
 
-  const isUpdateDisabled = parseFloat(userInputs.collatoral) > Number(balanceData?.formatted);
-
-  console.log("Expected Fee:", calculatedValues.expectedFee)
-
-  console.log(Number(calculatedValues.expectedDebt), Number(liquidationReserveFormated), "LRR")
-
-
-  console.log(userInputs.borrow, userInputs.collatoral, "inp")
   return (
     <div className="h-full body-text ">
       <div className="p-4 ">
@@ -330,7 +267,7 @@ export const OpenTrove = () => {
             </div>
             <div className="pt-2 border flex items-center justify-between">
               <span className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
-                Available {Number(balanceData?.formatted).toFixed(6)}{" "}
+                Available {Number(balanceData?.formatted).toFixed(8)}{" "}
               </span>
               <div className="flex w-full gap-x-3 mt-2">
                 <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
@@ -372,10 +309,8 @@ export const OpenTrove = () => {
                 <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
                 <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
               </div>
-              {Number(userInputs.borrow) < Number(minimumBorrow) && (Number(userInputs.borrow) > 0) && (
-                <span className="text-red-500 ml-1 body-text md:w-1/2">
-                  Borrow amount should be greater than {Number(minimumBorrow).toFixed(0)}
-                </span>
+              {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (
+                <span className="text-red-500 ml-1 body-text md:w-1/2">Borrow amount should be greater than {minDebt} </span>
               )}
             </div>
           </div>
@@ -384,21 +319,21 @@ export const OpenTrove = () => {
             className={`mt-10 h-[3rem] bg-yellow-300 body-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? 'bg-gray-500 cursor-not-allowed' : 'bg-yellow-300'}`}
             disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
               || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData?.formatted)
-              || parseFloat(userInputs.borrow) <= Number(minimumBorrow)}
+              || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}
             style={{
-              cursor: (!userInputs.borrow ||
+              cursor: (!userInputs.borrow || isModalVisible ||
                 !userInputs.collatoral ||
                 loanToValue > (100 / Number(divideBy)) ||
                 parseFloat(userInputs.borrow) > maxBorrow ||
                 parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
-                parseFloat(userInputs.borrow) <= Number(minimumBorrow))
+                parseFloat(userInputs.borrow) <= minDebt)
 
                 ? 'not-allowed' : 'pointer'
             }}>
-            Open Trove
+            {isModalVisible ? "Opening Trove..." : "Open Trove"}
           </button>
         </div>
-        {bothInputsEntered && Number(userInputs.borrow) >= Number(minimumBorrow) && parseFloat(userInputs.collatoral) < Number(balanceData?.formatted) ? (
+        {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData?.formatted) ? (
           <div className="w-4/5 notMobileDevice mt-8 p-5 border-yellow-200 h-fit space-y-10  text-white"
             style={{ backgroundColor: "#3f3b2d" }}
           >
@@ -413,7 +348,7 @@ export const OpenTrove = () => {
             <div className="flex body-text whitespace-nowrap justify-between">
               <span className="body-text text-sm text-gray-500">Liq. Reserve</span>
               <span className="body-text text-sm body-text">
-                {Number(liquidationReserveFormated).toFixed(2)} {" "} PUSD
+                {lr} PUSD
               </span>
             </div>
             <div className="flex justify-between">
@@ -428,22 +363,19 @@ export const OpenTrove = () => {
             </div>
             <div className="flex justify-between">
               <span className=" text-sm body-text text-gray-500">Total Debt</span>
-              {Number((calculatedValues.expectedDebt)) > Number(liquidationReserveFormated) ?
+              {Number((calculatedValues.expectedDebt)) > lr ?
                 <span className=" text-sm body-text">{(calculatedValues.expectedDebt).toFixed(2)} {" "} PUSD</span>
                 :
                 "---"
               }
             </div>
-
             <div className="flex justify-between">
               <span className=" text-sm body-text text-gray-500">Total Collateral</span>
               <span className=" text-sm body-text">{(totalCollateral).toFixed(2)} {" "} PUSD</span>
             </div>
           </div>
         ) : (
-          <>
-
-          </>
+          <></>
         )}
       </div>
     </div >

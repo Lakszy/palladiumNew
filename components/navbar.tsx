@@ -1,91 +1,32 @@
-"use client"
-
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import pusdbtc from "../app/assets/images/PUSD.svg"
-import priceFeedAbi from "../app/src/constants/abi/PriceFeedTestnet.sol.json";
-import Decimal from "decimal.js";
-import troveManagerAbi from "../app/src/constants/abi/TroveManager.sol.json";
-import botanixTestnet from "../app/src/constants/botanixTestnet.json";
-import { ethers } from "ethers";
 import btc from "../app/assets/images/btclive.svg"
 import { CustomConnectButton } from "./connectBtn";
-import web3 from "web3";
-import { getContract } from "@/app/src/utils/getContract";
-import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
 import "../app/App.css"
 import MobileNav from "./MobileNav";
 
 function NavBar() {
-  const [fetchedPrice, setFetchedPrice] = useState("0");
-  const [systemLTV, setSystemLTV] = useState(0);
-  const [isRecoveryMode, setIsRecoveryMode] = useState<boolean>(false);
-
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-
-  const priceFeedContract = getContract(
-    botanixTestnet.addresses.priceFeed,
-    priceFeedAbi,
-    provider
-  );
-
-  const troveManagerContract = getContract(
-    botanixTestnet.addresses.troveManager,
-    troveManagerAbi,
-    provider
-  );
-  const { toBigInt } = web3.utils;
+  const [fetchedPrice, setFetchedPrice] = useState(0);
+  const [systemCollRatio, setSystemCollRatio] = useState(0);
+  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
 
   useEffect(() => {
-    const pow = Decimal.pow(10, 18);
-    const _1e18 = toBigInt(pow.toFixed());
-    const fetchPrice = async () => {
-      const pow = Decimal.pow(10, 18);
-      const _1e18 = toBigInt(pow.toFixed());
+    const fetchData = async () => {
       try {
-        const fetchPrice: bigint = await priceFeedContract.getPrice();
+        const response = await fetch("https://api.palladiumlabs.org/protocol/metrics");
+        const data = await response.json();
+        const protocolMetrics = data[0];
 
-        const fetchPriceDecimal = new Decimal(fetchPrice.toString());
-        const fetchPriceFormatted = fetchPriceDecimal
-          .div(_1e18.toString())
-          .toString();
-        setFetchedPrice(fetchPriceFormatted);
+        setIsRecoveryMode(protocolMetrics.recoveryMode);
+        setFetchedPrice(protocolMetrics.priceBTC);
+        setSystemCollRatio(protocolMetrics.TCR);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-    const getSystemLTV = async () => {
-      const fetchPrice: bigint = await priceFeedContract.getPrice();
 
-      const fetchPriceDecimal = new Decimal(fetchPrice.toString());
-      const fetchPriceFormatted = fetchPriceDecimal
-        .div(_1e18.toString())
-        .toString();
-
-      const entColl = await troveManagerContract.getEntireSystemColl()
-      const entDebt = await troveManagerContract.getEntireSystemDebt()
-
-      const debtFormatted = Number(ethers.formatUnits(entDebt, 18));
-      const collFormatted = Number(ethers.formatUnits(entColl, 18));
-
-      const systemLtv = (debtFormatted * 100) / (collFormatted * Number(fetchPriceFormatted))
-      setSystemLTV(systemLtv);
-    };
-
-    const getRecoveryModeStatus = async () => {
-      const fetchPrice: bigint = await priceFeedContract.getPrice();
-      const status: boolean = await troveManagerContract.checkRecoveryMode(
-        fetchPrice
-      );
-      setIsRecoveryMode(status);
-    };
-
-    fetchPrice();
-    getSystemLTV();
-    getRecoveryModeStatus();
-    const intervalId = setInterval(fetchPrice, 50000);
-
-    return () => clearInterval(intervalId);
+    fetchData();
   }, []);
 
   return (
@@ -95,25 +36,26 @@ function NavBar() {
           <div className="items-center flex gap-x-2">
             <Image src={pusdbtc} alt="btc" width={40} />
             <div>
-              <h1 className="text-white body-text -ml-1">PUSD</h1>
-              <h1 className="text-gray-400 text-bold body-text -ml-1">$ 1.00</h1>
+              <h1 className="text-white title-text -ml-1">PUSD</h1>
+              <h1 className="text-gray- text-gray-400 title-text  -ml-1">$ 1.00</h1>
             </div>
           </div>
           <div className="items-center flex gap-x-2">
             <Image src={btc} alt="btc" width={40} />
             <div>
-              <h1 className="text-white body-text -ml-1">BTC</h1>
-              <h1 className="body-text text-gray-400">${Number(fetchedPrice).toFixed(2)}</h1>
+              <h1 className="text-white title-text -ml-1">BTC</h1>
+              <h1 className="text-gray-400 title-text text--400">${Number(fetchedPrice).toFixed(2)}</h1>
             </div>
           </div>
           <div className="items-ceneter flex flex-col gap-x-2">
-            <h2 className="text-white title-text">System LTV</h2>
-            <h3 className="text-gray-400 title-text">{Number(systemLTV).toFixed(2)} {" "}%</h3>
+            <h2 className="text-white title-text">System Collateral Ratio</h2>
+            <h3 className="text-gray-400 title-text">{systemCollRatio * 100} {" "}%</h3>
           </div>
           <div className="items-ceneter flex flex-col gap-x-2">
             <h2 className="text-white title-text">Recovery Mode</h2>
             <h3 className="text-gray-400 title-text">
               {isRecoveryMode ? "Yes" : "No"}
+              { }
             </h3>
           </div>
         </div>
@@ -122,10 +64,10 @@ function NavBar() {
         <div className="mobileDevice ">
           <MobileNav />
         </div>
-        <CustomConnectButton className=""  />
+        <CustomConnectButton className="" />
       </div>
     </div>
   );
 }
-export default NavBar
 
+export default NavBar;

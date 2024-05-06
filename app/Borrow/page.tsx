@@ -5,6 +5,7 @@ import NavBar from "@/components/navbar";
 import Borrow from "../Borrow/index";
 
 export default function Home() {
+  
   return (
     <div className="grid h-screen mainT w-full grid-cols-[max-content_1fr] overflow text-white">
       <TabsDemo />
@@ -12,7 +13,6 @@ export default function Home() {
         <div className="sticky z-50 mainT top-0  overflow-auto">
           <NavBar />
         </div>
-
         <div className="h-screen md:w-full w-screen " style={{ backgroundColor: "#272315" }}>
           <Borrow />
         </div>

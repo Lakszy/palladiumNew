@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 const Progress = ({ total, supplied }: { total: number; supplied: number }) => {
   const [percentage, setPercentage] = useState(0);
 
-  console.log("IAM FROM pup", total, supplied);
 
   useEffect(() => {
     const calculatePercentage = () => {

@@ -1,6 +1,5 @@
 /* eslint-disable */
 
-
 "use client";
 
 import borrowerOperationAbi from "../../app/src/constants/abi/BorrowerOperations.sol.json";
@@ -18,7 +17,6 @@ import { CustomConnectButton } from "../connectBtn";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useAccount } from 'wagmi';
-
 import { Dialog } from 'primereact/dialog';
 import BotanixLOGO from "../../app/assets/images/newpalladium.svg"
 import Image from "next/image";
@@ -52,8 +50,6 @@ export const StabilityPool = () => {
 
 	const {
 		data: hash,
-		isPending,
-		writeContract
 	} = useWriteContract()
 
 	const { isLoading: isConfirming, isSuccess: isConfirmed } =
@@ -67,18 +63,17 @@ export const StabilityPool = () => {
 		provider
 	);
 
-	const { toWei, toBigInt } = web3.utils;
+	const { toBigInt } = web3.utils;
 
 	const handlePercentageClick = (percentage: any) => {
 		const pow = Decimal.pow(10, 18);
 		const _1e18 = toBigInt(pow.toFixed());
 		const percentageDecimal = new Decimal(percentage).div(100);
-		console.log(pusdBalance, "IMA FROM STEAKE")
 		const pusdBalanceNumber = parseFloat(pusdBalance);
 		if (!isNaN(pusdBalanceNumber)) {
 			const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
-			const stakeFixed = maxStake.toFixed();
-			setUserInput(stakeFixed);
+			const stakeFixed = maxStake;
+			setUserInput(String(stakeFixed));
 		} else {
 			console.error("Invalid PUSD balance:", pusdBalance);
 		}
@@ -104,22 +99,17 @@ export const StabilityPool = () => {
 
 			const inputValue = inputBeforeConv.mul(pow).toFixed();
 
-			console.log(inputValue, "inputValue");
 			let addressToPass = "0x0000000000000000000000000000000000000000";
-			// console.log(web3.utils.toBigInt(userInput), "webinput");
-
+// api
 			const minDebt = await borrowerOperationsContractReadOnly.MIN_NET_DEBT();
-			console.log(minDebt, "minDebt");
 
 			if (minDebt <= inputValue) {
 				return setIsLowDebt(true);
 			}
-
 			const x = await stabilityPoolContract.provideToSP(
 				inputValue,
 				addressToPass
 			);
-			console.log(x, "output");
 			setIsModalVisible(false);
 
 		} catch (error) {
@@ -162,7 +152,8 @@ export const StabilityPool = () => {
 						</div>
 					) : (
 						<>
-							Wallet: {Number(pusdBalance).toFixed(2) || ".."} PUSD
+							Wallet:
+							{Math.trunc(Number(pusdBalance) * 100) / 100} PUSD
 						</>
 					)}
 				</span>
@@ -187,12 +178,12 @@ export const StabilityPool = () => {
 				<CustomConnectButton className="" />
 			)}
 			<Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
-					<>
-						<div className="waiting-container bg-white">
-							<div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for COnformation... ✨.</div>
-							<Image src={BotanixLOGO} className="waiting-image" alt="gif" />
-						</div>
-					</>
+				<>
+					<div className="waiting-container bg-white">
+						<div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for COnformation... ✨.</div>
+						<Image src={BotanixLOGO} className="waiting-image" alt="gif" />
+					</div>
+				</>
 			</Dialog>
 		</div>
 	);

@@ -93,7 +93,6 @@ export default function Redeem() {
                 if (!provider || hasPriceFetched) return null;
                 const fetchedPrice = await priceFeedContract.getPrice();
                 const convertedFetchedPrice = ethers.formatUnits(fetchedPrice, 18);
-                console.log("pricenew", convertedFetchedPrice)
                 setPrice(Number(convertedFetchedPrice));
             } catch (error) {
                 console.error(error, "error");

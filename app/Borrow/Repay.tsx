@@ -25,54 +25,40 @@ import { wagmiConfig } from "../src/config/config";
 import { borrowerOperations } from "../src/constants/abi/borrowerOperations";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+
 interface Props {
   coll: number;
   debt: number;
   lr: number;
-  fetchedPrice: number
+  fetchedPrice: number;
+  minDebt: number;
+  borrowRate: number;
+  recoveryMode: boolean;
+  cCR: number;
+  mCR: number
 }
 
-export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
+export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryMode, minDebt, cCR, mCR }) => {
   const [userInputs, setUserInputs] = useState({
     lusdAmount: "0",
     coll: "0",
   });
 
-  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const [isLowDebt, setIsLowDebt] = useState(false);
-  const [hasPriceFetched, setHasPriceFetched] = useState(false);
   const [hasGotStaticData, setHasGotStaticData] = useState(false);
   const [totalDebt, setTotalDebt] = useState(0);
   const [ltv, setLtv] = useState(0);
   const [price, setPrice] = useState(0);
   const [liquidationPrice, setLiquidationPrice] = useState(0);
   const [totalColl, setTotalColl] = useState(0);
-  const [collAmount, setCollAmount] = useState(0);
-  const [availCollTotal, setAvailCollTotal] = useState(0);
-  const [payableDebt, setPayableDebt] = useState(0);
-  const [pusdBalance, setPusdBalance] = useState(0);
-  const { address, isConnected } = useAccount();
+  const { isConnected } = useAccount();
   const [value, setValue] = useState("0");
-
   const [userInputColl, setUserInputColl] = useState(0)
   const [userInputDebt, setUserInputDebt] = useState(0)
-
   const [newAvailColl, setNewAvailColl] = useState(0)
 
   //static
-  const [staticCollAmount, setStaticCollAmount] = useState(0);
-  const [staticLiquidationPrice, setStaticLiquidationPrice] = useState(0);
-  const [staticTotalColl, setStaticTotalColl] = useState(0);
   const [staticLtv, setStaticLtv] = useState(0);
-  const [staticPayableDebt, setStaticPayableDebt] = useState(0);
-  const [staticTotalDebt, setStaticTotalDebt] = useState(0);
-  const [minimumBorrow, setMinimumBorrow] = useState("0");
-
-  const [formattedMCR, setFormattedMCR] = useState("0")
-  const [formattedCCR, setFormattedCCR] = useState("0")
-
-
-
 
   const { data: walletClient } = useWalletClient();
 
@@ -102,86 +88,26 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
     walletClient // We are using walletClient because we need to update/modify data in blockchain.
   );
 
-  const borrowerOperationsContractReadOnly = getContract(
-    botanixTestnet.addresses.borrowerOperations,
-    borrowerOperationAbi,
-    provider
-  );
-
-  const priceFeedContract = getContract(
-    botanixTestnet.addresses.priceFeed,
-    priceFeedAbi,
-    provider
-  );
-
-  const erc20Contract = getContract(
-    botanixTestnet.addresses.pusdToken,
-    erc20Abi,
-    provider
-  );
-
   useEffect(() => {
     const pow = Decimal.pow(10, 18);
     const _1e18 = toBigInt(pow.toFixed());
     const fetchedData = async () => {
       if (!walletClient) return null;
 
-      const {
-        0: debt,
-        1: coll,
-        2: pendingLUSDDebtReward,
-        3: pendingETHReward,
-      } = await troveManagerContract.getEntireDebtAndColl(
-        walletClient?.account.address
-      );
       const collDecimal = new Decimal(coll.toString()); // Convert coll to a Decimal
       const collFormatted = collDecimal.div(_1e18.toString()).toString(); // Divide coll by _1e18 and convert to string
 
-      const expectedBorrowingRate = await troveManagerContract.getBorrowingRateWithDecay();
-      const expectedFeeForm = ethers.formatUnits(expectedBorrowingRate, 18)
-
-      const minDebt = await readContract(wagmiConfig, {
-        abi: borrowerOperations,
-        address: '0x1a45fEEe34a2fcfB39f28c57A1df08756f5d3A97',
-        functionName: 'MIN_NET_DEBT',
-      })
-      const formattedMInDebt = ethers.formatUnits(minDebt, 18)
-      setMinimumBorrow(formattedMInDebt)
-
-
-      const divideBy = isRecoveryMode ? formattedCCR : formattedMCR;
-      const liquidationPriceValue = (Number(divideBy) * Number(debt)) / Number(coll);
-      setStaticLiquidationPrice(liquidationPriceValue);
-
     };
-
-    const getRecoveryModeStatus = async () => {
-      const fetchPrice: bigint = await priceFeedContract.getPrice();
-      const status: boolean = await troveManagerContract.checkRecoveryMode(
-        fetchPrice
-      );
-      setIsRecoveryMode(status);
-    };
-
     const getStaticData = async () => {
       if (!walletClient) return null;
       if (!provider || hasGotStaticData) return null;
-
-      const MCR = await troveManagerContract.MCR();
-      const CCR = await troveManagerContract.CCR();
-
-      setFormattedMCR(ethers.formatUnits(MCR, 18))
-      setFormattedCCR(ethers.formatUnits(CCR, 18))
-
       const ltvValue = (Number(debt) * 100) / ((Number(coll) * Number(fetchedPrice)) || 1); // if collTotal is 0/null/undefined then it will be divided by 1
       setStaticLtv(ltvValue);
       setHasGotStaticData(true);
     };
-
     getTroveStatus();
     fetchedData();
     getStaticData();
-    getRecoveryModeStatus();
   }, [walletClient]);
 
   useDebounce(
@@ -204,22 +130,18 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
 
       const newDebt = Number(debt) - lusdValue;
       const newColl = Number(coll) - collValue;
-      const minDebt = await borrowerOperationsContractReadOnly.MIN_NET_DEBT();
 
       if (minDebt <= newDebt) {
         return setIsLowDebt(true);
       }
 
       let NICR = newColl / newDebt;
-
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed());
-
       const numTroves = await sortedTrovesContract.getSize();
       const numTrials = numTroves * BigInt("15");
 
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
-        // bigNICRWithDecimals,
         NICRBigint,
         numTrials,
         42
@@ -227,7 +149,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
 
       const { 0: upperHint, 1: lowerHint } =
         await sortedTrovesContract.findInsertPosition(
-          // bigNICRWithDecimals,
           NICRBigint,
           approxHint,
           approxHint
@@ -240,8 +161,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
       const lusdDecimal = new Decimal(lusdValue.toString());
       const lusdBigint = BigInt(lusdDecimal.mul(pow18).toFixed());
 
-      console.log("tsxn start")
-      // Call adjustTrove with the exact upperHint and lowerHint
       const borrowOpt = await borrowerOperationsContract.adjustTrove(
         maxFee,
         collBigint,
@@ -254,9 +173,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
 
     } catch (error) {
       console.error(error, "Error");
-    } finally {
-      console.log("FINALLY");
-    }
+    } 
   };
 
   const makeCalculations = async (xLusdAmount: string, xColl: string) => {
@@ -289,10 +206,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
       { parseFloat(userInputs.lusdAmount) > 0 ? setUserInputDebt(1) : setUserInputDebt(0) }
 
 
-      // Payable debt
-      const payableDebtValue = debtTotal - lr;
-      setPayableDebt(payableDebtValue);
-
     } catch (error) {
       console.error(error, "Error in makeCalculations");
     }
@@ -303,8 +216,8 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
     const pusdBalanceNumber = parseFloat(totalAvailableRepay.toString());
     if (!isNaN(pusdBalanceNumber)) {
       const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
-      const stakeFixed = maxStake.toFixed(2);
-      setUserInputs({ coll: userInputs.coll, lusdAmount: stakeFixed });
+      const stakeFixed = maxStake;
+      setUserInputs({ coll: userInputs.coll, lusdAmount: String(stakeFixed) });
 
     } else {
       console.error("Invalid PUSD balance:", availableToBorrow);
@@ -326,32 +239,24 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
   };
 
 
-  const divideBy = isRecoveryMode ? 1.5 : 1.1;
+  const divideBy = recoveryMode ? cCR : mCR;
   const availableToBorrow = price / divideBy - Number(debt);
-  const liquidation = 1.1 * (Number(debt) / Number(coll));
+  const liquidation = divideBy * (Number(debt) / Number(coll));
 
   const getTroveStatus = async () => {
     if (!walletClient) return null;
     const troveStatusBigInt = await troveManagerContract.getTroveStatus(
       walletClient?.account.address
     );
-    const troveStatus =
-      troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
-
     setValue((Number(debt) / (Number(coll) * Number(fetchedPrice)) * 100).toFixed(3));
 
   };
   getTroveStatus();
-  const isUpdateDisabled = parseFloat(userInputs.coll) > collAmount && parseFloat(userInputs.lusdAmount) > pusdBalance && parseFloat(userInputs.coll) !== 0 && parseFloat(userInputs.lusdAmount) !== 0 && parseFloat(userInputs.lusdAmount) >= pusdBalance;
-  const totalAvailableRepay = Number(debt) - Number(minimumBorrow) - lr
+  const totalAvailableRepay = Number(debt) - minDebt - lr
   const isCollInValid = parseFloat(userInputs.coll) > newAvailColl
   const isDebtInValid = parseFloat(userInputs.lusdAmount) > totalAvailableRepay
 
   const newLTV = ((Number(debt) * 100) / ((Number(coll) * Number(fetchedPrice)))).toFixed(2)
-
-
-
-
   return (
     <>
       <div className="flex-col flex md:flex-row justify-between gap-32">
@@ -377,7 +282,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice }) => {
                   </h6>
                   {Number(totalAvailableRepay) >= 0 && (
                     <h6 className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.lusdAmount) > totalAvailableRepay ? 'text-red-500' : 'text-white'}`}>
-                      {Number(totalAvailableRepay).toFixed(2)}
+                      {Math.trunc(Number(totalAvailableRepay) * 100) / 100}
                     </h6>
                   )}
                 </span>

@@ -5,7 +5,6 @@ import { ethers } from "ethers";
 import { useState } from "react";
 import { useWalletClient } from "wagmi";
 import web3 from "web3";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -70,44 +69,20 @@ export const OpenTrove = () => {
 
 		const collatoralValue = collatoralBeforeConv.mul(pow).toFixed();
 		const borrowValue = borrowBeforeConv.mul(pow).toFixed();
-
-		// const collatoralValue = toBigInt(toWei(userInputs.collatoral, "wei"));
-		// const borrowValue = toBigInt(toWei(userInputs.borrow, "wei"));
-		console.log("Collatoral Value:", collatoralValue);
-		console.log("Borrow Value:", borrowValue);
-
-		console.log(troveManagerContract, "troveManagerContract");
-
-		const liquidationReserve =
-			await troveManagerContract.LUSD_GAS_COMPENSATION();
-
-		console.log(liquidationReserve, "liquidationReserve");
+		const liquidationReserve = await troveManagerContract.LUSD_GAS_COMPENSATION();
 
 		const expectedFee = await troveManagerContract.getBorrowingFeeWithDecay(
 			borrowValue
 		);
 
-		console.log(expectedFee, "expectedFee");
-
-		const expectedDebt =
-			borrowValue + BigInt(expectedFee) + BigInt(liquidationReserve);
-
-		console.log(expectedDebt, "expectedDebt");
-
-		// const _1e20 = toBigInt(toWei("100", "wei"));
-		// let NICR = (Number(collatoralValue) * _le20) / expectedDebt;
+		const expectedDebt = borrowValue + BigInt(expectedFee) + BigInt(liquidationReserve);
 
 		const _1e20Before = new Decimal(100);
 		_1e20 = _1e20Before.mul(pow).toFixed();
-		// let NICR = (Number(collatoralValue) * Number(_1e20)) / Number(expectedDebt);
 		let NICR = (BigInt(collatoralValue) * BigInt(_1e20)) / BigInt(expectedDebt);
-
-		console.log(NICR, "NICR");
 
 		const numTroves = await sortedTrovesContract.getSize();
 		const numTrials = numTroves * toBigInt("15");
-
-		console.log(numTrials, "numTrials");
 
 		const { 0: approxHint } = await hintHelpersContract.getApproxHint(
 			NICR,
@@ -115,19 +90,12 @@ export const OpenTrove = () => {
 			42
 		); // random seed of 42
 
-		console.log(approxHint, "approxHint");
-
-		// Use the approximate hint to get the exact upper and lower hints from the deployed SortedTroves contract
 		const { 0: upperHint, 1: lowerHint } =
 			await sortedTrovesContract.findInsertPosition(
 				NICR,
 				approxHint,
 				approxHint
 			);
-
-		console.log(upperHint, lowerHint, "upperHint", "lowerHint");
-
-		// Finally, call openTrove with the exact upperHint and lowerHint
 		const maxFee = "6".concat("0".repeat(16)); // Slippage protection: 5%
 		await borrowerOperationsContract.openTrove(
 			maxFee,
@@ -152,70 +120,31 @@ export const OpenTrove = () => {
 		const collatoralValue = collatoralBeforeConv.mul(pow).toFixed();
 		const borrowValue = borrowBeforeConv.mul(pow).toFixed();
 
-		// const collatoralValue = toBigInt(toWei(userInputs.collatoral, "wei"));
-		// const borrowValue = toBigInt(toWei(userInputs.borrow, "wei"));
-		console.log("Collatoral Value:", collatoralValue);
-		console.log("Borrow Value:", borrowValue);
-
-		console.log(troveManagerContract, "troveManagerContract");
-
 		liquidationReserve = await troveManagerContract.LUSD_GAS_COMPENSATION();
-
-		console.log(liquidationReserve, "liquidationReserve");
-
 		expectedFee = await troveManagerContract.getBorrowingFeeWithDecay(
 			borrowValue
 		);
 
-		console.log(expectedFee, "expectedFee");
-
-		expectedDebt =
-			borrowValue + BigInt(expectedFee) + BigInt(liquidationReserve);
-
-		console.log(expectedDebt, "expectedDebt");
-
+		expectedDebt = borrowValue + BigInt(expectedFee) + BigInt(liquidationReserve);
 		const _1e20Before = new Decimal(100);
 
-		// _1e20 = toBigInt(toWei('100', 'wei'));
 		_1e20 = _1e20Before.mul(pow).toFixed();
 		let NICR = (BigInt(collatoralValue) * BigInt(_1e20)) / BigInt(expectedDebt);
-
-		console.log(NICR, "NICR");
-
 		numTroves = await sortedTrovesContract.getSize();
-		// numTrials = numTroves * toBigInt('15');
 		numTrials = Number(numTroves) * Number(15);
-
-		console.log(numTrials, "numTrials");
 
 		const { 0: approxHint } = await hintHelpersContract.getApproxHint(
 			NICR,
 			numTrials,
 			42
 		); // random seed of 42
-
-		console.log(approxHint, "approxHint");
-
-		// Use the approximate hint to get the exact upper and lower hints from the deployed SortedTroves contract
 		const { 0: upperHint, 1: lowerHint } =
 			await sortedTrovesContract.findInsertPosition(
 				NICR,
 				approxHint,
 				approxHint
 			);
-
-		console.log(upperHint, lowerHint, "upperHint", "lowerHint");
-
-		// Finally, call openTrove with the exact upperHint and lowerHint
 		const maxFee = "6".concat("0".repeat(16)); // Slippage protection: 5%
-		console.log("maxFee:", maxFee);
-		// await borrowerOperationsContract.openTrove(
-		//   maxFee,
-		//   borrowValue,
-		//   upperHint,
-		//   lowerHint,
-		//   { value: collatoralValue }
-		// );
 	};
 
 	return (

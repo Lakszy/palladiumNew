@@ -57,7 +57,6 @@ export const Unstake = () => {
 						walletClient?.account.address
 					);
 				setStakedValue(fetchedPUSD);
-				console.log(fetchedPUSD, "fetchedPUSD");
 			} catch (error) {
 				console.error("Error fetching staked value:", error);
 			}
@@ -72,13 +71,8 @@ export const Unstake = () => {
 				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
 					walletClient?.account.address
 				);
-			console.log(fetchedTotalStakedValue, "fetchedTotalStakedValue");
-
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStakedValue(fixedtotal);
-			console.log(fixedtotal, "fixedtotal");
-			console.log(fetchedTotalStakedValue, "fetchedTotalStakedValue");
-			console.log(totalStakedValue, "totalStaked");
 		};
 		getStakedValue();
 	}, [walletClient, stabilityPoolContractReadOnly, totalStakedValue]);
@@ -89,8 +83,8 @@ export const Unstake = () => {
 		const pusdBalanceNumber = parseFloat(stakedValue.toString());
 		if (!isNaN(pusdBalanceNumber)) {
 			const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
-			const stakeFixed = maxStake.div(Decimal.pow(10, 18)).toFixed();
-			setUserInput(stakeFixed);
+			const stakeFixed = maxStake.div(Decimal.pow(10, 18));
+			setUserInput(String(stakeFixed));
 		} else {
 			console.error("Invalid PUSD balance:", pusdBalance);
 		}
@@ -105,12 +99,8 @@ export const Unstake = () => {
 			const inputBeforeConv = new Decimal(userInput);
 
 			const inputValue = inputBeforeConv.mul(pow).toFixed();
-
-			console.log(inputValue, "inputValue");
-
 			if (stakedValue >= Number(userInput)) {
 				const unstake = await stabilityPoolContract.withdrawFromSP(inputValue);
-				console.log(unstake, "output");
 			} else {
 				setIsLowPUSD(true);
 			}
@@ -136,7 +126,8 @@ export const Unstake = () => {
 						className="bg-[#3b351b] body-text text-lg h-14 border border-yellow-300 text-white px-3 "
 					/>
 				</div>
-				<span className="md:ml-[45%] text-yellow-300 font-medium balance body-text">Your Stake: {(Number(totalStakedValue)).toFixed(2) || 0} PUSD</span>
+				<span className="md:ml-[45%] text-yellow-300 font-medium balance body-text">Your Stake:
+					{Math.trunc(Number(totalStakedValue) * 100) / 100} PUSD</span>
 
 			</div>
 			<div className="flex w-full gap-x-4 md:gap-x-6  mt-2">

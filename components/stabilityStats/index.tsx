@@ -45,13 +45,8 @@ export const StabilityStats = () => {
 				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
 					walletClient?.account.address
 				);
-			console.log(fetchedTotalStakedValue, "fetchedTotalStakedValue");
-
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStakedValue(fixedtotal);
-			console.log(fixedtotal, "fixedtotal");
-			console.log(fetchedTotalStakedValue, "fetchedTotalStakedValue");
-			console.log(totalStakedValue, "totalStaked");
 		};
 
 		const totalStabilityPool = async () => {
@@ -61,9 +56,6 @@ export const StabilityStats = () => {
 
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStabilityPool(fixedtotal);
-			console.log(fixedtotal, "Lkahsya");
-			console.log(fetchedTotalStakedValue, "fetchedTotalStakedValue");
-			console.log(totalStakedValue, "totalStaked");
 		};
 
 		getStakedValue();
