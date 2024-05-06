@@ -59,8 +59,11 @@ interface ActivitiesData {
     [key: string]: Task;
   };
 }
+interface Props {
+  userExists: boolean
+}
 
-export function CardDemo() {
+export const CardDemo: React.FC<Props> = ({ userExists }) =>{
   const { data: walletClient } = useWalletClient();
   const [troveStatus, setTroveStatus] = useState("");
   const { address, isConnected } = useAccount();
@@ -91,7 +94,7 @@ export function CardDemo() {
     provider
   );
 
-  const { toWei, toBigInt } = web3.utils;
+  const { toBigInt } = web3.utils;
 
   useEffect(() => {
     const pow = Decimal.pow(10, 18);
@@ -194,17 +197,17 @@ export function CardDemo() {
     setValue((Number(entireDebtAndColl.debt) / (Number(entireDebtAndColl.coll) * Number(fetchedPrice)) * 100).toFixed(3));
   }, [entireDebtAndColl, fetchedPrice, isConnected, walletClient]);
 
-  const countFalseNFTs = () => {
-    if (!activitiesData) return 0;
-    let count = 0;
-    const nfts = activitiesData.nfts as NFTs;
-    for (const nft in nfts) {
-      if (nfts[nft as keyof NFTs]) {
-        count++;
-      }
-    }
-    return count;
-  };
+  // const countFalseNFTs = () => {
+  //   if (!activitiesData) return 0;
+  //   let count = 0;
+  //   const nfts = activitiesData.nfts as NFTs;
+  //   for (const nft in nfts) {
+  //     if (nfts[nft as keyof NFTs]) {
+  //       count++;
+  //     }
+  //   }
+  //   return count;
+  // };
 
   const countClaimedBadges = (activitiesData: { tasks: any; } | undefined) => {
     if (!activitiesData || !activitiesData.tasks) return 0;
@@ -218,12 +221,11 @@ export function CardDemo() {
         count++;
       }
     }
-
     return count;
   };
 
   return (
-    <div className="w-[25rem] md:w-full  ">
+    <div className="w-[25rem] md:w-full">
       <div className="title-text h-full w-full -mt-28 pt-10 pb-10 pl-4 pr-4" style={{ backgroundColor: '#1C1A0F' }}>
         <div className="w-full h-[20rem] gap-3 flex border-2 pl-2 border-yellow-300 mb-10 justify-between items-center">
           <div className="flex w-1/3 p-2 notMobileDevice">
@@ -241,7 +243,7 @@ export function CardDemo() {
             <div className="absolute px-6 md:p-0 h-24 md:w-[16rem] ml-[10rem] mt-[12rem] bg-gradient-to-l from-yellow-100 border-yellow-200">
               <div className="flex justify-between items-center">
                 <div>
-                  <h6 className="text-5xl text-yellow-300 title-text">{countFalseNFTs()}</h6>
+                  <h6 className="text-5xl text-yellow-300 title-text">{userExists ? 1 : 0}</h6>
                   <h6 className="text-3xl text-yellow-300 title-text">NFTs</h6>
                 </div>
                 <Image src={card2} alt="robo2" className="notMobileDevice" />
