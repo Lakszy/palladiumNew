@@ -15,8 +15,8 @@ import { Sidebar } from "primereact/sidebar";
 import { Button } from "primereact/button";
 import "../app/App.css";
 
-export default function MobileNav() {
-  console.log("MobileNav");
+export default function MobileNavFalse() {
+  console.log("MobileNavfalse");
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
 
   const [visible, setVisible] = useState<boolean>(false);
@@ -61,27 +61,26 @@ export default function MobileNav() {
           </div>
           <nav className="flex flex-col gap-y-2 px-4">
             {menuItems.map((menuItem) => (
-              <Link legacyBehavior key={menuItem.id} href={menuItem.link}>
-                <a
-                  className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${
-                    isMenuSelected(menuItem.id)
-                      ? "bg-yellow-400 text-black"
-                      : "text-gray-500"
+              // <Link legacyBehavior key={menuItem.id} href={menuItem.link}>
+              <a
+                key={menuItem.id}
+                className={`opacity-50 cursor-not-allowed  text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${
+                  isMenuSelected(menuItem.id)
+                    ? "text-gray-500"
+                    : "text-gray-500"
+                }`}
+                onClick={() => handleMenuClick(menuItem.id)}
+              >
+                <div
+                  className={`cursor-not-allowed  menu flex items-center gap-x-3 rounded-full p-2 ${
+                    isMenuSelected(menuItem.id) ? "text-black" : " text-white"
                   }`}
-                  onClick={() => handleMenuClick(menuItem.id)}
                 >
-                  <div
-                    className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${
-                      isMenuSelected(menuItem.id) ? "text-black" : " text-white"
-                    }`}
-                  >
-                    {React.createElement(menuItem.icon, { size: 22 })}
-                  </div>
-                  <span className="font-medium body-text">
-                    {menuItem.title}
-                  </span>
-                </a>
-              </Link>
+                  {React.createElement(menuItem.icon, { size: 22 })}
+                </div>
+                <span className="font-medium body-text">{menuItem.title}</span>
+              </a>
+              // </Link>
             ))}
           </nav>
           <div className="space-y-1 pt-16">

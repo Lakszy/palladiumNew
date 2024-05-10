@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import { MdOutlineInventory2 } from "react-icons/md";
 import { BiDollar } from "react-icons/bi";
 import { RiBillLine } from "react-icons/ri";
@@ -10,12 +11,26 @@ import zeally from "../app/assets/images/zeally.svg";
 import tweet from "../app/assets/images/tweet.svg";
 import discord from "../app/assets/images/discord.svg";
 import medium from "../app/assets/images/medium.svg";
+import { useAccount } from "wagmi";
 
 import "../app/App.css";
 
-export const TabsDemo = () => {
+export const TabsDemoFalse = () => {
+  const { address } = useAccount();
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
+  const [userExists, setUserExists] = useState(false);
 
+  //   useEffect(() => {
+  //     fetch(`https://api.palladiumlabs.org/users/testnetWhitelist/${address}`)
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         setUserExists(data.userExists);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching data:", error);
+  //       });
+  //   }, []);
+  //   console.log("userExist", userExists);
   const handleMenuClick = (menu: string) => {
     setSelectedMenu(menu);
   };
@@ -37,11 +52,11 @@ export const TabsDemo = () => {
       id: "Portfolio",
       icon: MdOutlineInventory2,
       title: "Portfolio",
-      link: "/portfolio",
+      link: "/Portfolio",
     },
-    { id: "Borrow", icon: RiBillLine, title: "Mint PUSD", link: "/Borrow" },
-    { id: "Stake-pusd", icon: BiDollar, title: "Stake PUSD", link: "Stake" },
-    { id: "Redeem", icon: RiBillLine, title: "Redeem PUSD", link: "Redeem" },
+    { id: "Borrow", icon: RiBillLine, title: "Mint PUSD", link: "/borrow" },
+    { id: "Stake-pusd", icon: BiDollar, title: "Stake PUSD", link: "stake" },
+    { id: "Redeem", icon: RiBillLine, title: "Redeem PUSD", link: "redeem" },
   ];
 
   return (
@@ -55,15 +70,21 @@ export const TabsDemo = () => {
         </Link>
       </div>
       <nav className="flex flex-col gap-y-2 px-4">
-        {menuItems.map((menuItem) => (
+        {/* {menuItems.map((menuItem) => (
           <Link legacyBehavior key={menuItem.id} href={menuItem.link}>
             <a
-              className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${
+              className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2  ${
+                !userExists ? "opacity-50 cursor-not-allowed" : ""
+              } // Conditionally apply disabled styles ${
                 isMenuSelected(menuItem.id)
                   ? "bg-yellow-400 text-black"
                   : "text-gray-500"
               }`}
-              onClick={() => handleMenuClick(menuItem.id)}
+              // onClick={() => handleMenuClick(menuItem.id)}
+              onClick={() => {
+                if (!userExists) return; // Prevent click if menu is disabled
+                handleMenuClick(menuItem.id);
+              }}
             >
               <div
                 className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${
@@ -75,6 +96,37 @@ export const TabsDemo = () => {
               <span className="font-medium body-text">{menuItem.title}</span>
             </a>
           </Link>
+          // ${!userExists ? "opacity-50 cursor-not-allowed" : ""}
+        ))} */}
+        {menuItems.map((menuItem) => (
+          //   <Link key={menuItem.id} href={menuItem.link}>
+          <div
+            key={menuItem.id}
+            className={`opacity-50 cursor-not-allowed text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2
+        
+        ${
+          isMenuSelected(menuItem.id)
+            ? "bg-yellow-400 text-black"
+            : "text-gray-500"
+        }
+      `}
+            onClick={() => {
+              console.log("clicked1");
+              if (!userExists) return; // Prevent click if menu is disabled
+              handleMenuClick(menuItem.id);
+              console.log("clicked2");
+            }}
+          >
+            <div
+              className={`menu flex items-center gap-x-3 rounded-full p-2
+          ${isMenuSelected(menuItem.id) ? "text-black" : "text-white"}
+        `}
+            >
+              {React.createElement(menuItem.icon, { size: 22 })}
+              <span className="font-medium body-text">{menuItem.title}</span>
+            </div>
+          </div>
+          //   </Link>
         ))}
       </nav>
       <div className="space-y-1">
