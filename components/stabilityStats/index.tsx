@@ -6,37 +6,32 @@ import stabilityPoolAbi from "../../app/src/constants/abi/StabilityPool.sol.json
 import { BOTANIX_RPC_URL } from "../../app/src/constants/botanixRpcUrl";
 import botanixTestnet from "../../app/src/constants/botanixTestnet.json";
 import { getContract } from "../../app/src/utils/getContract";
-import Decimal from "decimal.js";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import { useAccount, useWalletClient } from "wagmi";
+import { useWalletClient } from "wagmi";
 import web3 from "web3";
-import { Button } from "../ui/button";
-import { CustomConnectButton } from "../connectBtn";
 
 const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 
 export const StabilityStats = () => {
-	const [loanRewards, setLoanRewards] = useState("0");
-	const { address, isConnected } = useAccount();
 
+	const [loanRewards, setLoanRewards] = useState("0");
 	const [liquidGains, setLiquidGains] = useState("0");
 
 	const [totalStakedValue, setTotalStakedValue] = useState("0");
 	const [totalStabilityPool, setTotalStabilityPool] = useState("0");
-	const [totalPoolShare, setTotalPoolShare] = useState("0");
-
+	const [isLoading, setIsLoading] = useState(true);
+	const [isPoolLoading, setIsPoolLoading] = useState(true);
 
 
 	const { data: walletClient } = useWalletClient();
+
 
 	const stabilityPoolContractReadOnly = getContract(
 		botanixTestnet.addresses.stabilityPool,
 		stabilityPoolAbi,
 		provider
 	);
-
-	const { toWei, toBigInt } = web3.utils;
 
 	useEffect(() => {
 		const getStakedValue = async () => {
@@ -47,6 +42,7 @@ export const StabilityStats = () => {
 				);
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStakedValue(fixedtotal);
+			setIsLoading(false)
 		};
 
 		const totalStabilityPool = async () => {
@@ -56,6 +52,7 @@ export const StabilityStats = () => {
 
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStabilityPool(fixedtotal);
+			setIsPoolLoading(false)
 		};
 
 		getStakedValue();
@@ -64,7 +61,7 @@ export const StabilityStats = () => {
 
 	const stakedValue = parseFloat(totalStakedValue);
 	const stabilityPoolValue = parseFloat(totalStabilityPool);
-	const poolShare = (stakedValue / stabilityPoolValue)*100;
+	const poolShare = (stakedValue / stabilityPoolValue) * 100;
 
 	return (
 		<div className="">
@@ -75,17 +72,43 @@ export const StabilityStats = () => {
 
 				<div className="flex justify-between py-2">
 					<span className="text-yellow-100 font-medium text-base ml body-text">Your Total Staking Balance</span>
-					<span className="text-white font-medium ml-7 body-text whitespace-nowrap">{(Number(totalStakedValue).toFixed(2)).toString()} PUSD</span>
+					<span className="text-white font-medium ml-7 body-text whitespace-nowrap">
+						{isLoading ? (
+							<div className=" h-3 rounded-xl">
+								<div className="hex2-loader"></div>
+							</div>
+						) : (
+							<>{(Number(totalStakedValue).toFixed(2)).toString()} PUSD
+							</>
+						)}
+					</span>
 				</div>
 
 				<div className="flex justify-between py-2">
 					<span className="text-yellow-100 text-base font-medium body-text">Total Stability Pool Staked</span>
-					<span className="text-white font-medium body-text">{(Number(totalStabilityPool).toFixed(2)).toString()} PUSD</span>
+					<span className="text-white font-medium body-text">
+						{isPoolLoading ? (
+							<div className=" h-3 rounded-xl">
+								<div className="hex2-loader"></div>
+							</div>
+						) : (
+							<>{(Number(totalStabilityPool).toFixed(2)).toString()} PUSD</>
+						)}
+					</span>
 				</div>
 
 				<div className="flex justify-between py-2">
 					<span className="text-yellow-100 text-lg font-medium body-text">Your Pool Share</span>
-					<span className="text-white font-medium body-text">{isNaN(poolShare) ? "0" : poolShare.toFixed(2)} %</span>
+					<span className="text-white font-medium body-text">
+						{isLoading && isPoolLoading ? (
+							<div className=" h-3 rounded-xl">
+								<div className="hex2-loader"></div>
+							</div>
+						) : (
+							<>{isNaN(poolShare) ? "0" : poolShare.toFixed(2)} %
+							</>
+						)}
+					</span>
 				</div>
 
 				<div className="flex justify-center">

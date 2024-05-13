@@ -21,7 +21,7 @@ interface Props {
   liquidationReserve: number;
 }
 
-    export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidationReserve }) => {
+export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidationReserve }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [isLowBalance, setIsLowBalance] = useState(false);
@@ -113,7 +113,7 @@ interface Props {
       <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
         <>
           <div className="waiting-container bg-white">
-            <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for COnformation... ✨.</div>
+            <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for Confirmation... ✨.</div>
             <Image src={BotanixLOGO} className="waiting-image" alt="gif" />
           </div>
         </>

@@ -19,7 +19,6 @@ function NavBar() {
   const [userExists, setUserExists] = useState(false);
 
   useEffect(() => {
-    // console.log("address", address);
     fetch(`https://api.palladiumlabs.org/users/testnetWhitelist/${address}`)
       .then((response) => response.json())
       .then((data) => {
@@ -37,7 +36,6 @@ function NavBar() {
         );
         const data = await response.json();
         const protocolMetrics = data[0];
-
         setIsRecoveryMode(protocolMetrics.recoveryMode);
         setFetchedPrice(protocolMetrics.priceBTC);
         setSystemCollRatio(protocolMetrics.TCR);
@@ -48,7 +46,6 @@ function NavBar() {
 
     fetchData();
   }, []);
-  // console.log(userExists);
   return (
     <div
       className="md:flex border-2 hidde w-full  border-gray-100 h-28  border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50"
@@ -56,16 +53,11 @@ function NavBar() {
     >
       <div className="flex items-center gap-x-4">
         <div className="w-full  flex gap-x-10  notMobileDevice rounded-xl">
-          {/* {!userExists && (
-            <div className=" items-center flex gap-x-2 ">
-              <Image src={logo} alt="Logo" className="mr-10 w-56" />
-            </div>
-          )} */}
           <div className="items-center flex gap-x-2">
             <Image src={pusdbtc} alt="btc" width={40} />
             <div>
               <h1 className="text-white title-text -ml-1">PUSD</h1>
-              <h1 className="text-gray- text-gray-400 title-text  -ml-1">
+              <h1 className="text-gray- text-gray-400 title-text whitespace-nowrap -ml-1">
                 $ 1.00
               </h1>
             </div>
@@ -86,7 +78,7 @@ function NavBar() {
                   System Collateral Ratio
                 </h2>
                 <h3 className="text-gray-400 title-text">
-                  {systemCollRatio * 100} %
+                  {(systemCollRatio * 100).toFixed(2)} %
                 </h3>
               </div>
               <div className="items-ceneter flex flex-col gap-x-2">

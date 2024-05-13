@@ -30,31 +30,3 @@ const ConnectWalletDefault = () => {
 };
 
 export default ConnectWalletDefault;
-// import React from "react";
-// import { CustomConnectButton } from "./connectBtn";
-// import Image from "next/image";
-// import connectimage from "../app/assets/images/notconnect01.png";
-
-// const ConnectWalletDefault = () => {
-//   return (
-//     <div
-//       className="h-screen flex justify-center items-center"
-//       style={{ backgroundColor: "#272315" }}
-//     >
-//       <div className="w-full md:max-w-lg bg-gray-300 p-8  shadow-lg">
-//         <div className="mb-8">
-//           <Image
-//             src={connectimage}
-//             alt="Connect Wallet Image"
-//             width={500}
-//             height={500}
-//             className="object-cover rounded-lg"
-//           />
-//         </div>
-//         <CustomConnectButton className="" />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ConnectWalletDefault;

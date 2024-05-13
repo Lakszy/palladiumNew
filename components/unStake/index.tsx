@@ -25,7 +25,8 @@ export const Unstake = () => {
 	const [isLowPUSD, setIsLowPUSD] = useState(false);
 	const [stakedValue, setStakedValue] = useState(0);
 	const [pusdBalance, setPusdBalance] = useState(0);
-	const { address, isConnected } = useAccount();
+	const { isConnected } = useAccount();
+	const [isLoading, setIsLoading] = useState(true);
 	const [totalStakedValue, setTotalStakedValue] = useState("0");
 	const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -45,8 +46,6 @@ export const Unstake = () => {
 		stabilityPoolAbi,
 		walletClient
 	);
-
-	const { toWei, toBigInt } = web3.utils;
 
 	useEffect(() => {
 		const fetchStakedValue = async () => {
@@ -73,6 +72,7 @@ export const Unstake = () => {
 				);
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStakedValue(fixedtotal);
+			setIsLoading(false)
 		};
 		getStakedValue();
 	}, [walletClient, stabilityPoolContractReadOnly, totalStakedValue]);
@@ -89,7 +89,6 @@ export const Unstake = () => {
 			console.error("Invalid PUSD balance:", pusdBalance);
 		}
 	};
-
 
 	const handleConfirmClick = async () => {
 		try {
@@ -114,21 +113,17 @@ export const Unstake = () => {
 		<div className="grid  bg-[#3b351b] items-start h-64 gap-2 mx-auto  border border-yellow-400 p-5">
 			<div className="">
 				<div className="flex -mt-2 mb-2  items-center">
-					<Input
-						id="items"
-						placeholder="0.000 BTC"
-						disabled={!isConnected}
-						value={userInput}
-						onChange={(e) => {
-							const input = e.target.value;
-							setUserInput(input);
-						}}
-						className="bg-[#3b351b] body-text text-lg h-14 border border-yellow-300 text-white px-3 "
-					/>
+					<Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#3b351b] body-text text-lg h-14 border border-yellow-300 text-white px-3 " />
 				</div>
-				<span className="md:ml-[45%] text-yellow-300 font-medium balance body-text">Your Stake:
-					{Math.trunc(Number(totalStakedValue) * 100) / 100} PUSD</span>
-
+				<span className="md:ml-[55%] ml-[35%] text-yellow-300 font-medium balance body-text">
+					{isLoading ?
+						(<div className="-mt-6 h-3 rounded-xl">
+							<div className="hex-loader"></div>
+						</div>
+						) : (
+							<span className="whitespace-nowrap">Your Stake: {Math.trunc(Number(totalStakedValue) * 100) / 100} PUSD</span>
+						)}
+				</span>
 			</div>
 			<div className="flex w-full gap-x-4 md:gap-x-6  mt-2">
 				<Button disabled={!isConnected} className=" text-xs md:text-lg  border-2 border-yellow-900 body-text" style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
@@ -138,13 +133,7 @@ export const Unstake = () => {
 			</div>
 			{isConnected ? (
 				<div className="">
-					<button
-						style={{ backgroundColor: "#f5d64e" }}
-						onClick={handleConfirmClick}
-						className="mt-2 text-black text-md font-semibold w-full border border-black h-10 border-none body-text"
-					>
-						UNSTAKE
-					</button>
+					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 border-none body-text ${isLoading || Math.trunc(Number(totalStakedValue) * 100) / 100 === 0 ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Math.trunc(Number(totalStakedValue) * 100) / 100 === 0}>	{isLoading ? 'LOADING...' : 'UNSTAKE'}</button>
 				</div>
 			) : (
 				<CustomConnectButton className="" />
@@ -152,7 +141,7 @@ export const Unstake = () => {
 			<Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
 				<>
 					<div className="waiting-container bg-white">
-						<div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for COnformation... ✨.</div>
+						<div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for Confirmation... ✨.</div>
 						<Image src={BotanixLOGO} className="waiting-image" alt="gif" />
 					</div>
 				</>

@@ -12,16 +12,6 @@ export default function Home() {
   const { address } = useAccount();
   const [userExists, setUserExists] = useState(false);
 
-  // useEffect(() => {
-  //   fetch(`https://api.palladiumlabs.org/users/testnetWhitelist/${address}`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       setUserExists(data.userExists);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // }, []);
   useEffect(() => {
     if (address) {
       fetch(`https://api.palladiumlabs.org/users/testnetWhitelist/${address}`)
@@ -34,6 +24,7 @@ export default function Home() {
         });
     }
   }, [address]);
+  
   return (
     <div className="grid h-screen font-mono font-extrabold mainT w-full sm:grid-cols-[max-content_1fr] overflow text-white">
       {userExists ? <TabsDemo /> : <TabsDemoFalse />}
@@ -42,27 +33,10 @@ export default function Home() {
           <NavBar />
         </div>
         <div className=" w-full " style={{ backgroundColor: "#272315" }}>
-          {/* {address?(
-          {userExists ? (
-            <CardDemo userExists={userExists} />
-          ) : (
-            <NotMinted/>
-            // <p>
-            //   Sorry, you do not have private access to Palladium testnet
-            //   {userExists}
-            // </p>
-          )}:(<ConnectWalletDefault/>) */}
-          {address ? ( // Check if address is truthy (wallet is connected)
-            userExists ? ( // Check if userExists is true
-              <CardDemo userExists={userExists} />
-            ) : (
-              <NotMinted />
-              // Alternative content or message when userExists is false
-              // <p>Sorry, you do not have private access to Palladium testnet</p>
-            )
-          ) : (
-            <ConnectWalletDefault />
-          )}
+          {address ? (
+            userExists ? (<CardDemo userExists={userExists} />
+            ) : (<NotMinted />)
+          ) : (<ConnectWalletDefault />)}
         </div>
       </div>
     </div>

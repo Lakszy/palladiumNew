@@ -5,30 +5,20 @@
 import { Button } from "@/components/ui/button";
 import { readContract } from '@wagmi/core'
 import { Input } from "@/components/ui/input";
-import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import { HintHelpers } from "../src/constants/abi/HintHelpers";
 import priceFeedAbi from "../src/constants/abi/PriceFeedTestnet.sol.json";
-import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
 import { sortedTroves } from "../src/constants/abi/SortedTroves";
-
 import { troveManagerAbi } from "../src/constants/abi/TroveManager";
 import troveManagerContractQ from "../src/constants/abi/TroveManager.sol.json"
-
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
-import {
-    useAccount,
-    useTransactionReceipt,
-    useWaitForTransactionReceipt,
-    useWriteContract,
-    useWalletClient,
-} from "wagmi";
+import { useAccount, useWriteContract, useWalletClient } from "wagmi";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
-import web3, { AbiItem } from "web3";
+import web3 from "web3";
 import { CustomConnectButton } from "@/components/connectBtn";
 import { wagmiConfig } from "../src/config/config";
 import { Dialog } from 'primereact/dialog';
@@ -38,9 +28,7 @@ import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import '../App.css';
 
-
 export default function Redeem() {
-    const [fetchedPrice, setFetchedPrice] = useState("0");
     const [userInput, setUserInput] = useState("0");
     const [isRedeeming, setIsRedeeming] = useState(false);
     const [isRecoveryMode, setIsRecoveryMode] = useState<boolean>(false);
@@ -52,7 +40,7 @@ export default function Redeem() {
     const { data: walletClient } = useWalletClient();
     const [isLoading, setIsLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const { toWei, toBigInt } = web3.utils;
+    const { toBigInt } = web3.utils;
 
     const {
         data: hash,
@@ -216,44 +204,31 @@ export default function Redeem() {
                 <div className="grid items-start h-[20rem] gap-x-2  mx-auto border-[2px] border-yellow-400 p-5">
                     <div>
                         <div className="flex mb-2 items-center">
-                            <Input
-                                id="items"
-                                placeholder="0.000 BTC"
-                                disabled={!isConnected}
-                                value={userInput}
-                                onChange={(e) => {
-                                    const input = e.target.value;
-                                    setUserInput(input);
-                                }}
+                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }}
                                 className="bg-[#3b351b] body-text w-[20rem] md:w-full text-lg h-14 border border-yellow-300 text-white "
                             />
                         </div>
                         <span className="ml-[55%] body-text text-yellow-300 font-medium balance ">
-                            {isLoading ? (
-                                <div className="-mt-6 h-3 rounded-xl">
+                            {isLoading ?
+                                (<div className="-mt-6 h-3 rounded-xl">
                                     <div className="hex-loader"></div>
                                 </div>
-                            ) : (
-                                <>
-                                    Wallet: {Number(pusdBalance).toFixed(2) || ".."} PUSD
-                                </>
-                            )}
+                                ) : (
+                                    <span className="whitespace-nowrap">Wallet: {Number(pusdBalance).toFixed(2) || ".."} PUSD</span>
+                                )}
                         </span>
                     </div>
                     <div className="flex gap-x-2 md:gap-x-6">
-                        <Button disabled={!isConnected} className="text-lg body-text border-2 border-yellow-900" style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                        <Button disabled={!isConnected} className="text-lg body-text border-2 border-yellow-900" style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                        <Button disabled={!isConnected} className="text-lg body-text border-2 border-yellow-900" style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                        <Button disabled={!isConnected} className="text-lg body-text border-2 border-yellow-900" style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                        <Button disabled={!isConnected && isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                        <Button disabled={!isConnected && isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                        <Button disabled={!isConnected && isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                        <Button disabled={!isConnected && isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100% </Button>
                     </div>
+
                     {isConnected ? (
                         <div className="space-y-2">
-                            <button
-                                style={{ backgroundColor: "#f5d64e" }}
-                                onClick={handleConfirmClick}
-                                className="mt-5 body-text text-black  text-md font-semibold w-[20rem] md:w-full border border-black h-10 border-none"
-                            >
-                                REDEEM
+                            <button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-5 body-text text-black text-md font-semibold w-[20rem] md:w-full border border-black h-10 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading}>
+                                {isLoading ? 'LOADING...' : 'REDEEM'}
                             </button>
                             <div>
                                 {isRecoveryMode && <span className="body-text pt-2 text-gray-300 text-xl w-2">System Is In Recovery Mode !</span>}
@@ -265,7 +240,7 @@ export default function Redeem() {
                     <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
                         <>
                             <div className="waiting-container bg-white">
-                                <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for COnformation... ✨.</div>
+                                <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for Confirmation... ✨.</div>
                                 <Image src={BotanixLOGO} className="waiting-image" alt="gif" />
                             </div>
                         </>
