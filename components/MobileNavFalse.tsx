@@ -16,7 +16,6 @@ import { Button } from "primereact/button";
 import "../app/App.css";
 
 export default function MobileNavFalse() {
-  console.log("MobileNavfalse");
   const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
 
   const [visible, setVisible] = useState<boolean>(false);

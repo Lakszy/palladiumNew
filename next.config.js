@@ -1,10 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	output: "export",
-	images: { unoptimized: true },
-	reactStrictMode: true,
-	experimental: { appDir: true },
-
+	images: {unoptimized: true,},
 	webpack: (config, { isServer }) => {
 		if (!isServer) {
 			config.resolve.fallback.fs = false;
