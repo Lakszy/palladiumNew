@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+"use client"
+
+import React from "react";
+import { usePathname } from 'next/navigation';
 import { MdOutlineInventory2 } from "react-icons/md";
 import { BiDollar } from "react-icons/bi";
 import { RiBillLine } from "react-icons/ri";
@@ -14,30 +17,11 @@ import medium from "../app/assets/images/medium.svg";
 import "../app/App.css";
 
 export const TabsDemo = () => {
-  const [selectedMenu, setSelectedMenu] = useState<string | null>(null);
+  const pathname = usePathname();
 
-  const handleMenuClick = (menu: string) => {
-    setSelectedMenu(menu);
+  const isRoute = (route: string) => {
+    return pathname === route;
   };
-
-  const isMenuSelected = (menu: string) => {
-    return selectedMenu === menu;
-  };
-
-  interface MenuItem {
-    id: string;
-    icon: React.ElementType;
-    title: string;
-    link: string;
-  }
-
-  const menuItems: MenuItem[] = [
-    { id: "Dashboard", icon: LayoutGrid, title: "Dashboard", link: "/" },
-    { id: "portfolio", icon: MdOutlineInventory2, title: "Portfolio", link: "/portfolio", },
-    { id: "trove", icon: RiBillLine, title: "Mint PUSD", link: "/trove" },
-    { id: "stake", icon: BiDollar, title: "Stake PUSD", link: "/stake" },
-    { id: "redeem", icon: RiBillLine, title: "Redeem PUSD", link: "/redeem" },
-  ];
 
   return (
     <div
@@ -50,25 +34,76 @@ export const TabsDemo = () => {
         </Link>
       </div>
       <nav className="flex flex-col gap-y-2 px-4">
-        {menuItems.map((menuItem) => (
-          <Link legacyBehavior key={menuItem.id} href={menuItem.link}>
-            <a
-              className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isMenuSelected(menuItem.id)
-                  ? "bg-yellow-400 text-black"
-                  : "text-gray-500"
+        <Link href="/">
+          <div
+            className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/") ? "bg-yellow-400 text-black" : "text-gray-500"
+              }`}
+          >
+            <div
+              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/") ? "text-black" : " text-white"
                 }`}
-              onClick={() => handleMenuClick(menuItem.id)}
             >
-              <div
-                className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isMenuSelected(menuItem.id) ? "text-black" : " text-white"
-                  }`}
-              >
-                {React.createElement(menuItem.icon, { size: 22 })}
-              </div>
-              <span className="font-medium body-text">{menuItem.title}</span>
-            </a>
-          </Link>
-        ))}
+              {React.createElement(LayoutGrid, { size: 22 })}
+            </div>
+            <span className="font-medium body-text">Dashboard</span>
+          </div>
+        </Link>
+        <Link href="/portfolio">
+          <div
+            className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/portfolio") ? "bg-yellow-400 text-black" : "text-gray-500"
+              }`}
+          >
+            <div
+              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/portfolio") ? "text-black" : " text-white"
+                }`}
+            >
+              {React.createElement(MdOutlineInventory2, { size: 22 })}
+            </div>
+            <span className="font-medium body-text">Portfolio</span>
+          </div>
+        </Link>
+        <Link href="/trove">
+          <div
+            className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/trove") ? "bg-yellow-400 text-black" : "text-gray-500"
+              }`}
+          >
+            <div
+              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/trove") ? "text-black" : " text-white"
+                }`}
+            >
+              {React.createElement(RiBillLine, { size: 22 })}
+            </div>
+            <span className="font-medium body-text">Mint PUSD</span>
+          </div>
+        </Link>
+        <Link href="/stake">
+          <div
+            className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/stake") ? "bg-yellow-400 text-black" : "text-gray-500"
+              }`}
+          >
+            <div
+              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/stake") ? "text-black" : " text-white"
+                }`}
+            >
+              {React.createElement(BiDollar, { size: 22 })}
+            </div>
+            <span className="font-medium body-text">Stake PUSD</span>
+          </div>
+        </Link>
+        <Link href="/redeem">
+          <div
+            className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/redeem") ? "bg-yellow-400 text-black" : "text-gray-500"
+              }`}
+          >
+            <div
+              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/redeem") ? "text-black" : " text-white"
+                }`}
+            >
+              {React.createElement(RiBillLine, { size: 22 })}
+            </div>
+            <span className="font-medium body-text">Redeem PUSD</span>
+          </div>
+        </Link>
       </nav>
       <div className="space-y-1">
         <div className="ml-6 w-fit h-fit">
