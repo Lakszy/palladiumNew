@@ -12,7 +12,7 @@ import badge from "../app/assets/images/Badge.png";
 import axios from 'axios';
 import "./Prog.css";
 import "../app/App.css"
-import { useAccount } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 interface Task {
   name: string;
   rewardType: string;
@@ -22,19 +22,21 @@ interface Task {
 
 const TaskScroll: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+
   const [error, setError] = useState<string | null>(null);
   const msgs = useRef<Messages>(null);
   const { address, isConnected } = useAccount();
+  const { data: walletClient } = useWalletClient();
 
 
   const fetchData = async () => {
     try {
       const response = await fetch(`https://api.palladiumlabs.org/users/activities/${address}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch data');
+        setError("We are recalibrating your points. Check back in some time for a surprise 😉.");
       }
       const data = await response.json();
-      const taskArray = Object.entries(data.tasks).map(([name, task]: [string, any]) => ({
+      const taskArray = Object.entries(data.task).map(([name, task]: [string, any]) => ({
         name,
         rewardType: task.rewardType,
         rewardValue: task.rewardValue,
@@ -42,14 +44,14 @@ const TaskScroll: React.FC = () => {
       }));
       setTasks(taskArray);
     } catch (error) {
-      setError("We are recalibrating your points. Check back in some time for a surprise 😉....");
+      setError("You have no activity. Open your first trove and starting collecting points.🫡")
       console.error('Error fetching data:', error);
     }
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [isConnected,address,walletClient]);
 
   const handleLikeButtonClick = async (taskId: string) => {
     try {
@@ -71,12 +73,18 @@ const TaskScroll: React.FC = () => {
             <div className="w-[10rem] md:w-[7rem] md:p-0 p-8">
               {task.status === 'claimed' && task.rewardType === 'badge' && (
                 <>
-                  <Image src={badge} alt="Badge" className="hover:cursor-not-allowed" />
+                  <div className='tooltip'>
+                    <Image src={badge} alt="Badge" className="hover:cursor-not-allowed" />
+                    <span className="tooltiptext p-2 h-10 hover:cursor-not-allowed">Reward has been claimed....✨</span>
+                  </ div>
                 </>
               )}
               {task.status === 'claimed' && task.rewardType === 'point' && (
                 <>
-                  <Image src={points} alt="Points" className="hover:cursor-not-allowed" />
+                  <div className='tooltip'>
+                    <Image src={points} alt="Points" className="hover:cursor-not-allowed" />
+                    <span className="tooltiptext p-2 h-10 hover:cursor-not-allowed">Reward has been claimed....✨</span>
+                  </div>
                 </>
               )}
               {task.status === 'unclaimed' && (

@@ -43,7 +43,7 @@ interface NFTs {
 }
 
 interface ActivitiesData {
-  points: number;
+  point: number;
   continuousActivity: {
     activeDeposit: number;
     troveVolume: number;
@@ -54,7 +54,7 @@ interface ActivitiesData {
     activeDays: number;
   };
   nfts: NFTs;
-  tasks: {
+  task: {
     [key: string]: Task;
   };
 }
@@ -71,8 +71,6 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
     null
   );
   const [isLoading, setIsLoading] = useState(true);
-  const [hasPriceFetched, setHasPriceFetched] = useState(false);
-  const [value, setValue] = useState("0");
   const [firstTask, setFirstTask] = useState<string>("");
   const [fetchedPrice, setFetchedPrice] = useState("0");
 
@@ -83,12 +81,6 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
     pendingETHReward: "0",
   });
 
-  const priceFeedContract = getContract(
-    botanixTestnet.addresses.priceFeed,
-    priceFeedAbi,
-    provider
-  );
-
   const troveManagerContract = getContract(
     botanixTestnet.addresses.troveManager,
     troveManagerAbi,
@@ -96,52 +88,21 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   );
 
   const { toBigInt } = web3.utils;
-
   useEffect(() => {
-    const pow = Decimal.pow(10, 18);
-    const pow16 = Decimal.pow(10, 16);
-    const _1e18 = toBigInt(pow.toFixed());
-    const _1e16 = toBigInt(pow16.toFixed());
-    const fetchedData = async () => {
-      if (!walletClient) return null;
-      const {
-        0: debt,
-        1: coll,
-        2: pendingLUSDDebtReward,
-        3: pendingETHReward,
-      } = await troveManagerContract.getEntireDebtAndColl(
-        walletClient?.account.address
-      );
-      const collDecimal = new Decimal(coll.toString()); // Convert coll to a Decimal
-      const collFormatted = collDecimal.div(_1e18.toString()).toString(); // Divide coll by _1e18 and convert to string
-
-      setEntireDebtAndColl({
-        debt: (debt / _1e18).toString(),
-        coll: collFormatted,
-        pendingLUSDDebtReward: (pendingLUSDDebtReward / _1e18).toString(),
-        pendingETHReward: (pendingETHReward / _1e18).toString(),
-      });
-      const fetchPrice: bigint = await priceFeedContract.getPrice();
-
-      const fetchPriceDecimal = new Decimal(fetchPrice.toString()); // Convert coll to a Decimal
-      const fetchPriceFormatted = fetchPriceDecimal
-        .div(_1e18.toString())
-        .toString();
-      setFetchedPrice(fetchPriceFormatted);
+    const fetchData = async () => {
+      try {
+        const response = await fetch("https://api.palladiumlabs.org/protocol/metrics");
+        const data = await response.json();
+        const protocolMetrics = data[0];
+        setFetchedPrice(protocolMetrics.priceBTC);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
     };
+    fetchData();
+  }, []);
 
-    fetchedData();
-  }, [isConnected]);
-
-  const getTroveStatus = async () => {
-    if (!walletClient) return null;
-    const troveStatusBigInt = await troveManagerContract.getTroveStatus(
-      walletClient?.account.address
-    );
-    const troveStatus =
-      troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
-    setTroveStatus(troveStatus);
-  };
+  const newLTV = ((Number(entireDebtAndColl.debt) * 100) / ((Number(entireDebtAndColl.coll) * Number(fetchedPrice)))).toFixed(2)
 
   const fetchActivitiesData = async () => {
     try {
@@ -160,7 +121,31 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
     }
   };
 
-  const getFirstLockedTask = (tasks: { [key: string]: { status: string } }) => {
+  const fetchedData = async () => {
+    if (!walletClient) return null;
+    const pow = Decimal.pow(10, 18);
+    const pow16 = Decimal.pow(10, 16);
+    const _1e18 = toBigInt(pow.toFixed());
+    const _1e16 = toBigInt(pow16.toFixed());
+    const {
+      0: debt,
+      1: coll,
+      2: pendingLUSDDebtReward,
+      3: pendingETHReward,
+    } = await troveManagerContract.getEntireDebtAndColl(address);
+    const collDecimal = new Decimal(coll.toString()); // Convert coll to a Decimal
+    const collFormatted = collDecimal.div(_1e18.toString()).toString(); // Divide coll by _1e18 and convert to string
+    setEntireDebtAndColl({
+      debt: (debt / _1e18).toString(),
+      coll: collFormatted,
+      pendingLUSDDebtReward: (pendingLUSDDebtReward / _1e18).toString(),
+      pendingETHReward: (pendingETHReward / _1e18).toString(),
+    });
+
+  };
+
+
+  const getFirstLockedTask = (tasks: { [x: string]: Task | { status: string } }) => {
     for (let task in tasks) {
       if (tasks[task].status === "locked") {
         return task.replace(/_/g, " ");
@@ -170,33 +155,21 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   };
 
   useEffect(() => {
-    getTroveStatus();
+    fetchedData();
     fetchActivitiesData().then(() => {
       if (activitiesData) {
-        const firstLockedTask = getFirstLockedTask(activitiesData.tasks);
+        const firstLockedTask = getFirstLockedTask(activitiesData.task);
         if (firstLockedTask !== null) {
           setFirstTask(firstLockedTask);
         }
       }
     });
-  }, [walletClient, getTroveStatus, fetchActivitiesData]);
+  }, [walletClient,address,isConnected,fetchedData]);
 
-  useEffect(() => {
-    setValue(
-      (
-        (Number(entireDebtAndColl.debt) /
-          (Number(entireDebtAndColl.coll) * Number(fetchedPrice))) *
-        100
-      ).toFixed(3)
-    );
-  }, [entireDebtAndColl, fetchedPrice, isConnected, walletClient]);
-
-  const countClaimedBadges = (activitiesData: { tasks: any } | undefined) => {
-    if (!activitiesData || !activitiesData.tasks) return 0;
-
+  const countClaimedBadges = (activitiesData: ActivitiesData): number => {
+    if (!activitiesData || !activitiesData.task) return 0;
     let count = 0;
-    const tasks = activitiesData.tasks;
-
+    const tasks = activitiesData.task
     for (const taskKey in tasks) {
       const task = tasks[taskKey];
       if (task.rewardType === "badge" && task.status === "claimed") {
@@ -205,6 +178,9 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
     }
     return count;
   };
+  useEffect(() => {
+    Number(entireDebtAndColl.coll) > 0 ? setTroveStatus("ACTIVE") : setTroveStatus("INACTIVE")
+  }, [walletClient, address, isConnected, fetchedData])
 
   return (
     <>
@@ -226,7 +202,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   <Image src={points} alt="points" className="ml-[60%] md:ml-0" />
                   <div>
                     <h6 className="text-7xl  font-extrabold title-text text-yellow-300">
-                      {activitiesData?.points || 0}
+                      {activitiesData?.point || 0}
                     </h6>
                     <h5 className="text-2xl  font-extrabold title-text text-yellow-300">
                       JOULES
@@ -345,7 +321,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                         YOUR LTV
                       </h1>
                       <h1 className="text-gray-100 font-bold text-lg title-text">
-                        {isNaN(Number(value)) ? "0.00 %" : `${value} %`}
+                        {Number(newLTV).toFixed(2) || 0}%
                       </h1>
                     </div>
                   </div>

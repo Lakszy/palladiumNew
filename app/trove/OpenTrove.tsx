@@ -107,7 +107,7 @@ export const OpenTrove = () => {
     let NICR = collValue / expectedDebt;
 
     const NICRDecimal = new Decimal(NICR.toString());
-    const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed());
+    const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
     const numTroves = await sortedTrovesContract.getSize();
     const numTrials = numTroves * BigInt("15");
 

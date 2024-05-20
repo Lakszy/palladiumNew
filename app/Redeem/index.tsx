@@ -113,8 +113,9 @@ export default function Redeem() {
 
         if (!isNaN(pusdBalanceNumber)) {
             const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
-            const stakeFixed = maxStake.toFixed();
-            setUserInput(stakeFixed);
+            const stakeFixed = maxStake;
+            const roundedStakeFixed = Number(stakeFixed.toFixed(2))
+            setUserInput(String(roundedStakeFixed));
         } else {
             console.error("Invalid PUSD balance:", pusdBalance);
         }

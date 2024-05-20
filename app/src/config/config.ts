@@ -37,5 +37,6 @@ export const config = createConfig({
 	transports: {
 	  [mainnet.id]: http(),
 	  [sepolia.id]: http(),
+      [3636]: http('https://node.botanixlabs.dev'),
 	},
   })

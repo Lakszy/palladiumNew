@@ -9,10 +9,8 @@ import Decimal from "decimal.js";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
-import web3 from "web3";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import { Dialog } from 'primereact/dialog';
 import Image from "next/image";
 import BotanixLOGO from "../../app/assets/images/newpalladium.svg"
@@ -32,20 +30,11 @@ export const Unstake = () => {
 
 
 	const { data: walletClient } = useWalletClient();
-
 	const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 
-	const stabilityPoolContractReadOnly = getContract(
-		botanixTestnet.addresses.stabilityPool,
-		stabilityPoolAbi,
-		provider
-	);
+	const stabilityPoolContractReadOnly = getContract(botanixTestnet.addresses.stabilityPool, stabilityPoolAbi, provider);
 
-	const stabilityPoolContract = getContract(
-		botanixTestnet.addresses.stabilityPool,
-		stabilityPoolAbi,
-		walletClient
-	);
+	const stabilityPoolContract = getContract(botanixTestnet.addresses.stabilityPool, stabilityPoolAbi, walletClient);
 
 	useEffect(() => {
 		const fetchStakedValue = async () => {
@@ -75,8 +64,7 @@ export const Unstake = () => {
 			setIsLoading(false)
 		};
 		getStakedValue();
-	}, [walletClient, stabilityPoolContractReadOnly, totalStakedValue]);
-
+	}, [walletClient, stabilityPoolContractReadOnly]);
 
 	const handlePercentageClick = (percentage: any) => {
 		const percentageDecimal = new Decimal(percentage).div(100);
@@ -84,7 +72,8 @@ export const Unstake = () => {
 		if (!isNaN(pusdBalanceNumber)) {
 			const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
 			const stakeFixed = maxStake.div(Decimal.pow(10, 18));
-			setUserInput(String(stakeFixed));
+			const roundedStakeFixed = Number(stakeFixed.toFixed(2))
+			setUserInput(String(roundedStakeFixed));
 		} else {
 			console.error("Invalid PUSD balance:", pusdBalance);
 		}
@@ -115,13 +104,17 @@ export const Unstake = () => {
 				<div className="flex -mt-2 mb-2  items-center">
 					<Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#3b351b] body-text text-lg h-14 border border-yellow-300 text-white px-3 " />
 				</div>
-				<span className="md:ml-[55%] ml-[35%] text-yellow-300 font-medium balance body-text">
+				<span className={"md:ml-[55%] ml-[35%] font-medium balance body-text " + (Number(userInput) > Math.trunc(Number(totalStakedValue) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
 					{isLoading ?
 						(<div className="-mt-6 h-3 rounded-xl">
 							<div className="hex-loader"></div>
 						</div>
 						) : (
-							<span className="whitespace-nowrap">Your Stake: {Math.trunc(Number(totalStakedValue) * 100) / 100} PUSD</span>
+							<span className="whitespace-nowrap">
+								<span className="text-gray-400 body-text">
+									Your Stake: {" "}
+								</span>
+								{Math.trunc(Number(totalStakedValue) * 100) / 100} PUSD</span>
 						)}
 				</span>
 			</div>
@@ -133,7 +126,11 @@ export const Unstake = () => {
 			</div>
 			{isConnected ? (
 				<div className="">
-					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 border-none body-text ${isLoading || Math.trunc(Number(totalStakedValue) * 100) / 100 === 0 ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Math.trunc(Number(totalStakedValue) * 100) / 100 === 0}>	{isLoading ? 'LOADING...' : 'UNSTAKE'}</button>
+					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 border-none body-text
+					 ${isLoading
+							|| Math.trunc(Number(totalStakedValue) * 100) / 100 === 0
+							|| Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100) ? 'cursor-not-allowed opacity-50' : ''}`}
+						disabled={isLoading || Math.trunc(Number(totalStakedValue) * 100) / 100 === 0 || Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100)}>	{isLoading ? 'LOADING...' : 'UNSTAKE'}</button>
 				</div>
 			) : (
 				<CustomConnectButton className="" />

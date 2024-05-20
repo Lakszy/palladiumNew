@@ -6,12 +6,12 @@ import erc20Abi from "../src/constants/abi/ERC20.sol.json";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import priceFeedAbi from "../src/constants/abi/PriceFeedTestnet.sol.json";
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
+import BotanixLOGO from "../../app/assets/images/newpalladium.svg"
 import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
-import { readContract } from '@wagmi/core'
 import { ethers, toBigInt } from "ethers";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
@@ -21,10 +21,9 @@ import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
 import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
-import { wagmiConfig } from "../src/config/config";
-import { borrowerOperations } from "../src/constants/abi/borrowerOperations";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "primereact/dialog";
 
 interface Props {
   coll: number;
@@ -47,6 +46,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   const [isLowDebt, setIsLowDebt] = useState(false);
   const [hasGotStaticData, setHasGotStaticData] = useState(false);
   const [totalDebt, setTotalDebt] = useState(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [ltv, setLtv] = useState(0);
   const [price, setPrice] = useState(0);
   const [liquidationPrice, setLiquidationPrice] = useState(0);
@@ -429,6 +429,14 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </div>
           </div>
         </div>
+        <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
+          <>
+            <div className="waiting-container bg-white">
+              <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for Confirmation... ✨.</div>
+              <Image src={BotanixLOGO} className="waiting-image" alt="gif" />
+            </div>
+          </>
+        </Dialog>
       </div>
     </>
   );
