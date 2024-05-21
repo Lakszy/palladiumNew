@@ -55,7 +55,6 @@ export const StabilityPool = () => {
 	}, [isSuccess, isLoading]);
 
 	const handlePercentageClick = (percentage: any) => {
-		const pow = Decimal.pow(10, 18);
 		const percentageDecimal = new Decimal(percentage).div(100);
 		const pusdBalanceNumber = parseFloat(pusdBalance);
 		if (!isNaN(pusdBalanceNumber)) {
@@ -68,15 +67,19 @@ export const StabilityPool = () => {
 		}
 	};
 
+	const fetchPrice = async () => {
+		const pusdBalanceValue = await erc20Contract.balanceOf(address);
+		const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
+		setPusdBalance(pusdBalanceFormatted);
+		setIsDataLoading(false);
+	};
 	useEffect(() => {
-		const fetchPrice = async () => {
-			const pusdBalanceValue = await erc20Contract.balanceOf(address);
-			const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
-			setPusdBalance(pusdBalanceFormatted);
-			setIsDataLoading(false);
-		};
 		fetchPrice();
 	}, [address, walletClient, writeContract, hash]);
+	const handleClose = () => {
+		setLoadingModalVisible(false);
+		fetchPrice(); 
+	};
 
 	const handleConfirmClick = async () => {
 		try {
@@ -159,15 +162,14 @@ export const StabilityPool = () => {
 			</Dialog>
 			<Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
 				<div className="waiting-container bg-white">
-					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">	{message}</div>
+					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">   {message}</div>
 					<Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>Close</Button>
 				</div>
 			</Dialog>
 			<Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
 				<div className="waiting-container bg-white">
 					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">{loadingMessage}</div>
-					{isSuccess && (
-						<Button className="p-button-rounded p-button-text" onClick={() => setLoadingModalVisible(false)}>Close</Button>
+					{isSuccess && (<Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
 					)}
 				</div>
 			</Dialog>
