@@ -90,7 +90,7 @@ export const TabsDemo = () => {
             <span className="font-medium body-text">Stake PUSD</span>
           </div>
         </Link>
-        <Link href="/redeem">
+        {/* <Link href="/redeem">
           <div
             className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/redeem") ? "bg-yellow-400 text-black" : "text-gray-500"
               }`}
@@ -103,7 +103,7 @@ export const TabsDemo = () => {
             </div>
             <span className="font-medium body-text">Redeem PUSD</span>
           </div>
-        </Link>
+        </Link> */}
       </nav>
       <div className="space-y-1">
         <div className="ml-6 w-fit h-fit">

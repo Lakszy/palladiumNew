@@ -44,7 +44,7 @@ export default function MobileNavFalse() {
     },
     { id: "Borrow", icon: RiBillLine, title: "Mint PUSD", link: "Borrow" },
     { id: "Stake-pusd", icon: BiDollar, title: "Stake PUSD", link: "Stake" },
-    { id: "Redeem", icon: RiBillLine, title: "Redeem PUSD", link: "Redeem" },
+    // { id: "Redeem", icon: RiBillLine, title: "Redeem PUSD", link: "Redeem" },
   ];
   return (
     <div className="w-12 h-12 title-text flex">

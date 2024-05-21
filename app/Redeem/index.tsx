@@ -196,7 +196,7 @@ export default function Redeem() {
 
     return (
         <>
-            {isRedeeming && (
+            {/* {isRedeeming && (
                 <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
                     <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-yellow-900"></div>
                 </div>
@@ -247,7 +247,7 @@ export default function Redeem() {
                         </>
                     </Dialog>
                 </div>
-            </div>
+            </div> */}
 
         </>
     );
