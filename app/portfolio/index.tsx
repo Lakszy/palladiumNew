@@ -37,7 +37,7 @@ const Portfolio = () => {
   const [staticTotalDebt, setStaticTotalDebt] = useState(0);
   const [staticCollAmount, setStaticCollAmount] = useState(0);
   const [value, setValue] = useState("0");
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   let totalSupply = 50;
   let suppliedAmount = 40;
 
@@ -70,15 +70,13 @@ const Portfolio = () => {
   const [troveStatus, setTroveStatus] = useState("");
   const [totalStakedValue, setTotalStakedValue] = useState("0");
 
-  //ACTIVE
-
   const { toBigInt } = web3.utils;
-  // API
   const [lr, setLR] = useState(0)
   const [cCr, setCCR] = useState(0)
   const [mCR, setMCR] = useState(0)
   const [fetchedPrice, setFetchedPrice] = useState(0)
   const [recoveryMode, setRecoveryMode] = useState<boolean>(false)
+  const [afterLoad, setAfterload] = useState(false);
 
 
   useEffect(() => {
@@ -93,7 +91,7 @@ const Portfolio = () => {
         setMCR(protocolMetrics.MCR)
         setCCR(protocolMetrics.CCR)
         setLR(protocolMetrics.LR)
-        setIsLoading(false)
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -105,7 +103,10 @@ const Portfolio = () => {
       );
       const troveStatus = troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
       setTroveStatus(troveStatus);
+      setIsLoading(false)
     };
+    setIsLoading(true)
+    setAfterload(true)
     fetchData();
     getTroveStatus();
   }, []);
@@ -134,6 +135,7 @@ const Portfolio = () => {
         pendingLUSDDebtReward: (pendingLUSDDebtReward / _1e18).toString(),
         pendingETHReward: (pendingETHReward / _1e18).toString(),
       });
+      setAfterload(false)
 
       if (!hasPriceFetched) {
         try {
@@ -195,7 +197,7 @@ const Portfolio = () => {
 
   return (
     <div>
-      {isLoading ? (
+      {isLoading && afterLoad ? (
         <FullScreenLoader />
       ) : (
         <div>

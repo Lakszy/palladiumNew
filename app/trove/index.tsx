@@ -268,10 +268,11 @@ const Borrow = () => {
         lowerHint,
         { value: collBigint }
       );
-      setIsModalVisible(false)
-
     } catch (error) {
       console.error(error, "Error");
+    }
+    finally{
+      setIsModalVisible(false)
     }
   };
 

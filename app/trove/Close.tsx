@@ -23,10 +23,10 @@ interface Props {
 
 export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidationReserve }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-
   const [isLowBalance, setIsLowBalance] = useState(false);
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
+  const [afterLoad, setAfterload] = useState(false);
   const [pusdBalance, setPusdBalance] = useState("0");
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 
@@ -50,7 +50,9 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
         setIsLowBalance(true);
       }
       setPusdBalance(pusdBalanceFormatted);
+      setAfterload(false)
     };
+    setAfterload(true)
     fetchPrice();
   }, [address, walletClient]);
 
@@ -59,9 +61,11 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
       setIsModalVisible(true)
       if (!walletClient) return null;
       await borrowerOperationsContract.closeTrove();
-      setIsModalVisible(false)
     } catch (error) {
       console.error(error, "Error");
+    }
+    finally {
+      setIsModalVisible(false)
     }
   };
 
@@ -71,39 +75,30 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
         <div className="space-y-7 ">
           <div className="flex md:gap-40 justify-between">
             <span className=" md:ml-0 ml-1  title-text text-gray-500">Collateral</span>
-            {Number(entireDebtAndColl) <= 0 ?
-              "--"
-              :
-              <span className="title-text md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(8)} BTC</span>
-            }
+            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="title-text md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(8)} BTC</span>}
           </div>
           <div className="flex justify-between">
             <span className=" md:ml-0 ml-1 title-text text-gray-500">Debt</span>
-            {Number(debt) <= 0 ?
-              "---"
-              :
-              <span className="title-text md:mr-0 mr-4">{Number(debt).toFixed(2)} PUSD</span>
-            }
+            {Number(debt) <= 0 ? "---" : <span className="title-text md:mr-0 mr-4">{Number(debt).toFixed(2)} PUSD</span>}
           </div>
           <div className="flex justify-between">
             <span className=" md:ml-0 ml-1 title-text text-gray-500">Liquidation Reserve</span>
-            {Number(liquidationReserve) <= 0 ?
-              "--"
-              :
-              <span className="title-text md:mr-0 mr-4">{Number(liquidationReserve).toFixed(2)} PUSD</span>
-            }
+            {Number(liquidationReserve) <= 0 ? "--" : <span className="title-text md:mr-0 mr-4">{Number(liquidationReserve).toFixed(2)} PUSD</span>}
           </div>
-
           <div className="flex justify-between">
-            <span className=" md:ml-0 ml-1 title-text text-gray-500">Wallet Balance</span>
-            <span className="title-text md:mr-0 mr-4">{Number(pusdBalance).toFixed(2)} PUSD</span>
+            <span className="title-text text-gray-500 ml-1 md:ml-0">Wallet Balance</span>
+            <span className="title-text mr-4 md:mr-0">
+              {afterLoad ? (
+                <div className=" h-2 mr-20  text-left">
+                  <div className="hex-loader"></div>
+                </div>
+              ) : (
+                `${Number(pusdBalance).toFixed(2)} PUSD`
+              )}
+            </span>
           </div>
         </div>
-        <button
-          onClick={handleConfirmClick}
-          disabled={isLowBalance}
-          className={`mt-20 md:w-full md:ml-0 ml-1 w-[20rem] h-[3rem] bg-yellow-300 hover:bg-yellow-400 text-black title-text ${isLowBalance ? 'cursor-not-allowed' : 'cursor-pointer'}`}
-        >
+        <button onClick={handleConfirmClick} disabled={isLowBalance || afterLoad} className={`mt-20 md:w-full md:ml-0 ml-1 w-[20rem] h-[3rem] bg-yellow-300 hover:bg-yellow-400 text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
           Close Trove
         </button>
         <div className="text-red-500 body-text w-full ml-1">

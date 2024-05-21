@@ -119,6 +119,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   );
 
   const handleConfirmClick = async (xLusdAmount: string, xColl: string) => {
+    setIsModalVisible(true)
     try {
       const pow20 = Decimal.pow(10, 20);
       const pow18 = Decimal.pow(10, 18);
@@ -173,6 +174,9 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
 
     } catch (error) {
       console.error(error, "Error");
+    }
+    finally{
+      setIsModalVisible(false)
     }
   };
 

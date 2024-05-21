@@ -1,7 +1,5 @@
 /* eslint-disable */
-
 "use client";
-
 import stabilityPoolAbi from "../../app/src/constants/abi/StabilityPool.sol.json";
 import { BOTANIX_RPC_URL } from "../../app/src/constants/botanixRpcUrl";
 import botanixTestnet from "../../app/src/constants/botanixTestnet.json";
@@ -9,12 +7,9 @@ import { getContract } from "../../app/src/utils/getContract";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useWalletClient } from "wagmi";
-import web3 from "web3";
 
 const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-
 export const StabilityStats = () => {
-
 	const [loanRewards, setLoanRewards] = useState("0");
 	const [liquidGains, setLiquidGains] = useState("0");
 
@@ -22,10 +17,7 @@ export const StabilityStats = () => {
 	const [totalStabilityPool, setTotalStabilityPool] = useState("0");
 	const [isLoading, setIsLoading] = useState(true);
 	const [isPoolLoading, setIsPoolLoading] = useState(true);
-
-
 	const { data: walletClient } = useWalletClient();
-
 
 	const stabilityPoolContractReadOnly = getContract(
 		botanixTestnet.addresses.stabilityPool,
@@ -44,7 +36,6 @@ export const StabilityStats = () => {
 			setTotalStakedValue(fixedtotal);
 			setIsLoading(false)
 		};
-
 		const totalStabilityPool = async () => {
 			if (!walletClient) return null;
 			const fetchedTotalStakedValue =
@@ -54,7 +45,6 @@ export const StabilityStats = () => {
 			setTotalStabilityPool(fixedtotal);
 			setIsPoolLoading(false)
 		};
-
 		getStakedValue();
 		totalStabilityPool();
 	}, [walletClient]);
@@ -69,21 +59,18 @@ export const StabilityStats = () => {
 				<div className="flex justify-center">
 					<h2 className="font-bold text-xl my-3 text-yellow-400 title-text">Stability Pool</h2>
 				</div>
-
 				<div className="flex justify-between py-2">
 					<span className="text-yellow-100 font-medium text-base ml body-text">Your Total Staking Balance</span>
 					<span className="text-white font-medium ml-7 body-text whitespace-nowrap">
 						{isLoading ? (
 							<div className=" h-3 rounded-xl">
 								<div className="hex2-loader"></div>
-							</div>
-						) : (
+							</div>) : (
 							<>{(Number(totalStakedValue).toFixed(2)).toString()} PUSD
 							</>
 						)}
 					</span>
 				</div>
-
 				<div className="flex justify-between py-2">
 					<span className="text-yellow-100 text-base font-medium body-text">Total Stability Pool Staked</span>
 					<span className="text-white font-medium body-text">
@@ -96,7 +83,6 @@ export const StabilityStats = () => {
 						)}
 					</span>
 				</div>
-
 				<div className="flex justify-between py-2">
 					<span className="text-yellow-100 text-lg font-medium body-text">Your Pool Share</span>
 					<span className="text-white font-medium body-text">
@@ -110,7 +96,6 @@ export const StabilityStats = () => {
 						)}
 					</span>
 				</div>
-
 				<div className="flex justify-center">
 					<h2 className="font-bold text-xl text-yellow-400 my-3 title-text">Your Rewards</h2>
 				</div>
@@ -118,7 +103,6 @@ export const StabilityStats = () => {
 					<span className="text-yellow-100 text-lg font-medium body-text">Liquidation Gains</span>
 					<span className="text-white font-medium body-text">{liquidGains.toString()} BTC</span>
 				</div>
-
 				<div className="flex justify-between py-2">
 					<span className="text-yellow-100 text-lg font-medium body-text">PDM Rewards</span>
 					<span className="text-white font-medium body-text">{loanRewards.toString()} PDM</span>
