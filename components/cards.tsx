@@ -103,6 +103,14 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   }, []);
 
   const newLTV = ((Number(entireDebtAndColl.debt) * 100) / ((Number(entireDebtAndColl.coll) * Number(fetchedPrice)))).toFixed(2)
+  const getTroveStatus = async () => {
+    if (!walletClient) return null;
+    const troveStatusBigInt = await troveManagerContract.getTroveStatus(
+      walletClient?.account.address
+    );
+    const troveStatus = troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
+    setTroveStatus(troveStatus);
+  };
 
   const fetchActivitiesData = async () => {
     try {
@@ -155,6 +163,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   };
 
   useEffect(() => {
+    getTroveStatus();
     fetchedData();
     fetchActivitiesData().then(() => {
       if (activitiesData) {
@@ -164,7 +173,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
         }
       }
     });
-  }, [walletClient,address,isConnected]);
+  }, [walletClient,address,isConnected,troveStatus]);
 
   const countClaimedBadges = (activitiesData: ActivitiesData): number => {
     if (!activitiesData || !activitiesData.task) return 0;
@@ -270,9 +279,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       {troveStatus === "ACTIVE" ? (
                         <h6 className="w-2 h-2 rounded-full bg-green-400 mr-1 title-text text-green-900"></h6>
                       ) : (<h6 className="w-2 h-2 rounded-full bg-red-400 mr-1 title-text  text-black"></h6>)}
-                      <h6>{troveStatus}
-                        {isStateLoading}
-                      </h6>
+                      <h6>{troveStatus}</h6>
                     </div>
                   ) : (
                     <CustomConnectButton className="" />
