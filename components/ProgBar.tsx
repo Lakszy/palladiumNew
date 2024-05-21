@@ -25,6 +25,7 @@ const TaskScroll: React.FC = () => {
 
   const [error, setError] = useState<string | null>(null);
   const msgs = useRef<Messages>(null);
+  const [isLoading, setIsLoading] = useState<string | null>(null);
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
 
@@ -51,15 +52,18 @@ const TaskScroll: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [isConnected,address,walletClient]);
+  }, [isConnected, address, walletClient]);
 
   const handleLikeButtonClick = async (taskId: string) => {
+    setIsLoading(taskId);
     try {
       await axios.put(`https://api.palladiumlabs.org/users/activities/${address}/${taskId}`);
       fetchData();
     } catch (error) {
-      setError("We are recalibrating your points. Check back in some time for a surprise 😉....");
+      setError("We are recalibrating your points. Check back in some time for a surprise 😉....");
       console.error('Error making PUT request:', error);
+    } finally {
+      setIsLoading(null);
     }
   };
 
@@ -71,6 +75,12 @@ const TaskScroll: React.FC = () => {
           <div className="task-info gap-x-10 flex flex-col items-center">
             <p className='title-text text-yellow-300  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
             <div className="w-[10rem] md:w-[7rem] md:p-0 p-8">
+          {isLoading === task.name ? (
+            <div className="text-left w-full h-2">
+              <div className="hex-loader"></div>
+            </div>
+          ) : (
+            <>
               {task.status === 'claimed' && task.rewardType === 'badge' && (
                 <>
                   <div className='tooltip'>
@@ -97,6 +107,8 @@ const TaskScroll: React.FC = () => {
                 <>
                   <Image src={locked} alt="Locked" className="hover:cursor-not-allowed" />
                   <div className='circle z-20' style={{ position: 'absolute', top: '62%', left: '50%', transform: 'translate(-50%, -50%)' }}></div>
+                </>
+              )}
                 </>
               )}
             </div>

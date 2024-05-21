@@ -19,7 +19,6 @@ import giftBox from "../app/assets/images/giftBox.svg";
 import Image from "next/image";
 import { useAccount, useWalletClient } from "wagmi";
 import troveManagerAbi from "../app/src/constants/abi/TroveManager.sol.json";
-import priceFeedAbi from "../app/src/constants/abi/PriceFeedTestnet.sol.json";
 import { ethers } from "ethers";
 import TargetArrow from "../app/assets/images/targetArrow.svg";
 import Decimal from "decimal.js";
@@ -73,6 +72,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [firstTask, setFirstTask] = useState<string>("");
   const [fetchedPrice, setFetchedPrice] = useState("0");
+  const [isStateLoading, setIsStateLoading] = useState(false);
 
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
     debt: "0",
@@ -123,10 +123,9 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
 
   const fetchedData = async () => {
     if (!walletClient) return null;
+    setIsStateLoading(true)
     const pow = Decimal.pow(10, 18);
-    const pow16 = Decimal.pow(10, 16);
     const _1e18 = toBigInt(pow.toFixed());
-    const _1e16 = toBigInt(pow16.toFixed());
     const {
       0: debt,
       1: coll,
@@ -141,6 +140,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
       pendingLUSDDebtReward: (pendingLUSDDebtReward / _1e18).toString(),
       pendingETHReward: (pendingETHReward / _1e18).toString(),
     });
+    setIsStateLoading(false)
 
   };
 
@@ -164,7 +164,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
         }
       }
     });
-  }, [walletClient,address,isConnected,fetchedData]);
+  }, [walletClient,address,isConnected]);
 
   const countClaimedBadges = (activitiesData: ActivitiesData): number => {
     if (!activitiesData || !activitiesData.task) return 0;
@@ -178,9 +178,6 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
     }
     return count;
   };
-  useEffect(() => {
-    Number(entireDebtAndColl.coll) > 0 ? setTroveStatus("ACTIVE") : setTroveStatus("INACTIVE")
-  }, [walletClient, address, isConnected, fetchedData])
 
   return (
     <>
@@ -188,10 +185,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
         <FullScreenLoader />
       ) : (
         <div className="w-[25rem] md:w-full">
-          <div
-            className="title-text h-full w-full -mt-28 pt-10 pb-10 pl-4 pr-4"
-            style={{ backgroundColor: "#1C1A0F" }}
-          >
+          <div className="title-text h-full w-full -mt-28 pt-10 pb-10 pl-4 pr-4" style={{ backgroundColor: "#1C1A0F" }}>
             <div className="w-full h-[20rem] gap-3 flex border-2 pl-2 border-yellow-300 mb-10 justify-between items-center">
               <div className="flex w-1/3 p-2 notMobileDevice">
                 <Image src={robo} alt="robot" className="mt-16 -ml-[3rem]" />
@@ -236,10 +230,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 </div>
               </div>
             </div>
-            <div
-              className="w-full  mb-10 upper mr-10 border-yellow-300 pt-10 mt-10  p-6  border items-center justify-center"
-              style={{ backgroundColor: "#272315" }}
-            >
+            <div className="w-full  mb-10 upper mr-10 border-yellow-300 pt-10 mt-10  p-6  border items-center justify-center" style={{ backgroundColor: "#272315" }}>
               <ProgBar />
               <div className="mt-10 h-20 md flex gap-x-3">
                 <div className=" h-20 w-1/4 flex justify-between p-2">
@@ -265,28 +256,23 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
             </div>
 
             <div className="w-full md:gap-y-0 gap-y-5 pt-10 md:pl-5 gap-x-5 pr-5 flex flex-col md:flex-row">
-              <div
-                className="w-full md:w-[30%] border border-yellow-300 pl-1 pb-7"
-                style={{ backgroundColor: "#272315" }}
-              >
+              <div className="w-full md:w-[30%] border border-yellow-300 pl-1 pb-7" style={{ backgroundColor: "#272315" }}>
                 <div className="p-2 gap-x-1 flex justify-between">
                   <h1 className="title-text text-yellow-300 text-2xl font-bold">
                     Trove Status
                   </h1>
                   {isConnected ? (
-                    <div
-                      className={`border-[3px] flex items-center justify-center h-10 title-text  w-32 p-2 ${troveStatus === "ACTIVE"
-                        ? "border-green-800 t title-text bg-green-100"
-                        : "border-red-800  bg-red-100"
-                        }`}
-                      style={{ borderTopRightRadius: "10px" }}
-                    >
+                    <div className={`border-[3px] flex items-center justify-center h-10 title-text  w-32 p-2 ${troveStatus === "ACTIVE"
+                      ? "border-green-800 t title-text bg-green-100"
+                      : "border-red-800  bg-red-100"
+                      }`}
+                      style={{ borderTopRightRadius: "10px" }} >
                       {troveStatus === "ACTIVE" ? (
                         <h6 className="w-2 h-2 rounded-full bg-green-400 mr-1 title-text text-green-900"></h6>
-                      ) : (
-                        <h6 className="w-2 h-2 rounded-full bg-red-400 mr-1 title-text  text-black"></h6>
-                      )}
-                      <h6>{troveStatus}</h6>
+                      ) : (<h6 className="w-2 h-2 rounded-full bg-red-400 mr-1 title-text  text-black"></h6>)}
+                      <h6>{troveStatus}
+                        {isStateLoading}
+                      </h6>
                     </div>
                   ) : (
                     <CustomConnectButton className="" />
@@ -296,41 +282,47 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 <div className="space-y-6 pt-12">
                   <div className="flex gap-x-14">
                     <Image src={btc} alt="coin" />
-                    <div className="">
-                      <h1 className="text-gray-500 font-bold title-text">
-                        Collateral
-                      </h1>
+                    <div className=" flex flex-col">
+                      <h1 className="text-gray-500 font-bold title-text">Collateral</h1>
                       <h1 className="text-gray-100 font-bold text-lg title-text">
-                        {Number(entireDebtAndColl.coll).toFixed(8)} BTC
+                        {isStateLoading ?
+                          (
+                            <div className="text-left w-full -mt-6 h-2">
+                              <div className="hex-loader"></div>
+                            </div>)
+                          : `${Number(entireDebtAndColl.coll).toFixed(8)} BTC`}
                       </h1>
                     </div>
                   </div>
-                  <div className=" flex gap-x-6">
+                  <div className="flex gap-x-6">
                     <Image src={doubleCoin} alt="coin" />
-                    <div className="">
+                    <div className=" flex flex-col">
                       <h1 className="text-gray-500 font-bold title-text">Debt</h1>
                       <h1 className="text-gray-100 font-bold text-lg title-text">
-                        {Number(entireDebtAndColl.debt).toFixed(2)} PUSD
+                        {isStateLoading ?
+                          (<div className="text-left w-full -mt-6 h-2">
+                            <div className="hex-loader"></div>
+                          </div>)
+                          : `${Number(entireDebtAndColl.debt).toFixed(2)} PUSD`}
                       </h1>
                     </div>
                   </div>
                   <div className="flex gap-x-10">
                     <Image src={tripleCoin} alt="coin" />
-                    <div className="">
-                      <h1 className="text-gray-500 font-bold title-text">
-                        YOUR LTV
-                      </h1>
+                    <div className=" flex flex-col">
+                      <h1 className="text-gray-500 font-bold title-text">YOUR LTV</h1>
                       <h1 className="text-gray-100 font-bold text-lg title-text">
-                        {Number(newLTV).toFixed(2) || 0}%
+                        {isStateLoading ?
+                          (<div className="text-left w-full -mt-6 h-2">
+                            <div className="hex-loader"></div>
+                          </div>)
+                          : `${Number(newLTV).toFixed(2) || 0}%`}
                       </h1>
                     </div>
                   </div>
                 </div>
               </div>
-              <div
-                className="w-full md:w-2/3 border border-yellow-300 pb-[4.5rem] h-fit"
-                style={{ backgroundColor: "#272315" }}
-              >
+              <div className="w-full md:w-2/3 border border-yellow-300 pb-[4.5rem] h-fit" style={{ backgroundColor: "#272315" }} >
                 <div className="p-2 gap-x-1 flex  justify-between">
                   <h1 className="font-mono text-yellow-300 text-2xl font-bold">
                     ACTIVITIES STATS
@@ -342,58 +334,34 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                       <Image src={giftBox} alt="giftBox" />
                       <h6 className="font-bold text-gray-400">Active Deposit</h6>
-                      <h6 className="font-bold  text-gray-100">
-                        {activitiesData?.continuousActivity.activeDeposit?.toFixed(
-                          8
-                        ) || 0}{" "}
-                        BTC
-                      </h6>
+                      <h6 className="font-bold  text-gray-100">  {activitiesData?.continuousActivity.activeDeposit?.toFixed(8) || 0}{" "}  BTC</h6>
                     </div>
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                       <Image src={giftBox} alt="giftBox" />
                       <h6 className="font-bold text-gray-400">Trove Volume</h6>
-                      <h6 className="font-bold text-gray-100">
-                        {activitiesData?.continuousActivity.troveVolume?.toFixed(
-                          8
-                        ) || 0}{" "}
-                        BTC
-                      </h6>
+                      <h6 className="font-bold text-gray-100">  {activitiesData?.continuousActivity.troveVolume?.toFixed(8) || 0}{" "}  BTC  </h6>
                     </div>
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                       <Image src={giftBox} alt="giftBox" />
                       <h6 className="font-bold text-gray-400">Staking Volume</h6>
-                      <h6 className="font-bold text-gray-100">
-                        {activitiesData?.continuousActivity.stakingVolume?.toFixed(
-                          2
-                        ) || 0}{" "}
-                        PUSD
-                      </h6>
+                      <h6 className="font-bold text-gray-100">  {activitiesData?.continuousActivity.stakingVolume?.toFixed(2) || 0}{" "}  PUSD</h6>
                     </div>
                   </div>
                   <div className="w-full h-24 flex">
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                       <Image src={giftBox} alt="giftBox" />
                       <h6 className="font-bold text-gray-400">3rd Party Volume</h6>
-                      <h6 className="font-bold text-gray-100">
-                        {activitiesData?.continuousActivity[
-                          "3rdPartyVolume"
-                        ]?.toFixed(2) || 0}{" "}
-                        PUSD
-                      </h6>
+                      <h6 className="font-bold text-gray-100">  {activitiesData?.continuousActivity["3rdPartyVolume"]?.toFixed(2) || 0}{" "}  PUSD</h6>
                     </div>
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                       <Image src={giftBox} alt="giftBox" />
                       <h6 className="font-bold text-gray-400">Native Txns</h6>
-                      <h6 className="font-bold text-gray-100">
-                        {activitiesData?.continuousActivity.nativeTxns || 0}
-                      </h6>
+                      <h6 className="font-bold text-gray-100"> {activitiesData?.continuousActivity.nativeTxns || 0} </h6>
                     </div>
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                       <Image src={giftBox} alt="giftBox" />
                       <h6 className="font-bold text-gray-400">3rd Party Txns</h6>
-                      <h6 className="font-bold text-gray-100">
-                        {activitiesData?.continuousActivity["3rdPartyTxns"] || 0}
-                      </h6>
+                      <h6 className="font-bold text-gray-100">  {activitiesData?.continuousActivity["3rdPartyTxns"] || 0}</h6>
                     </div>
                   </div>
                 </div>
