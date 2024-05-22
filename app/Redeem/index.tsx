@@ -196,7 +196,7 @@ export default function Redeem() {
 
     return (
         <>
-            {/* {isRedeeming && (
+            {isRedeeming && (
                 <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex justify-center items-center">
                     <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-yellow-900"></div>
                 </div>
@@ -220,15 +220,15 @@ export default function Redeem() {
                         </span>
                     </div>
                     <div className="flex gap-x-2 md:gap-x-6">
-                        <Button disabled={!isConnected && isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                        <Button disabled={!isConnected && isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                        <Button disabled={!isConnected && isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                        <Button disabled={!isConnected && isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100% </Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                        <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 border-yellow-900 ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100% </Button>
                     </div>
 
                     {isConnected ? (
                         <div className="space-y-2">
-                            <button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-5 body-text text-black text-md font-semibold w-[20rem] md:w-full border border-black h-10 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading}>
+                            <button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-5 body-text text-black text-md font-semibold w-[20rem] md:w-full border border-black h-10 ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
                                 {isLoading ? 'LOADING...' : 'REDEEM'}
                             </button>
                             <div>
@@ -247,7 +247,7 @@ export default function Redeem() {
                         </>
                     </Dialog>
                 </div>
-            </div> */}
+            </div>
 
         </>
     );

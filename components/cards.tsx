@@ -14,6 +14,8 @@ import tripleCoin from "../app/assets/images/tripleCoin.svg";
 import botanixLogo from "../app/assets/images/botanixLogo.svg";
 import botanixTestnet from "@/app/src/constants/botanixTestnet.json";
 import { BOTANIX_RPC_URL } from "../app/src/constants/botanixRpcUrl";
+import img1 from "../app/assets/images/Group 771.png";
+import CHART from "../app/assets/images/CHART.svg";
 import { getContract } from "@/app/src/utils/getContract";
 import giftBox from "../app/assets/images/giftBox.svg";
 import Image from "next/image";
@@ -26,7 +28,7 @@ import web3 from "web3";
 import "./Loader.css";
 import { CustomConnectButton } from "./connectBtn";
 import ProgBar from "./ProgBar";
-import NFT from "./NFT/page";
+import NFT2 from "./NFT2/page";
 import FullScreenLoader from "./FullScreenLoader";
 
 interface Task {
@@ -271,6 +273,8 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     Trove Status
                   </h1>
                   {isConnected ? (
+                <>
+                  {troveStatus === "ACTIVE" ? (
                     <div className={`border-[3px] flex items-center justify-center h-10 title-text  w-32 p-2 ${troveStatus === "ACTIVE"
                       ? "border-green-800 t title-text bg-green-100"
                       : "border-red-800  bg-red-100"
@@ -281,11 +285,14 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       ) : (<h6 className="w-2 h-2 rounded-full bg-red-400 mr-1 title-text  text-black"></h6>)}
                       <h6>{troveStatus}</h6>
                     </div>
+                  ) : (<></>)}
+                </>
                   ) : (
                     <CustomConnectButton className="" />
                   )}
                   <div className="bent-corner"></div>
                 </div>
+              {troveStatus === "ACTIVE" ? (
                 <div className="space-y-6 pt-12">
                   <div className="flex gap-x-14">
                     <Image src={btc} alt="coin" />
@@ -328,6 +335,14 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                   </div>
                 </div>
+              ) : (
+                <div className="grid place-items-center p-3">
+                  <Image src={img1} alt="home" width={200} />
+                  <p className="text-white title-text text-center font-semibold text-lg pt-5">
+                    You don't have an Active Trove
+                  </p>
+                </div>
+              )}
               </div>
               <div className="w-full md:w-2/3 border border-yellow-300 pb-[4.5rem] h-fit" style={{ backgroundColor: "#272315" }} >
                 <div className="p-2 gap-x-1 flex  justify-between">
@@ -336,6 +351,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   </h1>
                   <Image src={botanixLogo} alt="logo" className="-mt-4" />
                 </div>
+              {isConnected ? (
                 <div className=" p-2 space-y-10">
                   <div className="w-full h-24 flex">
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
@@ -372,10 +388,18 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                   </div>
                 </div>
+              ) : (
+                <div className="grid place-items-center p-3">
+                  <Image src={CHART} alt="home" width={200} />
+                  <p className="text-white title-text text-center font-semibold text-lg pt-5">
+                    Connect your wallet to see your stats
+                  </p>
+                </div>
+              )}
               </div>
             </div>
-            <div className="p-3">
-              <NFT />
+            <div className="p-[2rem] w-100%">
+              <NFT2 />
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-export const borrowerOperations = [
+export const borrowerOperationsABI = [
     {
         "anonymous": false,
         "inputs": [

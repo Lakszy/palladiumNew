@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import borrowerOperationAbi from "../src/constants/abi/BorrowerOperations.sol.json";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
+import { borrowerOperationsABI } from "../src/constants/abi/borrowerOperations";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
@@ -13,7 +14,7 @@ import Decimal from "decimal.js";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useBalance, useWalletClient } from "wagmi";
+import { useBalance, useWalletClient, useWriteContract } from "wagmi";
 import Image from "next/image";
 import img1 from "../assets/images/Group 771.png";
 import img3 from "../assets/images/Group 661.svg";
@@ -33,6 +34,7 @@ export const OpenTrove = () => {
   const [lr, setLR] = useState(0)
   const [cCr, setCCR] = useState(0)
   const [mCR, setMCR] = useState(0)
+  const { data: hash, writeContract } = useWriteContract()
   const [fetchedPrice, setFetchedPrice] = useState(0)
   const [recoveryMode, setRecoveryMode] = useState<boolean>()
 
@@ -265,11 +267,11 @@ export const OpenTrove = () => {
               />
               <span className="md:max-w-[5rem] md:p-2  h-full">${totalCollateral.toFixed(2)}</span>
             </div>
-            <div className="pt-2 border flex items-center justify-between">
+            <div className="pt-2 flex items-center justify-between">
               <span className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
                 Available {Number(balanceData?.formatted).toFixed(8)}{" "}
               </span>
-              <div className="flex w-full gap-x-3 mt-2">
+              <div className="flex  gap-x-3 mt-2">
                 <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
                 <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
                 <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
@@ -301,9 +303,8 @@ export const OpenTrove = () => {
             <div className="pt-2 flex items-center justify-between borde2 p-2">
               <span className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
                 Available {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
-                {/* Available {maxBorrow >= 0 ? (Number((maxBorrow).toFixed(2)) - Number(0.01)) : "0.00"} */}
               </span>
-              <div className="flex w-full gap-x-3 mt-2">
+              <div className="flex gap-x-3 mt-2">
                 <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
                 <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
                 <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>

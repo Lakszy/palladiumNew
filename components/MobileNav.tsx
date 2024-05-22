@@ -39,7 +39,7 @@ export default function MobileNav() {
     { id: "portfolio", icon: MdOutlineInventory2, title: "Portfolio", link: "portfolio", },
     { id: "trove", icon: RiBillLine, title: "Mint PUSD", link: "trove" },
     { id: "stake", icon: BiDollar, title: "Stake PUSD", link: "stake" },
-    // { id: "redeem", icon: RiBillLine, title: "Redeem PUSD", link: "redeem" },
+    { id: "redeem", icon: RiBillLine, title: "Redeem PUSD", link: "redeem" },
   ];
   return (
     <div className="w-12 h-12 title-text flex">

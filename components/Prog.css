@@ -41,3 +41,10 @@ background-color: #f5d64e;
     font-weight: bold;
     margin: 10px 0;
   }
+  .p-dialog-content {
+    background-color: #2d2a1c;
+  }
+  .p-dialog-draggable .p-dialog-header{
+    background-color: #2d2a1c;
+    display: none;
+  }

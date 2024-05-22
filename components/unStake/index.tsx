@@ -36,7 +36,7 @@ export const Unstake = () => {
 	const [message, setMessage] = useState("");
 	const [showCloseButton, setShowCloseButton] = useState(false);
 
-	const [afterLoad, setAfterload] = useState(false);
+	// const [afterLoad, setAfterload] = useState(false);
 	const { data: walletClient } = useWalletClient();
 	const { data: hash, writeContract } = useWriteContract()
 	const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
@@ -66,7 +66,7 @@ export const Unstake = () => {
 					walletClient?.account.address
 				);
 			setStakedValue(fetchedPUSD);
-			setAfterload(false);
+			// setAfterload(false);
 		} catch (error) {
 			console.error("Error fetching staked value:", error);
 		}
@@ -76,9 +76,9 @@ export const Unstake = () => {
 	}, [walletClient, stabilityPoolContractReadOnly, writeContract, hash]);
 
 	const handleClose = () => {
-		setAfterload(true)
+		// setAfterload(true)
 		setLoadingModalVisible(false);
-		fetchStakedValue();
+		window.location.reload()
 	};
 
 	useEffect(() => {
@@ -161,11 +161,11 @@ export const Unstake = () => {
 				<div className="flex -mt-2 mb-2  items-center">
 					<Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#3b351b] body-text text-lg h-14 border border-yellow-300 text-white px-3 " />
 				</div>
-			{afterLoad ? (
-				<div className="text-left w-full -mt-6 h-2">
+			{/* {afterLoad ? ( */}
+					{/* <div className="text-left w-full -mt-6 h-2">
 					<div className="hex-loader"></div>
-				</div>
-			) : (
+				</div> */}
+				{/*  ) : ( */}
 				<span className={"md:ml-[55%] ml-[35%] font-medium balance body-text " + (Number(userInput) > Math.trunc(Number(totalStakedValue) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
 					{isStateLoading ?
 						(
@@ -173,14 +173,11 @@ export const Unstake = () => {
 							<div className="hex-loader"></div>
 						</div>
 						) : (
-							<span className="whitespace-nowrap">
-								<span className="text-gray-400 body-text">
-									Your Stake: {" "}
-								</span>
+							<span className="whitespace-nowrap"><span className="text-gray-400 body-text">	Your Stake: {" "}</span>
 								{Math.trunc(Number(totalStakedValue) * 100) / 100} PUSD</span>
 						)}
 				</span>
-			)}
+				{/*  )} */}
 			</div>
 			<div className="flex w-full gap-x-4 md:gap-x-6  mt-2">
 				<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
@@ -216,8 +213,10 @@ export const Unstake = () => {
 					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">{loadingMessage}</div>
 					{isSuccess && (<Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
 					)}
-					{!isSuccess && showCloseButton && (
+					{!isSuccess && showCloseButton && (<>
+						<p>Some Error Occured On Network Please Try Again After Some Time.. 🤖</p>
 						<Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
+					</>
 					)}
 				</div>
 			</Dialog>
