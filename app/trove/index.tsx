@@ -497,9 +497,14 @@ const Borrow = () => {
                                       <h6 className="text-gray-500 body-text  text-sm">
                                         Available{" "}
                                       </h6>
-                                      {Number(totalAvailableBorrow) >= 0 && (
+                                      {Number(totalAvailableBorrow) >= 0 ? (
                                         <h6 className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > totalAvailableBorrow ? 'text-red-500' : 'text-white'}`}>
                                           {Math.trunc(Number(totalAvailableBorrow) * 100) / 100}
+                                        <div></div>
+                                      </h6>
+                                    ) :
+                                      (<h6 className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > totalAvailableBorrow ? 'text-red-500' : 'text-white'}`}>
+                                          {Math.trunc(Number(availableToBorrow) * 100) / 100}
                                           <div></div>
                                         </h6>
                                       )}

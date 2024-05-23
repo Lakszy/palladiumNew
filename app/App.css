@@ -3372,3 +3372,10 @@ sd1 {
 .animate-color-change {
   animation: color-change 2s infinite;
 }
+.sticky-banner {
+  position: sticky;
+  top: 0;
+  background-color: #fcd34d; /* Equivalent to bg-yellow-300 */
+  height: 3rem; /* Equivalent to h-12 */
+  z-index: 1000; /* Ensures it stays on top of other elements */
+}

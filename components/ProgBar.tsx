@@ -98,14 +98,14 @@ const TaskScroll: React.FC = () => {
             <>
               {task.status === 'claimed' && task.rewardType === 'badge' && (
                   <div className='tooltip'>
-                    <Image src={badge} alt="Badge" className="hover:cursor-not-allowed" />
-                    <span className="tooltiptext p-2 h-10 hover:cursor-not-allowed">Reward has been claimed....✨</span>
+                    <Image src={badge} alt="Badge" className="hover:cursor-grabbing" />
+                    <span className="tooltiptext p-2 h-10 hover:cursor-grabbing">Reward has been claimed....✨</span>
                   </div>
               )}
               {task.status === 'claimed' && task.rewardType === 'point' && (
                   <div className='tooltip'>
-                    <Image src={points} alt="Points" className="hover:cursor-not-allowed" />
-                    <span className="tooltiptext p-2 h-10 hover:cursor-not-allowed">Reward has been claimed....✨</span>
+                    <Image src={points} alt="Points" className="hover:cursor-grabbing" />
+                    <span className="tooltiptext p-2 h-10 hover:cursor-grabbing">Reward has been claimed....✨</span>
                   </div>
               )}
               {task.status === 'unclaimed' && (
