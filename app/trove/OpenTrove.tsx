@@ -317,7 +317,7 @@ export const OpenTrove = () => {
           </div>
           <button
             onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
-            className={`mt-10 h-[3rem] bg-yellow-300 body-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? 'bg-gray-500 cursor-not-allowed' : 'bg-yellow-300'}`}
+            className={`mt-10 h-[3rem] bg-yellow-300 title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'bg-yellow-300'}`}
             disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
               || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData?.formatted)
               || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}
@@ -328,9 +328,16 @@ export const OpenTrove = () => {
                 parseFloat(userInputs.borrow) > maxBorrow ||
                 parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
                 parseFloat(userInputs.borrow) <= minDebt)
-
-                ? 'not-allowed' : 'pointer'
-            }}>
+                ? 'not-allowed' : 'pointer',
+       opacity: (!userInputs.borrow || isModalVisible ||
+                 !userInputs.collatoral ||
+                 loanToValue > (100 / Number(divideBy)) ||
+                 parseFloat(userInputs.borrow) > maxBorrow ||
+                 parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
+                 parseFloat(userInputs.borrow) <= minDebt)
+                 ? 0.5 : 1
+     }}
+     >
             {isModalVisible ? "Opening Trove..." : "Open Trove"}
           </button>
         </div>

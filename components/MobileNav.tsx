@@ -1,8 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { MdOutlineInventory2 } from "react-icons/md";
-import { BiDollar } from "react-icons/bi";
-import { RiBillLine } from "react-icons/ri";
+import { GrTransaction } from "react-icons/gr";
+import { LiaHandHoldingUsdSolid } from "react-icons/lia";
+import { GiUnbalanced } from "react-icons/gi";
+import { RiCoinsLine } from "react-icons/ri";
 import Link from "next/link";
 import { LayoutGrid } from "lucide-react";
 import Image from "next/image";
@@ -36,10 +37,10 @@ export default function MobileNav() {
 
   const menuItems: MenuItem[] = [
     { id: "Dashboard", icon: LayoutGrid, title: "Dashboard", link: "/" },
-    { id: "portfolio", icon: MdOutlineInventory2, title: "Portfolio", link: "portfolio", },
-    { id: "trove", icon: RiBillLine, title: "Mint PUSD", link: "trove" },
-    { id: "stake", icon: BiDollar, title: "Stake PUSD", link: "stake" },
-    { id: "redeem", icon: RiBillLine, title: "Redeem PUSD", link: "redeem" },
+    { id: "portfolio", icon: RiCoinsLine, title: "Portfolio", link: "portfolio", },
+    { id: "trove", icon: GrTransaction, title: "Mint PUSD", link: "trove" },
+    { id: "stake", icon: GiUnbalanced, title: "Stake PUSD", link: "stake" },
+    { id: "redeem", icon: LiaHandHoldingUsdSolid, title: "Redeem PUSD", link: "redeem" },
   ];
   return (
     <div className="w-12 h-12 title-text flex">

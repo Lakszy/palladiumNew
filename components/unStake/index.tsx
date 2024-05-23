@@ -187,11 +187,12 @@ export const Unstake = () => {
 			</div>
 			{isConnected ? (
 				<div className="">
-					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 border-none body-text
+					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-2 text-black title-text font-semibold w-full border border-black h-10 border-none 
 					 ${isStateLoading
+						|| Number(userInput) == 0
 							|| Math.trunc(Number(totalStakedValue) * 100) / 100 === 0
 							|| Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100) ? 'cursor-not-allowed opacity-50' : ''}`}
-						disabled={isStateLoading || Math.trunc(Number(totalStakedValue) * 100) / 100 === 0 || Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100)}>	{isStateLoading ? 'LOADING...' : 'UNSTAKE'}</button>
+						disabled={isStateLoading || Math.trunc(Number(totalStakedValue) * 100) / 100 === 0 || Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100)}>{isStateLoading ? 'LOADING...' : 'UNSTAKE'}</button>
 				</div>
 			) : (
 				<CustomConnectButton className="" />

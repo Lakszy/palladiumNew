@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { MdOutlineInventory2 } from "react-icons/md";
-import { BiDollar } from "react-icons/bi";
-import { RiBillLine } from "react-icons/ri";
 import Link from "next/link";
+import { GrTransaction } from "react-icons/gr";
+import { LiaHandHoldingUsdSolid } from "react-icons/lia";
+import { GiUnbalanced } from "react-icons/gi";
+import { RiCoinsLine } from "react-icons/ri";
 import { LayoutGrid } from "lucide-react";
 import Image from "next/image";
 import logo from "../app/assets/images/newpalladium.svg";
@@ -36,15 +37,10 @@ export default function MobileNavFalse() {
 
   const menuItems: MenuItem[] = [
     { id: "Dashboard", icon: LayoutGrid, title: "Dashboard", link: "/" },
-    {
-      id: "Portfolio",
-      icon: MdOutlineInventory2,
-      title: "Portfolio",
-      link: "portfolio",
-    },
-    { id: "Borrow", icon: RiBillLine, title: "Mint PUSD", link: "Borrow" },
-    { id: "Stake-pusd", icon: BiDollar, title: "Stake PUSD", link: "Stake" },
-    { id: "Redeem", icon: RiBillLine, title: "Redeem PUSD", link: "Redeem" },
+    {  id: "Portfolio",  icon: RiCoinsLine,  title: "Portfolio",  link: "portfolio",},
+    { id: "Borrow", icon: GrTransaction, title: "Mint PUSD", link: "Borrow" },
+    { id: "Stake-pusd", icon: GiUnbalanced, title: "Stake PUSD", link: "Stake" },
+    { id: "Redeem", icon: LiaHandHoldingUsdSolid, title: "Redeem PUSD", link: "Redeem" },
   ];
   return (
     <div className="w-12 h-12 title-text flex">

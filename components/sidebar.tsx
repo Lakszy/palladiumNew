@@ -2,10 +2,12 @@
 
 import React from "react";
 import { usePathname } from 'next/navigation';
-import { MdOutlineInventory2 } from "react-icons/md";
-import { BiDollar } from "react-icons/bi";
 import { RiBillLine } from "react-icons/ri";
 import Link from "next/link";
+import { GrTransaction } from "react-icons/gr";
+import { LiaHandHoldingUsdSolid } from "react-icons/lia";
+import { GiUnbalanced } from "react-icons/gi";
+import { RiCoinsLine } from "react-icons/ri";
 import { LayoutGrid } from "lucide-react";
 import Image from "next/image";
 import logo from "../app/assets/images/newpalladium.svg";
@@ -43,7 +45,7 @@ export const TabsDemo = () => {
               className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/") ? "text-black" : " text-white"
                 }`}
             >
-              {React.createElement(LayoutGrid, { size: 22 })}
+              {React.createElement(LayoutGrid, { size: 30 })}
             </div>
             <span className="font-medium body-text">Dashboard</span>
           </div>
@@ -57,7 +59,7 @@ export const TabsDemo = () => {
               className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/portfolio") ? "text-black" : " text-white"
                 }`}
             >
-              {React.createElement(MdOutlineInventory2, { size: 22 })}
+              {React.createElement(RiCoinsLine, { size: 30 })}
             </div>
             <span className="font-medium body-text">Portfolio</span>
           </div>
@@ -71,7 +73,7 @@ export const TabsDemo = () => {
               className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/trove") ? "text-black" : " text-white"
                 }`}
             >
-              {React.createElement(RiBillLine, { size: 22 })}
+              {React.createElement(GrTransaction, { size: 30 })}
             </div>
             <span className="font-medium body-text">Mint PUSD</span>
           </div>
@@ -85,7 +87,7 @@ export const TabsDemo = () => {
               className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/stake") ? "text-black" : " text-white"
                 }`}
             >
-              {React.createElement(BiDollar, { size: 22 })}
+              {React.createElement(GiUnbalanced, { size: 30 })}
             </div>
             <span className="font-medium body-text">Stake PUSD</span>
           </div>
@@ -99,7 +101,7 @@ export const TabsDemo = () => {
               className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/redeem") ? "text-black" : " text-white"
                 }`}
             >
-              {React.createElement(RiBillLine, { size: 22 })}
+              {React.createElement(LiaHandHoldingUsdSolid, { size: 30 })}
             </div>
             <span className="font-medium body-text">Redeem PUSD</span>
           </div>

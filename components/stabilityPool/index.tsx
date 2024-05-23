@@ -163,7 +163,7 @@ export const StabilityPool = () => {
 			{isConnected ? (
 				<div className="">
 					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick}
-						className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 body-text border-none 
+						className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 title-text border-none 
                             ${isDataLoading || Number(userInput) <= 0 || Number(userInput) > Number(Math.trunc(Number(pusdBalance) * 100) / 100)
 								? 'cursor-not-allowed opacity-50' : ''}`}
 						disabled={isDataLoading || Number(userInput) <= 0 || Number(userInput) > Number(Math.trunc(Number(pusdBalance) * 100) / 100)}>

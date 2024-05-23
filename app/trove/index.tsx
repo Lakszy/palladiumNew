@@ -515,7 +515,7 @@ const Borrow = () => {
                                     onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
                                     className={`mt-5 w-full title-text h-[3rem]
                                    ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
-                                        ? 'bg-gray-300 cursor-not-allowed' : 'cursor-pointer bg-yellow-300 text-black'}`}
+                                        ? 'opacity-50 bg-yellow-300 text-black cursor-not-allowed' : 'cursor-pointer bg-yellow-300 text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
                                     UPDATE TROVE
                                   </button>

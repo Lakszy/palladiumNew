@@ -196,11 +196,11 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
         <FullScreenLoader />
       ) : (
         <div className="w-[25rem] md:w-full">
-          <div className="title-text h-full w-full -mt-28 pt-10 pb-10 pl-4 pr-4" style={{ backgroundColor: "#1C1A0F" }}>
-            <div className="w-full h-[20rem] gap-3 flex border-2 pl-2 border-yellow-300 mb-10 justify-between items-center">
+          <div className="title-text h-full w-full pt-10 p-10" style={{ backgroundColor: "#1C1A0F" }}>
+            <div className="w-full p-5 h-[20rem] gap-3 flex  pl-2  mb-justify-between items-center" style={{ backgroundColor: "#272315" }}>
               <div className="flex w-1/3 p-2 notMobileDevice">
-                <Image src={robo} alt="robot" className="mt-16 -ml-[3rem]" />
-                <Image src={circuitBreaker} alt="text" className="-ml-12 mt-20" />
+                <Image src={robo} alt="robot" style={{ width: '100rem' }} className=" -ml-[3rem]" />
+                <Image src={circuitBreaker} alt="text" className="-ml-3 mt-20" />
               </div>
               <div className="w-3/4 -ml-[10rem] md:-ml-0 sticky h-[19rem] p-2 text-white gap-y-10">
                 <div className="absolute md:ml-[24rem] -mt-[2rem] flex items-center gap-x-2">
@@ -241,7 +241,8 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 </div>
               </div>
             </div>
-            <div className="w-full  mb-10 upper mr-10 border-yellow-300 pt-10 mt-10  p-6  border items-center justify-center" style={{ backgroundColor: "#272315" }}>
+          <div className="">
+            <div className="w-full p-5  mb-10 upper mr-10  pt-10 mt-10  items-center justify-center" style={{ backgroundColor: "#272315" }}>
               <ProgBar />
               <div className="mt-10 h-20 md flex gap-x-3">
                 <div className=" h-20 w-1/4 flex justify-between p-2">
@@ -263,11 +264,12 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     EARN EXCLUSIVE REWARDS BY COMPLETING CHALLENGES
                   </h5>
                 </div>
+                </div>
               </div>
             </div>
 
-            <div className="w-full md:gap-y-0 gap-y-5 pt-10 md:pl-5 gap-x-5 pr-5 flex flex-col md:flex-row">
-              <div className="w-full md:w-[30%] border border-yellow-300 pl-1 pb-7" style={{ backgroundColor: "#272315" }}>
+            <div className="w-full md:gap-y-0 gap-5 pt- flex flex-col md:flex-row">
+              <div className="w-full md:w-[40%] pl-1 pb-7" style={{ backgroundColor: "#272315" }}>
                 <div className="p-2 gap-x-1 flex justify-between">
                   <h1 className="title-text text-yellow-300 text-2xl font-bold">
                     Trove Status
@@ -344,7 +346,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 </div>
               )}
               </div>
-              <div className="w-full md:w-2/3 border border-yellow-300 pb-[4.5rem] h-fit" style={{ backgroundColor: "#272315" }} >
+              <div className="w-full  pb-[4.5rem] h-fit" style={{ backgroundColor: "#272315" }} >
                 <div className="p-2 gap-x-1 flex  justify-between">
                   <h1 className="font-mono text-yellow-300 text-2xl font-bold">
                     ACTIVITIES STATS
@@ -398,7 +400,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               )}
               </div>
             </div>
-            <div className="p-[2rem] w-100%">
+            <div className="pt-10  w-100%">
               <NFT2 />
             </div>
           </div>
