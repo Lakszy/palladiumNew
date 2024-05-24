@@ -247,7 +247,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 </div>
               </div>
             </div>
-          <div className="">
+          <div className="py-10">
             <div className="w-full p-5 h-[20rem] mt-10 upper mr-10   items-center justify-center" style={{ backgroundColor: "#272315" }}>
               <ProgBar />
               <div className="mt-10 h-20 md flex gap-x-3">

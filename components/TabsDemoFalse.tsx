@@ -59,13 +59,13 @@ ${isMenuSelected(menuItem.id) ? "bg-yellow-400 text-black" : "text-gray-500"}`} 
           </div>
         ))}
       </nav>
-      <div className="space-y-1">
+      <div className="space-y-1 -mt-7">
         <div className="ml-6 w-fit h-fit">
           <Link href="https://zealy.io/cw/palladiumlabs/questboard">
             <Image src={zeally} alt="zeally" className="w-[227px] h-[100px]" />
           </Link>
         </div>
-        <div className="flex items-center justify-center text-white gap-x-7 text-[19px] -mt-10">
+        <div className="flex items-center justify-center text-white gap-x-7 text-[19px]">
           <Link href="https://twitter.com/PalladiumLabs">  <Image src={tweet} alt="twitter" />  </Link>
           <Link href="https://discord.com/invite/9MMEyJ4JDz"><Image src={discord} alt="twitter" />  </Link>
           <Link href="https://medium.com/palladium-labs">   <Image src={medium} alt="twitter" /> </Link>

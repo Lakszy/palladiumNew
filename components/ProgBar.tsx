@@ -9,7 +9,7 @@ import Image from 'next/image';
 import points from "../app/assets/images/Points.png";
 import unclaimed from "../app/assets/images/unclaimed.png";
 import locked from "../app/assets/images/Locked.png";
-import badge from "../app/assets/images/Badge.png";
+import badge from "../app/assets/images/bbadge.png";
 import axios from 'axios';
 import "./Prog.css";
 import "../app/App.css"
