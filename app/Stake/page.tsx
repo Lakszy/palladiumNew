@@ -15,9 +15,7 @@ export default function Home() {
 
   const CustomTabHeader: React.FC<CustomTabHeaderProps> = ({ title }) => {
     return (
-      <>
-        <span className='title-text md:-ml-0 -ml-5'>{title}</span>
-      </>
+        <span className='title-text md:-ml-0'>{title}</span>
     );
   };
   return (
@@ -35,10 +33,10 @@ export default function Home() {
           <div className='md:p-10  pt-12 md:flex md:gap-x-36'>
             <div className="second_section w-[24rem] md:w-1/2 outer_section_detail pos_sticky">
               <TabView className='card'>
-                <TabPanel className='p-1  bg-yellow-400 text-lg text-black' header={<CustomTabHeader title="Stake" />}>
+                <TabPanel className='p-1  bg-yellow-400 text-sm text-black' header={<CustomTabHeader title="Stake" />}>
                   <StabilityPool />
                 </TabPanel>
-                <TabPanel className='p-1 bg-yellow-400 text-lg text-black' header={<CustomTabHeader title="Unstake" />}>
+                <TabPanel className='p-1 bg-yellow-400 text-sm  text-black' header={<CustomTabHeader title="Unstake" />}>
                   <Unstake />
                 </TabPanel>
               </TabView>

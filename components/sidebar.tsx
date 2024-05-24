@@ -26,97 +26,64 @@ export const TabsDemo = () => {
   };
 
   return (
-    <div
-      className={`sidebar notMobileDevice font-mono font-extrabold  w-72 grid h-screen grid-rows-[max-content_fr_max-content] 2c2819 text-white `}
-      style={{ backgroundColor: "#2c2819" }}
-    >
+    <div className={`sidebar notMobileDevice font-mono font-extrabold  w-72 grid h-screen grid-rows-[max-content_fr_max-content] 2c2819 text-white `} style={{ backgroundColor: "#2c2819" }}>
       <div className="flex items-center gap-x-1 justify-center">
         <Link href="/">
-          <Image src={logo} alt="Logo" className="mr-10 w-56" />
+          <Image src={logo} alt="Logo" className="mr-12 -mt-3 w-40" />
         </Link>
       </div>
       <nav className="flex flex-col gap-y-2 px-4">
         <Link href="/">
-          <div
-            className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/") ? "bg-yellow-400 text-black" : "text-gray-500"
-              }`}
-          >
-            <div
-              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/") ? "text-black" : " text-white"
-                }`}
-            >
-              {React.createElement(LayoutGrid, { size: 30 })}
+          <div className={` hover:scale-95 cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/") ? "bg-yellow-400 text-black" : "text-gray-500"}`}>
+            <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/") ? "text-black" : " text-white"}`}>
+              {React.createElement(LayoutGrid, { size: 18 })}
             </div>
-            <span className="font-medium body-text">Dashboard</span>
+            <span className="font-medium text-lg body-text">Dashboard</span>
           </div>
         </Link>
         <Link href="/portfolio">
-          <div
-            className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/portfolio") ? "bg-yellow-400 text-black" : "text-gray-500"
-              }`}
-          >
-            <div
-              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/portfolio") ? "text-black" : " text-white"
-                }`}
-            >
-              {React.createElement(RiCoinsLine, { size: 30 })}
+          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/portfolio") ? "bg-yellow-400 text-black" : "text-gray-500"}`}>
+            <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/portfolio") ? "text-black" : " text-white"}`}>
+              {React.createElement(RiCoinsLine, { size: 18 })}
             </div>
-            <span className="font-medium body-text">Portfolio</span>
+            <span className="font-medium text-lg body-text">Portfolio</span>
           </div>
         </Link>
         <Link href="/trove">
-          <div
-            className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/trove") ? "bg-yellow-400 text-black" : "text-gray-500"
-              }`}
-          >
-            <div
-              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/trove") ? "text-black" : " text-white"
-                }`}
-            >
-              {React.createElement(GrTransaction, { size: 30 })}
+          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/trove") ? "bg-yellow-400 text-black" : "text-gray-500"}`}>
+            <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/trove") ? "text-black" : " text-white"}`}>
+              {React.createElement(GrTransaction, { size: 18 })}
             </div>
-            <span className="font-medium body-text">Mint PUSD</span>
+            <span className="font-medium text-lg body-text">Mint PUSD</span>
           </div>
         </Link>
         <Link href="/stake">
-          <div
-            className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/stake") ? "bg-yellow-400 text-black" : "text-gray-500"
-              }`}
-          >
-            <div
-              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/stake") ? "text-black" : " text-white"
-                }`}
-            >
-              {React.createElement(GiUnbalanced, { size: 30 })}
+          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/stake") ? "bg-yellow-400 text-black" : "text-gray-500"}`}>
+            <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/stake") ? "text-black" : " text-white"}`}>
+              {React.createElement(GiUnbalanced, { size: 18 })}
             </div>
-            <span className="font-medium body-text">Stake PUSD</span>
+            <span className="font-medium text-lg body-text">Stake PUSD</span>
           </div>
         </Link>
         <Link href="/redeem">
-          <div
-            className={`cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/redeem") ? "bg-yellow-400 text-black" : "text-gray-500"
-              }`}
-          >
-            <div
-              className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/redeem") ? "text-black" : " text-white"
-                }`}
-            >
-              {React.createElement(LiaHandHoldingUsdSolid, { size: 30 })}
+          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/redeem") ? "bg-yellow-400 text-black" : "text-gray-500"}`}>
+            <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/redeem") ? "text-black" : " text-white"}`}>
+              {React.createElement(LiaHandHoldingUsdSolid, { size: 18 })}
             </div>
-            <span className="font-medium body-text">Redeem PUSD</span>
+            <span className="font-medium text-lg body-text">Redeem PUSD</span>
           </div>
         </Link>
       </nav>
-      <div className="space-y-1">
+      <div className="space-y-1  -mt-6">
         <div className="ml-6 w-fit h-fit">
           <Link href="https://zealy.io/cw/palladiumlabs/questboard">
             <Image src={zeally} alt="zeally" className="w-[227px] h-[100px]" />
           </Link>
         </div>
         <div className="flex items-center justify-center text-white gap-x-7 text-[19px] -mt-10">
-          <Link href="https://twitter.com/PalladiumLabs">  <Image src={tweet} alt="twitter" /></Link>
-          <Link href="https://discord.com/invite/9MMEyJ4JDz">  <Image src={discord} alt="twitter" /></Link>
-          <Link href="https://medium.com/palladium-labs">  <Image src={medium} alt="twitter" /></Link>
+          <Link href="https://twitter.com/PalladiumLabs">  <Image className="hover:scale-105"  src={tweet} alt="twitter" /></Link>
+          <Link href="https://discord.com/invite/9MMEyJ4JDz">  <Image className="hover:scale-105"  src={discord} alt="twitter" /></Link>
+          <Link href="https://medium.com/palladium-labs">  <Image  className="hover:scale-105" src={medium} alt="twitter" /></Link>
         </div>
       </div>
     </div>

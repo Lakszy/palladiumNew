@@ -783,37 +783,31 @@ body .p-buttonset .p-button {
 }
 
 .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
-  border: 1px solid #3b351b;
+  border: 1px solid transparent;
   border-radius: 0;
   background: transparent;
   filter: none;
   color: white;
 }
 
-/* .p-tabview .p-tabview-nav li {
-    border: none;
-  } */
-
-/* .p-tabview .p-tabview-nav li .p-tabview-nav-link {
-    border: 1px solid;
-  } */
 .p-tabview .p-tabview-nav .p-tabview-ink-bar {
   height: 0;
 }
 
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
-  padding: 20px 60px;
+  padding: 15px 20px;
   font-weight: 500;
   margin: 0;
-  border: 3px solid #bca435;
-  border-radius: 0;
-  filter: grayscale(1);
-  background: #3b351b;
+  background-color: #272315;
   color: white !important;
 }
+.p-tabview .p-tabview-nav li:not(.p-highlight) .p-tabview-title {
+  color: white;
+}
 
-.p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
+.p-tabview .p-tabview-nav li .p-tabview-nav-link:focus {
   box-shadow: none;
+  color: white !important;
 }
 
 .p-tabview .p-tabview-nav li {
@@ -829,8 +823,10 @@ body .p-buttonset .p-button {
   border: none;
 }
 
+.p-tabview-panels{
+  background-color: inherit;
+}
 .p-tabview .p-tabview-panels {
-  background: #3b351b;
   color: white;
 }
 
@@ -3375,7 +3371,7 @@ sd1 {
 .sticky-banner {
   position: sticky;
   top: 0;
-  background-color: #fcd34d; /* Equivalent to bg-yellow-300 */
-  height: 3rem; /* Equivalent to h-12 */
-  z-index: 1000; /* Ensures it stays on top of other elements */
+  background-color: #fcd34d;
+  height: 3rem;
+  z-index: 1000;
 }

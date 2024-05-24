@@ -19,6 +19,7 @@ import Image from "next/image";
 import img1 from "../assets/images/Group 771.png";
 import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
+import floatPUSD from "../assets/images/floatPUSD.png";
 import { Button } from "@/components/ui/button";
 
 export const OpenTrove = () => {
@@ -219,7 +220,7 @@ export const OpenTrove = () => {
         >
           <div className="flex  w-full">
             <div className="h-[172px] notMobileDevice w-[22%]">
-              <Image src={img1} alt="home" className="-mt-5" />
+              <Image src={floatPUSD} alt="home" className="-mt-12" />
             </div>
             <div className=" h-fit py-2 space-y-10">
               <div>
@@ -317,7 +318,7 @@ export const OpenTrove = () => {
           </div>
           <button
             onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
-            className={`mt-10 h-[3rem] bg-yellow-300 title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'bg-yellow-300'}`}
+            className={`mt-10 h-[3rem] bg-yellow-300 title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-yellow-300'}`}
             disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
               || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData?.formatted)
               || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}
@@ -330,14 +331,13 @@ export const OpenTrove = () => {
                 parseFloat(userInputs.borrow) <= minDebt)
                 ? 'not-allowed' : 'pointer',
        opacity: (!userInputs.borrow || isModalVisible ||
-                 !userInputs.collatoral ||
-                 loanToValue > (100 / Number(divideBy)) ||
-                 parseFloat(userInputs.borrow) > maxBorrow ||
-                 parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
-                 parseFloat(userInputs.borrow) <= minDebt)
-                 ? 0.5 : 1
-     }}
-     >
+               !userInputs.collatoral ||
+                loanToValue > (100 / Number(divideBy)) ||
+                parseFloat(userInputs.borrow) > maxBorrow ||
+                parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
+                parseFloat(userInputs.borrow) <= minDebt)
+                ? 0.5 : 1
+            }}>
             {isModalVisible ? "Opening Trove..." : "Open Trove"}
           </button>
         </div>
@@ -347,11 +347,7 @@ export const OpenTrove = () => {
           >
             <div className="flex whitespace-nowrap justify-between">
               <span className="body-text text-sm text-gray-500">Loan-To-Value</span>
-              {!isloading ?
-                <span className={`overflow-x-clip text-sm body-text ${loanToValue > (100 / Number(divideBy)) ? 'text-red-500' : ''}`}>{loanToValue.toFixed(2)} % </span>
-                :
-                "--"
-              }
+              {!isloading ? <span className={`overflow-x-clip text-sm body-text ${loanToValue > (100 / Number(divideBy)) ? 'text-red-500' : ''}`}>{loanToValue.toFixed(2)} % </span> : "--"}
             </div>
             <div className="flex body-text whitespace-nowrap justify-between">
               <span className="body-text text-sm text-gray-500">Liq. Reserve</span>
@@ -371,11 +367,7 @@ export const OpenTrove = () => {
             </div>
             <div className="flex justify-between">
               <span className=" text-sm body-text text-gray-500">Total Debt</span>
-              {Number((calculatedValues.expectedDebt)) > lr ?
-                <span className=" text-sm body-text">{(calculatedValues.expectedDebt).toFixed(2)} {" "} PUSD</span>
-                :
-                "---"
-              }
+              {Number((calculatedValues.expectedDebt)) > lr ? <span className=" text-sm body-text">{(calculatedValues.expectedDebt).toFixed(2)} {" "} PUSD</span> : "---"}
             </div>
             <div className="flex justify-between">
               <span className=" text-sm body-text text-gray-500">Total Collateral</span>

@@ -209,7 +209,7 @@ export default function Redeem() {
                                 className="bg-[#3b351b] body-text w-[20rem] md:w-full text-lg h-14 border border-yellow-300 text-white "
                             />
                         </div>
-                        <span className="ml-[55%] body-text text-yellow-300 font-medium balance ">
+                        <span className="ml-[69%] body-text text-yellow-300 font-medium balance ">
                             {isLoading ?
                                 (<div className="-mt-6 h-3 rounded-xl">
                                     <div className="hex-loader"></div>
@@ -219,7 +219,7 @@ export default function Redeem() {
                                 )}
                         </span>
                     </div>
-                    <div className="flex gap-x-2 md:gap-x-6">
+                    <div className="flex w-full justify-between">
                         <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
                         <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
                         <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 border-yellow-900 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>

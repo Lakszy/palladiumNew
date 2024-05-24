@@ -88,7 +88,7 @@ const TaskScroll: React.FC = () => {
       <div className='w-full'>
         <button aria-label="Like button" onClick={handleClick} disabled={task.status === 'locked' || task.status === 'claimed'}>
           <div className="task-info gap-x-10 flex flex-col items-center">
-            <p className='title-text text-yellow-300  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
+            <p className=' body-text font-semibold text-sm text-yellow-300  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
             <div className="w-[10rem] md:w-[7rem] md:p-0 p-8">
           {isLoading === task.name ? (
             <div className="text-left -mt-6 w-full h-2">
@@ -117,14 +117,14 @@ const TaskScroll: React.FC = () => {
               {task.status === 'locked' && (
                 <>
                   <Image src={locked} alt="Locked" className="hover:cursor-not-allowed" />
-                  <div className='circle z-20' style={{ position: 'absolute', top: '62%', left: '50%', transform: 'translate(-50%, -50%)' }}></div>
+                  <div className='circle z-20' style={{ position: 'absolute',  transform: 'translate(-50%, -50%)' }}></div>
                 </>
               )}
                 </>
               )}
             </div>
             <div className='flex whitespace-nowrap'>
-              <p className='title-text text-yellow-300 mr-1 notMobileDevice '>{task.rewardValue} {task.rewardType === "point" ? "Points" : null}</p>
+              <p className='capitalize body-text font-semibold text-sm text-yellow-300 notMobileDevice '>{task.rewardValue} {task.rewardType === "point" ? "Points" : null}</p>
             </div>
           </div>
         </button>

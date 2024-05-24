@@ -44,7 +44,7 @@ export const TabsDemoFalse = () => {
     >
       <div className="flex items-center gap-x-1 justify-center">
         <Link href="/">
-          <Image src={logo} alt="Logo" className="mr-10 w-56" />
+          <Image src={logo} alt="Logo" className="mr-10 w-40" />
         </Link>
       </div>
       <nav className="flex flex-col gap-y-2 px-4">

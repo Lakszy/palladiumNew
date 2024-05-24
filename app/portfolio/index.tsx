@@ -19,6 +19,8 @@ import { Knob } from "primereact/knob";
 import "../App.css";
 import Progress from "./Progress";
 import Layout from "./layout";
+import floatPUSD from "../assets/images/floatPUSD.png";
+import macPUSD from "../assets/images/macPUSD.png";
 import { CustomConnectButton } from "@/components/connectBtn";
 import FullScreenLoader from "@/components/FullScreenLoader";
 
@@ -309,7 +311,7 @@ const Portfolio = () => {
                     </button>
                   </div>
                   <div className="grid place-items-center p-3">
-                    <Image src={img1} alt="home" width={200} />
+                    <Image src={floatPUSD} alt="home" width={200} />
                     <p className="text-white title-text text-center font-semibold text-lg pt-5">
                       You don't have an Active Trove
                     </p>
@@ -323,7 +325,7 @@ const Portfolio = () => {
                     </button>
                   </div>
                   <div className="grid place-items-center mt-[1rem]">
-                    <Image src={port2} alt="home" width={200} />
+                    <Image src={macPUSD} alt="home" width={200} />
                     <p className="text-white title-text text-center font-semibold text-lg mt-4">
                       You have not Staked
                     </p>

@@ -423,21 +423,16 @@ const Borrow = () => {
               </div>
               <div className="" style={{ backgroundColor: "#272315" }}>
                 <div className="md:p-5 pt-20 flex-col flex gap-x-36">
-                  <div className=" border w-23rem] border-yellow-800">
-                    <TabView className="md:-ml-0 -ml-2">
-                      <TabPanel
-                        className=" p-1 bg-yellow-400 text-xl title-text "
-                        header="Borrow">
+                  <div className=" border-yellow-800">
+                    <TabView className="md:-ml-0 bg-red-200 -ml-2">
+                      <TabPanel className=" p-1 bg-yellow-400 text-sm title-text " header="Borrow">
                         <div className="pb-10"
                           style={{ backgroundColor: "#272315" }}>
                           <div className="flex-col flex md:flex-row justify-between gap-32">
                             <div>
                               <div className="grid w-full max-w-sm items-start gap-2 mx-auto   p-5">
                                 <div className="relative">
-                                  <Label
-                                    htmlFor="items"
-                                    className="text-white body-text text-sm mb-2"
-                                  >
+                                  <Label htmlFor="items" className="text-white body-text text-sm mb-2">
                                     Deposit Collatoral
                                   </Label>
                                   <div className="flex items-center  md:w-full md:-ml-0 -ml-3  border border-yellow-300 " style={{ backgroundColor: "#3f3b2d" }}>
@@ -520,7 +515,7 @@ const Borrow = () => {
                                     onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
                                     className={`mt-5 w-full title-text h-[3rem]
                                    ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
-                                        ? 'opacity-50 bg-yellow-300 text-black cursor-not-allowed' : 'cursor-pointer bg-yellow-300 text-black'}`}
+                                        ? 'opacity-50 bg-yellow-300 text-black cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-yellow-300 text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
                                     UPDATE TROVE
                                   </button>
@@ -626,13 +621,13 @@ const Borrow = () => {
                           </div>
                         </div>
                       </TabPanel>
-                      <TabPanel className="p-1 bg-yellow-400 text-xl  title-text " header="Repay">
+                      <TabPanel className="p-1 bg-yellow-400 text-sm body-text " header="Repay">
                         <div className="w-full h-full border p-4 border-yellow-400" style={{ backgroundColor: "#272315" }}>
                           <Repay coll={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} lr={lr}
                             fetchedPrice={Number(fetchedPrice)} borrowRate={borrowRate} minDebt={minDebt} recoveryMode={recoveryMode} cCR={cCr} mCR={mCR} />
                         </div>
                       </TabPanel>
-                      <TabPanel className="p-1 bg-yellow-400 text-xl title-text" header="Close">
+                      <TabPanel className="p-1 bg-yellow-400 text-sm title-text" header="Close">
                         <div className="w-full h-full" style={{ backgroundColor: "#272315" }}  >
                           <CloseTrove entireDebtAndColl={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} liquidationReserve={lr} />
                         </div>

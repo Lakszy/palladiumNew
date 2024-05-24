@@ -2,7 +2,6 @@
 "use client";
 import { Label } from "@/components/ui/label";
 import borrowerOperationAbi from "../src/constants/abi/BorrowerOperations.sol.json";
-import erc20Abi from "../src/constants/abi/ERC20.sol.json";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import priceFeedAbi from "../src/constants/abi/PriceFeedTestnet.sol.json";
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
@@ -21,7 +20,6 @@ import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
 import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "primereact/dialog";
 
@@ -261,11 +259,12 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   const isDebtInValid = parseFloat(userInputs.lusdAmount) > totalAvailableRepay
 
   const newLTV = ((Number(debt) * 100) / ((Number(coll) * Number(fetchedPrice)))).toFixed(2)
+  const condition = (userInputColl + userInputDebt >= 1) || (parseFloat(userInputs.coll) < Number(coll)) || (parseFloat(userInputs.lusdAmount) < Number(debt));
   return (
     <>
       <div className="flex-col  border border-yellow-400 mx-2  flex md:flex-row justify-between gap-10">
         <div>
-          <div className="grid w-full space-y-6 max-w-sm items-start gap-2 mx-auto p-5">
+          <div className="grid w-full space-y-6 max-w-sm items-start gap-2 mx-auto p-5 px-8">
             <div className="relative">
               <Label htmlFor="quantity" className="text-gray-500 body-text text-lg mb-10 -pt-12 -mt-12 pb-10">
                 Repay PUSD
@@ -339,15 +338,14 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </div>
             <button
               onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}
-              className={`mt-5 w-full title-text h-[3rem]
-                                   ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
-                  ? 'bg-yellow-300 text-black cursor-not-allowed' : 'cursor-pointer bg-yellow-300 text-black'}`}
+              className={`mt-5 w-full title-text h-[3rem] ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
+                ? 'bg-yellow-300 text-black cursor-not-allowed' : 'hover:scale-95 cursor-pointer bg-yellow-300 text-black'}`}
               disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
               UPDATE TROVE
             </button>
           </div>
         </div>
-        <div className="w-fit md:h-[20rem] p-6 md:pt-12  mx-2 md:mx-4  md:mt-10 text-sm"
+        <div className={`w-fit md:h-[20rem] ${condition ? 'p-4' : 'p-16'} md:pt-12 mx-2 md:mx-4 md:mt-10 text-sm`}
           style={{ backgroundColor: "#2e2a1c" }}>
 
           <div className="mb-4 space-y-4">

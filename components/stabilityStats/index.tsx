@@ -57,11 +57,11 @@ export const StabilityStats = () => {
 		<div className="">
 			<div>
 				<div className="flex justify-center">
-					<h2 className="font-bold text-xl my-3 text-yellow-400 title-text">Stability Pool</h2>
+					<h2 className="font-bold text-sm my-3 text-yellow-400 title-text">Stability Pool</h2>
 				</div>
 				<div className="flex justify-between py-2">
-					<span className="text-yellow-100 font-medium text-base ml body-text">Your Total Staking Balance</span>
-					<span className="text-white font-medium ml-7 body-text whitespace-nowrap">
+					<span className="text-yellow-100 font-medium text-sm  ml body-text">Your Total Staking Balance</span>
+					<span className="text-white font-medium ml-7 text-sm body-text whitespace-nowrap">
 						{isLoading ? (
 							<div className=" h-3 rounded-xl">
 								<div className="hex2-loader"></div>
@@ -72,8 +72,8 @@ export const StabilityStats = () => {
 					</span>
 				</div>
 				<div className="flex justify-between py-2">
-					<span className="text-yellow-100 text-base font-medium body-text">Total Stability Pool Staked</span>
-					<span className="text-white font-medium body-text">
+					<span className="text-yellow-100 text-sm font-medium body-text">Total Stability Pool Staked</span>
+					<span className="text-white font-medium text-sm body-text">
 						{isPoolLoading ? (
 							<div className=" h-3 rounded-xl">
 								<div className="hex2-loader"></div>
@@ -84,8 +84,8 @@ export const StabilityStats = () => {
 					</span>
 				</div>
 				<div className="flex justify-between py-2">
-					<span className="text-yellow-100 text-lg font-medium body-text">Your Pool Share</span>
-					<span className="text-white font-medium body-text">
+					<span className="text-yellow-100 text-sm font-medium body-text">Your Pool Share</span>
+					<span className="text-white text-sm font-medium body-text">
 						{isLoading && isPoolLoading ? (
 							<div className=" h-3 rounded-xl">
 								<div className="hex2-loader"></div>
@@ -97,15 +97,15 @@ export const StabilityStats = () => {
 					</span>
 				</div>
 				<div className="flex justify-center">
-					<h2 className="font-bold text-xl text-yellow-400 my-3 title-text">Your Rewards</h2>
+					<h2 className="font-bold  text-yellow-400 my-3 text-sm title-text">Your Rewards</h2>
 				</div>
 				<div className="flex justify-between py-2">
-					<span className="text-yellow-100 text-lg font-medium body-text">Liquidation Gains</span>
-					<span className="text-white font-medium body-text">{liquidGains.toString()} BTC</span>
+					<span className="text-yellow-100 text-sm font-medium body-text">Liquidation Gains</span>
+					<span className="text-white font-medium text-sm body-text">{liquidGains.toString()} BTC</span>
 				</div>
 				<div className="flex justify-between py-2">
-					<span className="text-yellow-100 text-lg font-medium body-text">PDM Rewards</span>
-					<span className="text-white font-medium body-text">{loanRewards.toString()} PDM</span>
+					<span className="text-yellow-100 text-sm font-medium body-text">PDM Rewards</span>
+					<span className="text-white text-sm font-medium body-text">{loanRewards.toString()} PDM</span>
 				</div>
 			</div>
 		</div>

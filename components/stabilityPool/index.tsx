@@ -140,7 +140,7 @@ export const StabilityPool = () => {
 					<div className="hex-loader"></div>
 				</div> */}
 			 {/* ) : ( */}
-				<span className={"ml-[55%] body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
+				<span className={"ml-[69%] body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
 					{isDataLoading ? (
 						<div className="text-left w-full -mt-6 h-2">
 							<div className="hex-loader"></div>
@@ -154,7 +154,7 @@ export const StabilityPool = () => {
 				</span>
 			 {/* )} */}
 			</div>
-			<div className="flex w-full gap-x-4 md:gap-x-6  mt-2">
+			<div className="flex w-full justify-between gap-x-4 md:gap-x-6  mt-2">
 				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-900 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
 				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-900 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
 				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-900 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
@@ -165,7 +165,7 @@ export const StabilityPool = () => {
 					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick}
 						className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 title-text border-none 
                             ${isDataLoading || Number(userInput) <= 0 || Number(userInput) > Number(Math.trunc(Number(pusdBalance) * 100) / 100)
-								? 'cursor-not-allowed opacity-50' : ''}`}
+								? 'cursor-not-allowed opacity-50' : 'hover:scale-95 '}`}
 						disabled={isDataLoading || Number(userInput) <= 0 || Number(userInput) > Number(Math.trunc(Number(pusdBalance) * 100) / 100)}>
 						{isDataLoading ? 'LOADING...' : 'STAKE'}</button>
 				</div>

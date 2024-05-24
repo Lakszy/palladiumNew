@@ -5,8 +5,9 @@
 import { useEffect, useState } from "react";
 import btc from "../app/assets/images/btc.svg";
 import doubleCoin from "../app/assets/images/doubleCoin.svg";
-import robo from "../app/assets/images/robo.svg";
-import card2 from "../app/assets/images/card2.svg";
+import robo from "../app/assets/images/robo.png";
+import badge from "../app/assets/images/badge.png";
+import nft from "../app/assets/images/nft.png";
 import card0 from "../app/assets/images/card0.svg";
 import points from "../app/assets/images/points.svg";
 import circuitBreaker from "../app/assets/images/circuitBreaker.svg";
@@ -14,10 +15,14 @@ import tripleCoin from "../app/assets/images/tripleCoin.svg";
 import botanixLogo from "../app/assets/images/botanixLogo.svg";
 import botanixTestnet from "@/app/src/constants/botanixTestnet.json";
 import { BOTANIX_RPC_URL } from "../app/src/constants/botanixRpcUrl";
-import img1 from "../app/assets/images/Group 771.png";
 import CHART from "../app/assets/images/CHART.svg";
 import { getContract } from "@/app/src/utils/getContract";
 import giftBox from "../app/assets/images/giftBox.svg";
+import setPUSD from "../app/assets/images/setPUSD.png";
+import PUSDglass from "../app/assets/images/PUSDglass.png";
+import PUSDexc from "../app/assets/images/PUSDexc.png";
+import coinStack from "../app/assets/images/coinStack.png";
+import PUSDCrate from "../app/assets/images/PUSDCrate.png";
 import Image from "next/image";
 import { useAccount, useWalletClient } from "wagmi";
 import troveManagerAbi from "../app/src/constants/abi/TroveManager.sol.json";
@@ -25,6 +30,7 @@ import { ethers } from "ethers";
 import TargetArrow from "../app/assets/images/targetArrow.svg";
 import Decimal from "decimal.js";
 import web3 from "web3";
+import floatPUSD from "../app/assets/images/floatPUSD.png";
 import "./Loader.css";
 import { CustomConnectButton } from "./connectBtn";
 import ProgBar from "./ProgBar";
@@ -197,70 +203,70 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
       ) : (
         <div className="w-[25rem] md:w-full">
           <div className="title-text h-full w-full pt-10 p-10" style={{ backgroundColor: "#1C1A0F" }}>
-            <div className="w-full p-5 h-[20rem] gap-3 flex  pl-2  mb-justify-between items-center" style={{ backgroundColor: "#272315" }}>
+            <div className="w-full p-5 h-[14rem] gap-3 flex  pl-2  mb-justify-between items-center" style={{ backgroundColor: "#272315" }}>
               <div className="flex w-1/3 p-2 notMobileDevice">
-                <Image src={robo} alt="robot" style={{ width: '100rem' }} className=" -ml-[3rem]" />
+                <Image width={230} src={robo} alt="robot"  className="-ml-[3rem] mr-10" />
                 <Image src={circuitBreaker} alt="text" className="-ml-3 mt-20" />
               </div>
               <div className="w-3/4 -ml-[10rem] md:-ml-0 sticky h-[19rem] p-2 text-white gap-y-10">
-                <div className="absolute md:ml-[24rem] -mt-[2rem] flex items-center gap-x-2">
+                <div className="absolute md:ml-[24rem]  flex items-center gap-x-2">
                   <Image src={points} alt="points" className="ml-[60%] md:ml-0" />
                   <div>
-                    <h6 className="text-7xl  font-extrabold title-text text-yellow-300">
-                      {activitiesData?.point || 0}
+                    <h6 className="text-4xl mt-1 font-normal body-text text-yellow-300">
+                       {activitiesData?.point?.toLocaleString() || '0'}
                     </h6>
-                    <h5 className="text-2xl  font-extrabold title-text text-yellow-300">
+                    <h5 className="text-2xl  font-medium body-text text-yellow-300">
                       JOULES
                     </h5>
                   </div>
                 </div>
-                <div className="absolute px-6 md:p-0 h-24 md:w-[16rem] ml-[10rem] mt-[12rem] bg-gradient-to-l from-yellow-100 border-yellow-200">
-                  <div className="flex justify-between items-center">
+                <div className="absolute  px-6 md:p-0  h-20 md:w-[14rem] ml-[12rem] mt-[10rem] bg-gradient-to-l from-yellow-100 border-yellow-200">
+                  <div className="flex justify-between  -mt-7 ml-6 items-center">
                     <div>
-                      <h6 className="text-5xl text-yellow-300 title-text">
+                      <h6 className="text-4xl -mt-4 text-yellow-300 body-text">
                         {userExists ? 1 : 0}
                       </h6>
-                      <h6 className="text-3xl text-yellow-300 title-text">NFTs</h6>
+                      <h6 className="text-xl text-yellow-300 title-text">NFTs</h6>
                     </div>
-                    <Image src={card2} alt="robo2" className="notMobileDevice" />
+                    <Image width={140} src={nft} alt="robo2" className="notMobileDevice -mt-5" />
                   </div>
                 </div>
-                <div className="absolute p-2 md:p-0 ml-[20rem] md:ml-[28rem] mt-[12rem] h-24 md:w-[16rem] bg-gradient-to-l from-yellow-100 border-yellow-200">
-                  <div className="flex justify-between items-center">
+                <div className="absolute p-2 md:p-0 ml-[20rem] md:ml-[28rem] mt-[10rem] h-20 md:w-[14rem] bg-gradient-to-l from-yellow-100 border-yellow-200">
+                  <div className="flex justify-between -mt-7 ml-3 items-center">
                     <div>
-                      <h5 className="text-5xl text-yellow-300 title-text">
+                      <h5 className="text-4xl  text-yellow-300 title-text">
                         {(activitiesData && countClaimedBadges(activitiesData)) ||
                           0}
                       </h5>
-                      <h6 className="text-3xl text-yellow-300 title-text">
+                      <h6 className="text-xl text-yellow-300 title-text">
                         BAGDES
                       </h6>
                     </div>
-                    <Image src={card0} alt="robo2" className="notMobileDevice" />
+                    <Image width={120} src={badge} alt="robo2" className="notMobileDevice" />
                   </div>
                 </div>
               </div>
             </div>
           <div className="">
-            <div className="w-full p-5  mb-10 upper mr-10  pt-10 mt-10  items-center justify-center" style={{ backgroundColor: "#272315" }}>
+            <div className="w-full p-5 h-[20rem] mt-10 upper mr-10   items-center justify-center" style={{ backgroundColor: "#272315" }}>
               <ProgBar />
               <div className="mt-10 h-20 md flex gap-x-3">
                 <div className=" h-20 w-1/4 flex justify-between p-2">
                   <div>
-                    <Image src={TargetArrow} alt="arrow" />
+                    <Image src={TargetArrow} alt="arrow" className="ml-6" />
                   </div>
-                  <div>
+                  <div className="-ml-5">
                     <h5 className="font-bold text-gray-500 body-text whitespace-nowrap">
                       Next Challenge
                     </h5>
-                    <h5 className="font-bold text-white body-text whitespace-nowrap">
+                    <h5 className="font-bold text-white body-text whitespace-nowrap text-sm">
                       {firstTask || "- - - - - - - -"}
                     </h5>
                   </div>
                   <div></div>
                 </div>
-                <div className="h-20 w-4/5  p-2">
-                  <h5 className="font-bold text-2xl title-text ml-[15rem] text-yellow-300 notMobileDevice">
+                <div className="w-4/5 p-2">
+                  <h5 className=" title-text text-sm ml-[18rem] text-yellow-300 notMobileDevice">
                     EARN EXCLUSIVE REWARDS BY COMPLETING CHALLENGES
                   </h5>
                 </div>
@@ -268,11 +274,11 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               </div>
             </div>
 
-            <div className="w-full md:gap-y-0 gap-5 pt- flex flex-col md:flex-row">
+            <div className="w-full md:gap-y-0 gap-5 mt-10 flex flex-col md:flex-row">
               <div className="w-full md:w-[40%] pl-1 pb-7" style={{ backgroundColor: "#272315" }}>
                 <div className="p-2 gap-x-1 flex justify-between">
-                  <h1 className="title-text text-yellow-300 text-2xl font-bold">
-                    Trove Status
+                  <h1 className="body-text capi' font-semibold text-yellow-300 text-lg ">
+                    TROVE STATUS
                   </h1>
                   {isConnected ? (
                 <>
@@ -339,8 +345,8 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 </div>
               ) : (
                 <div className="grid place-items-center p-3">
-                  <Image src={img1} alt="home" width={200} />
-                  <p className="text-white title-text text-center font-semibold text-lg pt-5">
+                  <Image src={floatPUSD} alt="home" width={200} />
+                  <p className="text-gray-400 text- title-text text-center font-semibold  pt-5">
                     You don't have an Active Trove
                   </p>
                 </div>
@@ -348,7 +354,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               </div>
               <div className="w-full  pb-[4.5rem] h-fit" style={{ backgroundColor: "#272315" }} >
                 <div className="p-2 gap-x-1 flex  justify-between">
-                  <h1 className="font-mono text-yellow-300 text-2xl font-bold">
+                  <h1 className="body-text font-semibold text-yellow-300 text-lg">
                     ACTIVITIES STATS
                   </h1>
                   <Image src={botanixLogo} alt="logo" className="-mt-4" />
@@ -357,36 +363,36 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 <div className=" p-2 space-y-10">
                   <div className="w-full h-24 flex">
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
-                      <Image src={giftBox} alt="giftBox" />
-                      <h6 className="font-bold text-gray-400">Active Deposit</h6>
-                      <h6 className="font-bold  text-gray-100">  {activitiesData?.continuousActivity.activeDeposit?.toFixed(8) || 0}{" "}  BTC</h6>
+                      <Image src={PUSDCrate} alt="giftBox" />
+                      <h6 className="body-text font-semibold text-sm text-gray-400">Active Deposit</h6>
+                      <h6 className="body-text font-semibold text-sm  text-gray-100">  {activitiesData?.continuousActivity.activeDeposit?.toFixed(8) || 0}{" "}  BTC</h6>
                     </div>
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
-                      <Image src={giftBox} alt="giftBox" />
-                      <h6 className="font-bold text-gray-400">Trove Volume</h6>
-                      <h6 className="font-bold text-gray-100">  {activitiesData?.continuousActivity.troveVolume?.toFixed(8) || 0}{" "}  BTC  </h6>
+                      <Image src={coinStack} alt="giftBox" />
+                      <h6 className="body-text font-semibold text-sm text-gray-400">Trove Volume</h6>
+                      <h6 className="body-text font-semibold text-sm text-gray-100">  {activitiesData?.continuousActivity.troveVolume?.toFixed(8) || 0}{" "}  BTC  </h6>
                     </div>
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
-                      <Image src={giftBox} alt="giftBox" />
-                      <h6 className="font-bold text-gray-400">Staking Volume</h6>
-                      <h6 className="font-bold text-gray-100">  {activitiesData?.continuousActivity.stakingVolume?.toFixed(2) || 0}{" "}  PUSD</h6>
+                      <Image src={PUSDglass} alt="giftBox" />
+                      <h6 className="body-text font-semibold text-sm text-gray-400 text">Staking Volume</h6>
+                      <h6 className="body-text font-semibold text-sm text-gray-100"> {activitiesData?.continuousActivity.stakingVolume?.toFixed(2) || 0}{" "}  PUSD</h6>
                     </div>
                   </div>
                   <div className="w-full h-24 flex">
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                       <Image src={giftBox} alt="giftBox" />
-                      <h6 className="font-bold text-gray-400">3rd Party Volume</h6>
-                      <h6 className="font-bold text-gray-100">  {activitiesData?.continuousActivity["3rdPartyVolume"]?.toFixed(2) || 0}{" "}  PUSD</h6>
+                      <h6 className="body-text font-semibold text-sm text-gray-400">3rd Party Volume</h6>
+                      <h6 className="body-text font-semibold text-sm text-gray-100">  {activitiesData?.continuousActivity["3rdPartyVolume"]?.toFixed(2) || 0}{" "}  PUSD</h6>
                     </div>
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
-                      <Image src={giftBox} alt="giftBox" />
-                      <h6 className="font-bold text-gray-400">Native Txns</h6>
-                      <h6 className="font-bold text-gray-100"> {activitiesData?.continuousActivity.nativeTxns || 0} </h6>
+                      <Image src={PUSDexc} alt="giftBox" />
+                      <h6 className="body-text font-semibold text-sm text-gray-400">Native Txns</h6>
+                      <h6 className="body-text font-semibold text-sm text-gray-100"> {activitiesData?.continuousActivity.nativeTxns || 0} </h6>
                     </div>
                     <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
-                      <Image src={giftBox} alt="giftBox" />
-                      <h6 className="font-bold text-gray-400">3rd Party Txns</h6>
-                      <h6 className="font-bold text-gray-100">  {activitiesData?.continuousActivity["3rdPartyTxns"] || 0}</h6>
+                      <Image src={setPUSD} alt="giftBox" />
+                      <h6 className="body-text font-semibold text-sm text-gray-400">3rd Party Txns</h6>
+                      <h6 className="body-text font-semibold text-sm text-gray-100">  {activitiesData?.continuousActivity["3rdPartyTxns"] || 0}</h6>
                     </div>
                   </div>
                 </div>

@@ -166,7 +166,7 @@ export const Unstake = () => {
 					<div className="hex-loader"></div>
 				</div> */}
 				{/*  ) : ( */}
-				<span className={"md:ml-[55%] ml-[35%] font-medium balance body-text " + (Number(userInput) > Math.trunc(Number(totalStakedValue) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
+				<span className={"md:ml-[64%] ml-[35%] font-medium balance body-text " + (Number(userInput) > Math.trunc(Number(totalStakedValue) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
 					{isStateLoading ?
 						(
 						<div className="-mt-6 h-3 rounded-xl">
@@ -179,7 +179,7 @@ export const Unstake = () => {
 				</span>
 				{/*  )} */}
 			</div>
-			<div className="flex w-full gap-x-4 md:gap-x-6  mt-2">
+			<div className="flex w-full justify-between mt-2">
 				<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
 				<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
 				<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
@@ -191,7 +191,7 @@ export const Unstake = () => {
 					 ${isStateLoading
 						|| Number(userInput) == 0
 							|| Math.trunc(Number(totalStakedValue) * 100) / 100 === 0
-							|| Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100) ? 'cursor-not-allowed opacity-50' : ''}`}
+							|| Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100) ? 'cursor-not-allowed opacity-50' : 'hover:scale-95 '}`}
 						disabled={isStateLoading || Math.trunc(Number(totalStakedValue) * 100) / 100 === 0 || Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100)}>{isStateLoading ? 'LOADING...' : 'UNSTAKE'}</button>
 				</div>
 			) : (
