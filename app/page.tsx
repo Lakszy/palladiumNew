@@ -34,7 +34,7 @@ export default function Home() {
           <FullScreenLoader />
         ) : (
           <div className="grid h-screen font-mono font-extrabold mainT w-full sm:grid-cols-[max-content_1fr] overflow text-white">
-            {userExists ? <TabsDemo /> : <TabsDemoFalse />}
+            {userExists ? <TabsDemoFalse /> : <TabsDemoFalse />}
             <div className="body text-black  overflow-y-scroll ">
               <div className="sticky z-50 mainT top-0  overflow-auto">
                 <NavBar />

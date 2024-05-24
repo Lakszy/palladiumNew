@@ -1,8 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { MdOutlineInventory2 } from "react-icons/md";
-import { BiDollar } from "react-icons/bi";
-import { RiBillLine } from "react-icons/ri";
 import Link from "next/link";
 import { GrTransaction } from "react-icons/gr";
 import { LiaHandHoldingUsdSolid } from "react-icons/lia";
@@ -52,14 +49,10 @@ export const TabsDemoFalse = () => {
           <div
             key={menuItem.id}
             className={`opacity-50 cursor-not-allowed text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2
-        
-        ${isMenuSelected(menuItem.id) ? "bg-yellow-400 text-black" : "text-gray-500"}`}
-            onClick={() => { console.log("clicked1"); if (!userExists) return; handleMenuClick(menuItem.id); console.log("clicked2"); }}
-          >
+${isMenuSelected(menuItem.id) ? "bg-yellow-400 text-black" : "text-gray-500"}`} onClick={() => { if (!userExists) return; handleMenuClick(menuItem.id); }}>
             <div
               className={`menu flex items-center gap-x-3 rounded-full p-2
-          ${isMenuSelected(menuItem.id) ? "text-black" : "text-white"} `}
-            >
+          ${isMenuSelected(menuItem.id) ? "text-black" : "text-white"} `} >
               {React.createElement(menuItem.icon, { size: 22 })}
               <span className="font-medium body-text">{menuItem.title}</span>
             </div>

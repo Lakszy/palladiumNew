@@ -3369,9 +3369,6 @@ sd1 {
   animation: color-change 2s infinite;
 }
 .sticky-banner {
-  position: sticky;
-  top: 0;
   background-color: #fcd34d;
   height: 3rem;
-  z-index: 1000;
 }

@@ -362,7 +362,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               {isConnected ? (
                 <div className=" p-2 space-y-10">
                   <div className="w-full h-24 flex">
-                    <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
+                    <div className="flex-1 h-fit -mt-4  flex flex-col items-center justify-center text-center">
                       <Image src={PUSDCrate} alt="giftBox" />
                       <h6 className="body-text font-semibold text-sm text-gray-400">Active Deposit</h6>
                       <h6 className="body-text font-semibold text-sm  text-gray-100">  {activitiesData?.continuousActivity.activeDeposit?.toFixed(8) || 0}{" "}  BTC</h6>
