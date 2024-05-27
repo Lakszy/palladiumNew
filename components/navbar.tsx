@@ -5,9 +5,6 @@ import pusdbtc from "../app/assets/images/PUSD.svg";
 import btc from "../app/assets/images/btclive.svg";
 import { CustomConnectButton } from "./connectBtn";
 import "../app/App.css";
-import MobileNav from "./MobileNav";
-import logo from "../app/assets/images/newpalladium.svg";
-import Link from "next/link";
 import { useAccount } from "wagmi";
 import MobileNavFalse from "./MobileNavFalse";
 
@@ -47,10 +44,8 @@ function NavBar() {
     fetchData();
   }, []);
   return (
-    <div
-      className="md:flex border-2 hidde w-full  border-gray-100 h-28  border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50"
-      style={{ backgroundColor: "#272315" }}
-    >
+    <>
+      <div className="md:flex border-2 hidde w-full  border-gray-100 h-28  border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50" style={{ backgroundColor: "#272315" }}>
       <div className="flex items-center gap-x-4">
         <div className="w-full  flex gap-x-10  notMobileDevice rounded-xl">
           <div className="items-center flex gap-x-2">
@@ -100,6 +95,12 @@ function NavBar() {
         <CustomConnectButton className="" />
       </div>
     </div>
+    <div className="banner-container">
+      <div className="scrolling-text body-text">
+        We are facing network issues. The testnet will be live soon...🤖
+      </div>
+    </div>
+  </>
   );
 }
 

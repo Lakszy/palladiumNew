@@ -3,9 +3,11 @@
 import CB from "../../app/assets/images/CB.svg"
 import BORDER from "../../app/assets/images/BORDER.svg"
 import newNFTCrate from "../../app/assets/images/newNFTCrate.png"
-import question from "../../app/assets/imageS/question.png"
+import question from "../../app/assets/images/question.png"
+import logo from "../../app/assets/images/newpalladium.svg"
 import "../../app/App.css";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function NFT2() {
     return (
@@ -26,10 +28,15 @@ export default function NFT2() {
                     </div>
                 </div>
                 <div className=" w-full justify-between">
-                    <p className="title-text mobileDevice text-2xl mb-10 text-center text-yellow-400  items-center">
-                        MINTING IS OVER.....
+                    <p className="title-text mobileDevice whitespace-nowrap text-2xl mb-5 text-center text-yellow-400  items-center">
+                        MINTING IS OVER...
                     </p>
-                    <p className="title-text text-2xl mb-10 text-center text-yellow-400  items-center">
+                    <div className="flex mobileDevice items-left align-text- gap-x-1 ">
+                        <Link href="/">
+                            <Image src={logo} alt="Logo" className=" ml-2 -mt-2 w-40" />
+                        </Link>
+                    </div>
+                    <p className="title-text text-2xl mb-10 md:text-center text-yellow-400  items-center">
                         Surprise NFT<span>s</span> Coming soon <span className="hover:animate-pulse cursor-wait">✨✨</span>
                     </p>
                     <div className="flex gap-x-3 justify-between">
