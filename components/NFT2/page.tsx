@@ -15,7 +15,7 @@ export default function NFT2() {
             </div>
             <div className=" flex gap-x-5">
                 <div>
-                    <div className="relative mt-[4rem] flex items-center justify-center max-sm:px-5">
+                    <div className="relative notMobileDevice mt-[4rem] flex items-center justify-center max-sm:px-5">
                         <Image src={BORDER} alt="border" height={100} width={340} className="" />
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
                             <Image src={newNFTCrate} width={240} height={20} alt="home" className="mb-4 hover:cursor-not-allowed" />
@@ -26,20 +26,23 @@ export default function NFT2() {
                     </div>
                 </div>
                 <div className=" w-full justify-between">
+                    <p className="title-text mobileDevice text-2xl mb-10 text-center text-yellow-400  items-center">
+                        MINTING IS OVER.....
+                    </p>
                     <p className="title-text text-2xl mb-10 text-center text-yellow-400  items-center">
                         Surprise NFT<span>s</span> Coming soon <span className="hover:animate-pulse cursor-wait">✨✨</span>
                     </p>
                     <div className="flex gap-x-3 justify-between">
-                        <div className="border-[5px] p-3 border-yellow-300">
+                        <div className="border-[4px] p-3 border-yellow-300">
                             <Image src={question} alt="mark" height={100} width={150} className="hover:cursor-not-allowed" />
                         </div>
-                        <div className="border-[5px] p-3 border-yellow-300">
+                        <div className="border-[4px] p-3 border-yellow-300">
                             <Image src={question} alt="mark" height={100} width={150} className="hover:cursor-not-allowed" />
                         </div>
-                        <div className="border-[5px] p-3 border-yellow-300">
+                        <div className="border-[4px] p-3 border-yellow-300">
                             <Image src={question} alt="mark" height={100} width={150} className="hover:cursor-not-allowed" />
                         </div>
-                        <div className="border-[5px] p-3 border-yellow-300">
+                        <div className="border-[4px] p-3 border-yellow-300">
                             <Image src={question} alt="mark" height={100} width={150} className="hover:cursor-not-allowed" />
                         </div>
                     </div>

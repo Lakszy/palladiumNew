@@ -94,7 +94,8 @@ function NavBar() {
       </div>
       <div className="flex justify-between items-center gap-x-4">
         <div className="mobileDevice ">
-          {userExists ? <MobileNav /> : <MobileNavFalse />}
+          {/* {userExists ? <MobileNav /> : <MobileNavFalse />} */}
+          {userExists ? <MobileNavFalse /> : <MobileNavFalse />}
         </div>
         <CustomConnectButton className="" />
       </div>

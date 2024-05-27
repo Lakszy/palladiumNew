@@ -223,7 +223,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 <div className="absolute  px-6 md:p-0  h-20 md:w-[14rem] ml-[12rem] mt-[10rem] bg-gradient-to-l from-yellow-100 border-yellow-200">
                   <div className="flex justify-between  -mt-7 ml-6 items-center">
                     <div>
-                      <h6 className="text-4xl -mt-4 text-yellow-300 body-text">
+                      <h6 className="text-4xl mt-1 md:-mt-4 text-yellow-300 body-text">
                         {userExists ? 1 : 0}
                       </h6>
                       <h6 className="text-xl text-yellow-300 title-text">NFTs</h6>
@@ -232,7 +232,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   </div>
                 </div>
                 <div className="absolute p-2 md:p-0 ml-[20rem] md:ml-[28rem] mt-[10rem] h-20 md:w-[14rem] bg-gradient-to-l from-yellow-100 border-yellow-200">
-                  <div className="flex justify-between -mt-7 ml-3 items-center">
+                  <div className="flex justify-between  md:-mt-7 ml-3 items-center">
                     <div>
                       <h5 className="text-4xl  text-yellow-300 title-text">
                         {(activitiesData && countClaimedBadges(activitiesData)) ||
@@ -250,12 +250,12 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
           <div className="py-10">
             <div className="w-full p-5 h-[20rem] mt-10 upper mr-10   items-center justify-center" style={{ backgroundColor: "#272315" }}>
               <ProgBar />
-              <div className="mt-10 h-20 md flex gap-x-3">
+              <div className="md:mt-10  justify-between h-20 md flex gap-x-3">
                 <div className=" h-20 w-1/4 flex justify-between p-2">
                   <div>
-                    <Image src={TargetArrow} alt="arrow" className="ml-6" />
+                    <Image src={TargetArrow} alt="arrow" className="md:ml-6" />
                   </div>
-                  <div className="-ml-5">
+                  <div className="md:-ml-5">
                     <h5 className="font-bold text-gray-500 body-text whitespace-nowrap">
                       Next Challenge
                     </h5>
@@ -360,7 +360,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   <Image src={botanixLogo} alt="logo" className="-mt-4" />
                 </div>
               {isConnected ? (
-                <div className=" p-2 space-y-10">
+                <div className=" p-2 space-y-16">
                   <div className="w-full h-24 flex">
                     <div className="flex-1 h-fit -mt-4  flex flex-col items-center justify-center text-center">
                       <Image src={PUSDCrate} alt="giftBox" />
