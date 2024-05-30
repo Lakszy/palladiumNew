@@ -94,12 +94,7 @@ function NavBar() {
         </div>
         <CustomConnectButton className="" />
       </div>
-    </div>
-    <div className="banner-container">
-      <div className="scrolling-text body-text">
-        We are facing network issues. The testnet will be live soon...🤖
-      </div>
-    </div>
+  </div>
   </>
   );
 }

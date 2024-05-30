@@ -242,34 +242,22 @@ export const OpenTrove = () => {
       </div>
 
       <div className="container flex flex-row justify-between gap-x-24 mt-2">
-
         <div className="grid w-1/2 items-start gap-2 text-white md:p-5">
           <div className="pb-3 w-[20rem] md:w-full">
             <Label htmlFor="items" className="body-text mb-2 text-gray-500">
               Deposit Collatoral
             </Label>
-            <div className="flex p-1 items-center space-x-2 border border-yellow-300">
+            <div className="flex p-1 w-[21rem] md:w-full items-center space-x-2 border border-yellow-300">
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img3} alt="home" className='ml-1' />
-                <h3 className='text-white body-text ml-1 '>BTC</h3>
+                <h3 className='text-white body-text ml-1 mr-3 '>BTC</h3>
                 <h3 className='h-full border mx-4'></h3>
               </div>
-              <input
-                id="items"
-                placeholder="Enter Collateral Amount"
-                value={userInputs.collatoral}
-                onChange={(e) => {
-                  const newCollValue = e.target.value;
-                  setUserInputs({ ...userInputs, collatoral: newCollValue });
-                  makeCalculations(userInputs.borrow, newCollValue || "0");
-                }}
-                className="w-[23.75rem] h-[4rem] text-white"
-                style={{ backgroundColor: "#272315" }}
-              />
+              <input id="items" placeholder="Enter Collateral Amount" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-full md:w-[23.75rem]  h-[4rem] text-white" style={{ backgroundColor: "#272315" }} />
               <span className="md:max-w-[5rem] md:p-2  h-full">${totalCollateral.toFixed(2)}</span>
             </div>
-            <div className="pt-2 flex items-center justify-between">
-              <span className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
+            <div className="pt-2 flex md:flex-row flex-col  items-center justify-between ">
+              <span className={`text-sm w-full body-text whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
                 Available {Number(balanceData?.formatted).toFixed(8)}{" "}
               </span>
               <div className="flex  gap-x-3 mt-2">
@@ -285,24 +273,13 @@ export const OpenTrove = () => {
             <div className="flex p-1 items-center md:space-x-2 border border-yellow-300">
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img4} alt="home" className='ml-1' />
-                <h3 className='text-white body-text ml-1 '>PUSD</h3>
+                <h3 className='text-white body-text mx-1'>PUSD</h3>
                 <h3 className='h-full border mx-4'></h3>
               </div>
-              <input
-                id="quantity"
-                placeholder="Enter Borrow Amount"
-                value={userInputs.borrow}
-                onChange={(e) => {
-                  const newBorrowValue = e.target.value;
-                  setUserInputs({ ...userInputs, borrow: newBorrowValue });
-                  makeCalculations(userInputs.collatoral, newBorrowValue || "0");
-                }}
-                className="md:w-[23.75rem] h-[4rem] text-white body-text"
-                style={{ backgroundColor: "#272315" }}
-              />
+              <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-white body-text" style={{ backgroundColor: "#272315" }} />
             </div>
-            <div className="pt-2 flex items-center justify-between borde2 p-2">
-              <span className={`text-sm body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
+            <div className="pt-2 flex flex-col md:flex-row items-center justify-between borde2 p-2">
+              <span className={`text-sm w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
                 Available {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
               </span>
               <div className="flex gap-x-3 mt-2">
@@ -330,8 +307,8 @@ export const OpenTrove = () => {
                 parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
                 parseFloat(userInputs.borrow) <= minDebt)
                 ? 'not-allowed' : 'pointer',
-       opacity: (!userInputs.borrow || isModalVisible ||
-               !userInputs.collatoral ||
+              opacity: (!userInputs.borrow || isModalVisible ||
+                !userInputs.collatoral ||
                 loanToValue > (100 / Number(divideBy)) ||
                 parseFloat(userInputs.borrow) > maxBorrow ||
                 parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||

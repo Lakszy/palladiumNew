@@ -166,7 +166,7 @@ export const Unstake = () => {
 					<div className="hex-loader"></div>
 				</div> */}
 				{/*  ) : ( */}
-				<span className={"md:ml-[64%] ml-[35%] font-medium balance body-text " + (Number(userInput) > Math.trunc(Number(totalStakedValue) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
+				<span className={"md:ml-[64%] ml-[50%] font-medium balance body-text " + (Number(userInput) > Math.trunc(Number(totalStakedValue) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
 					{isStateLoading ?
 						(
 						<div className="-mt-6 h-3 rounded-xl">

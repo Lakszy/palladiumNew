@@ -140,7 +140,7 @@ export const StabilityPool = () => {
 					<div className="hex-loader"></div>
 				</div> */}
 			 {/* ) : ( */}
-				<span className={"ml-[69%] body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
+				<span className={"ml-[57%] md:ml-[69%] body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
 					{isDataLoading ? (
 						<div className="text-left w-full -mt-6 h-2">
 							<div className="hex-loader"></div>

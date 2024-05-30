@@ -33,13 +33,13 @@ export default function NFT2() {
                     </p>
                     <div className="flex mobileDevice items-left align-text- gap-x-1 ">
                         <Link href="/">
-                            <Image src={logo} alt="Logo" className=" ml-2 -mt-2 w-40" />
+                            <Image src={logo} alt="Logo" className=" ml-2 -mt-2 w-40 mobileDevice" />
                         </Link>
                     </div>
                     <p className="title-text text-2xl mb-10 md:text-center text-yellow-400  items-center">
                         Surprise NFT<span>s</span> Coming soon <span className="hover:animate-pulse cursor-wait">✨✨</span>
                     </p>
-                    <div className="flex gap-x-3 justify-between">
+                    <div className="flex gap-x-3  p-1 mt-12 justify-between">
                         <div className="border-[4px] p-3 border-yellow-300">
                             <Image src={question} alt="mark" height={100} width={150} className="hover:cursor-not-allowed" />
                         </div>
