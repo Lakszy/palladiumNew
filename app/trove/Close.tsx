@@ -98,7 +98,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             </span>
           </div>
         </div>
-        <button onClick={handleConfirmClick} disabled={isLowBalance || afterLoad} className={`mt-20 md:w-full md:ml-0 ml-1 w-[20rem] h-[3rem] bg-yellow-300 hover:bg-yellow-400 text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed' : ' hover:scale-95  cursor-pointer'}`}>
+        <button onClick={handleConfirmClick} disabled={isLowBalance || afterLoad} className={`mt-20 md:w-full md:ml-0 ml-1 w-[20rem] h-[3rem] bg-yellow-300  text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed' : ' hover:scale-95  cursor-pointer'}`}>
           Close Trove
         </button>
         <div className="text-red-500 text-sm font-medium body-text w-full ml-1">

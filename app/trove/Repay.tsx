@@ -331,7 +331,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </div>
             <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)} className={`mt-5 md:-ml-0 -ml-6 w-full title-text h-[3rem]
              ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
-                ? 'bg-yellow-300 text-black cursor-not-allowed' : 'hover:scale-95 cursor-pointer bg-yellow-300 text-black'}`}
+                ? 'bg-yellow-300 text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-yellow-300 text-black'}`}
               disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
               UPDATE TROVE
             </button>

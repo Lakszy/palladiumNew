@@ -8,7 +8,6 @@ import doubleCoin from "../app/assets/images/doubleCoin.svg";
 import robo from "../app/assets/images/robo.png";
 import badge from "../app/assets/images/badge.png";
 import nft from "../app/assets/images/nft.png";
-import card0 from "../app/assets/images/card0.svg";
 import points from "../app/assets/images/points.svg";
 import circuitBreaker from "../app/assets/images/circuitBreaker.svg";
 import tripleCoin from "../app/assets/images/tripleCoin.svg";
@@ -406,9 +405,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               )}
               </div>
             </div>
-            <div className="pt-10  w-100%">
-              <NFT2 />
-            </div>
+            <div className="pt-10  w-100%">  <NFT2 /></div>
           </div>
         </div>
       )}

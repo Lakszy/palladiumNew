@@ -383,7 +383,7 @@ const Borrow = () => {
                   </div>
                 </div>
 
-                <div className="md:w-[14rem]  md:h-[13rem] mt-4" style={{ backgroundColor: "" }}>
+                <div className="md:w-[14rem] notMobileDevice  md:h-[13rem] mt-4" style={{ backgroundColor: "" }}>
                   <div className="flex md:flex-col md:gap-x-0 gap-x-10 gap-y-14 text-white  px-5 py-4">
                     <span></span>
                     <span></span>
@@ -407,6 +407,17 @@ const Borrow = () => {
                         <span className="text-xs text-gray-500 body-text">Liquidation</span>
                         <span className="body-text body-text">${liquidation.toFixed(2)} USD</span>
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
+                      </div>
+                      <div className="flex mobileDevice -mt-10  flex-col">
+                        <span className="text-gray-500 body-text">Trove Status</span>
+                        <div className={`mt-2 flex p-2 justify-center items-center title-text text-center ${troveStatus === "ACTIVE" ? 'border-lime-400 rounded-sm border title-text' : 'border-red-300 rounded-sm border title-text'}`}>
+                          {troveStatus === "ACTIVE" ? (
+                            <div className="w-4 h-4 bg-lime-500 title-text border border-lime-500 rounded-full"></div>
+                          ) : (
+                            <div className="w-4 h-4 bg-red-300 title-text border border-red-300 rounded-full"></div>
+                          )}
+                          <span className="text-lime-500 title-text ml-1">{troveStatus}</span>
+                        </div>
                       </div>
                     </div>
 
@@ -436,7 +447,7 @@ const Borrow = () => {
                                   <Label htmlFor="items" className="text-gray-500 body-text text-lg mb-2 md:-ml-0 -ml-10 ">
                                     Deposit Collatoral
                                   </Label>
-                                  <div className="flex items-center mt-4 w-[20rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "#3f3b2d" }}>
+                                  <div className="flex items-center mt-4 w-[20rem] md:w-[24rem] md:-ml-0 -ml-9  border border-yellow-300 " style={{ backgroundColor: "#3f3b2d" }}>
                                     <div className='flex items-center h-[3.5rem] '>
                                       <Image src={img3} alt="home" className='ml-1' />
                                       <h3 className='text-white body-text ml-1 notMobileDevice'>BTC</h3>
@@ -477,7 +488,7 @@ const Borrow = () => {
                                   <Label htmlFor="quantity" className="text-gray-500 md:-ml-0 -ml-10 body-text text-lg">
                                     Borrow
                                   </Label>
-                                  <div className="flex items-center mt-2 md:mt-0 w-[20rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "#3f3b2d" }}>
+                                  <div className="flex items-center mt-2 md:mt-0 w-[20rem] md:w-[24rem] md:-ml-0 -ml-9  border border-yellow-300 " style={{ backgroundColor: "#3f3b2d" }}>
                                     <div className='flex items-center h-[3.5rem] mx-1'>
                                       <Image src={img4} alt="home" className='ml-1' />
                                       <h3 className='text-white body-text ml-1 notMobileDevice '>PUSD</h3>
@@ -512,7 +523,7 @@ const Borrow = () => {
                                   <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
                                     className={`mt-5 md:-ml-0 -ml-6 w-full title-text h-[3rem]
                                    ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
-                                        ? 'opacity-50 bg-yellow-300 text-black cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-yellow-300 text-black'}`}
+                                        ? 'bg-yellow-300 text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-yellow-300  text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
                                     UPDATE TROVE
                                   </button>
@@ -579,7 +590,7 @@ const Borrow = () => {
                                 <div className="flex  text-white mb-2  md:flex-row flex-col justify-between">
                                   <span className="text-xs whitespace-nowrap body-text text-gray-500 ">Total Collateral</span>
                                   <span className="body-text text-xs whitespace-nowrap">
-                                    <div className="flex items-center gap-x-2">
+                                    <div className="flex items-center gap-x-1 md:gap-x-3">
                                       <span className="p-1 w-28">
                                         {Number(entireDebtAndColl.coll).toFixed(8)} BTC
                                       </span>
@@ -588,7 +599,7 @@ const Borrow = () => {
                                           <span className="text-yellow-300 text-lg">
                                             {`--->`}
                                           </span>
-                                          <span className="ml-05 p-1 w-28">{" "}{Number(newUserColl).toFixed(8)} BTC</span>
+                                          <span className="md:ml-05 p-1 w-28">{" "}{Number(newUserColl).toFixed(8)} BTC</span>
                                         </>
                                       )}
                                     </div>

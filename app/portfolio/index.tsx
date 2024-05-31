@@ -306,7 +306,7 @@ const Portfolio = () => {
                 <div className="md:w-[55%] border  border-black shadow-lg  md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#3f3b2d" }}>
                   <div className=" flex flex-row justify-between p-5" style={{ backgroundColor: "#3d3f37" }}>
                     <span className="title-text text-xl text-white">TROVE</span>
-                    <button style={{ backgroundColor: "#f5d64e" }} className="h-10 px-8 bg-yellow-300 text-black font-bold title-text">
+                    <button style={{ backgroundColor: "#f5d64e" }} className="h-10 px-8 bg-yellow-300 hover:scale-x-95  text-black font-bold title-text">
                       <Link className="title-text" href="/trove">OPEN TROVE</Link>
                     </button>
                   </div>
@@ -320,7 +320,7 @@ const Portfolio = () => {
                 <div className="md:w-[30%]  md:mt-0  border border-black shadow-lg rounded-sm" style={{ backgroundColor: "#3f3b2d" }}>
                   <div className=" items-center flex flex-row justify-between p-4" style={{ backgroundColor: "#3d3f37" }}>
                     <span className="text-white title-text">STABILITY POOL</span>
-                    <button style={{ backgroundColor: "#f5d64e" }} className="h-10 px-6 bg-yellow-300 text-black font-bold">
+                    <button style={{ backgroundColor: "#f5d64e" }} className="h-10 px-6 hover:scale-x-95 bg-yellow-300 text-black font-bold">
                       <Link className="title-text" href="/stake">STAKE PUSD</Link>
                     </button>
                   </div>
