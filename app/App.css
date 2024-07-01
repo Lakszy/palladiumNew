@@ -1,24 +1,15 @@
 @font-face {
-  /* font-family: 'Inter';
-  src: local('Inter'),
-       url('./fonts/Inter/Inter-Regular.ttf') format('ttf') */
   font-family: "Montech";
   src: local("Montech"), url(./src/config/fonts/Montech/MONTECHV01-Bold.otf);
 }
 
 @font-face {
-  /* font-family: 'Inter';
-  src: local('Inter'),
-       url('./fonts/Inter/Inter-Regular.ttf') format('ttf') */
   font-family: "MontechMedium";
   src: local("MontechMedium"),
     url(./src/config/fonts/Montech/MONTECHV01-Medium.otf);
 }
 
 @font-face {
-  /* font-family: 'Inter';
-  src: local('Inter'),
-       url('./fonts/Inter/Inter-Regular.ttf') format('ttf') */
   font-family: "Montserrat";
   src: local("Montserrat"),
     url(./src/config/fonts/Montserrat-VariableFont_wght.ttf);
@@ -26,6 +17,11 @@
 
 .title-text {
   font-family: "Montech";
+}
+
+.title-text2 {
+  font-family: "MontechMedium";
+  font-weight: 200;
 }
 
 .body-text {

@@ -7,6 +7,7 @@ import { CustomConnectButton } from "./connectBtn";
 import "../app/App.css";
 import { useAccount } from "wagmi";
 import MobileNavFalse from "./MobileNavFalse";
+import MobileNav from "./MobileNav";
 
 function NavBar() {
   const [fetchedPrice, setFetchedPrice] = useState(0);
@@ -89,8 +90,8 @@ function NavBar() {
       </div>
       <div className="flex justify-between items-center gap-x-4">
         <div className="mobileDevice ">
-          {/* {userExists ? <MobileNav /> : <MobileNavFalse />} */}
-          {userExists ? <MobileNavFalse /> : <MobileNavFalse />}
+          {userExists ? <MobileNav /> : <MobileNavFalse />}
+          {/* {userExists ? <MobileNavFalse /> : <MobileNavFalse />} */}
         </div>
         <CustomConnectButton className="" />
       </div>

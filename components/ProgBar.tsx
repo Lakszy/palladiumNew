@@ -124,7 +124,7 @@ const TaskScroll: React.FC = () => {
               )}
             </div>
             <div className='flex whitespace-nowrap'>
-              <p className='capitalize body-text font-semibold text-sm text-yellow-300 notMobileDevice '>{task.rewardValue} {task.rewardType === "point" ? "Points" : null}</p>
+              <p className='capitalize body-text font-medium text-sm text-white notMobileDevice '>{task.rewardValue} {task.rewardType === "point" ? "Points" : null}</p>
             </div>
           </div>
         </button>
