@@ -3178,6 +3178,7 @@ sd1 {
 
 .p-dialog-draggable .p-dialog-header {
   cursor: all-scroll;
+  display: none;
   background-color: var(--body_background);
   color: var(--text);
 }
@@ -3186,9 +3187,9 @@ sd1 {
   margin-top: 3rem !important;
 }
 
-.p-knob .p-knob-text {
+.p-knob-text {
   font-size: 19px;
-  color: white !important;
+  color: #facc15 !important;
   font-family: "Montech";
 }
 
@@ -3400,4 +3401,9 @@ sd1 {
   .banner-container {
     display: none;
   }
+}
+
+.p-carousel-items-content{
+  width: 100%;
+    margin-left: 5rem;
 }

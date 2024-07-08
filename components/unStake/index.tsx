@@ -4,8 +4,11 @@ import stabilityPoolAbi from "../../app/src/constants/abi/StabilityPool.sol.json
 import { BOTANIX_RPC_URL } from "../../app/src/constants/botanixRpcUrl";
 import botanixTestnet from "../../app/src/constants/botanixTestnet.json";
 import { getContract } from "../../app/src/utils/getContract";
-
+import img3 from "../../app/assets/images/Group 663.svg";
+import tick from "../../app/assets/images/tickDone.svg";
 import Decimal from "decimal.js";
+import rectangle from "../../app/assets/images/Rectangle.png";
+import "./unstake.css"
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
@@ -13,7 +16,6 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Dialog } from 'primereact/dialog';
 import Image from "next/image";
-import BotanixLOGO from "../../app/assets/images/newpalladium.svg"
 import { CustomConnectButton } from "../connectBtn";
 import "../../app/App.css"
 import "../../components/stabilityPool/Modal.css"
@@ -21,22 +23,17 @@ import { StabilityPoolbi } from "@/app/src/constants/abi/StabilityPoolbi";
 
 export const Unstake = () => {
 	const [userInput, setUserInput] = useState("0");
-	const [isLowPUSD, setIsLowPUSD] = useState(false);
 	const [stakedValue, setStakedValue] = useState(0);
 	const [pusdBalance, setPusdBalance] = useState(0);
 	const { isConnected } = useAccount();
 	const [loadingModalVisible, setLoadingModalVisible] = useState(false);
 	const [loadingMessage, setLoadingMessage] = useState("");
 	const [userModal, setUserModal] = useState(false);
-
-
 	const [isStateLoading, setIsStateLoading] = useState(true);
 	const [totalStakedValue, setTotalStakedValue] = useState("0");
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [message, setMessage] = useState("");
 	const [showCloseButton, setShowCloseButton] = useState(false);
-
-	// const [afterLoad, setAfterload] = useState(false);
 	const { data: walletClient } = useWalletClient();
 	const { data: hash, writeContract } = useWriteContract()
 	const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
@@ -44,10 +41,10 @@ export const Unstake = () => {
 	useEffect(() => {
 		if (isLoading) {
 			setIsModalVisible(false);
-			setLoadingMessage("Loading Your Transaction.......");
+			setLoadingMessage("Waiting for transaction to confirm..");
 			setLoadingModalVisible(true);
 		} else if (isSuccess) {
-			setLoadingMessage("Transaction Done...");
+			setLoadingMessage("Unstake Transcation compeleted sucessfully");
 			setLoadingModalVisible(true);
 		} else {
 			setLoadingModalVisible(false);
@@ -66,7 +63,6 @@ export const Unstake = () => {
 					walletClient?.account.address
 				);
 			setStakedValue(fetchedPUSD);
-			// setAfterload(false);
 		} catch (error) {
 			console.error("Error fetching staked value:", error);
 		}
@@ -76,7 +72,6 @@ export const Unstake = () => {
 	}, [walletClient, stabilityPoolContractReadOnly, writeContract, hash]);
 
 	const handleClose = () => {
-		// setAfterload(true)
 		setLoadingModalVisible(false);
 		window.location.reload()
 	};
@@ -156,40 +151,42 @@ export const Unstake = () => {
 	}, []);
 
 	return (
-		<div className="grid  bg-[#3b351b] items-start h-64 gap-2 mx-auto  border border-yellow-400 p-5">
-			<div className="">
-				<div className="flex -mt-2 mb-2  items-center">
-					<Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#3b351b] body-text text-lg h-14 border border-yellow-300 text-white px-3 " />
+	<>
+		<div className="grid  bg-[#272315] items-start h-66 gap-2 mx-auto border-yellow-400 p-5">
+			<div>
+				<div className="flex items-center mt-4 mb-2  md:-ml-0 -ml-  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
+					<div className='flex  items-center h-[3.5rem] '>
+						<Image src={img3} alt="home" className='ml-1' width={30} />
+						<h3 className='text-white body-text ml-1 notMobileDevice'>PUSD</h3>
+						<h3 className='h-full border border-yellow-300 mx-3 text-yellow-300'></h3>
+						<div className=" justify-between items-center flex gap-x-24">
+							<input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1  text-white" style={{ backgroundColor: "#272315" }} />
+						</div>
+					</div>
 				</div>
-			{/* {afterLoad ? ( */}
-					{/* <div className="text-left w-full -mt-6 h-2">
-					<div className="hex-loader"></div>
-				</div> */}
-				{/*  ) : ( */}
-				<span className={"md:ml-[64%] ml-[50%] font-medium balance body-text " + (Number(userInput) > Math.trunc(Number(totalStakedValue) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
+				<span className={"md:ml-[61%] ml-[43%] font-medium balance body-text " + (Number(userInput) > Math.trunc(Number(totalStakedValue) * 100) / 100 ? "text-red-500" : "text-gray-400")}>
 					{isStateLoading ?
 						(
-						<div className="-mt-6 h-3 rounded-xl">
-							<div className="hex-loader"></div>
-						</div>
+							<div className=" h-3 rounded-xl">
+								<div className="hex-loader"></div>
+							</div>
 						) : (
 							<span className="whitespace-nowrap"><span className="text-gray-400 body-text">	Your Stake: {" "}</span>
 								{Math.trunc(Number(totalStakedValue) * 100) / 100} PUSD</span>
 						)}
 				</span>
-				{/*  )} */}
 			</div>
-			<div className="flex w-full justify-between mt-2">
-				<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-				<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-				<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-				<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-900 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+			<div className="flex w-full justify-between mt-2 mb-2">
+				<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+				<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+				<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+				<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
 			</div>
 			{isConnected ? (
-				<div className="">
+				<div className="my-2">
 					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-2 text-black title-text font-semibold w-full border border-black h-10 border-none 
 					 ${isStateLoading
-						|| Number(userInput) == 0
+							|| Number(userInput) == 0
 							|| Math.trunc(Number(totalStakedValue) * 100) / 100 === 0
 							|| Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100) ? 'cursor-not-allowed opacity-50' : 'hover:scale-95 '}`}
 						disabled={isStateLoading || Math.trunc(Number(totalStakedValue) * 100) / 100 === 0 || Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100)}>{isStateLoading ? 'LOADING...' : 'UNSTAKE'}</button>
@@ -198,29 +195,52 @@ export const Unstake = () => {
 				<CustomConnectButton className="" />
 			)}
 			<Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
-				<div className="waiting-container bg-white">
-					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for Confirmation... ✨</div>
-					<Image src={BotanixLOGO} className="waiting-image" alt="gif" />
+				<div className="dialog-overlay">
+				<div className="dialog-content">
+					<div className="py-5">
+						<Image src={rectangle} alt="box" width={80} className="animate-pulse" />
+					</div>
+					<div className=""><div className="w-36 h-2 ml-[6rem] bg-yellow-300"></div></div>
+					<div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+					<div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+				</div>
 				</div>
 			</Dialog>
 			<Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
-				<div className="waiting-container bg-white">
-					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">{message}</div>
+				<div className="dialog-overlay">
+			<div className="dialog-content">
+					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">Transaction rejected</div>
 					<Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>Close</Button>
+				</div>
 				</div>
 			</Dialog>
 			<Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
-				<div className="waiting-container bg-white">
-					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">{loadingMessage}</div>
-					{isSuccess && (<Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
+				<div className="dialog-overlay">
+				<div className="dialog-content">
+					{loadingMessage === 'Waiting for transaction to confirm...' ? (
+						<>
+							<Image src={rectangle} alt="rectangle" width={100} />
+							<div className="my-5 mb-5">
+								<div className="w-36 h-2 bg-yellow-300"></div>
+							</div>
+						</>
+					) : (
+						<Image src={tick} alt="tick" width={200} />
 					)}
-					{!isSuccess && showCloseButton && (<>
-						<p>Some Error Occured On Network Please Try Again After Some Time.. 🤖</p>
+					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">{loadingMessage}</div>
+					{isSuccess && (
+						<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+					)}
+					{!isSuccess && showCloseButton && (
+					<>
+						<p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
 						<Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
 					</>
 					)}
 				</div>
+			</div>
 			</Dialog>
 		</div>
+	</>
 	);
 };

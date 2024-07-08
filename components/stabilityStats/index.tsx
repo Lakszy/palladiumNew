@@ -60,7 +60,7 @@ export const StabilityStats = () => {
 					<h2 className="font-bold text-sm my-3 text-yellow-400 title-text">Stability Pool</h2>
 				</div>
 				<div className="flex justify-between py-2">
-					<span className="text-yellow-100 font-medium text-sm  ml body-text">Your Total Staking Balance</span>
+					<span className="text-[#827f77] font-medium text-sm  ml body-text">Your Total Staking Balance</span>
 					<span className="text-white font-medium ml-7 text-sm body-text whitespace-nowrap">
 						{isLoading ? (
 							<div className=" h-3 rounded-xl">
@@ -72,7 +72,7 @@ export const StabilityStats = () => {
 					</span>
 				</div>
 				<div className="flex justify-between py-2">
-					<span className="text-yellow-100 text-sm font-medium body-text">Total Stability Pool Staked</span>
+					<span className=" text-[#827f77] text-sm font-medium body-text">Total Stability Pool Staked</span>
 					<span className="text-white font-medium text-sm body-text">
 						{isPoolLoading ? (
 							<div className=" h-3 rounded-xl">
@@ -84,7 +84,7 @@ export const StabilityStats = () => {
 					</span>
 				</div>
 				<div className="flex justify-between py-2">
-					<span className="text-yellow-100 text-sm font-medium body-text">Your Pool Share</span>
+					<span className="text-[#827f77] text-sm font-medium body-text">Your Pool Share</span>
 					<span className="text-white text-sm font-medium body-text">
 						{isLoading && isPoolLoading ? (
 							<div className=" h-3 rounded-xl">
@@ -100,11 +100,11 @@ export const StabilityStats = () => {
 					<h2 className="font-bold  text-yellow-400 my-3 text-sm title-text">Your Rewards</h2>
 				</div>
 				<div className="flex justify-between py-2">
-					<span className="text-yellow-100 text-sm font-medium body-text">Liquidation Gains</span>
+					<span className="text-[#827f77] text-sm font-medium body-text">Liquidation Gains</span>
 					<span className="text-white font-medium text-sm body-text">{liquidGains.toString()} BTC</span>
 				</div>
 				<div className="flex justify-between py-2">
-					<span className="text-yellow-100 text-sm font-medium body-text">PDM Rewards</span>
+					<span className="text-[#827f77] text-sm font-medium body-text">PDM Rewards</span>
 					<span className="text-white text-sm font-medium body-text">{loanRewards.toString()} PDM</span>
 				</div>
 			</div>

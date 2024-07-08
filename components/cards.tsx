@@ -196,17 +196,17 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
 
   return (
     <>
-      {isLoading ? (
+      {/* {isLoading ? (
         <FullScreenLoader />
-      ) : (
-        <div className="w-[25rem] md:w-full">
+      ) : ( */}
+        <div className="w-[25rem]  md:w-full">
           <div className="title-text h-full w-full pt-10 p-10" style={{ backgroundColor: "#1C1A0F" }}>
-            <div className="w-full p-5 h-[14rem] gap-3  flex  pl-2  mb-justify-between items-center" style={{ backgroundColor: "#272315" }}>
-              <div className="flex p-2 notMobileDevice">
-                <Image src={circuitBreaker} alt="text" className="-ml-12" width={1200} />
+            <div className="w-full md:p-5 md:h-[14rem] md:flex pl-2  md:items-center" style={{ backgroundColor: "#272315" }}>
+              <div className="flex  md:p-2">
+                <Image src={circuitBreaker} alt="text" className="-ml-8 md:-ml-16" width={1200} />
               </div>
               <div className="w-full sticky h-[19rem] p-2 text-white gap-y-10">
-                <div className="absolute  ml-[7rem] flex items-center gap-x-2">
+                <div className="absolute -ml-[5rem]  md:ml-[9rem] flex items-center gap-x-2">
                   <Image src={points} alt="points" className="ml-[60%] md:ml-0 mt-[15px]" />
                   <div>
                     <h6 className="text-4xl mt-1 font-light title-text2 text-yellow-300">
@@ -217,10 +217,10 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </h5>
                   </div>
                 </div>
-                <div className="absolute  overflow-hidden  px-6 md:p-0  h-20 md:w-[14rem] -ml-[3rem]  mt-[10rem] bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200">
+                <div className="absolute  overflow-hidden  px-6 md:p-0  h-20 md:w-[14rem] md:-ml-[3rem]  mt-[10rem] bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200">
                   <div className="flex justify-between -mt-7 ml-6 items-center">
                     <div className="p-2 mt-5">
-                      <h5 className="text-2xl md:-mt-4 title-text2 text-yellow-300">
+                      <h5 className="text-2xl mt-[10px] md:-mt-4 title-text2 text-yellow-300">
                         {userExists ? 1 : 0}
                       </h5>
                       <div className="flex">
@@ -231,18 +231,18 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     <Image width={140} src={nft} alt="robo2" className="notMobileDevice mt-2 ml-5" />
                   </div>
                 </div>
-                <div className="absolute overflow-hidden p-2 md:p-0 ml-[12rem]  mt-[10rem] h-20 md:w-[14rem] bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200">
-                  <div className="flex justify-between  md:-mt-7 ml-5 items-center">
-                    <div>
+                <div className="absolute  overflow-hidden p-2 md:p-0 ml-[10rem] w-[8rem] md:ml-[12rem]  mt-[10rem] h-20 md:w-[14rem] bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200">
+                  <div className="flex justify-between  -mt-8 md:-mt-7 ml-[30px] md:ml-5 items-center">
+                    <div className=" mt-[10px]">
                       <h5 className="text-2xl mt-5 title-text2 text-yellow-300">
                         {(activitiesData && countClaimedBadges(activitiesData)) ||
                           0}
                       </h5>
                       <h6 className="text-xl text-yellow-300 title-text2">
-                        BAGDES
+                        BADGES
                       </h6>
                     </div>
-                    <Image width={90} src={badge} alt="robo2" className="notMobileDevice mt-9 transform " />
+                    <Image width={90} src={badge} alt="robo2" className="notMobileDevice mt-8 transform " />
                   </div>
                 </div>
               </div>
@@ -265,8 +265,8 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                     <div></div>
                   </div>
-                  <div className="w-4/5 p-2">
-                    <h5 className=" title-text2 mt-[5px] text-lg ml-[14rem] text-yellow-300 notMobileDevice">
+                  <div className=" md:w-4/5  md:p-2">
+                    <h5 className="body-text md:title-text2 -mt-[10px]  md:mt-[5px] text-[10px] md:text-lg ml-[6rem] md:ml-[14rem] text-yellow-300 ">
                       EARN EXCLUSIVE REWARDS BY COMPLETING CHALLENGES
                     </h5>
                   </div>
@@ -360,7 +360,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   <Image src={botanixLogo} alt="logo" className="-mt-4" />
                 </div>
                 {isConnected ? (
-                  <div className="-mt-5 space-y-16">
+                  <div className="-mt-5 my-5 md:my-0 space-y-16">
                     <div className="w-full h-24 flex">
                       <div className="flex-1 h-fit -mt-4  flex flex-col items-center justify-center text-center">
                         <Image src={PUSDCrate} alt="giftBox" />
@@ -382,7 +382,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                         </div>
                       </div>
                     </div>
-                    <div className="w-full h-24 flex">
+                    <div className="w-full  h-24 flex">
                       <div className="flex-1 h-fit  flex flex-col items-center justify-center text-center">
                         <Image src={giftBox} alt="giftBox" />
                         <div className=" mt-[10px]">
@@ -420,7 +420,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
             <div className="pt-10  w-100%">  <NFT2 /></div>
           </div>
         </div>
-      )}
+      {/* )} */}
     </>
   );
 };

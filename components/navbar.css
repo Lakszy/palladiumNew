@@ -1,0 +1,26 @@
+.custom-toast .p-toast {
+    border-radius: 8px;
+    background-color: #272315;
+    padding: 10px;
+    color: white;
+}
+
+.custom-toast .p-toast-message {
+    color: white;
+    padding: 10px;
+    background-color: #272315;
+}
+
+.custom-toast .p-toast-summary {
+    font-weight: bold;
+    padding: 10px;
+    background-color: #272315;
+    color: #ffdd57;
+}
+
+.custom-toast .p-toast-detail {
+    color: #ffffff;
+    padding: 10px;
+    background-color: #272315;
+
+}

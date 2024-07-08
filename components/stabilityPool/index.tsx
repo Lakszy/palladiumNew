@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 "use client";
 
 import erc20Abi from "../../app/src/constants/abi/ERC20.sol.json";
@@ -13,10 +11,13 @@ import { useEffect, useState } from "react";
 import { useWalletClient, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { CustomConnectButton } from "../connectBtn";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { useAccount } from 'wagmi';
 import { Dialog } from 'primereact/dialog';
-import BotanixLOGO from "../../app/assets/images/newpalladium.svg";
+import "./stake.css"
+import img3 from "../../app/assets/images/Group 663.svg";
+import conf from "../../app/assets/images/conf.gif"
+import rec2 from "../../app/assets/images/rec2.gif"
+import tick from "../../app/assets/images/tick.gif"
 import Image from "next/image";
 import "./Modal.css"
 import "../../app/App.css"
@@ -31,9 +32,7 @@ export const StabilityPool = () => {
 	const [message, setMessage] = useState("");
 	const [loadingModalVisible, setLoadingModalVisible] = useState(false);
 	const [loadingMessage, setLoadingMessage] = useState("");
-	// const [afterLoad, setAfterload] = useState(false);
 	const [showCloseButton, setShowCloseButton] = useState(false);
-
 	const { data: walletClient } = useWalletClient();
 	const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 	const erc20Contract = getContract(
@@ -46,10 +45,10 @@ export const StabilityPool = () => {
 	useEffect(() => {
 		if (isLoading) {
 			setIsModalVisible(false);
-			setLoadingMessage("Loading Your Transaction.......");
+			setLoadingMessage("Waiting for transaction to confirm..");
 			setLoadingModalVisible(true);
 		} else if (isSuccess) {
-			setLoadingMessage("Transaction Done...");
+			setLoadingMessage("Stake Transcation compeleted sucessfully");
 			setLoadingModalVisible(true);
 		} else {
 			setLoadingModalVisible(false);
@@ -80,9 +79,7 @@ export const StabilityPool = () => {
 		fetchPrice();
 	}, [address, walletClient, writeContract, hash]);
 	const handleClose = () => {
-		// setAfterload(true)
 		setLoadingModalVisible(false);
-		// fetchPrice(); 
 		window.location.reload()
 	};
 
@@ -126,23 +123,25 @@ export const StabilityPool = () => {
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setShowCloseButton(true);
-		}, 90000); 
-		return () => clearTimeout(timer); 
+		}, 90000);
+		return () => clearTimeout(timer);
 	}, []);
 	return (
-		<div className="grid  bg-[#3b351b] items-start h-64 gap-2 mx-auto border border-yellow-400 p-5">
+		<div className="grid bg-[#272315] items-start h-66 gap-2 mx-auto border border-yellow-400 p-5">
 			<div className="">
-				<div className="flex -mt-2 mb-2  items-center">
-					<Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#3b351b] body-text text-lg h-14 border border-yellow-300 text-white px-3 " />
+				<div className="flex items-center mb-2 mt-4 md:-ml-0 -ml-  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
+					<div className='flex  items-center h-[3.5rem] '>
+						<Image src={img3} alt="home" className='ml-1' width={30} />
+						<h3 className='text-white body-text ml-1 notMobileDevice'>PUSD</h3>
+						<h3 className='h-full border border-yellow-300 mx-3 text-yellow-300'></h3>
+						<div className=" justify-between items-center flex gap-x-24">
+							<input id="items" placeholder='Enter Collateral Amount' disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1  text-white" style={{ backgroundColor: "#272315" }} />
+						</div>
+					</div>
 				</div>
-			{/* {afterLoad ? ( */}
-				{/* <div className="text-left w-full -mt-6 h-2">
-					<div className="hex-loader"></div>
-				</div> */}
-			 {/* ) : ( */}
-				<span className={"ml-[57%] md:ml-[69%] body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-yellow-300")}>
+				<span className={"ml-[57%] md:ml-[69%] body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-gray-400")}>
 					{isDataLoading ? (
-						<div className="text-left w-full -mt-6 h-2">
+						<div className="text-left w-full  h-2">
 							<div className="hex-loader"></div>
 						</div>
 					) : (
@@ -152,16 +151,16 @@ export const StabilityPool = () => {
 						</span>
 					)}
 				</span>
-			 {/* )} */}
+				{/* )} */}
 			</div>
-			<div className="flex w-full justify-between gap-x-4 md:gap-x-6  mt-2">
-				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-900 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-900 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-900 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-900 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+			<div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
+				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
 			</div>
 			{isConnected ? (
-				<div className="">
+				<div className=" my-2">
 					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick}
 						className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 title-text border-none 
                             ${isDataLoading || Number(userInput) <= 0 || Number(userInput) > Number(Math.trunc(Number(pusdBalance) * 100) / 100)
@@ -172,24 +171,47 @@ export const StabilityPool = () => {
 			) : (<CustomConnectButton className="" />
 			)}
 			<Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
-				<div className="waiting-container bg-white">
-					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for Confirmation... ✨</div>
-					<Image src={BotanixLOGO} className="waiting-image" alt="gif" />
+				<div className="dialog-overlay">
+					<div className="dialog-content">
+						<div className="py-5">
+							<Image src={rec2} alt="box" width={140} className="" />
+						</div>
+						<div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+						<div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+					</div>
 				</div>
 			</Dialog>
 			<Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
-				<div className="waiting-container bg-white">
-					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">{message}</div>
-					<Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>Close</Button>
+				<div className="dialog-overlay">
+					<div className="dialog-content">
+						<div className="waiting-message text-lg title-text text-white whitespace-nowrap">Transaction rejected</div>
+						<Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>Close</Button>
+					</div>
 				</div>
 			</Dialog>
 			<Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
-				<div className="waiting-container bg-white">
-					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">{loadingMessage}</div>
-					{isSuccess && (<Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>)}
-					{!isSuccess && showCloseButton && (
-						<Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
-					)}
+				<div className="dialog-overlay">
+					<div className="dialog-content">
+						{loadingMessage === 'Waiting for transaction to confirm..' ? (
+							<>
+								<Image src={conf} alt="rectangle" width={150} />
+								<div className="my-5 ml-[6rem] mb-5">
+								</div>
+							</>
+						) : (
+							<Image src={tick} alt="tick" width={120} />
+						)}
+						<div className="waiting-message text-lg title-text text-white whitespace-nowrap">{loadingMessage}</div>
+						{isSuccess && (
+							<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+						)}
+						{!isSuccess && showCloseButton && (
+							<>
+								<p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
+								<Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
+							</>
+						)}
+					</div>
 				</div>
 			</Dialog>
 		</div>

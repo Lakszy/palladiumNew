@@ -13,7 +13,6 @@ export default function Home() {
         <div className="sticky z-50 mainT top-0  overflow-auto">
           <NavBar />
         </div>
-
         <div className="h-full w-screen md:w-full" style={{ backgroundColor: "#272315" }}>
           <div style={{ backgroundColor: "#272315" }}>
             <Portfolio />

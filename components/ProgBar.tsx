@@ -22,7 +22,7 @@ interface Task {
   status: string;
 }
 
-const TaskScroll: React.FC = () => {
+const ProgBar: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   const [error, setError] = useState<string | null>(null);
@@ -88,8 +88,8 @@ const TaskScroll: React.FC = () => {
       <div className='w-full'>
         <button aria-label="Like button" onClick={handleClick} disabled={task.status === 'locked' || task.status === 'claimed'}>
           <div className="task-info gap-x-10 flex flex-col items-center">
-            <p className=' body-text font-semibold text-sm text-yellow-300  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
-            <div className="w-[10rem] md:w-[7rem] md:p-0 p-8">
+            <p className=' body-text  font-semibold text-sm text-yellow-300  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
+            <div className="w-[10rem]  -ml-10 md:-ml-0 md:w-[7rem] md:p-0 p-8">
           {isLoading === task.name ? (
             <div className="text-left -mt-6 w-full h-2">
               <div className="hex-loader"></div>
@@ -98,25 +98,25 @@ const TaskScroll: React.FC = () => {
             <>
               {task.status === 'claimed' && task.rewardType === 'badge' && (
                   <div className='tooltip'>
-                    <Image src={badge} alt="Badge" className="hover:cursor-grabbing" />
+                    <Image  width={100} src={badge} alt="Badge" className="hover:cursor-grabbing" />
                     <span className="tooltiptext p-2 h-10 hover:cursor-grabbing">Reward has been claimed....✨</span>
                   </div>
               )}
               {task.status === 'claimed' && task.rewardType === 'point' && (
                   <div className='tooltip'>
-                    <Image src={points} alt="Points" className="hover:cursor-grabbing" />
+                    <Image  width={100} src={points} alt="Points" className="hover:cursor-grabbing" />
                     <span className="tooltiptext p-2 h-10 hover:cursor-grabbing">Reward has been claimed....✨</span>
                   </div>
               )}
               {task.status === 'unclaimed' && (
                 <div className="tooltip">
-                  <Image src={unclaimed} alt="Unclaimed" />
+                  <Image  width={100} src={unclaimed} alt="Unclaimed" />
                   <span className="tooltiptext">Click To Claim Reward✨</span>
                 </div>
               )}
               {task.status === 'locked' && (
                 <>
-                  <Image src={locked} alt="Locked" className="hover:cursor-not-allowed" />
+                  <Image  width={100} src={locked} alt="Locked" className="hover:cursor-not-allowed" />
                   <div className='circle z-20' style={{ position: 'absolute',  transform: 'translate(-50%, -50%)' }}></div>
                 </>
               )}
@@ -163,7 +163,7 @@ const TaskScroll: React.FC = () => {
           <div className="p-8 bg-[#2d2a1c] rounded-lg shadow-lg">
             <h1 className="text-2xl title-text mb-4">CONGRATULATIONS</h1>
             <div className="flex justify-center mb-4">
-              <Image src={currentTask.rewardType === 'badge' ? badge : points} alt="Reward" className="w-32 h-32" />
+              <Image  width={100} src={currentTask.rewardType === 'badge' ? badge : points} alt="Reward" className="w-32 h-32" />
             </div>
             <div className="text-2xl title-text text-yellow-300 font-bold mb-2">{currentTask.rewardValue}</div>
             <div className="text-lg title-text text-yellow-300 mb-6 capitalize">{currentTask.rewardType}</div>
@@ -177,4 +177,4 @@ const TaskScroll: React.FC = () => {
   );
 };
 
-export default TaskScroll;
+export default ProgBar;

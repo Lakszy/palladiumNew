@@ -15,7 +15,7 @@ export default function Home() {
 
   const CustomTabHeader: React.FC<CustomTabHeaderProps> = ({ title }) => {
     return (
-        <span className='title-text md:-ml-0'>{title}</span>
+        <span className='title-text2 md:-ml-0'>{title}</span>
     );
   };
   return (
@@ -28,15 +28,15 @@ export default function Home() {
 
         <div className="md:h-screen " style={{ backgroundColor: '#272315' }}>
           <div className="text-center">
-            <h1 className="text-2xl pt-10 font-semibold w-[23rem] ml-[7%] md:ml-0 text-center md:w-full text-yellow-300 title-text">Earn By Supplying PUSD to Stability Pool</h1>
+            <h1 className="text-2xl pt-10 font-semibold w-[23rem] ml-[5%] md:ml-0 text-center md:w-full text-yellow-300 title-text">Earn By Supplying PUSD to Stability Pool</h1>
           </div>
           <div className='md:p-10  pt-12 md:flex md:gap-x-36'>
             <div className="second_section w-[24rem] md:w-1/2 outer_section_detail pos_sticky">
               <TabView className='card'>
-                <TabPanel className='p-1  bg-yellow-400 text-sm text-black' header={<CustomTabHeader title="Stake" />}>
+                <TabPanel className='p-[2px]  bg-yellow-400 text-sm text-black' header={<CustomTabHeader title="Stake" />}>
                   <StabilityPool />
                 </TabPanel>
-                <TabPanel className='p-1 bg-yellow-400 text-sm  text-black' header={<CustomTabHeader title="Unstake" />}>
+                <TabPanel className='p-[2px] bg-yellow-400 text-sm  text-black' header={<CustomTabHeader title="Unstake" />}>
                   <Unstake />
                 </TabPanel>
               </TabView>

@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 "use client";
 import borrowerOperationAbi from "../src/constants/abi/BorrowerOperations.sol.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json";
@@ -70,24 +68,24 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   };
 
   return (
-    <div className="md:w-[60rem] flex md:-ml-0  ">
+    <div className="md:w-[60rem] flex md:-ml-0 w-[2rem]  ">
       <div className="relative text-white text-base flex flex-col gap-2 md:pl-20  pr-[32rem] py-20">
         <div className="space-y-7 ">
-          <div className="flex md:gap-40 justify-between">
-            <span className=" md:ml-0 ml-1 text-sm  title-text text-gray-500">Collateral</span>
-            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="title-text text-sm md:mr-0 mr-4 whitespace-nowrap ">{Number(entireDebtAndColl).toFixed(8)} BTC</span>}
+          <div className="flex md:gap-52 justify-between">
+            <span className=" md:ml-0 ml-1 text-sm  body-text text-[#84827a] font-medium">Collateral</span>
+            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap ">{Number(entireDebtAndColl).toFixed(8)} BTC</span>}
           </div>
           <div className="flex justify-between">
-            <span className=" md:ml-0 ml-1 text-sm title-text text-gray-500">Debt</span>
-            {Number(debt) <= 0 ? "---" : <span className="title-text md:mr-0 mr-4">{Number(debt).toFixed(2)} PUSD</span>}
+            <span className=" md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Debt</span>
+            {Number(debt) <= 0 ? "---" : <span className="body-text md:mr-0 mr-4 font-medium">{Number(debt).toFixed(2)} PUSD</span>}
           </div>
           <div className="flex justify-between">
-            <span className=" md:ml-0 ml-1 text-sm title-text text-gray-500">Liquidation Reserve</span>
-            {Number(liquidationReserve) <= 0 ? "--" : <span className="title-text md:mr-0 mr-4  text-sm">{Number(liquidationReserve).toFixed(2)} PUSD</span>}
+            <span className=" md:ml-0 ml-1 text-sm body-text font-medium text-[#84827a]">Liquidation Reserve</span>
+            {Number(liquidationReserve) <= 0 ? "--" : <span className="body-text md:mr-0 mr-4 font-medium  text-sm">{Number(liquidationReserve).toFixed(2)} PUSD</span>}
           </div>
           <div className="flex justify-between">
-            <span className="title-text text-gray-500 text-sm ml-1 md:ml-0">Wallet Balance</span>
-            <span className="title-text text-sm mr-4 md:mr-0">
+            <span className="body-text font-medium text-[#84827a] text-sm ml-1 md:ml-0">Wallet Balance</span>
+            <span className="body-text font-medium text-sm mr-4 md:mr-0">
               {afterLoad ? (
                 <div className=" h-2 mr-20  text-left">
                   <div className="hex-loader"></div>
@@ -98,7 +96,8 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             </span>
           </div>
         </div>
-        <button onClick={handleConfirmClick} disabled={isLowBalance || afterLoad} className={`mt-20 md:w-full md:ml-0 ml-1 w-[20rem] h-[3rem] bg-yellow-300  text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed' : ' hover:scale-95  cursor-pointer'}`}>
+        <button onClick={handleConfirmClick} disabled={isLowBalance || afterLoad} 
+        className={`mt-20 md:w-full md:ml-0 ml-1 w-[18.2rem] h-[3rem] bg-yellow-300  text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed' : ' hover:scale-95  cursor-pointer'}`}>
           Close Trove
         </button>
         <div className="text-red-500 text-sm font-medium body-text w-full ml-1">
