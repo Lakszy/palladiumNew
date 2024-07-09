@@ -359,7 +359,7 @@ const Borrow = () => {
         <FullScreenLoader />
       ) : (
         <Layout>
-          {troveStatus === "INACTIVE" && (
+          {troveStatus === "ACTIVE" && (
             <div style={{ backgroundColor: "#272315" }} className="p-6 ">
               <div className=" flex flex-col md:flex-row gap-10" style={{ backgroundColor: "#2e2a1c" }}>
                 <div className="p-2 px-4 ">
@@ -395,8 +395,8 @@ const Borrow = () => {
                     <span></span>
                     <div className="flex flex-col">
                       <span className="text-gray-500 body-text font-medium">Trove Status</span>
-                      <div className={`mt-2 flex p-2 justify-center items-center title-text2 text-center ${troveStatus === "INACTIVE" ? 'border-lime-400 rounded-sm border title-text' : 'border-red-300 rounded-sm border title-text'}`}>
-                        {troveStatus === "INACTIVE" ? (
+                      <div className={`mt-2 flex p-2 justify-center items-center title-text2 text-center ${troveStatus === "ACTIVE" ? 'border-lime-400 rounded-sm border title-text' : 'border-red-300 rounded-sm border title-text'}`}>
+                        {troveStatus === "ACTIVE" ? (
                           <div className="w-4 h-4 bg-lime-500 title-text border border-lime-500 rounded-full"></div>
                         ) : (
                           <div className="w-4 h-4 bg-red-300 title-text border border-red-300 rounded-full"></div>
@@ -416,8 +416,8 @@ const Borrow = () => {
                       </div>
                       <div className="flex mobileDevice -mt-10  flex-col">
                         <span className="text-gray-500 body-text">Trove Status</span>
-                        <div className={`mt-2 flex p-2 justify-center items-center title-text text-center ${troveStatus === "INACTIVE" ? 'border-lime-400 rounded-sm border title-text' : 'border-red-300 rounded-sm border title-text'}`}>
-                          {troveStatus === "INACTIVE" ? (
+                        <div className={`mt-2 flex p-2 justify-center items-center title-text text-center ${troveStatus === "ACTIVE" ? 'border-lime-400 rounded-sm border title-text' : 'border-red-300 rounded-sm border title-text'}`}>
+                          {troveStatus === "ACTIVE" ? (
                             <div className="w-4 h-4 bg-lime-500 title-text border border-lime-500 rounded-full"></div>
                           ) : (
                             <div className="w-4 h-4 bg-red-300 title-text border border-red-300 rounded-full"></div>
