@@ -17,7 +17,7 @@ export default function Home() {
   useEffect(() => {
     if (address) {
       setAfterload(true)
-      fetch(`https://api.palladiumlabs.org/users/testnetWhitelist/${address}`).then((response) => response.json()).then((data) => {
+      fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${address}`).then((response) => response.json()).then((data) => {
         setUserExists(data.userExists);
         setAfterload(false)
       })

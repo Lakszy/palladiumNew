@@ -35,7 +35,7 @@ const ProgBar: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`https://api.palladiumlabs.org/users/activities/${address}`);
+      const response = await fetch(`https://api.palladiumlabs.org/sepolia/users/activities/${address}`);
       if (!response.ok) {
         setError("We are recalibrating your points. Check back in some time for a surprise 😉.");
         return;
@@ -63,7 +63,7 @@ const ProgBar: React.FC = () => {
   const handleLikeButtonClick = async (taskId: string) => {
     setIsLoading(taskId);
     try {
-      await axios.put(`https://api.palladiumlabs.org/users/activities/${address}/${taskId}`);
+      await axios.put(`https://api.palladiumlabs.org/sepolia/users/activities/${address}/${taskId}`);
       fetchData();
       const task = tasks.find((task) => task.name === taskId);
       if (task) {

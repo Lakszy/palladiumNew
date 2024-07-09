@@ -36,7 +36,7 @@ export const StabilityPool = () => {
 	const { data: walletClient } = useWalletClient();
 	const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 	const erc20Contract = getContract(
-		botanixTestnet.addresses.pusdToken,
+		botanixTestnet.addresses.lusdToken,
 		erc20Abi,
 		provider
 	);

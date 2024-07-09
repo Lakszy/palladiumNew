@@ -19,7 +19,7 @@ function NavBar() {
   const toast = useRef<Toast>(null);
 
   useEffect(() => {
-    fetch(`https://api.palladiumlabs.org/users/testnetWhitelist/${address}`)
+    fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${address}`)
       .then((response) => response.json())
       .then((data) => {
         setUserExists(data.userExists);
@@ -33,7 +33,7 @@ function NavBar() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "https://api.palladiumlabs.org/protocol/metrics"
+          "https://api.palladiumlabs.org/sepolia/protocol/metrics"
         );
         const data = await response.json();
         const protocolMetrics = data[0];

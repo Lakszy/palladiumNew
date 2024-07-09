@@ -35,7 +35,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   );
 
   const erc20Contract = getContract(
-    botanixTestnet.addresses.pusdToken,
+    botanixTestnet.addresses.lusdToken,
     erc20Abi,
     provider
   );

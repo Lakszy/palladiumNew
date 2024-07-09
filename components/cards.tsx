@@ -97,7 +97,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.palladiumlabs.org/protocol/metrics");
+        const response = await fetch("https://api.palladiumlabs.org/sepolia/protocol/metrics");
         const data = await response.json();
         const protocolMetrics = data[0];
         setFetchedPrice(protocolMetrics.priceBTC);
@@ -121,7 +121,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   const fetchActivitiesData = async () => {
     try {
       const response = await fetch(
-        `https://api.palladiumlabs.org/users/activities/${address}`
+        `https://api.palladiumlabs.org/sepolia/users/activities/${address}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch activities data");

@@ -53,7 +53,7 @@ export default function Redeem() {
     );
 
     const erc20Contract = getContract(
-        botanixTestnet.addresses.pusdToken,
+        botanixTestnet.addresses.lusdToken,
         erc20Abi,
         provider
     );
