@@ -28,12 +28,9 @@ export const OpenTrove = () => {
 
   const [minDebt, setMinDebt] = useState(0)
   const [borrowRate, setBorrowRate] = useState(0)
-  // const [lr, setLR] = useState(0)
-  const [lr] = useState(1)
-  const [cCr] = useState(130)
-  const [mCR] = useState(110)
-  // const [cCr, setCCR] = useState(0)
-  // const [mCR, setMCR] = useState(0)
+  const [lr, setLR] = useState(0)
+  const [cCr,setCCR] = useState(0)
+  const [mCR,setMCR] = useState(0)
   const [fetchedPrice, setFetchedPrice] = useState(0)
   const [recoveryMode, setRecoveryMode] = useState<boolean>()
 
@@ -83,9 +80,9 @@ export const OpenTrove = () => {
 
         setRecoveryMode(protocolMetrics.recoveryMode);
         setFetchedPrice(protocolMetrics.priceBTC);
-        // setMCR(protocolMetrics.MCR)
-        // setCCR(protocolMetrics.CCR)
-        // setLR(protocolMetrics.LR)
+        setMCR(protocolMetrics.MCR)
+        setCCR(protocolMetrics.CCR)
+        setLR(protocolMetrics.LR)
         setBorrowRate(protocolMetrics.borrowRate)
         setMinDebt(protocolMetrics.minDebt)
       } catch (error) {
@@ -150,6 +147,7 @@ export const OpenTrove = () => {
       const borrowValue = Number(xBorrow);
 
       const expectedFeeFormatted = (borrowRate * borrowValue);
+      console.log(expectedFeeFormatted, "expectedFeeFormatted")
       const expectedDebt = Number(borrowValue + expectedFeeFormatted + lr);
 
       const collRatio = (collValue * fetchedPrice * 100) / Number(expectedDebt);
@@ -204,7 +202,16 @@ export const OpenTrove = () => {
 
   const totalCollateral = Number(userInputs.collatoral) * fetchedPrice;
   const divideBy = recoveryMode ? cCr : mCR;
-  const maxBorrow = totalCollateral / Number(divideBy) - (lr + calculatedValues.expectedFee);
+  console.log(fetchedPrice, "fetchedPrice", totalCollateral, "totalCollateral")
+
+  console.log(cCr, "c", mCR, "m", divideBy, "divideBy")
+  console.log(calculatedValues.expectedFee, "calculatedValues.expectedFee")
+  console.log(lr, "lr")
+  const maxBorrow = totalCollateral / Number(divideBy)
+    - (lr + calculatedValues.expectedFee);
+  console.log("max11", maxBorrow)
+
+
   const loanToValue = (calculatedValues.expectedDebt * 100) / (totalCollateral || 1);
   const liquidationPrice = (Number(divideBy) * calculatedValues.expectedDebt) / (Number(Number(userInputs.collatoral)) || 1);
   const bothInputsEntered = userInputs.collatoral !== "0" && userInputs.borrow !== "0";

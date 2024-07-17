@@ -67,13 +67,9 @@ const Borrow = () => {
   // API
   const [minDebt, setMinDebt] = useState(0)
   const [borrowRate, setBorrowRate] = useState(0)
-  // const [lr, setLR] = useState(0)
-  const [cCr] = useState(130)
-  const [lr] = useState(1)
-
-  const [mCR] = useState(110)
-  // const [cCr, setCCR] = useState(0)
-  // const [mCR, setMCR] = useState(0)
+  const [lr, setLR] = useState(0)
+  const [cCr, setCCR] = useState(0)
+  const [mCR, setMCR] = useState(0)
   const [fetchedPrice, setFetchedPrice] = useState(0)
   const [recoveryMode, setRecoveryMode] = useState<boolean>(false)
 
@@ -128,9 +124,9 @@ const Borrow = () => {
 
         setRecoveryMode(protocolMetrics.recoveryMode);
         setFetchedPrice(protocolMetrics.priceBTC);
-        // setMCR(protocolMetrics.MCR)
-        // setCCR(protocolMetrics.CCR)
-        // setLR(protocolMetrics.LR)
+        setMCR(protocolMetrics.MCR)
+        setCCR(protocolMetrics.CCR)
+        setLR(protocolMetrics.LR)
         setBorrowRate(protocolMetrics.borrowRate)
         // base fee and variable fee = ? backend
         // base 0.5 is fixed and variables keeps changing

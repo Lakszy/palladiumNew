@@ -73,9 +73,9 @@ const Portfolio = () => {
   const [totalStakedValue, setTotalStakedValue] = useState("0");
 
   const { toBigInt } = web3.utils;
-  const [lr] = useState(1)
-  const [cCr] = useState(130)
-  const [mCR] = useState(110)
+  const [lr, setLR] = useState(0)
+  const [cCr,setCCR] = useState(0)
+  const [mCR,setMCR] = useState(0)
   const [fetchedPrice, setFetchedPrice] = useState(0)
   const [recoveryMode, setRecoveryMode] = useState<boolean>(false)
   const [afterLoad, setAfterload] = useState(false);
@@ -90,9 +90,9 @@ const Portfolio = () => {
 
         setRecoveryMode(protocolMetrics.recoveryMode);
         setFetchedPrice(protocolMetrics.priceBTC);
-        // setMCR(protocolMetrics.MCR)
-        // setCCR(protocolMetrics.CCR)
-        // setLR(protocolMetrics.LR)
+        setMCR(protocolMetrics.MCR)
+        setCCR(protocolMetrics.CCR)
+        setLR(protocolMetrics.LR)
 
       } catch (error) {
         console.error('Error fetching data:', error);
