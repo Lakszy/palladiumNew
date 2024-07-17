@@ -15,7 +15,7 @@ export default function NFT2() {
             </div>
             <div className="ml-[14px] flex gap-x-5">
                 <div>
-                    <div className="relative notMobileDevice mt-[2.5rem] flex items-center justify-center max-sm:px-5">
+                    <div className="relative hidden md:flex mt-[2.5rem] items-center justify-center max-sm:px-5">
                         <Image src={BORDER} alt="border" height={100} width={340} className="" />
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
                             <Image src={newNFTCrate} width={240} height={20} alt="home" className="mb-4 hover:cursor-not-allowed p-2" />
@@ -26,22 +26,15 @@ export default function NFT2() {
                     </div>
                 </div>
                 <div className=" w-full justify-between">
-                    <p className="title-text mobileDevice whitespace-nowrap text-2xl mb-5 text-center -ml-10 text-yellow-400  items-center">
+                    <p className="title-text md:hidden whitespace-nowrap text-2xl mb-5 text-center -ml-10 text-yellow-400  items-center">
                         MINTING IS OVER...
                     </p>
-                    <div className="flex mobileDevice items-left align-text- gap-x-1 ">
+                    <div className="flex md:hidden items-left align-text- gap-x-1 ">
                     </div>
-                    <p className="title-text2 notMobileDevice text-xl md:-ml-[19.5rem] mb-10 md:text-center text-yellow-400  items-center">
+                    <p className="title-text2 hidden md:block text-xl md:-ml-[19.5rem] mb-10 md:text-center text-yellow-400  items-center">
                         Surprise NFT<span className="title-text2 text-xs">s</span> Coming soon <span className="hover:animate-pulse  cursor-wait">✨✨</span>
                     </p>
-                    <div className="relative mobileDevice mt-[2.5rem] -ml-8 flex items-center justify-center max-sm:px-5">
-                        <Image src={BORDER} alt="border" height={100} width={340} className="" />
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <Image src={newNFTCrate} width={240} height={20} alt="home" className="mt-1 hover:cursor-not-allowed p-6" />
-                            
-                        </div>
-                    </div>
-                    <div className="flex gap-x-3 notMobileDevice  p-1 -mt-5 justify-between">
+                    <div className="gap-x-3 hidden md:flex  p-1 -mt-5 justify-between">
                         <div className="p-3">
                             <Image src={question} alt="mark" height={100} width={150} className="hover:cursor-not-allowed" />
                         </div>
@@ -55,7 +48,12 @@ export default function NFT2() {
                             <Image src={question} alt="mark" height={100} width={150} className="hover:cursor-not-allowed" />
                         </div>
                     </div>
-                    
+                    <div className="relative md:hidden mt-[2.5rem] -ml-8 flex items-center justify-center max-sm:px-5">
+                        <Image src={BORDER} alt="border" height={100} width={340} className="" />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                            <Image src={newNFTCrate} width={240} height={20} alt="home" className="mt-1 hover:cursor-not-allowed p-6" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

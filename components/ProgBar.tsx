@@ -124,7 +124,7 @@ const ProgBar: React.FC = () => {
               )}
             </div>
             <div className='flex whitespace-nowrap'>
-              <p className='capitalize body-text font-medium text-sm text-white notMobileDevice '>{task.rewardValue} {task.rewardType === "point" ? "Points" : null}</p>
+              <p className='capitalize body-text font-medium text-sm text-white hidden md:block '>{task.rewardValue} {task.rewardType === "point" ? "Points" : null}</p>
             </div>
           </div>
         </button>
@@ -135,7 +135,7 @@ const ProgBar: React.FC = () => {
   return (
     <>
       {error ? (
-        <p className='error-message w-full text-center items-center title-text notMobileDevice'>{error}</p>
+        <p className='error-message w-full text-center items-center title-text hidden md:block'>{error}</p>
       ) : tasks.length === 0 ? (
         <Messages ref={msgs} />
       ) : (

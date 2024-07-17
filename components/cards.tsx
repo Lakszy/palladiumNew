@@ -224,7 +224,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                         <h6 className="text-sm mt-[6px] text-yellow-300 title-text2">s</h6>
                       </div>
                     </div>
-                    <Image width={140} src={nft} alt="robo2" className="notMobileDevice mt-2 ml-5" />
+                    <Image width={140} src={nft} alt="robo2" className="hidden md:block mt-2 ml-5" />
                   </div>
                 </div>
                 <div className="absolute  overflow-hidden p-2 md:p-0 ml-[10rem] w-[8rem] md:ml-[12rem]  mt-[10rem] h-20 md:w-[14rem] bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200">
@@ -238,7 +238,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                         BADGES
                       </h6>
                     </div>
-                    <Image width={90} src={badge} alt="robo2" className="notMobileDevice mt-8 transform " />
+                    <Image width={90} src={badge} alt="robo2" className="hidden md:block mt-8 transform " />
                   </div>
                 </div>
               </div>

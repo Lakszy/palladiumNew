@@ -157,7 +157,7 @@ export const Unstake = () => {
 				<div className="flex items-center mt-4 mb-2  md:-ml-0 -ml-  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
 					<div className='flex  items-center h-[3.5rem] '>
 						<Image src={img3} alt="home" className='ml-1' width={30} />
-						<h3 className='text-white body-text ml-1 notMobileDevice'>PUSD</h3>
+						<h3 className='text-white body-text ml-1 hidden md:block'>PUSD</h3>
 						<h3 className='h-full border border-yellow-300 mx-3 text-yellow-300'></h3>
 						<div className=" justify-between items-center flex gap-x-24">
 							<input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1  text-white" style={{ backgroundColor: "#272315" }} />

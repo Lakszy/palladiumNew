@@ -214,7 +214,7 @@ export const OpenTrove = () => {
       <div className="p-10 ">
         <div className="md:ml-2 -ml-6  border border-black p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#2e2a1c" }}>
           <div className="flex p-2 w-full">
-            <div className="notMobileDevice w-[22%]">
+            <div className="hidden md:block w-[22%]">
               <Image src={floatPUSD} height={200} alt="home" className="-mt-[3rem]" />
             </div>
             <div className=" h-fit py-2 space-y-5">
@@ -244,7 +244,7 @@ export const OpenTrove = () => {
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img3} alt="home" className='ml-1' />
                 <h3 className='h-full border border-yellow-300 text-yellow-300 mx-3'></h3>
-                <h3 className='text-white body-text font-medium ml-1 mr-3 notMobileDevice'>BTC</h3>
+                <h3 className='text-white body-text font-medium ml-1 mr-3 hidden md:block'>BTC</h3>
               </div>
               <input id="items" placeholder="Enter Collateral Amount" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[24.75rem]  font-medium h-[4rem] text-white" style={{ backgroundColor: "#272315" }} />
               <span className="md:max-w-[5rem] md:p-2 mr-1 md:mr-0 font-medium h-full">${totalCollateral.toFixed(2)}</span>
@@ -267,7 +267,7 @@ export const OpenTrove = () => {
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img4} alt="home" className='ml-1' />
                 <h3 className='h-full border border-yellow-300 text-yellow-300 mx-4'></h3>
-                <h3 className='text-white body-text font-medium notMobileDevice mx-1'>PUSD</h3>
+                <h3 className='text-white body-text font-medium hidden md:block mx-1'>PUSD</h3>
               </div>
               <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-white body-text font-medium" style={{ backgroundColor: "#272315" }} />
             </div>

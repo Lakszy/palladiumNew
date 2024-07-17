@@ -26,7 +26,7 @@ export const TabsDemo = () => {
   };
 
   return (
-    <div className={`sidebar notMobileDevice font-mono font-extrabold  w-72 grid h-screen grid-rows-[max-content_fr_max-content] 2c2819 text-white `} style={{ backgroundColor: "#2c2819" }}>
+    <div className={`sidebar hidden md:grid font-mono font-extrabold  w-72  h-screen grid-rows-[max-content_fr_max-content] 2c2819 text-white `} style={{ backgroundColor: "#2c2819" }}>
       <div className="flex items-center gap-x-1 justify-center">
         <Link href="/">
           <Image src={logo} alt="Logo" className="mr-12 -mt-3 w-40" />

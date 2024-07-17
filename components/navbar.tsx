@@ -86,17 +86,17 @@ function NavBar() {
   return (
     <>
       <div className="flex justify-between items-center gap-x-4" style={{ backgroundColor: "#1c1a0f" }}>
-        <div className="mobileDevice">
+        <div className="md:hidden">
           {userExists ? <MobileNav /> : <MobileNavFalse />}
         </div>
-        <div className="mobileDevice m-2">
+        <div className="md:hidden m-2">
         <CustomConnectButton className="" />
         </div>
       </div>
       <Toast ref={toast} className="custom-toast" />
       <div className="md:flex border-2 hidden w-full border-gray-100  border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50" style={{ backgroundColor: "#272315" }}>
         <div className="flex items-center gap-x-4">
-          <div className="w-full flex gap-x-10 notMobileDevice rounded-xl">
+          <div className="w-full  gap-x-10 hidden md:flex rounded-xl">
             <div className="items-center flex gap-x-2 hover:cursor-pointer pusd-section" onClick={handleAddToken}>
               <Image src={pusdbtc} alt="logo" width={40} onClick={handleAddToken} />
               <div>

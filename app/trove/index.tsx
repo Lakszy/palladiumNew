@@ -389,7 +389,7 @@ const Borrow = () => {
                   </div>
                 </div>
 
-                <div className="md:w-[14rem] notMobileDevice  md:h-[13rem] mt-4" style={{ backgroundColor: "" }}>
+                <div className="md:w-[14rem] hidden md:block  md:h-[13rem] mt-4" style={{ backgroundColor: "" }}>
                   <div className="flex md:flex-col md:gap-x-0 gap-x-10 gap-y-14 text-white  px-5 py-4">
                     <span></span>
                     <span></span>
@@ -414,7 +414,7 @@ const Borrow = () => {
                         <span className="body-text body-text">${liquidation.toFixed(2)} USD</span>
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
                       </div>
-                      <div className="flex mobileDevice -mt-10  flex-col">
+                      <div className="flex md:hidden -mt-10  flex-col">
                         <span className="text-gray-500 body-text">Trove Status</span>
                         <div className={`mt-2 flex p-2 justify-center items-center title-text text-center ${troveStatus === "ACTIVE" ? 'border-lime-400 rounded-sm border title-text' : 'border-red-300 rounded-sm border title-text'}`}>
                           {troveStatus === "ACTIVE" ? (
@@ -455,7 +455,7 @@ const Borrow = () => {
                                   <div className="flex items-center mt-4 w-[18rem] md:w-[24rem] md:-ml-0 -ml-9  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] '>
                                       <Image src={img3} alt="home" className='ml-1' />
-                                      <h3 className='text-white body-text ml-1 notMobileDevice'>BTC</h3>
+                                      <h3 className='text-white body-text ml-1 hidden md:block'>BTC</h3>
                                       <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
                                     </div>
                                     <div className=" justify-between items-center flex gap-x-24">
@@ -496,7 +496,7 @@ const Borrow = () => {
                                   <div className="flex mt-[15px] items-center  md:mt-0 w-[18rem] md:w-[24rem] md:-ml-0 -ml-9  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] mx-1'>
                                       <Image src={img4} alt="home" className='ml-1' />
-                                      <h3 className='text-white body-text ml-1 notMobileDevice '>PUSD</h3>
+                                      <h3 className='text-white body-text ml-1 hidden md:block '>PUSD</h3>
                                       <h3 className='h-full border  border-yellow-300  text-yellow-300 mx-4'></h3>
                                     </div>
                                     <input id="quantity" placeholder="Enter Borrow Amount" value={Math.trunc(Number(userInputs.borrow) * 100) / 100} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue, }); }} className="w-[23.75rem] ml-1 h-[4rem] body-text text-sm whitespace-nowrap text-white" style={{ backgroundColor: "#272315" }} />

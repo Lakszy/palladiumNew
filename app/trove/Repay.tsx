@@ -271,7 +271,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               <div className="flex items-center w-[18rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "bg-transparent" }}>
                 <div className='flex items-center h-[3.5rem] '>
                   <Image src={img4} alt="home" className='ml-1' />
-                  <h3 className='text-white body-text font-medium notMobileDevice ml-1 text-sm'>PUSD</h3>
+                  <h3 className='text-white body-text font-medium hidden md:block ml-1 text-sm'>PUSD</h3>
                   <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
                 </div>
                 <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.lusdAmount} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }} 
@@ -305,7 +305,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               <div className="flex items-center w-[18rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                 <div className='flex items-center h-[3.5rem] '>
                   <Image src={img3} alt="home" className='ml-1' />
-                  <h6 className='text-white text-sm font-medium notMobileDevice body-text ml-1'>BTC</h6>
+                  <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>BTC</h6>
                   <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
                 </div>
                 <div className=" justify-between items-center flex gap-x-24">
