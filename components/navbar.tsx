@@ -89,7 +89,7 @@ function NavBar() {
         <div className="mobileDevice">
           {userExists ? <MobileNav /> : <MobileNavFalse />}
         </div>
-        <div className="mobileDevice">
+        <div className="mobileDevice m-2">
         <CustomConnectButton className="" />
         </div>
       </div>

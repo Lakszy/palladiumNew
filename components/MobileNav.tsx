@@ -79,7 +79,7 @@ export default function MobileNav() {
           </div>
         </div>
       </Sidebar>
-      <Button className="title-text font-bold" icon="pi pi-bars z-10" onClick={() => setVisible(true)} />
+      <Button className="ml-[10px]" icon="pi pi-bars z-10" onClick={() => setVisible(true)} />
     </div>
   );
 }

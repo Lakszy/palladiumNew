@@ -52,7 +52,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
     };
     setAfterload(true)
     fetchPrice();
-  }, [address, walletClient]);
+  }, [address, walletClient,erc20Contract]);
 
   const handleConfirmClick = async () => {
     try {

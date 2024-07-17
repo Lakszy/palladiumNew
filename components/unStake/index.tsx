@@ -69,7 +69,7 @@ export const Unstake = () => {
 	};
 	useEffect(() => {
 		fetchStakedValue();
-	}, [walletClient, stabilityPoolContractReadOnly, writeContract, hash]);
+	}, [fetchStakedValue,walletClient, stabilityPoolContractReadOnly, writeContract, hash]);
 
 	const handleClose = () => {
 		setLoadingModalVisible(false);

@@ -77,7 +77,7 @@ export const StabilityPool = () => {
 	};
 	useEffect(() => {
 		fetchPrice();
-	}, [address, walletClient, writeContract, hash]);
+	}, [fetchPrice,address, walletClient, writeContract, hash]);
 	const handleClose = () => {
 		setLoadingModalVisible(false);
 		window.location.reload()

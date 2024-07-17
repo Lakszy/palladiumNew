@@ -4,10 +4,8 @@ import CB from "../../app/assets/images/CB.svg"
 import BORDER from "../../app/assets/images/BORDER.svg"
 import newNFTCrate from "../../app/assets/images/newNFTCrate.png"
 import question from "../../app/assets/images/questionMarkBox.png"
-import logo from "../../app/assets/images/newpalladium.svg"
-import "../../app/App.css";
 import Image from "next/image";
-import Link from "next/link";
+import "../../app/App.css";
 
 export default function NFT2() {
     return (

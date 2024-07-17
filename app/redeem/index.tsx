@@ -71,7 +71,7 @@ export default function Redeem() {
             setPusdBalance(pusdBalanceFormatted);
         };
         fetchPrice();
-    }, [address]);
+    }, [erc20Contract,address]);
 
     useEffect(() => {
         const getPrice = async () => {

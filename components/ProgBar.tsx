@@ -58,7 +58,7 @@ const ProgBar: React.FC = () => {
   if (isConnected && address) {
     fetchData();
   }
-  }, [isConnected, address, walletClient]);
+  }, [fetchData,isConnected, address, walletClient]);
 
   const handleLikeButtonClick = async (taskId: string) => {
     setIsLoading(taskId);

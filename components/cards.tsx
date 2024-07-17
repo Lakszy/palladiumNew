@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -33,8 +31,6 @@ import "./Loader.css";
 import { CustomConnectButton } from "./connectBtn";
 import ProgBar from "./ProgBar";
 import NFT2 from "./NFT2/page";
-import FullScreenLoader from "./FullScreenLoader";
-
 interface Task {
   rewardType: string;
   rewardValue: string | number;
@@ -347,7 +343,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   <div className="grid place-items-center">
                     <Image src={floatPUSD} alt="home" width={220} />
                     <p className="text-gray-400 text-sm title-text2 text-center font-medium  pt-5">
-                      You don't have an Active Trove
+                      `You don&apos;t have an Active Trove`
                     </p>
                   </div>
                 )}
