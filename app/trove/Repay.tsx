@@ -116,6 +116,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   );
 
   const handleConfirmClick = async (xLusdAmount: string, xColl: string) => {
+    console.log("lalala")
     setIsModalVisible(true)
     try {
       const pow20 = Decimal.pow(10, 20);
@@ -129,9 +130,9 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       const newDebt = Number(debt) - lusdValue;
       const newColl = Number(coll) - collValue;
 
-      if (minDebt <= newDebt) {
-        return setIsLowDebt(true);
-      }
+      // if (minDebt <= newDebt) {
+      //   return setIsLowDebt(true);
+      // }
 
       let NICR = newColl / newDebt;
       const NICRDecimal = new Decimal(NICR.toString());
@@ -274,8 +275,8 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                   <h3 className='text-white body-text font-medium hidden md:block ml-1 text-sm'>PUSD</h3>
                   <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
                 </div>
-                <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.lusdAmount} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }} 
-                className="ml-1 w-full h-[4rem] font-medium body-text text-sm whitespace-nowrap text-white" style={{ backgroundColor: "#272315" }} />
+                <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.lusdAmount} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }}
+                  className="ml-1 w-full h-[4rem] font-medium body-text text-sm whitespace-nowrap text-white" style={{ backgroundColor: "#272315" }} />
               </div>
               <div className="flex flex-col  md:flex-row gap-x-5  justify-between">
                 <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">

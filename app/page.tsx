@@ -34,7 +34,7 @@ export default function Home() {
           <FullScreenLoader />
         ) : (
           <div className="grid h-screen font-mono font-extrabold mainT w-full sm:grid-cols-[max-content_1fr] overflow text-white">
-            {userExists ? <TabsDemo /> : <TabsDemoFalse />}
+            <TabsDemo /> 
             <div className="body text-black  overflow-y-scroll ">
               <div className="sticky z-50 mainT top-0  overflow-auto">
                 <NavBar />
@@ -46,11 +46,7 @@ export default function Home() {
               </div>
               <div className=" w-full " style={{ backgroundColor: "#272315" }}>
                 {address ? (
-                  userExists ? (
-                    <CardDemo userExists={userExists} />
-                  ) : (
-                    <NotMinted />
-                  )
+                  <CardDemo />
                 ) : (<ConnectWalletDefault />)}
               </div>
             </div>

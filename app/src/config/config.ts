@@ -46,7 +46,9 @@ const sepoliaChain: Chain = {
 export const wagmiConfig = getDefaultConfig({
 	appName: "My RainbowKit App",
 	projectId: "ee56c353983496c87480ff2ae841a933",
-	chains: [botanixChain, sepoliaChain],
+	// chains: [botanixChain, sepoliaChain],
+	chains: [sepoliaChain],
+
 });
 
 
@@ -55,7 +57,7 @@ export const config = createConfig({
 	transports: {
 		[mainnet.id]: http(),
 		[sepolia.id]: http(),
-		[3636]: http('https://node.botanixlabs.dev'),
+		// [3636]: http('https://node.botanixlabs.dev'),
 		[sepoliaChain.id]: http ('https://sepolia.infura.io/v3/ad9cef41c9c844a7b54d10be24d416e5'),
 	},
 })
