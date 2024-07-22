@@ -31,6 +31,7 @@ import "./Loader.css";
 import { CustomConnectButton } from "./connectBtn";
 import ProgBar from "./ProgBar";
 import NFT2 from "./NFT2/page";
+import "../app/App.css"
 interface Task {
   rewardType: string;
   rewardValue: string | number;
@@ -72,7 +73,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
     null
   );
   const [isLoading, setIsLoading] = useState(true);
-  const [firstTask, setFirstTask] = useState<string>("");
+  const [firstTask, setFirstTask] = useState<string | null>("");
   const [fetchedPrice, setFetchedPrice] = useState("0");
   const [isStateLoading, setIsStateLoading] = useState(false);
 
@@ -124,6 +125,8 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
       }
       const data = await response.json();
       setActivitiesData(data);
+      const firstLockedTask = getFirstLockedTask(data.task);
+      setFirstTask(firstLockedTask);
     } catch (error) {
       console.error("Error fetching activities data:", error);
     } finally {
@@ -170,9 +173,10 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
     fetchActivitiesData().then(() => {
       if (activitiesData) {
         const firstLockedTask = getFirstLockedTask(activitiesData.task);
-        if (firstLockedTask !== null) {
-          setFirstTask(firstLockedTask);
-        }
+        console.log(firstLockedTask, "l")
+        // if (firstLockedTask !== null) {
+        setFirstTask(firstLockedTask);
+        // }
       }
     });
   }, [walletClient, address, isConnected, troveStatus]);
@@ -262,7 +266,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   <div></div>
                 </div>
                 <div className=" md:w-4/5  md:p-2">
-                  <h5 className="body-text md:title-text2 -mt-[10px]  md:mt-[5px] text-[10px] md:text-lg ml-[6rem] md:ml-[14rem] text-yellow-300 ">
+                  <h5 className=" title-text2 -mt-[10px]  md:mt-[5px] text-[10px] md:text-lg ml-[6rem] md:ml-[14rem] text-yellow-300">
                     EARN EXCLUSIVE REWARDS BY COMPLETING CHALLENGES
                   </h5>
                 </div>
@@ -279,14 +283,14 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 {isConnected ? (
                   <>
                     {troveStatus === "ACTIVE" ? (
-                      <div className={`border-[3px] flex items-center justify-center h-10 title-text  w-32 p-2 ${troveStatus === "ACTIVE"
-                        ? "border-green-800 t title-text bg-green-100"
-                        : "border-red-800  bg-red-100"
+                      <div className={`border-[3px] title-text2 flex items-center justify-center h-10 title-text2  w-32 p-2 ${troveStatus === "ACTIVE"
+                        ? "border-green-800 title-text2 bg-green-100"
+                        : "border-red-800 title-text2 bg-red-100"
                         }`}
                         style={{ borderTopRightRadius: "10px" }} >
                         {troveStatus === "ACTIVE" ? (
-                          <h6 className="w-2 h-2 rounded-full bg-green-400 mr-1 title-text text-green-900"></h6>
-                        ) : (<h6 className="w-2 h-2 rounded-full bg-red-400 mr-1 title-text  text-black"></h6>)}
+                          <h6 className="w-2 h-2 rounded-full title-text2 bg-green-400 mr-1 title-text text-green-900"></h6>
+                        ) : (<h6 className="w-2 h-2 title-text2 rounded-full bg-red-400 mr-1 title-text  text-black"></h6>)}
                         <h6>{troveStatus}</h6>
                       </div>
                     ) : (<></>)}

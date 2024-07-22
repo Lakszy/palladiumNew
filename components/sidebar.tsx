@@ -74,16 +74,16 @@ export const TabsDemo = () => {
           </div>
         </Link>
       </nav>
-      <div className="space-y-1  -mt-6">
+      <div className="space-y-1  h-20">
         <div className="ml-6 w-fit h-fit">
           <Link href="https://zealy.io/cw/palladiumlabs/questboard">
             <Image src={zeally} alt="zeally" className="w-[227px] h-[100px]" />
           </Link>
         </div>
-        <div className="flex items-center justify-center text-white gap-x-7 text-[19px] -mt-10">
-          <Link href="https://twitter.com/PalladiumLabs">  <Image className="hover:scale-105"  src={tweet} alt="twitter" /></Link>
-          <Link href="https://discord.com/invite/9MMEyJ4JDz">  <Image className="hover:scale-105"  src={discord} alt="twitter" /></Link>
-          <Link href="https://medium.com/palladium-labs">  <Image  className="hover:scale-105" src={medium} alt="twitter" /></Link>
+        <div className="flex items-center justify-center text-white gap-x-7 text-[19px] ">
+          <Link target="_blank" href="https://twitter.com/PalladiumLabs">  <Image className="hover:scale-105"  src={tweet} alt="twitter" /></Link>
+          <Link target="_blank" href="https://discord.com/invite/9MMEyJ4JDz">  <Image className="hover:scale-105"  src={discord} alt="twitter" /></Link>
+          <Link target="_blank" href="https://medium.com/palladium-labs">  <Image  className="hover:scale-105" src={medium} alt="twitter" /></Link>
         </div>
       </div>
     </div>

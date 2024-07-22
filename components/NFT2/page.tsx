@@ -31,7 +31,7 @@ export default function NFT2() {
                     </p>
                     <div className="flex md:hidden items-left align-text- gap-x-1 ">
                     </div>
-                    <p className="title-text2 hidden md:block text-xl md:-ml-[19.5rem] mb-10 md:text-center text-yellow-400  items-center">
+                    <p className="title-text2 hidden md:block text-xl md:-ml-[45%] mb-10 md:text-center text-yellow-400  items-center">
                         Surprise NFT<span className="title-text2 text-xs">s</span> Coming soon <span className="hover:animate-pulse  cursor-wait">✨✨</span>
                     </p>
                     <div className="gap-x-3 hidden md:flex  p-1 -mt-5 justify-between">

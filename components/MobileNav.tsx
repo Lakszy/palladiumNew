@@ -65,16 +65,16 @@ export default function MobileNav() {
               </Link>
             ))}
           </nav>
-          <div className="space-y-1 pt-16">
+          <div className="space-y-1 mt-56">
             <div className=" w-full h-full">
               <Link href="https://zealy.io/cw/palladiumlabs/questboard">
                 <Image src={zeally} alt="zeally" className="w-[297px] h-[100px]" />
               </Link>
             </div>
             <div className="flex items-center w-full  justify-around text-white gap-x-7 text-[19px] -mt-10">
-              <Link href="https://twitter.com/PalladiumLabs">  <Image src={tweet} alt="twitter" /></Link>
-              <Link href="https://discord.com/invite/9MMEyJ4JDz">  <Image src={discord} alt="twitter" /></Link>
-              <Link href="https://medium.com/palladium-labs">  <Image src={medium} alt="twitter" /></Link>
+              <Link target="_blank" href="https://twitter.com/PalladiumLabs">  <Image src={tweet} alt="twitter" /></Link>
+              <Link target="_blank" href="https://discord.com/invite/9MMEyJ4JDz">  <Image src={discord} alt="twitter" /></Link>
+              <Link target="_blank" href="https://medium.com/palladium-labs">  <Image src={medium} alt="twitter" /></Link>
             </div>
           </div>
         </div>
