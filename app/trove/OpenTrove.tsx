@@ -9,14 +9,21 @@ import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
+import img3 from "../assets/images/Group 663.svg";
+import rej from "../assets/images/TxnError.gif";
+import conf from "../assets/images/conf.gif"
+import rec2 from "../assets/images/rec2.gif"
+import tick from "../assets/images/tick.gif"
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useBalance, useWalletClient, useWriteContract } from "wagmi";
+import { useAccount, useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
-import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
 import floatPUSD from "../assets/images/floatPUSD.png";
 import { Button } from "@/components/ui/button";
+import "./opentroves.css"
+import { Dialog } from "primereact/dialog";
 
 export const OpenTrove = () => {
   const [userInputs, setUserInputs] = useState({
@@ -29,11 +36,29 @@ export const OpenTrove = () => {
   const [minDebt, setMinDebt] = useState(0)
   const [borrowRate, setBorrowRate] = useState(0)
   const [lr, setLR] = useState(0)
-  const [cCr,setCCR] = useState(0)
-  const [mCR,setMCR] = useState(0)
+  const [cCr, setCCR] = useState(0)
+  const [mCR, setMCR] = useState(0)
   const [fetchedPrice, setFetchedPrice] = useState(0)
   const [recoveryMode, setRecoveryMode] = useState<boolean>()
-
+  const [message, setMessage] = useState("");
+  const [showCloseButton, setShowCloseButton] = useState(false);
+  const [loadingModalVisible, setLoadingModalVisible] = useState(false);
+  const [userModal, setUserModal] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const { data: hash, writeContract } = useWriteContract()
+  const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
+  useEffect(() => {
+    if (isLoading) {
+      setIsModalVisible(false);
+      setLoadingMessage("Waiting for transaction to confirm..");
+      setLoadingModalVisible(true);
+    } else if (isSuccess) {
+      setLoadingMessage("Close Transcation compeleted sucessfully");
+      setLoadingModalVisible(true);
+    } else {
+      setLoadingModalVisible(false);
+    }
+  }, [isSuccess, isLoading]);
 
   const [calculatedValues, setCalculatedValues] = useState({
     expectedFee: 0,
@@ -70,7 +95,6 @@ export const OpenTrove = () => {
   const pow18 = Decimal.pow(10, 18);
   const pow20 = Decimal.pow(10, 20);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -95,50 +119,53 @@ export const OpenTrove = () => {
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
 
-    setIsModalVisible(true);
-    const collValue = Number(xCollatoral);
-    const borrowValue = Number(xBorrow);
+    try {
+      setIsModalVisible(true);
+      const collValue = Number(xCollatoral);
+      const borrowValue = Number(xBorrow);
+      const expectedFeeFormatted = (borrowRate * borrowValue) / 100;
+      const expectedDebt = borrowValue + expectedFeeFormatted + lr;
+      let NICR = collValue / expectedDebt;
 
-    const expectedFeeFormatted = (borrowRate * borrowValue) / 100;
-    const expectedDebt = borrowValue + expectedFeeFormatted + lr;
-
-    let NICR = collValue / expectedDebt;
-
-    const NICRDecimal = new Decimal(NICR.toString());
-    const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
-    const numTroves = await sortedTrovesContract.getSize();
-    const numTrials = numTroves * BigInt("15");
-
-    const { 0: approxHint } = await hintHelpersContract.getApproxHint(
-      NICRBigint,
-      numTrials,
-      42
-    );
-
-    const { 0: upperHint, 1: lowerHint } =
-      await sortedTrovesContract.findInsertPosition(
+      const NICRDecimal = new Decimal(NICR.toString());
+      const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
+      const numTroves = await sortedTrovesContract.getSize();
+      const numTrials = numTroves * BigInt("15");
+      const { 0: approxHint } = await hintHelpersContract.getApproxHint(
         NICRBigint,
-        approxHint,
-        approxHint
+        numTrials,
+        42
       );
-
-    const collDecimal = new Decimal(collValue.toString());
-    const collBigint = BigInt(collDecimal.mul(pow18).toFixed());
-
-    const borrowDecimal = new Decimal(borrowValue.toString());
-    const borrowBigint = BigInt(borrowDecimal.mul(pow18).toFixed());
-
-    const maxFee = "6".concat("0".repeat(16));
-    await borrowerOperationsContract.openTrove(
-      maxFee,
-      borrowBigint,
-      upperHint,
-      lowerHint,
-      { value: collBigint }
-    );
-
-    setIsModalVisible(false)
+      const { 0: upperHint, 1: lowerHint } =
+        await sortedTrovesContract.findInsertPosition(
+          NICRBigint,
+          approxHint,
+          approxHint
+        );
+      const collDecimal = new Decimal(collValue.toString());
+      const collBigint = BigInt(collDecimal.mul(pow18).toFixed());
+      const borrowDecimal = new Decimal(borrowValue.toString());
+      const borrowBigint = BigInt(borrowDecimal.mul(pow18).toFixed());
+      const maxFee = "6".concat("0".repeat(16));
+      await writeContract({
+        abi: BorrowerOperationbi,
+        address: '0xE0774dA339FA29bAf646B57B00644deA48fCaE23',
+        functionName: 'openTrove',
+        args: [maxFee, borrowBigint, upperHint, lowerHint],
+        value: collBigint,
+      });
+    }
+    catch (error) {
+      console.error('Error sending transaction:', error);
+      setUserModal(true);
+    }
   };
+
+  useEffect(() => {
+    if (hash) {
+      setIsModalVisible(false);
+    }
+  }, [hash]);
 
   const makeCalculations = async (xBorrow: string, xCollatoral: string) => {
     setIsLoading(true)
@@ -147,7 +174,6 @@ export const OpenTrove = () => {
       const borrowValue = Number(xBorrow);
 
       const expectedFeeFormatted = (borrowRate * borrowValue);
-      console.log(expectedFeeFormatted, "expectedFeeFormatted")
       const expectedDebt = Number(borrowValue + expectedFeeFormatted + lr);
 
       const collRatio = (collValue * fetchedPrice * 100) / Number(expectedDebt);
@@ -167,6 +193,10 @@ export const OpenTrove = () => {
     }
   };
 
+  const handleClose = () => {
+    setLoadingModalVisible(false);
+    window.location.reload()
+  };
   const handlePercentageClick = (percentage: any) => {
     const percentageDecimal = new Decimal(percentage).div(100);
     const pusdBalanceNumber = parseFloat(maxBorrow.toString());
@@ -202,159 +232,217 @@ export const OpenTrove = () => {
 
   const totalCollateral = Number(userInputs.collatoral) * fetchedPrice;
   const divideBy = recoveryMode ? cCr : mCR;
-  console.log(fetchedPrice, "fetchedPrice", totalCollateral, "totalCollateral")
-
-  console.log(cCr, "c", mCR, "m", divideBy, "divideBy")
-  console.log(calculatedValues.expectedFee, "calculatedValues.expectedFee")
-  console.log(lr, "lr")
   const maxBorrow = totalCollateral / Number(divideBy)
     - (lr + calculatedValues.expectedFee);
-  console.log("max11", maxBorrow)
-
-
   const loanToValue = (calculatedValues.expectedDebt * 100) / (totalCollateral || 1);
   const liquidationPrice = (Number(divideBy) * calculatedValues.expectedDebt) / (Number(Number(userInputs.collatoral)) || 1);
   const bothInputsEntered = userInputs.collatoral !== "0" && userInputs.borrow !== "0";
 
-  return (
-    <div className="h-full body-text md:ml-0">
-      <div className="p-10 ">
-        <div className="md:ml-2 -ml-6  border border-black p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#2e2a1c" }}>
-          <div className="flex p-2 w-full">
-            <div className="hidden md:block w-[22%]">
-              <Image src={floatPUSD} height={200} alt="home" className="-mt-[3rem]" />
-            </div>
-            <div className=" h-fit py-2 space-y-5">
-              <div>
-                <p className="text-white body-text  text-xl font-medium ">
-                  You dont have an existing trove
-                </p>
-              </div>
-              <div>
-                <p className="text-yellow-300 body-text font-medium text-left text-xl mb-2">
-                  Open a Zero-Interest trove
-                </p>
-                <p className="text-[#827f77] text-sm body-text text-left">
-                  Borrow against BTCs interest free
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+  const renderHeader = () => {
+    return (
+      <div className="flex justify-content-between align-items-center">
+        <Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>
+          Close
+        </Button>
       </div>
+    );
+  };
 
-      <div className="container flex flex-col md:flex-row justify-between gap-x-24 md:-mt-6">
-        <div className="grid w-1/2 items-start gap-2 text-white md:p-5">
-          <div className="w-full">
-            <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-6 body-text text-lg">Deposit Collatoral</Label>
-            <div className="flex md:w-full items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-yellow-300">
-              <div className='flex items-center h-[3.5rem] '>
-                <Image src={img3} alt="home" className='ml-1' />
-                <h3 className='h-full border border-yellow-300 text-yellow-300 mx-3'></h3>
-                <h3 className='text-white body-text font-medium ml-1 mr-3 hidden md:block'>BTC</h3>
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCloseButton(true);
+    }, 90000);
+    return () => clearTimeout(timer);
+  }, []);
+
+
+  return (
+    <>
+      <div className="h-full body-text md:ml-0">
+        <div className="p-10 ">
+          <div className="md:ml-2 -ml-6  border border-black p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#2e2a1c" }}>
+            <div className="flex p-2 w-full">
+              <div className="hidden md:block w-[22%]">
+                <Image src={floatPUSD} height={200} alt="home" className="-mt-[3rem]" />
               </div>
-              <input id="items" placeholder="Enter Collateral Amount" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[24.75rem]  font-medium h-[4rem] text-white" style={{ backgroundColor: "#272315" }} />
-              <span className="md:max-w-[5rem] md:p-2 mr-1 md:mr-0 font-medium h-full">${totalCollateral.toFixed(2)}</span>
-            </div>
-            <div className="pt-2 flex md:flex-row flex-col mr-1 items-center justify-between ">
-              <span className={`text-sm w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
-                Available {Number(balanceData?.formatted).toFixed(8)}{" "}
-              </span>
-              <div className="flex gap-x-4 w-full md:gap-x-3 mt-2">
-                <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+              <div className=" h-fit py-2 space-y-5">
+                <div>
+                  <p className="text-white body-text  text-xl font-medium ">
+                    You dont have an existing trove
+                  </p>
+                </div>
+                <div>
+                  <p className="text-yellow-300 body-text font-medium text-left text-xl mb-2">
+                    Open a Zero-Interest trove
+                  </p>
+                  <p className="text-[#827f77] text-sm body-text text-left">
+                    Borrow against BTCs interest free
+                  </p>
+                </div>
               </div>
-            </div>
-          </div>
-          <div className="w-full">
-            <Label className="text-[#827f77] md:-ml-0 -ml-5  body-text text-lg" htmlFor="quantity">Borrow PUSD</Label>
-            <div className="flex  items-center md:space-x-2 mt-[10px] -ml-3 md:-ml-0 border border-yellow-300">
-              <div className='flex items-center h-[3.5rem] '>
-                <Image src={img4} alt="home" className='ml-1' />
-                <h3 className='h-full border border-yellow-300 text-yellow-300 mx-4'></h3>
-                <h3 className='text-white body-text font-medium hidden md:block mx-1'>PUSD</h3>
-              </div>
-              <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-white body-text font-medium" style={{ backgroundColor: "#272315" }} />
-            </div>
-            <div className="pt-2 flex flex-col md:flex-row  mr-1 items-center justify-between  p-2">
-              <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
-                Available {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
-              </span>
-              <div className="flex gap-x-4 w-full md:gap-x-3 mt-2">
-                <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
-              </div>
-              {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (
-                <span className="text-red-500 ml-1 body-text md:w-1/2">Borrow amount should be greater than {minDebt} </span>
-              )}
             </div>
           </div>
-          <button
-            onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
-            className={`mt-5 md:-ml-0 -ml-4 w-92 h-[3rem] bg-yellow-300 title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-yellow-300'}`}
-            disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
-              || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData?.formatted)
-              || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}
-            style={{
-              cursor: (!userInputs.borrow || isModalVisible ||
-                !userInputs.collatoral ||
-                loanToValue > (100 / Number(divideBy)) ||
-                parseFloat(userInputs.borrow) > maxBorrow ||
-                parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
-                parseFloat(userInputs.borrow) <= minDebt)
-                ? 'not-allowed' : 'pointer',
-              opacity: (!userInputs.borrow || isModalVisible ||
-                !userInputs.collatoral ||
-                loanToValue > (100 / Number(divideBy)) ||
-                parseFloat(userInputs.borrow) > maxBorrow ||
-                parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
-                parseFloat(userInputs.borrow) <= minDebt)
-                ? 0.5 : 1
-            }}>
-            {isModalVisible ? "Opening Trove..." : "Open Trove"}
-          </button>
         </div>
-        {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData?.formatted) ? (
-          <div className="md:w-4/5 w-full mt-8 p-5 border-yellow-200 h-fit space-y-10  text-white"
-            style={{ backgroundColor: "#2e2a1c" }}
-          >
-            <div className="flex whitespace-nowrap justify-between">
-              <span className="body-text text-sm text-[#827f77]">Loan-To-Value</span>
-              {!isloading ? <span className={`overflow-x-clip text-sm body-text font-medium ${loanToValue > (100 / Number(divideBy)) ? 'text-red-500' : 'text-yellow-300'}`}>{loanToValue.toFixed(2)} % </span> : "--"}
+
+        <div className="container flex flex-col md:flex-row justify-between gap-x-24 md:-mt-6">
+          <div className="grid w-1/2 items-start gap-2 text-white md:p-5">
+            <div className="w-full">
+              <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-6 body-text text-lg">Deposit Collatoral</Label>
+              <div className="flex md:w-full items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-yellow-300">
+                <div className='flex items-center h-[3.5rem] '>
+                  <Image src={img3} alt="home" className='ml-1' />
+                  <h3 className='h-full border border-yellow-300 text-yellow-300 mx-3'></h3>
+                  <h3 className='text-white body-text font-medium ml-1 mr-3 hidden md:block'>BTC</h3>
+                </div>
+                <input id="items" placeholder="Enter Collateral Amount" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[24.75rem]  font-medium h-[4rem] text-white" style={{ backgroundColor: "#272315" }} />
+                <span className="md:max-w-[5rem] md:p-2 mr-1 md:mr-0 font-medium h-full">${totalCollateral.toFixed(2)}</span>
+              </div>
+              <div className="pt-2 flex md:flex-row flex-col mr-1 items-center justify-between ">
+                <span className={`text-sm w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
+                  Available {Number(balanceData?.formatted).toFixed(8)}{" "}
+                </span>
+                <div className="flex gap-x-4 w-full md:gap-x-3 mt-2">
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                </div>
+              </div>
             </div>
-            <div className="flex body-text whitespace-nowrap justify-between">
-              <span className="body-text text-sm text-[#827f77]">Liq. Reserve</span>
-              <span className="body-text text-sm body-text font-medium">
-                {lr} PUSD
-              </span>
+            <div className="w-full">
+              <Label className="text-[#827f77] md:-ml-0 -ml-5  body-text text-lg" htmlFor="quantity">Borrow PUSD</Label>
+              <div className="flex  items-center md:space-x-2 mt-[10px] -ml-3 md:-ml-0 border border-yellow-300">
+                <div className='flex items-center h-[3.5rem] '>
+                  <Image src={img4} alt="home" className='ml-1' />
+                  <h3 className='h-full border border-yellow-300 text-yellow-300 mx-4'></h3>
+                  <h3 className='text-white body-text font-medium hidden md:block mx-1'>PUSD</h3>
+                </div>
+                <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-white body-text font-medium" style={{ backgroundColor: "#272315" }} />
+              </div>
+              <div className="pt-2 flex flex-col md:flex-row  mr-1 items-center justify-between  p-2">
+                <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
+                  Available {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
+                </span>
+                <div className="flex gap-x-4 w-full md:gap-x-3 mt-2">
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                </div>
+                {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (
+                  <span className="text-red-500 ml-1 body-text md:w-1/2">Borrow amount should be greater than {minDebt} </span>
+                )}
+              </div>
             </div>
-            <div className="flex justify-between">
-              <span className=" text-sm text-[#827f77]">Liquidation Price</span>
-              <span className=" text-sm body-text font-medium">{liquidationPrice.toFixed(2)} PUSD</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-sm body-text text-[#827f77]">Borrowing Fee</span>
-              <span className="text-sm body-text font-medium">
-                {calculatedValues.expectedFee.toFixed(2)} PUSD
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className=" text-sm body-text text-[#827f77]">Total Debt</span>
-              {Number((calculatedValues.expectedDebt)) > lr ? <span className=" text-sm body-text font-medium">{(calculatedValues.expectedDebt).toFixed(2)} {" "} PUSD</span> : "---"}
-            </div>
-            <div className="flex justify-between">
-              <span className=" text-sm body-text text-[#827f77]">Total Collateral</span>
-              <span className=" text-sm body-text font-medium">{(totalCollateral).toFixed(2)} {" "} PUSD</span>
-            </div>
+            <button
+              onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
+              className={`mt-5 md:-ml-0 -ml-4 w-92 h-[3rem] bg-yellow-300 title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-yellow-300'}`}
+              disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
+                || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData?.formatted)
+                || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}
+              style={{
+                cursor: (!userInputs.borrow || isModalVisible ||
+                  !userInputs.collatoral ||
+                  loanToValue > (100 / Number(divideBy)) ||
+                  parseFloat(userInputs.borrow) > maxBorrow ||
+                  parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
+                  parseFloat(userInputs.borrow) <= minDebt)
+                  ? 'not-allowed' : 'pointer',
+                opacity: (!userInputs.borrow || isModalVisible ||
+                  !userInputs.collatoral ||
+                  loanToValue > (100 / Number(divideBy)) ||
+                  parseFloat(userInputs.borrow) > maxBorrow ||
+                  parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
+                  parseFloat(userInputs.borrow) <= minDebt)
+                  ? 0.5 : 1
+              }}>
+              {isModalVisible ? "Opening Trove..." : "Open Trove"}
+            </button>
           </div>
-        ) : (
-          <></>
-        )}
-      </div>
-    </div >
+          {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData?.formatted) ? (
+            <div className="md:w-4/5 w-full mt-8 p-5 border-yellow-200 h-fit space-y-10  text-white"
+              style={{ backgroundColor: "#2e2a1c" }}
+            >
+              <div className="flex whitespace-nowrap justify-between">
+                <span className="body-text text-sm text-[#827f77]">Loan-To-Value</span>
+                {!isloading ? <span className={`overflow-x-clip text-sm body-text font-medium ${loanToValue > (100 / Number(divideBy)) ? 'text-red-500' : 'text-yellow-300'}`}>{loanToValue.toFixed(2)} % </span> : "--"}
+              </div>
+              <div className="flex body-text whitespace-nowrap justify-between">
+                <span className="body-text text-sm text-[#827f77]">Liq. Reserve</span>
+                <span className="body-text text-sm body-text font-medium">
+                  {lr} PUSD
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className=" text-sm text-[#827f77]">Liquidation Price</span>
+                <span className=" text-sm body-text font-medium">{liquidationPrice.toFixed(2)} PUSD</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-sm body-text text-[#827f77]">Borrowing Fee</span>
+                <span className="text-sm body-text font-medium">
+                  {calculatedValues.expectedFee.toFixed(2)} PUSD
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className=" text-sm body-text text-[#827f77]">Total Debt</span>
+                {Number((calculatedValues.expectedDebt)) > lr ? <span className=" text-sm body-text font-medium">{(calculatedValues.expectedDebt).toFixed(2)} {" "} PUSD</span> : "---"}
+              </div>
+              <div className="flex justify-between">
+                <span className=" text-sm body-text text-[#827f77]">Total Collateral</span>
+                <span className=" text-sm body-text font-medium">{(totalCollateral).toFixed(2)} {" "} PUSD</span>
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
+      </div >
+      <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            <div className="py-5">
+              <Image src={rec2} alt="box" width={140} className="" />
+            </div>
+            <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+            <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            <div className="waiting-message text-lg title-text2 text-white whitespace-nowrap">Transaction rejected</div>
+            <div className="py-5">
+              <Image src={rej} alt="box" width={140} className="" />
+            </div>
+            <Button className="p-button-rounded title-text2 p-button-text" onClick={() => setUserModal(false)}>Close</Button>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            {loadingMessage === 'Waiting for transaction to confirm..' ? (
+              <>
+                <Image src={conf} alt="rectangle" width={150} />
+                <div className="my-5 ml-[6rem] mb-5"></div>
+              </>
+            ) : (
+              <Image src={tick} alt="tick" width={200} />
+            )}
+            <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
+            {isSuccess && (
+              <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+            )}
+            {!isSuccess && showCloseButton && (
+              <>
+                <p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
+                <Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
+              </>
+            )}
+          </div>
+        </div>
+      </Dialog>
+    </>
   );
 };

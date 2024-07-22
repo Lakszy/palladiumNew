@@ -117,7 +117,7 @@ function NavBar() {
             </div>
             {address && userExists && (
               <>
-                <div className="items-center flex flex-col gap-x-2">
+                <div className=" flex flex-col gap-x-2">
                   <h2 className="text-white text-xs title-text2">
                     System Collateral Ratio
                   </h2>
@@ -125,7 +125,7 @@ function NavBar() {
                     {(systemCollRatio * 100).toFixed(2)} %
                   </h3>
                 </div>
-                <div className="items-center flex flex-col gap-x-2">
+                <div className=" flex flex-col gap-x-2">
                   <h2 className="text-white text-xs title-text2">Recovery Mode</h2>
                   <h3 className="text-gray-400 title-text2 text-sm">
                     {isRecoveryMode ? "Yes" : "No"}

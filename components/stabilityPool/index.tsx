@@ -22,7 +22,7 @@ import Image from "next/image";
 import "./Modal.css"
 import "../../app/App.css"
 
-export const StabilityPool = () => {
+	export const StabilityPool = () => {
 	const [userInput, setUserInput] = useState("0");
 	const [pusdBalance, setPusdBalance] = useState("0");
 	const { address, isConnected } = useAccount();
@@ -101,9 +101,7 @@ export const StabilityPool = () => {
 			});
 		} catch (error) {
 			console.error('Error sending transaction:', error);
-			setMessage('Transaction rejected');
-			setUserModal(true);
-			setIsModalVisible(false);
+			setUserModal(true)
 		}
 	};
 	useEffect(() => {
@@ -195,13 +193,12 @@ export const StabilityPool = () => {
 						{loadingMessage === 'Waiting for transaction to confirm..' ? (
 							<>
 								<Image src={conf} alt="rectangle" width={150} />
-								<div className="my-5 ml-[6rem] mb-5">
-								</div>
+								<div className="my-5 ml-[6rem] mb-5"></div>
 							</>
 						) : (
 							<Image src={tick} alt="tick" width={120} />
 						)}
-						<div className="waiting-message text-lg title-text text-white whitespace-nowrap">{loadingMessage}</div>
+						<div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
 						{isSuccess && (
 							<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
 						)}

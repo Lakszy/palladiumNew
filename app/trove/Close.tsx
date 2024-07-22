@@ -5,13 +5,19 @@ import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
-import { useAccount, useWalletClient } from "wagmi";
+import React,{useState,useEffect} from "react";
+import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Dialog } from 'primereact/dialog';
 import Image from "next/image";
-import BotanixLOGO from "../../app/assets/images/newpalladium.svg"
+import rej from "../assets/images/TxnError.gif";
+import conf from "../assets/images/conf.gif"
+import rec2 from "../assets/images/rec2.gif"
+import tick from "../assets/images/tick.gif"
 import "../../app/App.css"
+import "./closed.css"
 import "../../components/stabilityPool/Modal.css"
+import { Button } from "primereact/button";
+import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 
 interface Props {
   entireDebtAndColl: number;
@@ -22,17 +28,29 @@ interface Props {
 export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidationReserve }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLowBalance, setIsLowBalance] = useState(false);
+  const [loadingModalVisible, setLoadingModalVisible] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [userModal, setUserModal] = useState(false);
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const [afterLoad, setAfterload] = useState(false);
   const [pusdBalance, setPusdBalance] = useState("0");
+  const [showCloseButton, setShowCloseButton] = useState(false);
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-
-  const borrowerOperationsContract = getContract(
-    botanixTestnet.addresses.borrowerOperations,
-    borrowerOperationAbi,
-    walletClient
-  );
+  const { data: hash, writeContract } = useWriteContract()
+  const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
+useEffect(() => {
+		if (isLoading) {
+			setIsModalVisible(false);
+			setLoadingMessage("Waiting for transaction to confirm..");
+			setLoadingModalVisible(true);
+		} else if (isSuccess) {
+			setLoadingMessage("Close Transcation compeleted sucessfully");
+			setLoadingModalVisible(true);
+		} else {
+			setLoadingModalVisible(false);
+		}
+	}, [isSuccess, isLoading]);
 
   const erc20Contract = getContract(
     botanixTestnet.addresses.lusdToken,
@@ -40,54 +58,81 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
     provider
   );
 
+
+  const handleClose = () => {
+    setLoadingModalVisible(false);
+    setUserModal(false);
+    setIsModalVisible(false);
+    window.location.reload();
+  };
+
+  const fetchPrice = async () => {
+    const pusdBalanceValue = await erc20Contract.balanceOf(address);
+    const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
+    if (Number(pusdBalanceFormatted) < (debt - liquidationReserve)) {
+      setIsLowBalance(true);
+    }
+    setPusdBalance(pusdBalanceFormatted);
+    setAfterload(false);
+  };
+
   useEffect(() => {
-    const fetchPrice = async () => {
-      const pusdBalanceValue = await erc20Contract.balanceOf(address);
-      const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
-      if (Number(pusdBalanceFormatted) < (debt - liquidationReserve)) {
-        setIsLowBalance(true);
-      }
-      setPusdBalance(pusdBalanceFormatted);
-      setAfterload(false)
-    };
-    setAfterload(true)
     fetchPrice();
-  }, [address, walletClient,erc20Contract]);
+  }, [fetchPrice, walletClient, erc20Contract, writeContract, hash]);
 
   const handleConfirmClick = async () => {
     try {
-      setIsModalVisible(true)
+      setIsModalVisible(true);
       if (!walletClient) return null;
-      await borrowerOperationsContract.closeTrove();
+      const tx = writeContract({
+        abi: BorrowerOperationbi,
+        address: '0xE0774dA339FA29bAf646B57B00644deA48fCaE23',
+        functionName: 'closeTrove',
+      });
     } catch (error) {
-      console.error(error, "Error");
-    }
-    finally {
-      setIsModalVisible(false)
+      console.error('Error sending transaction:', error);
+      setUserModal(true);
     }
   };
 
+  const renderHeader = () => {
+    return (
+      <div className="flex justify-content-between align-items-center">
+        <Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>
+          Close
+        </Button>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCloseButton(true);
+    }, 90000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="md:w-[60rem] flex md:-ml-0 w-[2rem]  ">
-      <div className="relative text-white text-base flex flex-col gap-2 md:pl-20  pr-[32rem] py-20">
-        <div className="space-y-7 ">
+    <div className="md:w-[60rem] flex md:-ml-0 w-[2rem]">
+      <div className="relative text-white text-base flex flex-col gap-2 md:pl-20 pr-[32rem] py-20">
+        <div className="space-y-7">
           <div className="flex md:gap-52 justify-between">
-            <span className=" md:ml-0 ml-1 text-sm  body-text text-[#84827a] font-medium">Collateral</span>
-            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap ">{Number(entireDebtAndColl).toFixed(8)} BTC</span>}
+            <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Collateral</span>
+            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(8)} BTC</span>}
           </div>
           <div className="flex justify-between">
-            <span className=" md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Debt</span>
+            <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Debt</span>
             {Number(debt) <= 0 ? "---" : <span className="body-text md:mr-0 mr-4 font-medium">{Number(debt).toFixed(2)} PUSD</span>}
           </div>
           <div className="flex justify-between">
-            <span className=" md:ml-0 ml-1 text-sm body-text font-medium text-[#84827a]">Liquidation Reserve</span>
-            {Number(liquidationReserve) <= 0 ? "--" : <span className="body-text md:mr-0 mr-4 font-medium  text-sm">{Number(liquidationReserve).toFixed(2)} PUSD</span>}
+            <span className="md:ml-0 ml-1 text-sm body-text font-medium text-[#84827a]">Liquidation Reserve</span>
+            {Number(liquidationReserve) <= 0 ? "--" : <span className="body-text md:mr-0 mr-4 font-medium text-sm">{Number(liquidationReserve).toFixed(2)} PUSD</span>}
           </div>
           <div className="flex justify-between">
             <span className="body-text font-medium text-[#84827a] text-sm ml-1 md:ml-0">Wallet Balance</span>
             <span className="body-text font-medium text-sm mr-4 md:mr-0">
               {afterLoad ? (
-                <div className=" h-2 mr-20  text-left">
+                <div className="h-2 mr-20 text-left">
                   <div className="hex-loader"></div>
                 </div>
               ) : (
@@ -96,8 +141,11 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             </span>
           </div>
         </div>
-        <button onClick={handleConfirmClick} disabled={isLowBalance || afterLoad} 
-        className={`mt-20 md:w-full md:ml-0 ml-1 w-[18.2rem] h-[3rem] bg-yellow-300  text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed' : ' hover:scale-95  cursor-pointer'}`}>
+        <button
+          onClick={handleConfirmClick}
+          disabled={isLowBalance || afterLoad}
+          className={`mt-20 md:w-full md:ml-0 ml-1 w-[18.2rem] h-[3rem] bg-yellow-300 text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer'}`}
+        >
           Close Trove
         </button>
         <div className="text-red-500 text-sm font-medium body-text w-full ml-1">
@@ -105,12 +153,52 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
         </div>
       </div>
       <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
-        <>
-          <div className="waiting-container bg-white">
-            <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for Confirmation... ✨.</div>
-            <Image src={BotanixLOGO} className="waiting-image" alt="gif" />
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            <div className="py-5">
+              <Image src={rec2} alt="box" width={140} className="" />
+            </div>
+            <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+            <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
           </div>
-        </>
+        </div>
+      </Dialog>
+      <Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            <div className="waiting-message text-lg title-text2 whitespace-nowrap">Transaction rejected</div>
+            <div className="py-5">
+              <Image src={rej} alt="box" width={140} className="" />
+            </div>
+            <Button className="p-button-rounded text-black title-text2 " onClick={() => setUserModal(false)}>Close</Button>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            {loadingMessage === 'Waiting for transaction to confirm..' ? (
+              <>
+                <Image src={conf} alt="rectangle" width={150} />
+                <div className="my-5 ml-[6rem] mb-5"></div>
+              </>
+            ) : loadingMessage === 'Close Transcation compeleted sucessfully' ? (
+              <Image src={tick} alt="tick" width={200} />
+            ) : (
+              <Image src={conf} alt="box" width={140} />
+            )}
+            <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
+            {isSuccess && (
+              <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+            )}
+            {!isSuccess && showCloseButton && (
+              <>
+                <p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
+                <Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
+              </>
+            )}
+          </div>
+        </div>
       </Dialog>
     </div>
   );

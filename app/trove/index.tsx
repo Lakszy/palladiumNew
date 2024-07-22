@@ -14,7 +14,7 @@ import Decimal from "decimal.js";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useBalance, useWalletClient } from "wagmi";
+import { useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import web3 from "web3";
 import { Button } from "@/components/ui/button";
 import OpenTroveNotConnected from "./openTroveNotConnected";
@@ -23,17 +23,23 @@ import img1 from "../assets/images/Group 771.png";
 import img2 from "../assets/images/Group 663.svg";
 import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
+import rej from "../assets/images/TxnError.gif";
+import conf from "../assets/images/conf.gif"
+import rec2 from "../assets/images/rec2.gif"
+import tick from "../assets/images/tick.gif"
 import { Knob } from "primereact/knob";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Repay } from "./Repay";
 import { CloseTrove } from "./Close";
 import { OpenTrove } from "./OpenTrove";
 import Layout from "./layout";
+import { FaArrowRightLong } from "react-icons/fa6";
 import "../App.css";
 import "../../app/App.css"
 import "../../components/stabilityPool/Modal.css"
 import FullScreenLoader from "@/components/FullScreenLoader";
 import { Dialog } from "primereact/dialog";
+import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 
 const Borrow = () => {
   const [userInputs, setUserInputs] = useState({
@@ -53,7 +59,6 @@ const Borrow = () => {
   const [newDebt, setNewDebt] = useState(0);
   const [totalCollateral, setTotalCollateral] = useState(0);
   const [availableBorrow, setAvailableBorrow] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   // static
@@ -72,6 +77,10 @@ const Borrow = () => {
   const [mCR, setMCR] = useState(0)
   const [fetchedPrice, setFetchedPrice] = useState(0)
   const [recoveryMode, setRecoveryMode] = useState<boolean>(false)
+  const [loadingModalVisible, setLoadingModalVisible] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [showCloseButton, setShowCloseButton] = useState(false);
+  const [userModal, setUserModal] = useState(false);
 
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
     debt: "0",
@@ -85,6 +94,21 @@ const Borrow = () => {
   });
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
+
+  const { data: hash, writeContract } = useWriteContract()
+  const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
+  useEffect(() => {
+    if (isLoading) {
+      setIsModalVisible(false);
+      setLoadingMessage("Waiting for transaction to confirm..");
+      setLoadingModalVisible(true);
+    } else if (isSuccess) {
+      setLoadingMessage("Close Transcation compeleted sucessfully");
+      setLoadingModalVisible(true);
+    } else {
+      setLoadingModalVisible(false);
+    }
+  }, [isSuccess, isLoading]);
 
   const troveManagerContract = getContract(
     botanixTestnet.addresses.troveManager,
@@ -107,13 +131,20 @@ const Borrow = () => {
   const borrowerOperationsContract = getContract(
     botanixTestnet.addresses.borrowerOperations,
     borrowerOperationAbi,
-    walletClient // We are using walletClient because we need to update/modify data in blockchain.
+    walletClient
   );
 
   const { data: isConnected } = useWalletClient();
   const { toBigInt } = web3.utils;
   const pow20 = Decimal.pow(10, 20);
   const pow18 = Decimal.pow(10, 18);
+
+  const handleClose = () => {
+    setLoadingModalVisible(false);
+    setUserModal(false);
+    setIsModalVisible(false);
+    window.location.reload();
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -128,8 +159,6 @@ const Borrow = () => {
         setCCR(protocolMetrics.CCR)
         setLR(protocolMetrics.LR)
         setBorrowRate(protocolMetrics.borrowRate)
-        // base fee and variable fee = ? backend
-        // base 0.5 is fixed and variables keeps changing
         setMinDebt(protocolMetrics.minDebt)
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -153,8 +182,8 @@ const Borrow = () => {
       } = await troveManagerContract.getEntireDebtAndColl(
         walletClient?.account.address
       );
-      const collDecimal = new Decimal(coll.toString()); // Convert coll to a Decimal
-      const collFormatted = collDecimal.div(_1e18.toString()).toString(); // Divide coll by _1e18 and convert to string
+      const collDecimal = new Decimal(coll.toString());
+      const collFormatted = collDecimal.div(_1e18.toString()).toString();
 
       setEntireDebtAndColl({
         debt: (debt / _1e18).toString(),
@@ -187,9 +216,6 @@ const Borrow = () => {
         setTroveStatus(troveStatus)
       } catch (error) {
         console.log(error)
-      }
-      finally {
-        setIsLoading(false);
       }
     }
 
@@ -230,11 +256,9 @@ const Borrow = () => {
 
       const newDebtValue = Number(entireDebtAndColl.debt) + borrowValue;
       const newCollValue = Number(entireDebtAndColl.coll) + collValue;
-
       setNewDebt(newDebtValue);
 
       let NICR = newCollValue / newDebtValue;
-
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
 
@@ -261,20 +285,23 @@ const Borrow = () => {
       const borrowDecimal = new Decimal(borrowValue.toString());
       const borrowBigint = BigInt(borrowDecimal.mul(pow18).toFixed());
 
-      const borrowOpt = await borrowerOperationsContract.adjustTrove(
-        maxFee,
-        0,
-        borrowBigint,
-        borrowValue === 0 ? false : true,
-        upperHint,
-        lowerHint,
-        { value: collBigint }
-      );
+      const borrowOpt = await writeContract({
+        abi: BorrowerOperationbi,
+        address: '0xE0774dA339FA29bAf646B57B00644deA48fCaE23',
+        functionName: 'adjustTrove',
+        args: [
+          maxFee,
+          0,
+          borrowBigint,
+          borrowValue === 0 ? false : true,
+          upperHint,
+          lowerHint,
+        ],
+        value: collBigint,
+      });
+
     } catch (error) {
       console.error(error, "Error");
-    }
-    finally{
-      setIsModalVisible(false)
     }
   };
 
@@ -290,7 +317,6 @@ const Borrow = () => {
     const userColl = (collValue) * Number(fetchedPrice);
 
     setNewUserColl(String(Number(entireDebtAndColl.coll) + collValue))
-
     setTotalCollateral(userColl);
     const debtTotal = expectedFeeFormatted + borrowValue + Number(entireDebtAndColl.debt);
     const divideBy = recoveryMode ? cCr : mCR;
@@ -348,6 +374,24 @@ const Borrow = () => {
   const isCollInValid = parseFloat(userInputs.depositCollateral) > Number(balanceData?.formatted)
   const isDebtInValid = parseFloat(userInputs.borrow) > totalAvailableBorrow
   const condition = (userInputColl + userInputDebt >= 1) || (parseFloat(userInputs.depositCollateral) < Number(entireDebtAndColl.coll)) || (parseFloat(userInputs.borrow) < Number(entireDebtAndColl.debt));
+
+  const renderHeader = () => {
+    return (
+      <div className="flex justify-content-between align-items-center">
+        <Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>
+          Close
+        </Button>
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCloseButton(true);
+    }, 90000);
+    return () => clearTimeout(timer);
+  }, []);
+
 
   return (
     <div>
@@ -498,7 +542,7 @@ const Borrow = () => {
                                     <input id="quantity" placeholder="Enter Borrow Amount" value={Math.trunc(Number(userInputs.borrow) * 100) / 100} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue, }); }} className="w-[23.75rem] ml-1 h-[4rem] body-text text-sm whitespace-nowrap text-white" style={{ backgroundColor: "#272315" }} />
                                   </div>
                                   <div className="flex flex-col mt-[10px] gap-x-5 justify-between">
-                                  <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
+                                    <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
                                       <h6 className="text-[#84827a] font-medium body-text text-sm">
                                         Available{" "}
                                       </h6>
@@ -538,13 +582,13 @@ const Borrow = () => {
                                   <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
                                   <span className="text-xs whitespace-nowrap body-text">
                                     <div className="flex items-center gap-x-2.5">
-                                      <span className=" w-28 p-1 font-medium">
+                                      <span className=" w-28 p-1 body-text font-medium">
                                         {Number(newLTV).toFixed(2)} %
                                       </span>
                                       {userInputColl + userInputDebt >= 1 && (
                                         <>
                                           <span className="text-yellow-300 text-lg">
-                                            {`--->`}
+                                            <FaArrowRightLong />
                                           </span>
                                           <span className={`overflow-x-clip text-sm body-text font-medium w-28 p-1 ${ltv > (100 / Number(divideBy)) ? 'text-red-500' : 'text-yellow-300'}`}>{" "}{Number(ltv).toFixed(2)} %</span>
                                         </>
@@ -556,13 +600,13 @@ const Borrow = () => {
                                   <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
                                   <span className="body-text text-xs whitespace-nowrap">
                                     <div className="flex items-center gap-x-2.5">
-                                      <span className=" w-28 font-medium p-1">
+                                      <span className=" w-28 body-text font-medium p-1">
                                         {Number(liquidation).toFixed(2)} PUSD
                                       </span>
                                       {userInputColl + userInputDebt >= 1 && (
                                         <>
                                           <span className="text-yellow-300 text-lg">
-                                            {`--->`}
+                                            <FaArrowRightLong />
                                           </span>
                                           <span className="body-text text-xs whitespace-nowrap w-28  p-1 font-medium">{" "}{Number(liquidationPrice).toFixed(2)} PUSD</span>
                                         </>
@@ -574,15 +618,15 @@ const Borrow = () => {
                                   <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium  md:flex-row flex-col">Total Debt</span>
                                   <span className="body-text text-xs whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
-                                      <span className="w-28 p-1 font-medium">
+                                      <span className="w-28 p-1 body-text font-medium">
                                         {Number(entireDebtAndColl.debt).toFixed(2)} PUSD
                                       </span>
                                       {userInputColl == 1 && (
                                         <>
                                           <span className="text-yellow-300 text-lg">
-                                            {`--->`}
+                                            <FaArrowRightLong />
                                           </span>
-                                          <span className="ml-05 w-28 p-1 font-medium">{" "}{Number(totalDebt).toFixed(2)} PUSD</span>
+                                          <span className="ml-05 w-28 p-1 body-text font-medium">{" "}{Number(totalDebt).toFixed(2)} PUSD</span>
                                         </>
                                       )}
                                     </div>
@@ -592,15 +636,15 @@ const Borrow = () => {
                                   <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Total Collateral</span>
                                   <span className="body-text text-xs whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
-                                      <span className="p-1 w-28 font-medium">
+                                      <span className="p-1 w-28 body-text font-medium">
                                         {Number(entireDebtAndColl.coll).toFixed(8)} BTC
                                       </span>
                                       {userInputColl == 1 && (
                                         <>
                                           <span className="text-yellow-300 text-lg">
-                                            {`--->`}
+                                            <FaArrowRightLong />
                                           </span>
-                                          <span className="md:ml-05 p-1 w-28 font-medium">{" "}{Number(newUserColl).toFixed(8)} BTC</span>
+                                          <span className="md:ml-05 p-1 w-28 body-text font-medium">{" "}{Number(newUserColl).toFixed(8)} BTC</span>
                                         </>
                                       )}
                                     </div>
@@ -623,8 +667,18 @@ const Borrow = () => {
                       </TabPanel>
                       <TabPanel className="p-[2px] bg-yellow-400 text-sm body-text " header="Repay">
                         <div className="w-full h-full border p-4 border-yellow-400" style={{ backgroundColor: "#272315" }}>
-                          <Repay coll={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} lr={lr}
-                            fetchedPrice={Number(fetchedPrice)} borrowRate={borrowRate} minDebt={minDebt} recoveryMode={recoveryMode} cCR={cCr} mCR={mCR} />
+                          <Repay
+                            coll={parseFloat(entireDebtAndColl.coll)}
+                            debt={parseFloat(entireDebtAndColl.debt)}
+                            lr={lr}
+                            fetchedPrice={Number(fetchedPrice)}
+                            borrowRate={borrowRate}
+                            minDebt={minDebt}
+                            recoveryMode={recoveryMode}
+                            cCR={cCr}
+                            mCR={mCR}
+                            troveStatus={troveStatus}
+                          />
                         </div>
                       </TabPanel>
                       <TabPanel className="p-[2px] bg-yellow-400 text-sm title-text" header="Close">
@@ -636,12 +690,6 @@ const Borrow = () => {
                   </div>
                 </div>
               </div>
-              <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
-                  <div className="waiting-container bg-white">
-                    <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for Confirmation... ✨.</div>
-                    <Image src={BotanixLOGO} className="waiting-image" alt="gif" />
-                  </div>
-              </Dialog>
             </div>
           )}
           {troveStatus === "INACTIVE" && (
@@ -654,6 +702,55 @@ const Borrow = () => {
           )}
         </Layout>
       )}
+
+      <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            <div className="py-5">
+              <Image src={rec2} alt="box" width={140} className="" />
+            </div>
+            <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+            <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            <div className="waiting-message text-lg title-text2 whitespace-nowrap">Transaction rejected</div>
+            <div className="py-5">
+              <Image src={rej} alt="box" width={140} className="" />
+            </div>
+            <Button className="p-button-rounded text-black title-text2 " onClick={() => setUserModal(false)}>Close</Button>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            {loadingMessage === 'Waiting for transaction to confirm..' ? (
+              <>
+                <Image src={conf} alt="rectangle" width={150} />
+                <div className="my-5 ml-[6rem] mb-5"></div>
+              </>
+            ) : loadingMessage === 'Close Transcation compeleted sucessfully' ? (
+              <Image src={tick} alt="tick" width={200} />
+            ) : (
+              <Image src={conf} alt="box" width={140} />
+            )}
+            <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
+            {isSuccess && (
+              <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+            )}
+            {!isSuccess && showCloseButton && (
+              <>
+                <p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
+                <Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
+              </>
+            )}
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 };

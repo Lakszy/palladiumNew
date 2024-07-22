@@ -5,15 +5,15 @@ import { BOTANIX_RPC_URL } from "../../app/src/constants/botanixRpcUrl";
 import botanixTestnet from "../../app/src/constants/botanixTestnet.json";
 import { getContract } from "../../app/src/utils/getContract";
 import img3 from "../../app/assets/images/Group 663.svg";
-import tick from "../../app/assets/images/tickDone.svg";
+import conf from "../../app/assets/images/conf.gif"
+import rec2 from "../../app/assets/images/rec2.gif"
+import tick from "../../app/assets/images/tick.gif"
 import Decimal from "decimal.js";
-import rectangle from "../../app/assets/images/Rectangle.png";
 import "./unstake.css"
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Dialog } from 'primereact/dialog';
 import Image from "next/image";
 import { CustomConnectButton } from "../connectBtn";
@@ -121,9 +121,7 @@ export const Unstake = () => {
 
 		} catch (error) {
 			console.error('Error sending transaction:', error);
-			setMessage('Transaction rejected');
-			setUserModal(true);
-			setIsModalVisible(false);
+			setUserModal(true)
 		}
 	};
 
@@ -197,12 +195,11 @@ export const Unstake = () => {
 			<Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
 				<div className="dialog-overlay">
 				<div className="dialog-content">
-					<div className="py-5">
-						<Image src={rectangle} alt="box" width={80} className="animate-pulse" />
-					</div>
-					<div className=""><div className="w-36 h-2 ml-[6rem] bg-yellow-300"></div></div>
-					<div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
-					<div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+				        <div className="py-5">
+							<Image src={rec2} alt="box" width={140} className="" />
+						</div>
+						<div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+						<div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
 				</div>
 				</div>
 			</Dialog>
@@ -217,17 +214,15 @@ export const Unstake = () => {
 			<Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
 				<div className="dialog-overlay">
 				<div className="dialog-content">
-					{loadingMessage === 'Waiting for transaction to confirm...' ? (
+					{loadingMessage === 'Waiting for transaction to confirm..' ? (
 						<>
-							<Image src={rectangle} alt="rectangle" width={100} />
-							<div className="my-5 mb-5">
-								<div className="w-36 h-2 bg-yellow-300"></div>
-							</div>
+						   <Image src={conf} alt="rectangle" width={150} />
+						   <div className="my-5 ml-[6rem] mb-5"></div>
 						</>
 					) : (
 						<Image src={tick} alt="tick" width={200} />
 					)}
-					<div className="waiting-message text-lg title-text text-white whitespace-nowrap">{loadingMessage}</div>
+					<div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
 					{isSuccess && (
 						<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
 					)}
