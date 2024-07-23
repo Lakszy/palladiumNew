@@ -45,20 +45,25 @@ export const OpenTrove = () => {
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
-  const { data: hash, writeContract } = useWriteContract()
+  const { data: hash, writeContract, error: writeError } = useWriteContract()
   const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
+  const [transactionRejected, setTransactionRejected] = useState(false);
+
   useEffect(() => {
     if (isLoading) {
       setIsModalVisible(false);
       setLoadingMessage("Waiting for transaction to confirm..");
       setLoadingModalVisible(true);
     } else if (isSuccess) {
-      setLoadingMessage("Close Transcation compeleted sucessfully");
+      setLoadingMessage("Close Transaction completed successfully");
+      setLoadingModalVisible(true);
+    } else if (transactionRejected) {
+      setLoadingMessage("Transaction was rejected");
       setLoadingModalVisible(true);
     } else {
       setLoadingModalVisible(false);
     }
-  }, [isSuccess, isLoading]);
+  }, [isSuccess, isLoading, transactionRejected]);
 
   const [calculatedValues, setCalculatedValues] = useState({
     expectedFee: 0,
@@ -86,11 +91,6 @@ export const OpenTrove = () => {
     provider
   );
 
-  const borrowerOperationsContract = getContract(
-    botanixTestnet.addresses.borrowerOperations,
-    borrowerOperationAbi,
-    walletClient
-  );
 
   const pow18 = Decimal.pow(10, 18);
   const pow20 = Decimal.pow(10, 20);
@@ -157,9 +157,19 @@ export const OpenTrove = () => {
     }
     catch (error) {
       console.error('Error sending transaction:', error);
+      setTransactionRejected(true);
       setUserModal(true);
     }
   };
+
+  useEffect(() => {
+    if (writeError) {
+      console.error('Write contract error:', writeError);
+      setTransactionRejected(true);
+      setUserModal(true);
+    }
+  }, [writeError]);
+
 
   useEffect(() => {
     if (hash) {
@@ -427,16 +437,20 @@ export const OpenTrove = () => {
                 <Image src={conf} alt="rectangle" width={150} />
                 <div className="my-5 ml-[6rem] mb-5"></div>
               </>
-            ) : (
+            ) : loadingMessage === 'Close Transaction completed successfully' ? (
               <Image src={tick} alt="tick" width={200} />
+            ) : transactionRejected ? (
+              <Image src={rej} alt="rejected" width={140} />
+            ) : (
+              <Image src={conf} alt="box" width={140} />
             )}
             <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
             {isSuccess && (
               <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
             )}
-            {!isSuccess && showCloseButton && (
+            {(transactionRejected || (!isSuccess && showCloseButton)) && (
               <>
-                <p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
+                <p>{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
                 <Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
               </>
             )}

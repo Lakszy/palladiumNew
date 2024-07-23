@@ -8,10 +8,11 @@ import img3 from "../../app/assets/images/Group 663.svg";
 import conf from "../../app/assets/images/conf.gif"
 import rec2 from "../../app/assets/images/rec2.gif"
 import tick from "../../app/assets/images/tick.gif"
+import rej from "../../app/assets/images/TxnError.gif";
 import Decimal from "decimal.js";
 import "./unstake.css"
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Button } from "../ui/button";
 import { Dialog } from 'primereact/dialog';
@@ -35,8 +36,13 @@ export const Unstake = () => {
 	const [message, setMessage] = useState("");
 	const [showCloseButton, setShowCloseButton] = useState(false);
 	const { data: walletClient } = useWalletClient();
-	const { data: hash, writeContract } = useWriteContract()
+	const { data: hash, writeContract, error: writeError } = useWriteContract()
 	const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+	const [transactionRejected, setTransactionRejected] = useState(false);
+
+	const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
+	const stabilityPoolContractReadOnly = getContract(botanixTestnet.addresses.stabilityPool, stabilityPoolAbi, provider);
+	const stabilityPoolContract = getContract(botanixTestnet.addresses.stabilityPool, stabilityPoolAbi, walletClient);
 
 	useEffect(() => {
 		if (isLoading) {
@@ -44,18 +50,17 @@ export const Unstake = () => {
 			setLoadingMessage("Waiting for transaction to confirm..");
 			setLoadingModalVisible(true);
 		} else if (isSuccess) {
-			setLoadingMessage("Unstake Transcation compeleted sucessfully");
+			setLoadingMessage("Unstake Transaction completed successfully");
+			setLoadingModalVisible(true);
+		} else if (transactionRejected) {
+			setLoadingMessage("Transaction was rejected");
 			setLoadingModalVisible(true);
 		} else {
 			setLoadingModalVisible(false);
 		}
-	}, [isSuccess, isLoading]);
+	}, [isSuccess, isLoading, transactionRejected]);
 
-	const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-	const stabilityPoolContractReadOnly = getContract(botanixTestnet.addresses.stabilityPool, stabilityPoolAbi, provider);
-	const stabilityPoolContract = getContract(botanixTestnet.addresses.stabilityPool, stabilityPoolAbi, walletClient);
-
-	const fetchStakedValue = async () => {
+	const fetchStakedValue = useCallback(async () => {
 		try {
 			if (!walletClient) return null;
 			const fetchedPUSD =
@@ -66,15 +71,19 @@ export const Unstake = () => {
 		} catch (error) {
 			console.error("Error fetching staked value:", error);
 		}
-	};
+	}, [walletClient, stabilityPoolContractReadOnly]);
+
 	useEffect(() => {
 		fetchStakedValue();
-	}, [fetchStakedValue,walletClient, stabilityPoolContractReadOnly, writeContract, hash]);
+	}, [fetchStakedValue, writeContract, hash]);
 
-	const handleClose = () => {
+	const handleClose = useCallback(() => {
 		setLoadingModalVisible(false);
-		window.location.reload()
-	};
+		setUserModal(false);
+		setIsModalVisible(false);
+		setTransactionRejected(false);
+		window.location.reload();
+	}, []);
 
 	useEffect(() => {
 		const getStakedValue = async () => {
@@ -112,7 +121,7 @@ export const Unstake = () => {
 			const inputValue = inputBeforeConv.mul(pow).toFixed();
 			const inputBigInt = BigInt(inputValue);
 
-			const stake = writeContract({
+			await writeContract({
 				abi: StabilityPoolbi,
 				address: '0x8FBa9ab010923d3E1c60eD34DAE255A2E7b98Edc',
 				functionName: 'withdrawFromSP',
@@ -121,9 +130,18 @@ export const Unstake = () => {
 
 		} catch (error) {
 			console.error('Error sending transaction:', error);
-			setUserModal(true)
+			setTransactionRejected(true);
+			setUserModal(true);
 		}
 	};
+
+	useEffect(() => {
+		if (writeError) {
+			console.error('Write contract error:', writeError);
+			setTransactionRejected(true);
+			setUserModal(true);
+		}
+	}, [writeError]);
 
 	useEffect(() => {
 		if (hash) {
@@ -219,16 +237,20 @@ export const Unstake = () => {
 						   <Image src={conf} alt="rectangle" width={150} />
 						   <div className="my-5 ml-[6rem] mb-5"></div>
 						</>
-					) : (
+					) : loadingMessage === 'Unstake Transaction completed successfully' ? (
 						<Image src={tick} alt="tick" width={200} />
+					) : transactionRejected ? (
+						<Image src={rej} alt="rejected" width={140} />
+					) : (
+						<Image src={conf} alt="box" width={140} />
 					)}
 					<div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
 					{isSuccess && (
 						<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
 					)}
-					{!isSuccess && showCloseButton && (
+					{(transactionRejected || (!isSuccess && showCloseButton)) && (
 					<>
-						<p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
+						<p>{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
 						<Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
 					</>
 					)}

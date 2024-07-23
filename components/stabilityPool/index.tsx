@@ -7,7 +7,8 @@ import botanixTestnet from "../../app/src/constants/botanixTestnet.json";
 import { getContract } from "../../app/src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import rej from "../../app/assets/images/TxnError.gif";
+import { useCallback, useEffect, useState } from "react";
 import { useWalletClient, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { CustomConnectButton } from "../connectBtn";
 import { Button } from "../ui/button";
@@ -22,7 +23,7 @@ import Image from "next/image";
 import "./Modal.css"
 import "../../app/App.css"
 
-	export const StabilityPool = () => {
+export const StabilityPool = () => {
 	const [userInput, setUserInput] = useState("0");
 	const [pusdBalance, setPusdBalance] = useState("0");
 	const { address, isConnected } = useAccount();
@@ -34,26 +35,31 @@ import "../../app/App.css"
 	const [loadingMessage, setLoadingMessage] = useState("");
 	const [showCloseButton, setShowCloseButton] = useState(false);
 	const { data: walletClient } = useWalletClient();
+	const [transactionRejected, setTransactionRejected] = useState(false);
 	const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 	const erc20Contract = getContract(
 		botanixTestnet.addresses.lusdToken,
 		erc20Abi,
 		provider
 	);
-	const { data: hash, writeContract } = useWriteContract()
+	const { data: hash, writeContract, error: writeError } = useWriteContract()
 	const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+
 	useEffect(() => {
 		if (isLoading) {
 			setIsModalVisible(false);
 			setLoadingMessage("Waiting for transaction to confirm..");
 			setLoadingModalVisible(true);
 		} else if (isSuccess) {
-			setLoadingMessage("Stake Transcation compeleted sucessfully");
+			setLoadingMessage("Sstake Transaction completed successfully");
+			setLoadingModalVisible(true);
+		} else if (transactionRejected) {
+			setLoadingMessage("Transaction was rejected");
 			setLoadingModalVisible(true);
 		} else {
 			setLoadingModalVisible(false);
 		}
-	}, [isSuccess, isLoading]);
+	}, [isSuccess, isLoading, transactionRejected]);
 
 	const handlePercentageClick = (percentage: any) => {
 		const percentageDecimal = new Decimal(percentage).div(100);
@@ -77,11 +83,16 @@ import "../../app/App.css"
 	};
 	useEffect(() => {
 		fetchPrice();
-	}, [fetchPrice,address, walletClient, writeContract, hash]);
-	const handleClose = () => {
+	}, [fetchPrice, address, walletClient, writeContract, hash]);
+
+
+	const handleClose = useCallback(() => {
 		setLoadingModalVisible(false);
-		window.location.reload()
-	};
+		setUserModal(false);
+		setIsModalVisible(false);
+		setTransactionRejected(false);
+		window.location.reload();
+	}, []);
 
 	const handleConfirmClick = async () => {
 		try {
@@ -101,14 +112,24 @@ import "../../app/App.css"
 			});
 		} catch (error) {
 			console.error('Error sending transaction:', error);
+			setTransactionRejected(true);
 			setUserModal(true)
 		}
 	};
+	useEffect(() => {
+		if (writeError) {
+			console.error('Write contract error:', writeError);
+			setTransactionRejected(true);
+			setUserModal(true);
+		}
+	}, [writeError]);
+
 	useEffect(() => {
 		if (hash) {
 			setIsModalVisible(false);
 		}
 	}, [hash]);
+
 	const renderHeader = () => {
 		return (
 			<div className="flex justify-content-between align-items-center">
@@ -124,6 +145,8 @@ import "../../app/App.css"
 		}, 90000);
 		return () => clearTimeout(timer);
 	}, []);
+
+
 	return (
 		<div className="grid bg-[#272315] items-start h-66 gap-2 mx-auto border border-yellow-400 p-5">
 			<div className="">
@@ -195,16 +218,20 @@ import "../../app/App.css"
 								<Image src={conf} alt="rectangle" width={150} />
 								<div className="my-5 ml-[6rem] mb-5"></div>
 							</>
+						) : loadingMessage === 'Stake Transaction completed successfully' ? (
+							<Image src={tick} alt="tick" width={200} />
+						) : transactionRejected ? (
+							<Image src={rej} alt="rejected" width={140} />
 						) : (
-							<Image src={tick} alt="tick" width={120} />
+							<Image src={conf} alt="box" width={140} />
 						)}
 						<div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
 						{isSuccess && (
 							<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
 						)}
-						{!isSuccess && showCloseButton && (
+						{(transactionRejected || (!isSuccess && showCloseButton)) && (
 							<>
-								<p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
+								<p>{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
 								<Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
 							</>
 						)}

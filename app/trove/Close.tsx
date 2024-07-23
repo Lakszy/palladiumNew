@@ -5,7 +5,7 @@ import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import { ethers } from "ethers";
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Dialog } from 'primereact/dialog';
 import Image from "next/image";
@@ -37,20 +37,9 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   const [pusdBalance, setPusdBalance] = useState("0");
   const [showCloseButton, setShowCloseButton] = useState(false);
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-  const { data: hash, writeContract } = useWriteContract()
-  const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
-useEffect(() => {
-		if (isLoading) {
-			setIsModalVisible(false);
-			setLoadingMessage("Waiting for transaction to confirm..");
-			setLoadingModalVisible(true);
-		} else if (isSuccess) {
-			setLoadingMessage("Close Transcation compeleted sucessfully");
-			setLoadingModalVisible(true);
-		} else {
-			setLoadingModalVisible(false);
-		}
-	}, [isSuccess, isLoading]);
+  const { data: hash, writeContract, error: writeError } = useWriteContract();
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const [transactionRejected, setTransactionRejected] = useState(false);
 
   const erc20Contract = getContract(
     botanixTestnet.addresses.lusdToken,
@@ -59,14 +48,16 @@ useEffect(() => {
   );
 
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setLoadingModalVisible(false);
     setUserModal(false);
     setIsModalVisible(false);
+    setTransactionRejected(false);
     window.location.reload();
-  };
+  },[]);
 
-  const fetchPrice = async () => {
+  const fetchPrice = useCallback(async () => {
+    if (!address) return;
     const pusdBalanceValue = await erc20Contract.balanceOf(address);
     const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
     if (Number(pusdBalanceFormatted) < (debt - liquidationReserve)) {
@@ -74,15 +65,15 @@ useEffect(() => {
     }
     setPusdBalance(pusdBalanceFormatted);
     setAfterload(false);
-  };
+  }, [address, debt, liquidationReserve, erc20Contract]);
 
   useEffect(() => {
     fetchPrice();
-  }, [fetchPrice, walletClient, erc20Contract, writeContract, hash]);
+  }, [fetchPrice, walletClient, writeContract, hash]);
 
   const handleConfirmClick = async () => {
+    setIsModalVisible(true);
     try {
-      setIsModalVisible(true);
       if (!walletClient) return null;
       const tx = writeContract({
         abi: BorrowerOperationbi,
@@ -91,9 +82,39 @@ useEffect(() => {
       });
     } catch (error) {
       console.error('Error sending transaction:', error);
+      setTransactionRejected(true);
       setUserModal(true);
     }
   };
+
+  useEffect(() => {
+    if (writeError) {
+      console.error('Write contract error:', writeError);
+      setTransactionRejected(true);
+      setUserModal(true);
+    }
+  }, [writeError]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setIsModalVisible(false);
+      setLoadingMessage("Waiting for transaction to confirm..");
+      setLoadingModalVisible(true);
+    } else if (isSuccess) {
+      setLoadingMessage("Close Transaction completed successfully");
+      setLoadingModalVisible(true);
+    } else if (transactionRejected) {
+      setLoadingMessage("Transaction was rejected");
+      setLoadingModalVisible(true);
+    }
+  }, [isSuccess, isLoading, transactionRejected]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCloseButton(true);
+    }, 90000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const renderHeader = () => {
     return (
@@ -104,13 +125,6 @@ useEffect(() => {
       </div>
     );
   };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowCloseButton(true);
-    }, 90000);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="md:w-[60rem] flex md:-ml-0 w-[2rem]">
@@ -182,8 +196,10 @@ useEffect(() => {
                 <Image src={conf} alt="rectangle" width={150} />
                 <div className="my-5 ml-[6rem] mb-5"></div>
               </>
-            ) : loadingMessage === 'Close Transcation compeleted sucessfully' ? (
+            ) : loadingMessage === 'Close Transaction completed successfully' ? (
               <Image src={tick} alt="tick" width={200} />
+            ) : transactionRejected ? (
+              <Image src={rej} alt="rejected" width={140} />
             ) : (
               <Image src={conf} alt="box" width={140} />
             )}
@@ -191,10 +207,10 @@ useEffect(() => {
             {isSuccess && (
               <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
             )}
-            {!isSuccess && showCloseButton && (
+            {(transactionRejected || (!isSuccess && showCloseButton)) && (
               <>
-                <p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
-                <Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
+                <p className="text-red-400 body-text">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+                <Button className="p-button-rounded p-button-text text-black title-text2" onClick={handleClose}>Close</Button>
               </>
             )}
           </div>
