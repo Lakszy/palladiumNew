@@ -302,13 +302,13 @@ export const OpenTrove = () => {
                 <div className='flex items-center h-[3.5rem] '>
                   <Image src={img3} alt="home" className='ml-1' />
                   <h3 className='h-full border border-yellow-300 text-yellow-300 mx-3'></h3>
-                  <h3 className='text-white body-text font-medium ml-1 mr-3 hidden md:block'>BTC</h3>
+                  <h3 className='text-gray-400 body-text font-medium ml-1 mr-3 hidden md:block'>BTC</h3>
                 </div>
-                <input id="items" placeholder="Enter Collateral Amount" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[24.75rem]  font-medium h-[4rem] text-white" style={{ backgroundColor: "#272315" }} />
-                <span className="md:max-w-[5rem] md:p-2 mr-1 md:mr-0 font-medium h-full">${totalCollateral.toFixed(2)}</span>
+                <input id="items" placeholder="Enter Collateral Amount" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[24.75rem] body-text font-medium h-[4rem] text-gray-400" style={{ backgroundColor: "#272315" }} />
+                <span className="md:max-w-[5rem] md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text h-full">${totalCollateral.toFixed(2)}</span>
               </div>
               <div className="pt-2 flex md:flex-row flex-col mr-1 items-center justify-between ">
-                <span className={`text-sm w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
+                <span className={`text-sm body-text w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
                   Available {Number(balanceData?.formatted).toFixed(8)}{" "}
                 </span>
                 <div className="flex gap-x-4 w-full md:gap-x-3 mt-2">
@@ -325,9 +325,9 @@ export const OpenTrove = () => {
                 <div className='flex items-center h-[3.5rem] '>
                   <Image src={img4} alt="home" className='ml-1' />
                   <h3 className='h-full border border-yellow-300 text-yellow-300 mx-4'></h3>
-                  <h3 className='text-white body-text font-medium hidden md:block mx-1'>PUSD</h3>
+                  <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1'>PUSD</h3>
                 </div>
-                <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-white body-text font-medium" style={{ backgroundColor: "#272315" }} />
+                <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-gray-400 body-text font-medium" style={{ backgroundColor: "#272315" }} />
               </div>
               <div className="pt-2 flex flex-col md:flex-row  mr-1 items-center justify-between  p-2">
                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
@@ -339,10 +339,10 @@ export const OpenTrove = () => {
                   <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
                   <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
                 </div>
-                {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (
-                  <span className="text-red-500 ml-1 body-text md:w-1/2">Borrow amount should be greater than {minDebt} </span>
-                )}
               </div>
+              {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (
+                  <span className="text-red-500 body-text">Borrow amount should be greater than {minDebt} </span>
+                )}
             </div>
             <button
               onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}

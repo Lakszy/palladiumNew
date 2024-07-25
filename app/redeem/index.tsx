@@ -207,14 +207,14 @@ export default function Redeem() {
                                 className="bg-[#3b351b] body-text w-[20rem] md:w-full text-lg h-14 border border-yellow-300 text-white "
                             />
                         </div>
-                        <span className=" ml-[56%] md:ml-[69%] body-text  font-medium balance ">
+                        <span className=" ml-[56%] md:ml-[66%] body-text  font-medium balance ">
                             {isLoading ?
                                 (<div className="-mt-6 h-3 rounded-xl">
                                     <div className="hex-loader"></div>
                                 </div>
                                 ) : (
-                                    <span className="whitespace-nowrap text-white body-text">Wallet: {" "}
-                                        <span className="">
+                                    <span className="whitespace-nowrap -ml-2 text-white body-text">Wallet: {" "}
+                                        <span className="body-text text-sm">
                                             {Number(pusdBalance).toFixed(2) || ".."} PUSD
                                         </span>
                                     </span>
