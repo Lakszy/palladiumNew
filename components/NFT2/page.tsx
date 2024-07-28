@@ -10,7 +10,7 @@ import "../../app/App.css";
 export default function NFT2() {
     return (
         <div className="w-full  border-yellow-300  p-6 border items-center justify-center" style={{ backgroundColor: '#272315' }}>
-            <div className="box-1 md:ml-1  w-[20rem] space-y-3">
+            <div className="box-1 md:ml-4  w-[20rem] space-y-3">
                 <Image src={CB} alt="circuit breaker"  />
             </div>
             <div className="ml-[14px] flex gap-x-5">

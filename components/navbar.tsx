@@ -3,7 +3,7 @@ import Image from "next/image";
 import pusdbtc from "../app/assets/images/PUSD.svg";
 import btc from "../app/assets/images/btclive.svg";
 import recv from "../app/assets/images/RecoveryMode.svg";
-import collR from "../app/assets/images/SystemCollateralRatio.svg";
+import collR from "../app/assets/images/mode.svg";
 import { CustomConnectButton } from "./connectBtn";
 import "../app/App.css";
 import { useAccount } from "wagmi";
@@ -11,6 +11,7 @@ import MobileNavFalse from "./MobileNavFalse";
 import MobileNav from "./MobileNav";
 import { Toast } from "primereact/toast";
 import "./navbar.css";
+import { Tooltip } from "primereact/tooltip";
 
 function NavBar() {
   const [fetchedPrice, setFetchedPrice] = useState(0);
@@ -126,9 +127,13 @@ function NavBar() {
                 <div className="items-center flex gap-x-2">
                   <Image src={collR} alt="btc" width={40} />
                   <div>
-                    <h1 className="text-white title-text2 text-xs">System Collateral Ratio</h1>
+                    <div className="gap-1 flex">
+                      <h1 className="text-white title-text2 text-xs">SCR</h1>
+                      <h1 className="text-gray-400 body-text -mt-[4px] text-[10px]">(Normal Mode)</h1>
+                      <Tooltip>1</Tooltip>
+                    </div>
                     <h1 className="text-gray-400 text-sm title-text2 ">
-                    {(systemCollRatio * 100).toFixed(2)} %
+                      {(systemCollRatio * 100).toFixed(2)} %
                     </h1>
                   </div>
                 </div>

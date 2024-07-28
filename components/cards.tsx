@@ -196,16 +196,13 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
 
   return (
     <>
-      {/* {isLoading ? (
-        <FullScreenLoader />
-      ) : ( */}
       <div className="w-[25rem]  md:w-full">
         <div className="title-text h-full w-full pt-10 p-10" style={{ backgroundColor: "#1C1A0F" }}>
-          <div className="w-full md:p-5 md:h-[14rem] md:flex pl-2  md:items-center" style={{ backgroundColor: "#272315" }}>
-            <div className="flex  md:p-2">
+          <div className="w-full  md:p-5 md:h-[14rem] md:flex pl-2 justify-between md:items-center" style={{ backgroundColor: "#272315" }}>
+            <div className="flex w-[60%]   md:p-2">
               <Image src={circuitBreaker} alt="text" className="-ml-8 md:-ml-16" width={1200} />
             </div>
-            <div className="w-full sticky h-[19rem] p-2 text-white gap-y-10">
+            <div className="w-[50%]  sticky pl-10 h-[19rem] p-2 text-white gap-y-10">
               <div className="absolute -ml-[5rem]  md:ml-[9rem] flex items-center gap-x-2">
                 <Image src={points} alt="points" className="ml-[60%] md:ml-0 mt-[15px]" />
                 <div>
@@ -249,25 +246,27 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
           </div>
           <div className="py-10">
             <div className="w-full p-5 h-[20rem] mt-10 upper mr-10   items-center justify-center" style={{ backgroundColor: "#272315" }}>
-              <ProgBar />
+              <div className=" pt-3.5">
+                <ProgBar />
+              </div>
               <div className="md:mt-10  justify-between h-20 md flex gap-x-3">
                 <div className=" h-20 w-1/4 flex justify-between p-2">
                   <div>
-                    <Image src={TargetArrow} alt="arrow" className="md:ml-6" />
+                    <Image src={TargetArrow} alt="arrow" className="md:ml-6 mt-[4px]" />
                   </div>
-                  <div className="md:-ml-5 space-y-1 h-fit">
-                    <h5 className=" text-gray-600 body-text font-semibold text-xs whitespace-nowrap">
+                  <div className="space-y-1 h-fit">
+                    <h5 className=" text-gray-600 body-text font-semibold text-md whitespace-nowrap">
                       Next Challenge
                     </h5>
-                    <h5 className="font-medium text-white body-text whitespace-nowrap text-xs">
+                    <h5 className="font-medium text-white body-text whitespace-nowrap text-sm">
                       {firstTask || "- - - - - - - -"}
                     </h5>
                   </div>
                   <div></div>
                 </div>
-                <div className=" md:w-4/5  md:p-2">
+                <div className=" md:w-[85%]  md:p-2">
                   <h5 className=" title-text2 -mt-[10px]  md:mt-[5px] text-[10px] md:text-lg ml-[6rem] md:ml-[14rem] text-yellow-300">
-                    EARN EXCLUSIVE REWARDS BY COMPLETING CHALLENGES
+                    EaRN EXCLUSIVE REWaRDS BY COMPLETING CHaLLENGES
                   </h5>
                 </div>
               </div>
@@ -276,22 +275,22 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
 
           <div className="w-full md:gap-y-0 gap-5 mt-10 flex flex-col md:flex-row">
             <div className="w-full md:w-[40%] pl-1 pb-7" style={{ backgroundColor: "#272315" }}>
-              <div className="p-4 gap-x-1 flex justify-between">
-                <h1 className="title-text2 font-semibold text-yellow-300 text-lg ">
+              <div className="p-4  items-center flex justify-between">
+                <h1 className="title-text2 whitespace-nowrap font-semibold text-yellow-300 text-md ">
                   TROVE STATS
                 </h1>
                 {isConnected ? (
                   <>
                     {troveStatus === "ACTIVE" ? (
-                      <div className={`border-[3px] title-text2 flex items-center justify-center h-10 title-text2  w-32 p-2 ${troveStatus === "ACTIVE"
+                      <div className={`border-[3px] ml-8 title-text2 p-4 flex items-center justify-center h-10 title-text2  w-30  ${troveStatus === "ACTIVE"
                         ? "border-green-800 title-text2 bg-green-100"
                         : "border-red-800 title-text2 bg-red-100"
                         }`}
-                        style={{ borderTopRightRadius: "10px" }} >
+                        style={{ borderTopRightRadius: "15px" }} >
                         {troveStatus === "ACTIVE" ? (
-                          <h6 className="w-2 h-2 rounded-full title-text2 bg-green-400 mr-1 title-text text-green-900"></h6>
-                        ) : (<h6 className="w-2 h-2 title-text2 rounded-full bg-red-400 mr-1 title-text  text-black"></h6>)}
-                        <h6>{troveStatus}</h6>
+                          <h6 className="w-3 h-3 rounded-full bg-green-400 mr-1"></h6>
+                        ) : (<h6 className="w-3 h-3 rounded-full bg-red-400 mr-1"></h6>)}
+                        <h6 className="title-text2 text-md">{troveStatus}</h6>
                       </div>
                     ) : (<></>)}
                   </>
@@ -301,12 +300,12 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 <div className="bent-corner"></div>
               </div>
               {troveStatus === "ACTIVE" ? (
-                <div className="space-y-6 pt-12">
-                  <div className="flex gap-x-14">
+                <div className="space-y-6 ml-1 pt-12">
+                  <div className="flex gap-x-[4rem]">
                     <Image src={btc} alt="coin" />
                     <div className=" flex flex-col">
-                      <h1 className="text-gray-500 font-bold title-text">Collateral</h1>
-                      <h1 className="text-gray-100 font-bold text-lg title-text">
+                      <h1 className="text-gray-500 text-sm title-text2">Collateral</h1>
+                      <h1 className="text-gray-100 text-sm  title-text2">
                         {isStateLoading ?
                           (
                             <div className="text-left w-full -mt-6 h-2">
@@ -316,11 +315,11 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       </h1>
                     </div>
                   </div>
-                  <div className="flex gap-x-6">
+                  <div className="flex gap-x-[2.2rem]">
                     <Image src={doubleCoin} alt="coin" />
                     <div className=" flex flex-col">
-                      <h1 className="text-gray-500 font-bold title-text">Debt</h1>
-                      <h1 className="text-gray-100 font-bold text-lg title-text">
+                      <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
+                      <h1 className="text-gray-100 text-sm title-text2">
                         {isStateLoading ?
                           (<div className="text-left w-full -mt-6 h-2">
                             <div className="hex-loader"></div>
@@ -329,11 +328,11 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       </h1>
                     </div>
                   </div>
-                  <div className="flex gap-x-10">
+                  <div className="flex gap-x-[3.4rem]">
                     <Image src={tripleCoin} alt="coin" />
                     <div className=" flex flex-col">
-                      <h1 className="text-gray-500 font-bold title-text">YOUR LTV</h1>
-                      <h1 className="text-gray-100 font-bold text-lg title-text">
+                      <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>
+                      <h1 className="text-gray-100 text-sm title-text2">
                         {isStateLoading ?
                           (<div className="text-left w-full -mt-6 h-2">
                             <div className="hex-loader"></div>
@@ -353,14 +352,14 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               )}
             </div>
             <div className="w-full pb-[2.5rem] h-fit" style={{ backgroundColor: "#272315" }} >
-              <div className="p-4 gap-x-1 flex  justify-between">
-                <h1 className="title-text2 text-yellow-300 text-lg">
-                  ACTIVITIES STATS
+              <div className="pt-4 pl-4 pr-4  gap-x-1 flex  justify-between">
+                <h1 className="title-text2 text-yellow-300 text-md">
+                  aCTIVITIES STaTS
                 </h1>
                 <Image src={botanixLogo} alt="logo" className="-mt-4" />
               </div>
               {isConnected ? (
-                <div className="-mt-5 my-5 md:my-0 space-y-16">
+                <div className=" my-5 pb-6 md:my-0 space-y-16">
                   <div className="w-full h-24 flex">
                     <div className="flex-1 h-fit -mt-4  flex flex-col items-center justify-center text-center">
                       <Image src={PUSDCrate} alt="giftBox" />
@@ -420,7 +419,6 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
           <div className="pt-10  w-100%">  <NFT2 /></div>
         </div>
       </div>
-      {/* )} */}
     </>
   );
 };

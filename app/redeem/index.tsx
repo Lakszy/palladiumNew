@@ -6,45 +6,48 @@ import { Input } from "@/components/ui/input";
 import { HintHelpers } from "../src/constants/abi/HintHelpers";
 import priceFeedAbi from "../src/constants/abi/PriceFeedTestnet.sol.json";
 import { sortedTroves } from "../src/constants/abi/SortedTroves";
-import { troveManagerAbi } from "../src/constants/abi/TroveManager";
 import troveManagerContractQ from "../src/constants/abi/TroveManager.sol.json"
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
-import { useAccount, useWriteContract, useWalletClient } from "wagmi";
+import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt } from "wagmi";
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import web3 from "web3";
 import { CustomConnectButton } from "@/components/connectBtn";
 import { wagmiConfig } from "../src/config/config";
 import { Dialog } from 'primereact/dialog';
 import BotanixLOGO from "../../app/assets/images/newpalladium.svg"
+import rej from "../../app/assets/images/TxnError.gif";
+import conf from "../../app/assets/images/conf.gif"
+import rec2 from "../../app/assets/images/rec2.gif"
+import tick from "../../app/assets/images/tick.gif"
 import Image from "next/image";
 import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import '../App.css';
+import "./redeem.css"
 
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
     const [isRedeeming, setIsRedeeming] = useState(false);
     const [isRecoveryMode, setIsRecoveryMode] = useState<boolean>(false);
-    const [price, setPrice] = useState<number>(0);
     const [pusdBalance, setPusdBalance] = useState("0");
     const [hasPriceFetched, setHasPriceFetched] = useState(false);
     const { address, isConnected } = useAccount();
     const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
     const { data: walletClient } = useWalletClient();
-    const [isLoading, setIsLoading] = useState(true);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const { toBigInt } = web3.utils;
-
-    const {
-        data: hash,
-        isPending,
-        writeContract
-    } = useWriteContract()
+    const [loadingModalVisible, setLoadingModalVisible] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("");
+    const [userModal, setUserModal] = useState(false);
+    const [showCloseButton, setShowCloseButton] = useState(false);
+    const { data: hash, writeContract, error: writeError } = useWriteContract();
+    const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+    const [transactionRejected, setTransactionRejected] = useState(false);
 
     const priceFeedContract = getContract(
         botanixTestnet.addresses.priceFeed,
@@ -57,6 +60,14 @@ export default function Redeem() {
         erc20Abi,
         provider
     );
+
+    const handleClose = useCallback(() => {
+        setLoadingModalVisible(false);
+        setUserModal(false);
+        setIsModalVisible(false);
+        setTransactionRejected(false);
+        window.location.reload();
+    }, []);
 
     const neTrove = getContract(
         botanixTestnet.addresses.troveManager,
@@ -74,36 +85,21 @@ export default function Redeem() {
     }, [erc20Contract,address]);
 
     useEffect(() => {
-        const getPrice = async () => {
+        const fetchData = async () => {
             try {
-                if (!provider || hasPriceFetched) return null;
-                const fetchedPrice = await priceFeedContract.getPrice();
-                const convertedFetchedPrice = ethers.formatUnits(fetchedPrice, 18);
-                setPrice(Number(convertedFetchedPrice));
+                const response = await fetch(
+                    "https://api.palladiumlabs.org/sepolia/protocol/metrics"
+                );
+                const data = await response.json();
+                const protocolMetrics = data[0];
+                setIsRecoveryMode(protocolMetrics.recoveryMode);
             } catch (error) {
-                console.error(error, "error");
-            } finally {
-                setHasPriceFetched(true);
-                setIsLoading(false);
+                console.error("Error fetching data:", error);
             }
-
         };
 
-        const getRecoveryModeStatus = async () => {
-            const fetchedPrice = await priceFeedContract.getPrice();
-            const result = await readContract(wagmiConfig, {
-                abi: troveManagerAbi,
-                address: '0x84400014b6bFA5b76d2feb4F460AEac8dd84B656',
-                functionName: 'checkRecoveryMode',
-                args: [fetchedPrice],
-            }) as boolean
-            setIsRecoveryMode(result);
-        };
-
-        getPrice();
-        getRecoveryModeStatus();
-    }, [isConnected, walletClient]);
-
+        fetchData();
+    }, []);
 
     const handlePercentageClick = (percentage: any) => {
         const percentageDecimal = new Decimal(percentage).div(100);
@@ -121,10 +117,8 @@ export default function Redeem() {
 
 
     const handleConfirmClick = async () => {
+        setIsModalVisible(true);
         try {
-            setIsModalVisible(true)
-            setIsRedeeming(true);
-
             const pow = Decimal.pow(10, 18);
             const fetchedPrice = await priceFeedContract.getPrice();
 
@@ -133,7 +127,7 @@ export default function Redeem() {
 
             const redemptionhint = await readContract(wagmiConfig, {
                 abi: HintHelpers,
-                address: '0xA7B88e482d3C9d17A1b83bc3FbeB4DF72cB20478',
+                address: '0x59356e69d4447D1225482f966C984Bcc62C3Ef1b',
                 functionName: 'getRedemptionHints',
 
                 args: [BigInt(inputValue), fetchedPrice, 50n]
@@ -146,7 +140,7 @@ export default function Redeem() {
 
             const numTroves = await readContract(wagmiConfig, {
                 abi: sortedTroves,
-                address: '0x6AB8c9590bD89cBF9DCC90d5efEC4F45D5d219be',
+                address: '0x34C3C2DBe369c23d07fCB7dBf1c6472faf2232Bd',
                 functionName: 'getSize'
             })
 
@@ -154,7 +148,7 @@ export default function Redeem() {
 
             const approxPartialRedemptionHint = await readContract(wagmiConfig, {
                 abi: HintHelpers,
-                address: '0xA7B88e482d3C9d17A1b83bc3FbeB4DF72cB20478',
+                address: '0x59356e69d4447D1225482f966C984Bcc62C3Ef1b',
                 functionName: 'getApproxHint',
 
                 args: [partialRedemptionNewICR, numTrials, 42n]
@@ -164,12 +158,12 @@ export default function Redeem() {
 
             const exactPartialRedemptionHint = await readContract(wagmiConfig, {
                 abi: sortedTroves,
-                address: '0x6AB8c9590bD89cBF9DCC90d5efEC4F45D5d219be',
+                address: '0x34C3C2DBe369c23d07fCB7dBf1c6472faf2232Bd',
                 functionName: 'findInsertPosition',
                 args: [partialRedemptionNewICR, approxPartialRedemptionHintString, approxPartialRedemptionHintString]
             })
 
-            const maxFee = "6".concat("0".repeat(17));
+            const maxFee = "6".concat("0".repeat(13));
 
             const x = await neTrove.redeemCollateral(
                 truncatedLUSDAmount,
@@ -180,25 +174,61 @@ export default function Redeem() {
                 0,
                 maxFee,
             );
-            setIsModalVisible(false)
-            setIsRedeeming(false);
 
         } catch (error) {
             console.error(error);
-            setIsRedeeming(false);
+            setTransactionRejected(true);
+            setUserModal(true);
         }
-        finally {
-            setIsLoading(false);
+    };
+
+
+    useEffect(() => {
+        if (writeError) {
+            console.error('Write contract error:', writeError);
+            setTransactionRejected(true);
+            setUserModal(true);
         }
+    }, [writeError]);
+
+
+    useEffect(() => {
+        if (isLoading) {
+            setIsModalVisible(false);
+            setLoadingMessage("Waiting for transaction to confirm..");
+            setLoadingModalVisible(true);
+        } else if (isSuccess) {
+            setLoadingMessage("Redeem Transaction completed successfully");
+            setLoadingModalVisible(true);
+        } else if (transactionRejected) {
+            setLoadingMessage("Transaction was rejected");
+            setLoadingModalVisible(true);
+        }
+    }, [isSuccess, isLoading, transactionRejected]);
+
+
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowCloseButton(true);
+        }, 90000);
+        return () => clearTimeout(timer);
+    }, []);
+
+
+
+    const renderHeader = () => {
+        return (
+            <div className="flex justify-content-between align-items-center">
+                <Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>
+                    Close
+                </Button>
+            </div>
+        );
     };
 
     return (
         <>
-            {isRedeeming && (
-                <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-yellow-900"></div>
-                </div>
-            )}
             <div className=" ml-3 md:ml-12 md:w-[40%] w-[22.5rem]">
                 <div className="grid items-start h-[20rem] gap-x-2  mx-auto border-[2px] border-yellow-400 p-5">
                     <div>
@@ -240,17 +270,58 @@ export default function Redeem() {
                     ) : (
                         <CustomConnectButton className="" />
                     )}
-                    <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
-                        <>
-                            <div className="waiting-container bg-white">
-                                <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Waiting for Confirmation... ✨.</div>
-                                <Image src={BotanixLOGO} className="waiting-image" alt="gif" />
-                            </div>
-                        </>
-                    </Dialog>
                 </div>
             </div>
-
+            <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
+                <div className="dialog-overlay">
+                    <div className="dialog-content">
+                        <div className="py-5">
+                            <Image src={rec2} alt="box" width={140} className="" />
+                        </div>
+                        <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+                        <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+                    </div>
+                </div>
+            </Dialog>
+            <Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
+                <div className="dialog-overlay">
+                    <div className="dialog-content">
+                        <div className="waiting-message text-lg title-text2 whitespace-nowrap">Transaction rejected</div>
+                        <div className="py-5">
+                            <Image src={rej} alt="box" width={140} className="" />
+                        </div>
+                        <Button className="p-button-rounded text-black title-text2 " onClick={() => setUserModal(false)}>Close</Button>
+                    </div>
+                </div>
+            </Dialog>
+            <Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
+                <div className="dialog-overlay">
+                    <div className="dialog-content">
+                        {loadingMessage === 'Waiting for transaction to confirm..' ? (
+                            <>
+                                <Image src={conf} alt="rectangle" width={150} />
+                                <div className="my-5 ml-[6rem] mb-5"></div>
+                            </>
+                        ) : loadingMessage === 'Redeem Transaction completed successfully' ? (
+                            <Image src={tick} alt="tick" width={200} />
+                        ) : transactionRejected ? (
+                            <Image src={rej} alt="rejected" width={140} />
+                        ) : (
+                            <Image src={conf} alt="box" width={140} />
+                        )}
+                        <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
+                        {isSuccess && (
+                            <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+                        )}
+                        {(transactionRejected || (!isSuccess && showCloseButton)) && (
+                            <>
+                                <p className="text-red-400 body-text">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+                                <Button className="p-button-rounded p-button-text text-black title-text2" onClick={handleClose}>Close</Button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </Dialog>
         </>
     );
 }

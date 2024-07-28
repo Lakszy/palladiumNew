@@ -29,7 +29,7 @@ export const TabsDemo = () => {
     <div className={`sidebar hidden md:grid font-mono font-extrabold  w-72  h-screen grid-rows-[max-content_fr_max-content] 2c2819 text-white `} style={{ backgroundColor: "#2c2819" }}>
       <div className="flex items-center gap-x-1 justify-center">
         <Link href="/">
-          <Image src={logo} alt="Logo" className="mr-12 -mt-3 w-40" />
+          <Image src={logo} alt="Logo" className="mr-12 -mt-10 w-40" />
         </Link>
       </div>
       <nav className="flex flex-col gap-y-2 px-4">
@@ -74,13 +74,13 @@ export const TabsDemo = () => {
           </div>
         </Link>
       </nav>
-      <div className="space-y-1  h-20">
+      <div className="space-y-1 h-16">
         <div className="ml-6 w-fit h-fit">
           <Link href="https://zealy.io/cw/palladiumlabs/questboard">
             <Image src={zeally} alt="zeally" className="w-[227px] h-[100px]" />
           </Link>
         </div>
-        <div className="flex items-center justify-center text-white gap-x-7 text-[19px] ">
+        <div className="flex items-center justify-center text-white gap-x-5  text-[19px] ">
           <Link target="_blank" href="https://twitter.com/PalladiumLabs">  <Image className="hover:scale-105"  src={tweet} alt="twitter" /></Link>
           <Link target="_blank" href="https://discord.com/invite/9MMEyJ4JDz">  <Image className="hover:scale-105"  src={discord} alt="twitter" /></Link>
           <Link target="_blank" href="https://medium.com/palladium-labs">  <Image  className="hover:scale-105" src={medium} alt="twitter" /></Link>

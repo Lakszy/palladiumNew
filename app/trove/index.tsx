@@ -446,10 +446,10 @@ const Borrow = () => {
                     </div>
                   </div>
                 </div>
-                <div className="md:w-[25rem] h-[13rem] mt-3 px-8 py-4" style={{ backgroundColor: "#343127" }}>
+                <div className="md:w-[21rem] h-[13rem] mt-3 px-8 py-4" style={{ backgroundColor: "#343127" }}>
                   <div className="flex justify-between text-white">
                     <div className="flex flex-col gap-y-16 ">
-                      <div className="flex flex-col">
+                      <div className="flex  p-1 flex-col">
                         <span className="text-xs text-gray-500 body-text">Liquidation</span>
                         <span className="body-text body-text">${liquidation.toFixed(2)} USD</span>
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
@@ -467,9 +467,9 @@ const Borrow = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-col  items-center">
+                    <div className="flex flex-col items-center">
                       <span className=" text-gray-500 body-text ml-[0.5rem] text-sm -mt-3">loan to value</span>
-                      <Knob value={Number(newLTV) || 0} size={135} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-white" />
+                      <Knob value={Number(newLTV) || 0} showValue={true} size={135} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
                       <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
                         <span className="text-base  ml-[0.5rem] body-text">{Number(newLTV).toFixed(2) || 0}%</span>
                         <span className="text-xs text-gray-500 body-text ">YOUR LTV</span>

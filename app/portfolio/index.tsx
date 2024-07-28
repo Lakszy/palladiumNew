@@ -205,13 +205,13 @@ const Portfolio = () => {
         <div>
           <Layout>
             {troveStatus === "ACTIVE" && (
-              <div className=" flex flex-col">
+              <div className=" flex  p-6 flex-col">
                 <div className="flex flex-col md:flex-row items-center md:gap-x-0 gap-x-2 md:w-full justify-between">
-                  <div className=" md:-ml-0 -ml-6">
-                    <h6 className="text-[#565348] title-text2 text-md font-semibold mt-1 mb-4">
+                  <div className=" ml-[1.5rem]">
+                    <h6 className="text-[#565348] title-text text-md font-bold mt-1 mb-4">
                       Portfolio Value
                     </h6>
-                    <span className="text-white body-text text-2xl font-bold ml-[1.5rem] flex justify-between">
+                    <span className="text-white body-text text-2xl font-bold  flex justify-between">
                       ${availableToBorrow.toFixed(2)} PUSD
                     </span>
                   </div>
@@ -245,19 +245,19 @@ const Portfolio = () => {
                       <span className="title-text2 text-white">TROVE</span>
                       <Link href="/trove">
                         <button
-                          className="h-10 px-8 border-yellow-400 text-yellow-400 border title-text2 bg-transparent  title-text font-bold">
+                          className="h-8 px-8 border-yellow-400 text-yellow-400 border title-text2 bg-transparent  title-text font-bold">
                           Details
                         </button>
                       </Link>
                     </div>
                     <div>
                       <div className="flex flex-col mb-2 items-center">
-                        <Knob value={Number(newLTV) || 10} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
+                        <Knob value={Number(newLTV) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
                         <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
                           <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
                           {/* <span className="text-lg text-white  ml-[0.5rem] body-text">{Number(newLTV).toFixed(2) || 10}%</span> */}
                           <div className="flex items-center justify-center gap-x-2">
-                            <span className="text-lg text-white  ml-[0.5rem] body-text">{10 || 10}%</span>
+                            <span className="text-lg text-white  ml-[0.5rem] body-text">{100 || 100}%</span>
                           </div>
                           {/* <span className="text-xs text-[#565348] body-text ">YOUR LTV</span> */}
                         </div>
@@ -282,7 +282,7 @@ const Portfolio = () => {
                     <div className=" flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
                       <span className="text-white title-text2">STABILITY POOL</span>
                       <Link href="/stake">
-                        <button className="h-10 px-6 title-text2 border-yellow-400 border bg-transparent  text-yellow-400 font-bold">
+                        <button className="h-8 px-6 title-text2 border-yellow-400 border bg-transparent  text-yellow-400 font-bold">
                           Details
                         </button>
                       </Link>
