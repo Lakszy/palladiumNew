@@ -22,7 +22,7 @@ import floatPUSD from "../assets/images/floatPUSD.png";
 import macPUSD from "../assets/images/macPUSD.png";
 import { CustomConnectButton } from "@/components/connectBtn";
 import FullScreenLoader from "@/components/FullScreenLoader";
-import "../App.css";
+  import "../App.css";
 
 const Portfolio = () => {
 

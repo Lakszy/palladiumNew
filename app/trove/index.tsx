@@ -1,18 +1,16 @@
 /* eslint-disable */
 "use client";
 
-import borrowerOperationAbi from "../src/constants/abi/BorrowerOperations.sol.json";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
 import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
-import BotanixLOGO from "../../app/assets/images/newpalladium.svg"
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import { Label } from "@radix-ui/react-label";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "react-use";
 import { useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import web3 from "web3";
@@ -34,7 +32,6 @@ import { CloseTrove } from "./Close";
 import { OpenTrove } from "./OpenTrove";
 import Layout from "./layout";
 import { FaArrowRightLong } from "react-icons/fa6";
-import "../App.css";
 import "../../app/App.css"
 import "../../components/stabilityPool/Modal.css"
 import FullScreenLoader from "@/components/FullScreenLoader";
@@ -46,7 +43,6 @@ const Borrow = () => {
     depositCollateral: "",
     borrow: "",
   });
-  const [rejectionMessage, setRejectionMessage] = useState<string>("");
   const [troveStatus, setTroveStatus] = useState("");
   const [borrowingFee, setBorrowingFee] = useState(0);
   const [totalDebt, setTotalDebt] = useState(0);
@@ -81,6 +77,8 @@ const Borrow = () => {
   const [loadingMessage, setLoadingMessage] = useState("");
   const [showCloseButton, setShowCloseButton] = useState(false);
   const [userModal, setUserModal] = useState(false);
+  const [transactionRejected, setTransactionRejected] = useState(false);
+
 
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
     debt: "0",
@@ -95,20 +93,16 @@ const Borrow = () => {
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 
-  const { data: hash, writeContract } = useWriteContract()
+  const { data: hash, writeContract, error: writeError } = useWriteContract()
   const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
-  useEffect(() => {
-    if (isLoading) {
-      setIsModalVisible(false);
-      setLoadingMessage("Waiting for transaction to confirm..");
-      setLoadingModalVisible(true);
-    } else if (isSuccess) {
-      setLoadingMessage("Close Transcation compeleted sucessfully");
-      setLoadingModalVisible(true);
-    } else {
-      setLoadingModalVisible(false);
-    }
-  }, [isSuccess, isLoading]);
+
+  const handleClose = useCallback(() => {
+    setLoadingModalVisible(false);
+    setUserModal(false);
+    setIsModalVisible(false);
+    setTransactionRejected(false);
+    window.location.reload();
+  }, []);
 
   const troveManagerContract = getContract(
     botanixTestnet.addresses.troveManager,
@@ -128,23 +122,10 @@ const Borrow = () => {
     provider
   );
 
-  const borrowerOperationsContract = getContract(
-    botanixTestnet.addresses.borrowerOperations,
-    borrowerOperationAbi,
-    walletClient
-  );
-
   const { data: isConnected } = useWalletClient();
   const { toBigInt } = web3.utils;
   const pow20 = Decimal.pow(10, 20);
   const pow18 = Decimal.pow(10, 18);
-
-  const handleClose = () => {
-    setLoadingModalVisible(false);
-    setUserModal(false);
-    setIsModalVisible(false);
-    window.location.reload();
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -247,8 +228,8 @@ const Borrow = () => {
   );
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
+    setIsModalVisible(true)
     try {
-      setIsModalVisible(true)
       const borrowValue = Number(xBorrow);
       const collValue = Number(xCollatoral);
 
@@ -302,6 +283,8 @@ const Borrow = () => {
 
     } catch (error) {
       console.error(error, "Error");
+      setTransactionRejected(true);
+      setUserModal(true);
     }
   };
 
@@ -386,9 +369,31 @@ const Borrow = () => {
   };
 
   useEffect(() => {
+    if (writeError) {
+      console.error('Write contract error:', writeError);
+      setTransactionRejected(true);
+      setUserModal(true);
+    }
+  }, [writeError]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setIsModalVisible(false);
+      setLoadingMessage("Waiting for transaction to confirm..");
+      setLoadingModalVisible(true);
+    } else if (isSuccess) {
+      setLoadingMessage("Borrow Transaction completed successfully");
+      setLoadingModalVisible(true);
+    } else if (transactionRejected) {
+      setLoadingMessage("Transaction was rejected");
+      setLoadingModalVisible(true);
+    }
+  }, [isSuccess, isLoading, transactionRejected]);
+
+  useEffect(() => {
     const timer = setTimeout(() => {
       setShowCloseButton(true);
-    }, 90000);
+    }, 200000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -485,7 +490,7 @@ const Borrow = () => {
                       <TabPanel className="p-[2px] bg-yellow-400 text-sm title-text " header="Borrow">
                         <div className="p-5"
                           style={{ backgroundColor: "#272315" }}>
-                          <div className="flex-col  md:border md:border-yellow-400 mx-2  flex md:flex-row justify-between gap-10">
+                          <div className="flex-col mx-2  flex md:flex-row justify-between gap-10">
                             <div>
                               <div className="grid w-full max-w-sm items-start gap-2 mx-auto  p-5">
                                 <div className="relative">
@@ -666,19 +671,8 @@ const Borrow = () => {
                         </div>
                       </TabPanel>
                       <TabPanel className="p-[2px] bg-yellow-400 text-sm body-text " header="Repay">
-                        <div className="w-full h-full border p-4 border-yellow-400" style={{ backgroundColor: "#272315" }}>
-                          <Repay
-                            coll={parseFloat(entireDebtAndColl.coll)}
-                            debt={parseFloat(entireDebtAndColl.debt)}
-                            lr={lr}
-                            fetchedPrice={Number(fetchedPrice)}
-                            borrowRate={borrowRate}
-                            minDebt={minDebt}
-                            recoveryMode={recoveryMode}
-                            cCR={cCr}
-                            mCR={mCR}
-                            troveStatus={troveStatus}
-                          />
+                        <div className="w-full h-full border p-5 border-yellow-400" style={{ backgroundColor: "#272315" }}>
+                          <Repay coll={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} lr={lr} fetchedPrice={Number(fetchedPrice)} borrowRate={borrowRate} minDebt={minDebt} recoveryMode={recoveryMode} cCR={cCr} mCR={mCR} troveStatus={troveStatus} />
                         </div>
                       </TabPanel>
                       <TabPanel className="p-[2px] bg-yellow-400 text-sm title-text" header="Close">
@@ -733,8 +727,10 @@ const Borrow = () => {
                 <Image src={conf} alt="rectangle" width={150} />
                 <div className="my-5 ml-[6rem] mb-5"></div>
               </>
-            ) : loadingMessage === 'Close Transcation compeleted sucessfully' ? (
+            ) : loadingMessage === 'Borrow Transaction completed successfully' ? (
               <Image src={tick} alt="tick" width={200} />
+            ) : transactionRejected ? (
+              <Image src={rej} alt="rejected" width={140} />
             ) : (
               <Image src={conf} alt="box" width={140} />
             )}
@@ -742,10 +738,10 @@ const Borrow = () => {
             {isSuccess && (
               <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
             )}
-            {!isSuccess && showCloseButton && (
+            {(transactionRejected || (!isSuccess && showCloseButton)) && (
               <>
-                <p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
-                <Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
+                <p className="text-red-400 body-text">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+                <Button className="p-button-rounded p-button-text text-black title-text2" onClick={handleClose}>Close</Button>
               </>
             )}
           </div>

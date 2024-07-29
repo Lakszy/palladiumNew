@@ -3189,7 +3189,9 @@ sd1 {
 
 .p-knob-text {
   font-size: 19px;
-  color: #facc15 !important;
+  color: var(--text);
+  color: red !important;
+  text-emphasis-color: red !important;
   font-family: "Montech";
 }
 

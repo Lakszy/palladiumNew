@@ -1,19 +1,17 @@
 "use client";
 import { Label } from "@/components/ui/label";
-import borrowerOperationAbi from "../src/constants/abi/BorrowerOperations.sol.json";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
 import rec2 from "../../app/assets/images/rec2.gif"
 import conf from "../../app/assets/images/conf.gif"
 import tick from "../../app/assets/images/tick.gif"
 import rej from "../../app/assets/images/TxnError.gif"
-import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers, toBigInt } from "ethers";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useDebounce } from "react-use";
 import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
@@ -55,7 +53,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   const [totalColl, setTotalColl] = useState(0);
   const { isConnected } = useAccount();
   const [loadingMessage, setLoadingMessage] = useState("");
-  // const [value, setValue] = useState("0");
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const [userInputColl, setUserInputColl] = useState(0)
@@ -64,20 +61,17 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   const [staticLtv, setStaticLtv] = useState(0);
   const { data: walletClient } = useWalletClient();
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-  const { data: hash, writeContract } = useWriteContract()
+  const { data: hash, writeContract, error: writeError } = useWriteContract()
+  const [transactionRejected, setTransactionRejected] = useState(false);
   const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
-useEffect(() => {
-		if (isLoading) {
-			setIsModalVisible(false);
-			setLoadingMessage("Waiting for transaction to confirm..");
-			setLoadingModalVisible(true);
-		} else if (isSuccess) {
-			setLoadingMessage("Repay Transcation compeleted sucessfully");
-			setLoadingModalVisible(true);
-		} else {
-			setLoadingModalVisible(false);
-		}
-	}, [isSuccess, isLoading]);
+
+  const handleClose = useCallback(() => {
+    setLoadingModalVisible(false);
+    setUserModal(false);
+    setIsModalVisible(false);
+    setTransactionRejected(false);
+    window.location.reload();
+  }, []);
 
 
 
@@ -171,6 +165,7 @@ useEffect(() => {
       });
     } catch (error) {
       console.error(error, "Error");
+      setTransactionRejected(true);
       setUserModal(true)
     }
   };
@@ -244,11 +239,6 @@ useEffect(() => {
   const newLTV = ((Number(debt) * 100) / ((Number(coll) * Number(fetchedPrice)))).toFixed(2)
   const condition = (userInputColl + userInputDebt >= 1) || (parseFloat(userInputs.coll) < Number(coll)) || (parseFloat(userInputs.lusdAmount) < Number(debt));
 
-  const handleClose = () => {
-    setLoadingModalVisible(false);
-    window.location.reload()
-  };
-
   const renderHeader = () => {
     return (
       <div className="flex justify-content-between align-items-center">
@@ -258,8 +248,38 @@ useEffect(() => {
       </div>
     );
   };
+
+  useEffect(() => {
+    if (writeError) {
+      console.error('Write contract error:', writeError);
+      setTransactionRejected(true);
+      setUserModal(true);
+    }
+  }, [writeError]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setIsModalVisible(false);
+      setLoadingMessage("Waiting for transaction to confirm..");
+      setLoadingModalVisible(true);
+    } else if (isSuccess) {
+      setLoadingMessage("Close Transaction completed successfully");
+      setLoadingModalVisible(true);
+    } else if (transactionRejected) {
+      setLoadingMessage("Transaction was rejected");
+      setLoadingModalVisible(true);
+    }
+  }, [isSuccess, isLoading, transactionRejected]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCloseButton(true);
+    }, 200000);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <div className="flex-col  md:border md:border-yellow-400 mx-2  flex md:flex-row justify-between gap-10">
+    <div className="flex-col mx-2  flex md:flex-row justify-between gap-10">
       <div>
         <div className="grid w-full space-y-6 max-w-sm items-start gap-2 mx-auto p-5 px-8">
           <div className="relative">
@@ -288,7 +308,7 @@ useEffect(() => {
                 )}
               </span>
             </div>
-            <div className="flex w-full p-1 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-2">
+            <div className="flex w-full p-1 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 ">
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
@@ -448,8 +468,10 @@ useEffect(() => {
                 <Image src={conf} alt="rectangle" width={150} />
                 <div className="my-5 ml-[6rem] mb-5"></div>
               </>
-            ) : loadingMessage === 'Repay Transcation compeleted sucessfully' ? (
+            ) : loadingMessage === 'Close Transaction completed successfully' ? (
               <Image src={tick} alt="tick" width={200} />
+            ) : transactionRejected ? (
+              <Image src={rej} alt="rejected" width={140} />
             ) : (
               <Image src={conf} alt="box" width={140} />
             )}
@@ -457,10 +479,10 @@ useEffect(() => {
             {isSuccess && (
               <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
             )}
-            {!isSuccess && showCloseButton && (
+            {(transactionRejected || (!isSuccess && showCloseButton)) && (
               <>
-                <p>Some Error Occurred On Network Please Try Again After Some Time.. 🤖</p>
-                <Button className="p-button-rounded p-button-text" onClick={handleClose}>Close</Button>
+                <p className="text-red-400 body-text">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+                <Button className="p-button-rounded p-button-text text-black title-text2" onClick={handleClose}>Close</Button>
               </>
             )}
           </div>

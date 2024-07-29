@@ -83,7 +83,6 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
     } catch (error) {
       console.error('Error sending transaction:', error);
       setTransactionRejected(true);
-      setUserModal(true);
     }
   };
 
