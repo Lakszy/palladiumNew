@@ -137,7 +137,7 @@ function NavBar() {
                     </h1>
                   </div>
                 </div>
-                <div className="items-center flex gap-x-2">
+                {/* <div className="items-center flex gap-x-2">
                   <Image src={recv} alt="btc" width={40} />
                   <div>
                     <h1 className="text-white title-text2 text-xs">Recovery Mode</h1>
@@ -145,7 +145,7 @@ function NavBar() {
                       {isRecoveryMode ? "Yes" : "No"}
                     </h1>
                   </div>
-                </div>
+                </div> */}
               </>
             )}
           </div>

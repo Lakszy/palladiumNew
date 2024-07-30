@@ -160,7 +160,7 @@ export const StabilityPool = () => {
 						</div>
 					</div>
 				</div>
-				<span className={"ml-[57%] md:ml-[69%] body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-gray-400")}>
+				<span className={"ml-[57%] md:ml-[65%] body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-gray-400")}>
 					{isDataLoading ? (
 						<div className="text-left w-full  h-2">
 							<div className="hex-loader"></div>
@@ -232,7 +232,7 @@ export const StabilityPool = () => {
 						{(transactionRejected || (!isSuccess && showCloseButton)) && (
 							<>
 								<p className="body-text text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-								<Button className=" mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
+								<Button className=" mt-1 p-3 text-black hover:bg-yellow-400 title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
 							</>
 						)}
 					</div>

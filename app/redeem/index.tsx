@@ -163,7 +163,7 @@ export default function Redeem() {
                 args: [partialRedemptionNewICR, approxPartialRedemptionHintString, approxPartialRedemptionHintString]
             })
 
-            const maxFee = "6".concat("0".repeat(13));
+            const maxFee = "5".concat("0".repeat(17));
 
             const x = await neTrove.redeemCollateral(
                 truncatedLUSDAmount,
@@ -237,7 +237,7 @@ export default function Redeem() {
                                 className="bg-[#3b351b] body-text w-[20rem] md:w-full text-lg h-14 border border-yellow-300 text-white "
                             />
                         </div>
-                        <span className=" ml-[56%] md:ml-[66%] body-text  font-medium balance ">
+                        <span className=" ml-[56%] md:ml-[64%] body-text  font-medium balance ">
                             {isLoading ?
                                 (<div className="-mt-6 h-3 rounded-xl">
                                     <div className="hex-loader"></div>

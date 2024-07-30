@@ -281,19 +281,24 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   return (
     <div className="flex-col mx-2  flex md:flex-row justify-between gap-10">
       <div>
-        <div className="grid w-full space-y-6 max-w-sm items-start gap-2 mx-auto p-5 px-8">
+        <div className="grid w-full  max-w-sm items-start gap-2 mx-auto  p-5">
+          {/* <div className="grid w-full border space-y-6 max-w-sm items-start gap-2 mx-auto p-5 px-8"> */}
           <div className="relative">
-            <Label htmlFor="quantity" className="text-[#84827a] font-medium md:-ml-0 -ml-10 body-text text-base">
+            <Label htmlFor="quantity" className="text-[#84827a] font-medium md:-ml-0 mb-2 -ml-10 body-text text-base">
               Repay PUSD
             </Label>
-            <div className="flex items-center w-[18rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "bg-transparent" }}>
+            <div className="flex items-center mt-4 w-[18rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "bg-transparent" }}>
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img4} alt="home" className='ml-1' />
                 <h3 className='text-white body-text font-medium hidden md:block ml-1 text-sm'>PUSD</h3>
                 <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
               </div>
-              <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.lusdAmount} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }}
-                className="ml-1 w-full h-[4rem] font-medium body-text text-sm whitespace-nowrap text-white" style={{ backgroundColor: "#272315" }} />
+              <input id="items" placeholder='Enter Collateral Amount'
+                disabled={!isConnected}
+                value={userInputs.lusdAmount}
+                onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }}
+                className="body-text text-sm whitespace-nowrap h-[4rem] text-white" style={{ backgroundColor: "#272315" }}
+              />
             </div>
             <div className="flex flex-col md:flex-row gap-x-5  justify-between">
               <span className="text-white items-center gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
@@ -360,10 +365,10 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
           </button>
         </div>
       </div>
-      <div className={`px-1 md:px-5 md:w-fit md:h-[20rem] ${condition ? 'p-4' : 'p-16'} md:pt-12 mx-2 md:mx-4 md:mt-10 text-sm`}
+      <div className={`px-1  w-[18rem] -ml-4 md:px-9 md:w-full md:h-[18rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
         style={{ backgroundColor: "#2e2a1c" }}>
         <div className="mb-4  space-y-4">
-          <div className="flex md:gap-x-20 text-white md:flex-row flex-col  justify-between">
+          <div className="flex md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
             <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
             <span className="text-xs whitespace-nowrap body-text">
               <div className="flex items-center gap-x-2.5">
@@ -374,7 +379,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                   <>
                     <span className="text-yellow-300 text-lg">
                       <FaArrowRightLong />
-                      {/* {`-->`} */}
                     </span>
                     <span className={`overflow-x-clip text-sm body-text font-medium w-28 p-1 ${ltv > (100 / Number(divideBy)) ? 'text-red-500' : ''}`}>{" "}{Number(ltv).toFixed(2)} %</span>
                   </>
@@ -382,7 +386,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               </div>
             </span>
           </div>
-          <div className="flex text-white mb-2 md:flex-row flex-col  justify-between">
+          <div className="flex text-white mb-2 md:flex-row flex-col  items-center  justify-between">
             <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
             <span className="body-text text-xs whitespace-nowrap">
               <div className="flex items-center gap-x-2.5">
@@ -400,7 +404,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               </div>
             </span>
           </div>
-          <div className="flex text-white mb-2 md:flex-row flex-col justify-between">
+          <div className="flex text-white mb-2 md:flex-row flex-col  items-center justify-between">
             <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Total Debt</span>
             <span className="body-text text-xs whitespace-nowrap">
               <div className="flex items-center gap-x-2">
@@ -418,7 +422,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               </div>
             </span>
           </div>
-          <div className="flex text-white mb-2 md:flex-row flex-col  justify-between">
+          <div className="flex text-white mb-2 md:flex-row flex-col items-center  justify-between">
             <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium">Total Collateral</span>
             <span className="body-text text-xs whitespace-nowrap">
               <div className="flex items-center gap-x-2">
@@ -480,11 +484,11 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
             )}
             {(transactionRejected || (!isSuccess && showCloseButton)) && (
-              <>
-                <p className="text-red-400 body-text">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                <Button className="p-button-rounded p-button-text text-black title-text2" onClick={handleClose}>Close</Button>
-              </>
-            )}
+							<>
+								<p className="body-text text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+								<Button className=" mt-1 p-3 text-black title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
+							</>
+						)}
           </div>
         </div>
       </Dialog>

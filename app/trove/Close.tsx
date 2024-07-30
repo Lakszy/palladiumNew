@@ -1,5 +1,4 @@
 "use client";
-import borrowerOperationAbi from "../src/constants/abi/BorrowerOperations.sol.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
@@ -16,7 +15,7 @@ import tick from "../assets/images/tick.gif"
 import "../../app/App.css"
 import "./closed.css"
 import "../../components/stabilityPool/Modal.css"
-import { Button } from "primereact/button";
+import { Button } from "@/components/ui/button";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 
 interface Props {
@@ -54,7 +53,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
     setIsModalVisible(false);
     setTransactionRejected(false);
     window.location.reload();
-  },[]);
+  }, []);
 
   const fetchPrice = useCallback(async () => {
     if (!address) return;
@@ -207,11 +206,11 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
               <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
             )}
             {(transactionRejected || (!isSuccess && showCloseButton)) && (
-              <>
-                <p className="text-red-400 body-text">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                <Button className="p-button-rounded p-button-text text-black title-text2" onClick={handleClose}>Close</Button>
-              </>
-            )}
+							<>
+								<p className="body-text text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+								<Button className=" mt-1 p-3 text-black title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
+							</>
+						)}
           </div>
         </div>
       </Dialog>

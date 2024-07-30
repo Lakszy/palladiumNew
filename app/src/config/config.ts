@@ -24,7 +24,7 @@ const botanixChain: Chain = {
 		},
 	},
 };
-const sepoliaChain: Chain = {
+ export const sepoliaChain: Chain = {
 	id: 11155111,
 	name: "Sepolia Testnet",
 	iconUrl: "/img/b2.png",

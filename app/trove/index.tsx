@@ -397,7 +397,7 @@ const Borrow = () => {
     return () => clearTimeout(timer);
   }, []);
 
-
+  const marginClass = parseFloat(userInputs.depositCollateral) > 0 ? 'md:-ml-[7rem]' : 'md:-ml-[5rem]';
   return (
     <div>
       {isLoading ? (
@@ -492,7 +492,7 @@ const Borrow = () => {
                           style={{ backgroundColor: "#272315" }}>
                           <div className="flex-col mx-2  flex md:flex-row justify-between gap-10">
                             <div>
-                              <div className="grid w-full max-w-sm items-start gap-2 mx-auto  p-5">
+                              <div className="grid w-full  max-w-sm items-start gap-2 mx-auto  p-5">
                                 <div className="relative">
                                   <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-10 ">
                                     Deposit Collatoral
@@ -500,7 +500,7 @@ const Borrow = () => {
                                   <div className="flex items-center mt-4 w-[18rem] md:w-[24rem] md:-ml-0 -ml-9  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] '>
                                       <Image src={img3} alt="home" className='ml-1' />
-                                      <h3 className='text-white body-text ml-1 hidden md:block'>BTC</h3>
+                                      <h3 className='text-white body-text  hidden md:block'>BTC</h3>
                                       <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
                                     </div>
                                     <div className=" justify-between items-center flex gap-x-24">
@@ -512,7 +512,7 @@ const Borrow = () => {
                                         }}
                                         className="body-text text-sm whitespace-nowrap ml-1 h-[4rem] text-white" style={{ backgroundColor: "#272315" }}
                                       />
-                                      <span className="text-sm body-text -ml-36 md:-ml-[6rem]">
+                                      <span className={`text-sm body-text -ml-36 ${marginClass}`}>
                                         ${totalCollateral.toFixed(2)}
                                       </span>
                                     </div>
@@ -542,9 +542,19 @@ const Borrow = () => {
                                     <div className='flex items-center h-[3.5rem] mx-1'>
                                       <Image src={img4} alt="home" className='ml-1' />
                                       <h3 className='text-white body-text ml-1 hidden md:block '>PUSD</h3>
-                                      <h3 className='h-full border  border-yellow-300  text-yellow-300 mx-4'></h3>
+                                      <h3 className='h-full border  border-yellow-300 mx-5  text-yellow-300'></h3>
                                     </div>
-                                    <input id="quantity" placeholder="Enter Borrow Amount" value={Math.trunc(Number(userInputs.borrow) * 100) / 100} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue, }); }} className="w-[23.75rem] ml-1 h-[4rem] body-text text-sm whitespace-nowrap text-white" style={{ backgroundColor: "#272315" }} />
+                                    <input id="items" placeholder='Enter Collateral Amount'
+                                      disabled={!isConnected} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
+                                      onChange={(e) => { const newBorrowValue = e.target.value; 
+                                        setUserInputs({ ...userInputs, borrow: newBorrowValue, }); 
+                                      }}
+                                      className="body-text text-sm whitespace-nowrap h-[4rem] text-white" style={{ backgroundColor: "#272315" }}
+                                    />
+                                    {/* <input id="quantity" placeholder="Enter Borrow Amount" value={Math.trunc(Number(userInputs.borrow) * 100) / 100} 
+                                    onChange={(e) => { const newBorrowValue = e.target.value; 
+                                    setUserInputs({ ...userInputs, borrow: newBorrowValue, }); }} 
+                                    className="w-[23.75rem] ml-1 h-[4rem] body-text text-sm whitespace-nowrap text-white" style={{ backgroundColor: "#272315" }} /> */}
                                   </div>
                                   <div className="flex flex-col mt-[10px] gap-x-5 justify-between">
                                     <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
@@ -572,20 +582,20 @@ const Borrow = () => {
                                   </div>
                                   <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
                                     className={`mt-5 md:-ml-0 -ml-6 w-full title-text h-[3rem]
-                                   ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
+                                   ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
                                         ? 'bg-yellow-300 text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-yellow-300  text-black'}`}
-                                    disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
+                                    disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
                                     UPDATE TROVE
                                   </button>
                                 </div>
                               </div>
                             </div>
-                            <div className={`px-1  w-[18rem] -ml-4 md:px-9 md:w-fit md:h-[20rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
+                            <div className={`px-1  w-[18rem] -ml-4 md:px-9 md:w-full md:h-[18rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
                               style={{ backgroundColor: "#2e2a1c" }}>
                               <div className="mb-4 space-y-4">
-                                <div className="flex md:flex-row flex-col md:gap-x-10 text-white mb-2 justify-between">
+                                <div className="flex md:flex-row flex-col md:gap-x-10  items-center text-white mb-2 justify-between">
                                   <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
-                                  <span className="text-xs whitespace-nowrap body-text">
+                                  <span className="text-xs whitespace-nowrap  body-text">
                                     <div className="flex items-center gap-x-2.5">
                                       <span className=" w-28 p-1 body-text font-medium">
                                         {Number(newLTV).toFixed(2)} %
@@ -601,7 +611,7 @@ const Borrow = () => {
                                     </div>
                                   </span>
                                 </div>
-                                <div className="flex  text-white mb-2 justify-between  md:flex-row flex-col">
+                                <div className="flex  text-white mb-2 justify-between  items-center  md:flex-row flex-col">
                                   <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
                                   <span className="body-text text-xs whitespace-nowrap">
                                     <div className="flex items-center gap-x-2.5">
@@ -619,7 +629,7 @@ const Borrow = () => {
                                     </div>
                                   </span>
                                 </div>
-                                <div className="flex  text-white mb-2 justify-between  md:flex-row flex-col">
+                                <div className="flex  text-white mb-2  items-center justify-between  md:flex-row flex-col">
                                   <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium  md:flex-row flex-col">Total Debt</span>
                                   <span className="body-text text-xs whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
@@ -637,7 +647,7 @@ const Borrow = () => {
                                     </div>
                                   </span>
                                 </div>
-                                <div className="flex  text-white mb-2  md:flex-row flex-col justify-between">
+                                <div className="flex  text-white mb-2  items-center md:flex-row flex-col justify-between">
                                   <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Total Collateral</span>
                                   <span className="body-text text-xs whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
@@ -658,7 +668,7 @@ const Borrow = () => {
                               </div>
                               {userInputDebt == 1 && (
                                 <div className=" space-y-4">
-                                  <div className="flex  text-white mb-2  md:flex-row flex-col justify-between">
+                                  <div className="flex  text-white mb-2  md:flex-row  items-center flex-col justify-between">
                                     <span className="body-text body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Borrowing Fee</span>
                                     <span className="font-medium body-text p-1 w-28 text-xs whitespace-nowrap">
                                       {Number(borrowingFee).toFixed(2)} PUSD
@@ -739,11 +749,11 @@ const Borrow = () => {
               <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
             )}
             {(transactionRejected || (!isSuccess && showCloseButton)) && (
-              <>
-                <p className="text-red-400 body-text">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                <Button className="p-button-rounded p-button-text text-black title-text2" onClick={handleClose}>Close</Button>
-              </>
-            )}
+							<>
+								<p className="body-text text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+								<Button className=" mt-1 p-3 text-black title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
+							</>
+						)}
           </div>
         </div>
       </Dialog>
