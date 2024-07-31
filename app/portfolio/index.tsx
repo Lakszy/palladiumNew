@@ -38,7 +38,6 @@ const Portfolio = () => {
   const [staticTotalCollateral, setStaticTotalCollateral] = useState(0);
   const [staticTotalDebt, setStaticTotalDebt] = useState(0);
   const [staticCollAmount, setStaticCollAmount] = useState(0);
-  const [value, setValue] = useState("0");
   const [isLoading, setIsLoading] = useState(false)
   let totalSupply = 50;
   let suppliedAmount = 40;
@@ -262,9 +261,9 @@ const Portfolio = () => {
                           {/* <span className="text-xs text-[#565348] body-text ">YOUR LTV</span> */}
                         </div>
                       </div>
-                      <div className="text-white p-2 flex flex-row justify-between mx-[2.5rem]">
+                      <div className="text-white  -mt-5 mb-6 p-2 flex flex-row justify-between mx-[2.5rem]">
                         {" "}
-                        <div className="flex flex-col">
+                        <div className="flex  flex-col">
                           <span className="body-text font-semibold text-gray-500">Collateral</span>
                           <span className="body-text font-semibold ">{Number(entireDebtAndColl.coll).toFixed(8)} BTC</span>
                           <span className="text-xs font-semibold body-text text-gray-500">${price.toFixed(2)}</span>
@@ -280,7 +279,7 @@ const Portfolio = () => {
 
                   <div className=" lg:w-[22rem] h-auto rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
                     <div className=" flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
-                      <span className="text-white title-text2">STABILITY POOL</span>
+                      <span className="text-white title-text2 -ml-2">STaBILITY POOL</span>
                       <Link href="/stake">
                         <button className="h-8 px-6 title-text2 border-yellow-400 border bg-transparent  text-yellow-400 font-bold">
                           Details

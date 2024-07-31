@@ -448,47 +448,49 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <div className="py-5">
               <Image src={rec2} alt="box" width={140} className="" />
             </div>
-            <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
-            <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+            <div className="p-5">
+              <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+              <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+            </div>
           </div>
         </div>
       </Dialog>
       <Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
         <div className="dialog-overlay">
           <div className="dialog-content">
-            <div className="waiting-message text-lg title-text2 text-white whitespace-nowrap">Transaction rejected</div>
-            <div className="py-5">
-              <Image src={rej} alt="box" width={140} className="" />
+            <div className="p-5">
+              <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Transaction rejected</div>
+              <Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>Close</Button>
             </div>
-            <Button className="p-button-rounded title-text2 p-button-text" onClick={() => setUserModal(false)}>Close</Button>
           </div>
         </div>
       </Dialog>
       <Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
         <div className="dialog-overlay">
           <div className="dialog-content">
-            {loadingMessage === 'Waiting for transaction to confirm..' ? (
-              <>
-                <Image src={conf} alt="rectangle" width={150} />
-                <div className="my-5 ml-[6rem] mb-5"></div>
-              </>
-            ) : loadingMessage === 'Close Transaction completed successfully' ? (
-              <Image src={tick} alt="tick" width={200} />
-            ) : transactionRejected ? (
-              <Image src={rej} alt="rejected" width={140} />
-            ) : (
-              <Image src={conf} alt="box" width={140} />
-            )}
-            <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
-            {isSuccess && (
-              <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
-            )}
-            {(transactionRejected || (!isSuccess && showCloseButton)) && (
-							<>
-								<p className="body-text text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-								<Button className=" mt-1 p-3 text-black title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
-							</>
-						)}
+            <div className="p-5">
+              {loadingMessage === 'Waiting for transaction to confirm..' ? (
+                <>
+                  <Image src={conf} alt="rectangle" width={150} />
+                  <div className="my-5 ml-[6rem] mb-5"></div>
+                </>
+              ) : loadingMessage === 'Close Transaction completed successfully' ? (
+                <Image src={tick} alt="tick" width={200} />
+              ) : transactionRejected ? (
+                <Image src={rej} alt="rejected" width={140} />
+              ) : (
+                <Image src={conf} alt="box" width={140} />
+              )}
+              <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
+              {isSuccess && (
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+              )}
+              {(transactionRejected || (!isSuccess && showCloseButton)) && (
+                <>
+                  <p className="body-text text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+                  <Button className=" mt-1 p-3 text-black title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
+                </>
+              )}</div>
           </div>
         </div>
       </Dialog>

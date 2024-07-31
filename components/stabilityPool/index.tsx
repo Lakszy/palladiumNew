@@ -51,7 +51,7 @@ export const StabilityPool = () => {
 			setLoadingMessage("Waiting for transaction to confirm..");
 			setLoadingModalVisible(true);
 		} else if (isSuccess) {
-			setLoadingMessage("Sstake Transaction completed successfully");
+			setLoadingMessage("Stake Transaction completed successfully");
 			setLoadingModalVisible(true);
 		} else if (transactionRejected) {
 			setLoadingMessage("Transaction was rejected");
@@ -150,29 +150,32 @@ export const StabilityPool = () => {
 	return (
 		<div className="grid bg-[#272315] items-start h-66 gap-2 mx-auto border border-yellow-400 p-5">
 			<div className="">
-				<div className="flex items-center mb-2 mt-4 md:-ml-0 -ml-  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
-					<div className='flex  items-center h-[3.5rem] '>
+				<div className="flex items-center mb-2 mt-4 md:-ml-0 -ml- border border-yellow-300" style={{ backgroundColor: "#272315" }}>
+					<div className='flex items-center h-[3.5rem]'>
 						<Image src={img3} alt="home" className='ml-1' width={30} />
 						<h3 className='text-white body-text ml-1 hidden md:block'>PUSD</h3>
 						<h3 className='h-full border border-yellow-300 mx-3 text-yellow-300'></h3>
-						<div className=" justify-between items-center flex gap-x-24">
-							<input id="items" placeholder='Enter Collateral Amount' disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1  text-white" style={{ backgroundColor: "#272315" }} />
+						<div className="justify-between items-center flex gap-x-24">
+							<input id="items" placeholder='Enter Collateral Amount' disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1 text-white" style={{ backgroundColor: "#272315" }} />
 						</div>
 					</div>
 				</div>
-				<span className={"ml-[57%] md:ml-[65%] body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-gray-400")}>
-					{isDataLoading ? (
-						<div className="text-left w-full  h-2">
-							<div className="hex-loader"></div>
-						</div>
-					) : (
-						<span className="whitespace-nowrap body-text">
-							<span className="text-gray-400 body-text">	Wallet:{" "}</span>
-							{Math.trunc(Number(pusdBalance) * 100) / 100} PUSD
-						</span>
-					)}
-				</span>
-				{/* )} */}
+				<div className="flex justify-end">
+					<span className={"body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-gray-400")}>
+						{isDataLoading ? (
+							<div className="mr-[82px]">
+								<div className="text-left w-full h-2">
+									<div className="hex-loader"></div>
+								</div>
+							</div>
+						) : (
+							<span className="whitespace-nowrap body-text">
+								<span className="text-gray-400 body-text">Wallet:{" "}</span>
+								{Math.trunc(Number(pusdBalance) * 100) / 100} PUSD
+							</span>
+						)}
+					</span>
+				</div>
 			</div>
 			<div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
 				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
@@ -197,44 +200,52 @@ export const StabilityPool = () => {
 						<div className="py-5">
 							<Image src={rec2} alt="box" width={140} className="" />
 						</div>
-						<div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
-						<div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+						<div className="p-5">
+							<div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+							<div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+						</div>
 					</div>
 				</div>
 			</Dialog>
 			<Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
 				<div className="dialog-overlay">
 					<div className="dialog-content">
-						<div className="waiting-message text-lg title-text text-white whitespace-nowrap">Transaction rejected</div>
-						<Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>Close</Button>
+						<div className="p-5">
+							<div className="waiting-message text-lg title-text text-white whitespace-nowrap">Transaction rejected</div>
+							<Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>Close</Button>
+						</div>
 					</div>
 				</div>
 			</Dialog>
 			<Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
 				<div className="dialog-overlay">
 					<div className="dialog-content">
-						{loadingMessage === 'Waiting for transaction to confirm..' ? (
-							<>
-								<Image src={conf} alt="rectangle" width={150} />
-								<div className="my-5 ml-[6rem] mb-5"></div>
-							</>
-						) : loadingMessage === 'Stake Transaction completed successfully' ? (
-							<Image src={tick} alt="tick" width={200} />
-						) : transactionRejected ? (
-							<Image src={rej} alt="rejected" width={140} />
-						) : (
-							<Image src={conf} alt="box" width={140} />
-						)}
-						<div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
-						{isSuccess && (
-							<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
-						)}
-						{(transactionRejected || (!isSuccess && showCloseButton)) && (
-							<>
-								<p className="body-text text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-								<Button className=" mt-1 p-3 text-black hover:bg-yellow-400 title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
-							</>
-						)}
+						<div className="p-5">
+							{loadingMessage === 'Waiting for transaction to confirm..' ? (
+								<>
+									<Image src={conf} alt="rectangle" width={150} />
+									<div className="my-5 ml-[6rem] mb-5"></div>
+								</>
+							) : loadingMessage === 'Stake Transaction completed successfully' ? (
+								<Image src={tick} alt="tick" width={200} />
+							) : transactionRejected ? (
+								<Image src={rej} alt="rejected" width={140} />
+							) : (
+								<Image src={conf} alt="box" width={140} />
+							)}
+							<div className="waiting-message title-text2  text-white whitespace-nowrap">{loadingMessage}</div>
+							<div className="pb-5">
+								{isSuccess && (
+									<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+								)}
+								{(transactionRejected || (!isSuccess && showCloseButton)) && (
+									<>
+										<p className="body-text text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+										<Button className=" mt-1 p-3 text-black hover:bg-yellow-400 title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
+									</>
+								)}
+							</div>
+						</div>
 					</div>
 				</div>
 			</Dialog>
