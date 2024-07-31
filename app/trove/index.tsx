@@ -24,6 +24,7 @@ import img4 from "../assets/images/Group 666.svg";
 import rej from "../assets/images/TxnError.gif";
 import conf from "../assets/images/conf.gif"
 import rec2 from "../assets/images/rec2.gif"
+import info from "../assets/images/info.svg"
 import tick from "../assets/images/tick.gif"
 import { Knob } from "primereact/knob";
 import { TabView, TabPanel } from "primereact/tabview";
@@ -37,6 +38,7 @@ import "../../components/stabilityPool/Modal.css"
 import FullScreenLoader from "@/components/FullScreenLoader";
 import { Dialog } from "primereact/dialog";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
+import { Tooltip } from "primereact/tooltip";
 
 const Borrow = () => {
   const [userInputs, setUserInputs] = useState({
@@ -595,7 +597,22 @@ const Borrow = () => {
                               style={{ backgroundColor: "#2e2a1c" }}>
                               <div className="mb-4 space-y-4">
                                 <div className="flex md:flex-row flex-col md:gap-x-10  items-center text-white mb-2 justify-between">
-                                  <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
+                                  <div className="flex">
+                                    <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
+                                    <Image
+                                      width={15}
+                                      className="toolTipHolding ml_5"
+                                      src={info}
+                                      data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                                      alt="info"
+                                    />
+                                    <Tooltip
+                                      className="custom-tooltip title-text2"
+                                      target=".toolTipHolding"
+                                      mouseTrack
+                                      mouseTrackLeft={10}
+                                    />
+                                  </div>
                                   <span className="text-xs whitespace-nowrap  body-text">
                                     <div className="flex items-center gap-x-2.5">
                                       <span className=" w-28 p-1 body-text font-medium">
@@ -613,7 +630,22 @@ const Borrow = () => {
                                   </span>
                                 </div>
                                 <div className="flex  text-white mb-2 justify-between  items-center  md:flex-row flex-col">
-                                  <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
+                                  <div className="flex">
+                                    <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
+                                    <Image
+                                      width={15}
+                                      className="toolTipHolding ml_5 "
+                                      src={info}
+                                      data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                                      alt="info"
+                                    />
+                                    <Tooltip
+                                      className="custom-tooltip title-text2"
+                                      target=".toolTipHolding"
+                                      mouseTrack
+                                      mouseTrackLeft={10}
+                                    />
+                                  </div>
                                   <span className="body-text text-xs whitespace-nowrap">
                                     <div className="flex items-center gap-x-2.5">
                                       <span className=" w-28 body-text font-medium p-1">
@@ -631,7 +663,22 @@ const Borrow = () => {
                                   </span>
                                 </div>
                                 <div className="flex  text-white mb-2  items-center justify-between  md:flex-row flex-col">
-                                  <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium  md:flex-row flex-col">Total Debt</span>
+                                  <div className="flex">
+                                    <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium  md:flex-row flex-col">Total Debt</span>
+                                    <Image
+                                      width={15}
+                                      className="toolTipHolding ml_5"
+                                      src={info}
+                                      data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                                      alt="info"
+                                    />
+                                    <Tooltip
+                                      className="custom-tooltip title-text2"
+                                      target=".toolTipHolding"
+                                      mouseTrack
+                                      mouseTrackLeft={10}
+                                    />
+                                  </div>
                                   <span className="body-text text-xs whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
                                       <span className="w-28 p-1 body-text font-medium">
@@ -649,7 +696,22 @@ const Borrow = () => {
                                   </span>
                                 </div>
                                 <div className="flex  text-white mb-2  items-center md:flex-row flex-col justify-between">
-                                  <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Total Collateral</span>
+                                  <div className="flex">
+                                    <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Total Collateral</span>
+                                    <Image
+                                      width={15}
+                                      className="toolTipHolding ml_5"
+                                      src={info}
+                                      data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                                      alt="info"
+                                    />
+                                    <Tooltip
+                                      className="custom-tooltip title-text2"
+                                      target=".toolTipHolding"
+                                      mouseTrack
+                                      mouseTrackLeft={10}
+                                    />
+                                  </div>
                                   <span className="body-text text-xs whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
                                       <span className="p-1 w-28 body-text font-medium">
@@ -670,7 +732,22 @@ const Borrow = () => {
                               {userInputDebt == 1 && (
                                 <div className=" space-y-4">
                                   <div className="flex  text-white mb-2  md:flex-row  items-center flex-col justify-between">
-                                    <span className="body-text body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Borrowing Fee</span>
+                                    <div className="flex">
+                                      <span className="body-text body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Borrowing Fee</span>
+                                      <Image
+                                        width={15}
+                                        className="toolTipHolding ml_5"
+                                        src={info}
+                                        data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                                        alt="info"
+                                      />
+                                      <Tooltip
+                                        className="custom-tooltip title-text2"
+                                        target=".toolTipHolding"
+                                        mouseTrack
+                                        mouseTrackLeft={10}
+                                      />
+                                    </div>
                                     <span className="font-medium body-text p-1 w-28 text-xs whitespace-nowrap">
                                       {Number(borrowingFee).toFixed(2)} PUSD
                                     </span>

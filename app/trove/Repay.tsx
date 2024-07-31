@@ -18,11 +18,13 @@ import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteCont
 import Image from "next/image";
 import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
+import info from "../assets/images/info.svg";
 import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import { Button } from "@/components/ui/button";
 import { Dialog } from "primereact/dialog";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
+import { Tooltip } from "primereact/tooltip";
 
 interface Props {
   coll: number;
@@ -282,7 +284,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
     <div className="flex-col mx-2  flex md:flex-row justify-between gap-10">
       <div>
         <div className="grid w-full  max-w-sm items-start gap-2 mx-auto  p-5">
-          {/* <div className="grid w-full border space-y-6 max-w-sm items-start gap-2 mx-auto p-5 px-8"> */}
           <div className="relative">
             <Label htmlFor="quantity" className="text-[#84827a] font-medium md:-ml-0 mb-2 -ml-10 body-text text-base">
               Repay PUSD
@@ -369,7 +370,22 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
         style={{ backgroundColor: "#2e2a1c" }}>
         <div className="mb-4  space-y-4">
           <div className="flex md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
-            <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
+            <div className="flex">
+              <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
+              <Image
+                width={15}
+                className="toolTipHolding ml_5"
+                src={info}
+                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                alt="info"
+              />
+              <Tooltip
+                className="custom-tooltip title-text2"
+                target=".toolTipHolding"
+                mouseTrack
+                mouseTrackLeft={10}
+              />
+            </div>
             <span className="text-xs whitespace-nowrap body-text">
               <div className="flex items-center gap-x-2.5">
                 <span className=" w-28 p-1 font-medium body-text ">
@@ -387,7 +403,22 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </span>
           </div>
           <div className="flex text-white mb-2 md:flex-row flex-col  items-center  justify-between">
-            <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
+            <div className="flex">
+              <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
+              <Image
+                width={15}
+                className="toolTipHolding ml_5"
+                src={info}
+                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                alt="info"
+              />
+              <Tooltip
+                className="custom-tooltip title-text2"
+                target=".toolTipHolding"
+                mouseTrack
+                mouseTrackLeft={10}
+              />
+            </div>
             <span className="body-text text-xs whitespace-nowrap">
               <div className="flex items-center gap-x-2.5">
                 <span className="p-1 font-medium body-text  w-28">
@@ -405,10 +436,25 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </span>
           </div>
           <div className="flex text-white mb-2 md:flex-row flex-col  items-center justify-between">
-            <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Total Debt</span>
+            <div className="flex">
+              <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Total Debt</span>
+              <Image
+                width={15}
+                className="toolTipHolding ml_5 -mt-[5px]"
+                src={info}
+                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                alt="info"
+              />
+              <Tooltip
+                className="custom-tooltip title-text2"
+                target=".toolTipHolding"
+                mouseTrack
+                mouseTrackLeft={10}
+              />
+            </div>
             <span className="body-text text-xs whitespace-nowrap">
               <div className="flex items-center gap-x-2">
-                <span className="p-1 w-28 body-text  font-medium">
+                <span className="p-1 w-28 body-text font-medium">
                   {Number(debt).toFixed(2)} PUSD
                 </span>
                 {(userInputDebt == 1) && (parseFloat(userInputs.lusdAmount) < Number(debt)) && (
@@ -423,7 +469,22 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </span>
           </div>
           <div className="flex text-white mb-2 md:flex-row flex-col items-center  justify-between">
-            <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium">Total Collateral</span>
+            <div className="flex">
+              <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium">Total Collateral</span>
+              <Image
+                width={15}
+                className="toolTipHolding ml_5 "
+                src={info}
+                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                alt="info"
+              />
+              <Tooltip
+                className="custom-tooltip title-text2"
+                target=".toolTipHolding"
+                mouseTrack
+                mouseTrackLeft={10}
+              />
+            </div>
             <span className="body-text text-xs whitespace-nowrap">
               <div className="flex items-center gap-x-2">
                 <span className="p-1 body-text font-medium w-28">

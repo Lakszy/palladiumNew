@@ -2884,8 +2884,14 @@ nav ul {
 }
 
 .custom-tooltip {
-  max-width: fit-content !important;
+  max-width: 10rem !important;
   height: 1rem !important;
+}
+
+.p-tooltip-text{
+  font-family: "Montserrat";
+  font-weight: 400;
+  font-size: small;
 }
 
 .margBotSide {

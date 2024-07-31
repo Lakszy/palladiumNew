@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import pusdbtc from "../app/assets/images/PUSD.svg";
 import btc from "../app/assets/images/btclive.svg";
-import recv from "../app/assets/images/RecoveryMode.svg";
+import info from "../app/assets/images/info.svg";
 import collR from "../app/assets/images/mode.svg";
 import { CustomConnectButton } from "./connectBtn";
 import "../app/App.css";
@@ -132,20 +132,26 @@ function NavBar() {
                       <h1 className="text-gray-400 body-text -mt-[4px] text-[10px]">(Normal Mode)</h1>
                       <Tooltip>1</Tooltip>
                     </div>
-                    <h1 className="text-gray-400 text-sm title-text2 ">
-                      {(systemCollRatio * 100).toFixed(2)} %
-                    </h1>
+                    <div className="flex">
+
+                      <h1 className="text-gray-400 text-sm title-text2 ">
+                        {(systemCollRatio * 100).toFixed(2)} %
+                      </h1>
+                      <Image
+                        className="toolTipHolding ml_5 title-text2"
+                        src={info}
+                        data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                        alt="info"
+                      />
+                      <Tooltip
+                        className="custom-tooltip title-text2"
+                        target=".toolTipHolding"
+                        mouseTrack
+                        mouseTrackLeft={10}
+                      />
+                    </div>
                   </div>
                 </div>
-                {/* <div className="items-center flex gap-x-2">
-                  <Image src={recv} alt="btc" width={40} />
-                  <div>
-                    <h1 className="text-white title-text2 text-xs">Recovery Mode</h1>
-                    <h1 className="text-gray-400 text-sm title-text2 ">
-                      {isRecoveryMode ? "Yes" : "No"}
-                    </h1>
-                  </div>
-                </div> */}
               </>
             )}
           </div>

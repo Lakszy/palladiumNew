@@ -14,6 +14,7 @@ import { BOTANIX_RPC_URL } from "../app/src/constants/botanixRpcUrl";
 import CHART from "../app/assets/images/CHART.png";
 import { getContract } from "@/app/src/utils/getContract";
 import giftBox from "../app/assets/images/giftBox.svg";
+import info from "../app/assets/images/info.svg";
 import setPUSD from "../app/assets/images/setPUSD.png";
 import PUSDglass from "../app/assets/images/PUSDglass.png";
 import PUSDexc from "../app/assets/images/PUSDexc.png";
@@ -32,6 +33,7 @@ import { CustomConnectButton } from "./connectBtn";
 import ProgBar from "./ProgBar";
 import NFT2 from "./NFT2/page";
 import "../app/App.css"
+import { Tooltip } from "primereact/tooltip";
 interface Task {
   rewardType: string;
   rewardValue: string | number;
@@ -304,7 +306,22 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   <div className="flex gap-x-[6rem]">
                     <Image src={btc} alt="coin" />
                     <div className=" flex flex-col">
-                      <h1 className="text-gray-500 text-sm title-text2">Collateral</h1>
+                      <div className="flex ">
+                        <h1 className="text-gray-500 text-sm title-text2">Collateral</h1>
+                        <Image
+                          width={15}
+                          className="toolTipHolding ml_5 -mt-[3px]"
+                          src={info}
+                          data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                          alt="info"
+                        />
+                        <Tooltip
+                          className="custom-tooltip title-text2"
+                          target=".toolTipHolding"
+                          mouseTrack
+                          mouseTrackLeft={10}
+                        />
+                      </div>
                       <h1 className="text-gray-100 text-sm  title-text2">
                         {isStateLoading ?
                           (
@@ -318,7 +335,21 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   <div className="flex gap-x-[4.4rem]">
                     <Image src={doubleCoin} alt="coin" />
                     <div className=" flex flex-col">
-                      <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
+                      <div className="flex">
+                        <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
+                        <Image
+                        width={15}
+                          className="toolTipHolding ml_5 -mt-[2px]"
+                          src={info}
+                          data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                          alt="info"
+                        />
+                        <Tooltip
+                          target=".toolTipHolding"
+                          mouseTrack
+                          mouseTrackLeft={10}
+                        />
+                      </div>
                       <h1 className="text-gray-100 text-sm title-text2">
                         {isStateLoading ?
                           (<div className="text-left w-full -mt-6 h-2">
@@ -331,7 +362,22 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   <div className="flex gap-x-[5.6rem]">
                     <Image src={tripleCoin} alt="coin" />
                     <div className=" flex flex-col">
-                      <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>
+                      <div className="flex">
+                        <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>
+                        <Image
+                          width={15}
+                          className="toolTipHolding ml_5 -mt-[3px]"
+                          src={info}
+                          data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                          alt="info"
+                        />
+                        <Tooltip
+                          className="custom-tooltip title-text2"
+                          target=".toolTipHolding"
+                          mouseTrack
+                          mouseTrackLeft={10}
+                        />
+                      </div>
                       <h1 className="text-gray-100 text-sm title-text2">
                         {isStateLoading ?
                           (<div className="text-left w-full -mt-6 h-2">

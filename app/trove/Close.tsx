@@ -9,6 +9,7 @@ import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteCont
 import { Dialog } from 'primereact/dialog';
 import Image from "next/image";
 import rej from "../assets/images/TxnError.gif";
+import info from "../assets/images/info.svg";
 import conf from "../assets/images/conf.gif"
 import rec2 from "../assets/images/rec2.gif"
 import tick from "../assets/images/tick.gif"
@@ -17,6 +18,7 @@ import "./closed.css"
 import "../../components/stabilityPool/Modal.css"
 import { Button } from "@/components/ui/button";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
+import { Tooltip } from "primereact/tooltip";
 
 interface Props {
   entireDebtAndColl: number;
@@ -129,19 +131,79 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
       <div className="relative text-white text-base flex flex-col gap-2 p-10">
         <div className="space-y-7">
           <div className="flex md:gap-52 justify-between">
-            <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Collateral</span>
+            <span className="flex">
+              <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Collateral</span>
+              <Image
+                width={15}
+                className="toolTipHolding ml_5 -mt-[3px]"
+                src={info}
+                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                alt="info"
+              />
+              <Tooltip
+                className="custom-tooltip title-text2"
+                target=".toolTipHolding"
+                mouseTrack
+                mouseTrackLeft={10}
+              />
+            </span>
             {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(8)} BTC</span>}
           </div>
           <div className="flex justify-between">
-            <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Debt</span>
+            <div className="flex">
+              <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Debt</span>
+              <Image
+                width={15}
+                className="toolTipHolding ml_5 -mt-[5px]"
+                src={info}
+                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                alt="info"
+              />
+              <Tooltip
+                className="custom-tooltip title-text2"
+                target=".toolTipHolding"
+                mouseTrack
+                mouseTrackLeft={10}
+              />
+            </div>
             {Number(debt) <= 0 ? "---" : <span className="body-text md:mr-0 mr-4 font-medium">{Number(debt).toFixed(2)} PUSD</span>}
           </div>
           <div className="flex justify-between">
-            <span className="md:ml-0 ml-1 text-sm body-text font-medium text-[#84827a]">Liquidation Reserve</span>
+            <div className="flex">
+              <span className="md:ml-0 ml-1 text-sm body-text font-medium text-[#84827a]">Liquidation Reserve</span>
+              <Image
+                width={15}
+                className="toolTipHolding ml_5 -mt-[px]"
+                src={info}
+                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                alt="info"
+              />
+              <Tooltip
+                className="custom-tooltip title-text2"
+                target=".toolTipHolding"
+                mouseTrack
+                mouseTrackLeft={10}
+              />
+            </div>
             {Number(liquidationReserve) <= 0 ? "--" : <span className="body-text md:mr-0 mr-4 font-medium text-sm">{Number(liquidationReserve).toFixed(2)} PUSD</span>}
           </div>
           <div className="flex justify-between">
-            <span className="body-text font-medium text-[#84827a] text-sm ml-1 md:ml-0">Wallet Balance</span>
+            <div className="flex">
+              <span className="body-text font-medium text-[#84827a] text-sm ml-1 md:ml-0">Wallet Balance</span>
+              <Image
+                width={15}
+                className="toolTipHolding ml_5 "
+                src={info}
+                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                alt="info"
+              />
+              <Tooltip
+                className="custom-tooltip title-text2"
+                target=".toolTipHolding"
+                mouseTrack
+                mouseTrackLeft={10}
+              />
+            </div>
             <span className="body-text font-medium text-sm mr-4 md:mr-0">
               {afterLoad ? (
                 <div className="h-2 mr-20 text-left">
