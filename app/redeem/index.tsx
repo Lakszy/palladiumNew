@@ -309,7 +309,7 @@ export default function Redeem() {
                         ) : (
                             <Image src={conf} alt="box" width={140} />
                         )}
-                        <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
+                        <div className="waiting-message title-text2 text-white">{loadingMessage}</div>
                         {isSuccess && (
                             <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
                         )}

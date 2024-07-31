@@ -17,7 +17,8 @@ import web3 from "web3";
 import { Button } from "@/components/ui/button";
 import OpenTroveNotConnected from "./openTroveNotConnected";
 import Image from "next/image";
-import img1 from "../assets/images/Group 771.png";
+import INACTIVE from "../assets/images/INACTIVE.png";
+import ACTIVE from "../assets/images/ACTIVE.png";
 import img2 from "../assets/images/Group 663.svg";
 import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
@@ -407,8 +408,8 @@ const Borrow = () => {
       ) : (
         <Layout>
           {troveStatus === "ACTIVE" && (
-            <div style={{ backgroundColor: "#272315" }} className="p-6 ">
-              <div className=" flex flex-col md:flex-row gap-10" style={{ backgroundColor: "#2e2a1c" }}>
+            <div style={{ backgroundColor: "#272315" }} className="p-5">
+              <div className="w-[97%] ml-4 p-3 justify-between flex flex-col md:flex-row" style={{ backgroundColor: "#2e2a1c" }}>
                 <div className="p-2 px-4 ">
                   <p className=" title-text2 text-gray-500 text-base mb-4">
                     Available to borrow
@@ -421,39 +422,31 @@ const Borrow = () => {
                       </h6>
                     )}
                   </div>
-                  <div className="flex flex-row justify-between mt-5 gap-4">
+                  <div className="flex -ml-5 flex-row justify-between mt-5 gap-4">
                     <div className="flex flex-col text-white  h-28 p-5" style={{ backgroundColor: "" }}>
-                      <span className="body-text font-medium text-xs text-gray-500">Collateral</span>
+                      <span className="body-text font-medium  text-gray-500">Collateral</span>
                       <span className="body-text font-medium text-xl">{Number(entireDebtAndColl.coll).toFixed(8)} BTC</span>
                       <span className="body-text font-medium text-xs  p-1 text-gray-500">${(Number(fetchedPrice) * Number(entireDebtAndColl.coll)).toFixed(2)}</span>
                     </div>
                     <div className="flex flex-col text-white w-[9rem]  h-28 p-5" style={{ backgroundColor: "" }} >
-                      <span className="body-text font-medium text-gray-500 text-xs">Debt</span>
+                      <span className="body-text font-medium text-gray-500 ">Debt</span>
                       <span className="body-text font-medium text-xl whitespace-nowrap">{Number(entireDebtAndColl.debt).toFixed(2)} PUSD</span>
                       <span className="body-text font-medium text-gray-500 text-xs">${Number(entireDebtAndColl.debt).toFixed(2)}</span>
 
                     </div>{" "}
                   </div>
                 </div>
-
                 <div className="md:w-[14rem] hidden md:block  md:h-[13rem] mt-4" style={{ backgroundColor: "" }}>
                   <div className="flex md:flex-col md:gap-x-0 gap-x-10 gap-y-14 text-white  px-5 py-4">
                     <span></span>
                     <span></span>
                     <div className="flex flex-col">
-                      <span className="text-gray-500 body-text font-medium">Trove Status</span>
-                      <div className={`mt-2 flex p-2 justify-center items-center title-text2 text-center ${troveStatus === "ACTIVE" ? 'border-lime-400 rounded-sm border title-text' : 'border-red-300 rounded-sm border title-text'}`}>
-                        {troveStatus === "ACTIVE" ? (
-                          <div className="w-4 h-4 bg-lime-500 title-text border border-lime-500 rounded-full"></div>
-                        ) : (
-                          <div className="w-4 h-4 bg-red-300 title-text border border-red-300 rounded-full"></div>
-                        )}
-                        <span className="text-lime-500 title-text2 ml-1">{troveStatus}</span>
-                      </div>
+                      <span className="text-gray-500 -mt-3  body-text font-medium">Trove Status</span>
+                      {troveStatus === "ACTIVE" ? <Image className="mt-[5px]" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                     </div>
                   </div>
                 </div>
-                <div className="md:w-[21rem] h-[13rem] mt-3 px-8 py-4" style={{ backgroundColor: "#343127" }}>
+                <div className="md:w-[25rem] h-[13rem] mt-3 px-8 py-4" style={{ backgroundColor: "#343127" }}>
                   <div className="flex justify-between text-white">
                     <div className="flex flex-col gap-y-16 ">
                       <div className="flex  p-1 flex-col">
@@ -461,7 +454,7 @@ const Borrow = () => {
                         <span className="body-text body-text">${liquidation.toFixed(2)} USD</span>
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
                       </div>
-                      <div className="flex md:hidden -mt-10  flex-col">
+                      <div className="flex md:hidden   flex-col">
                         <span className="text-gray-500 body-text">Trove Status</span>
                         <div className={`mt-2 flex p-2 justify-center items-center title-text text-center ${troveStatus === "ACTIVE" ? 'border-lime-400 rounded-sm border title-text' : 'border-red-300 rounded-sm border title-text'}`}>
                           {troveStatus === "ACTIVE" ? (
@@ -485,7 +478,7 @@ const Borrow = () => {
                   </div>
                 </div>
               </div>
-              <div className="" style={{ backgroundColor: "#272315" }}>
+              <div className=" mt-5" style={{ backgroundColor: "#272315" }}>
                 <div className="md:p-5 pt-20 flex-col flex gap-x-36">
                   <div className=" border-yellow-800">
                     <TabView className="md:-ml-0  -ml-2">
@@ -597,7 +590,7 @@ const Borrow = () => {
                               style={{ backgroundColor: "#2e2a1c" }}>
                               <div className="mb-4 space-y-4">
                                 <div className="flex md:flex-row flex-col md:gap-x-10  items-center text-white mb-2 justify-between">
-                                  <div className="flex">
+                                  <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
                                     <Image
                                       width={15}
@@ -613,9 +606,9 @@ const Borrow = () => {
                                       mouseTrackLeft={10}
                                     />
                                   </div>
-                                  <span className="text-xs whitespace-nowrap  body-text">
+                                  <span className="text-xs whitespace-nowrap w-full  body-text">
                                     <div className="flex items-center gap-x-2.5">
-                                      <span className=" w-28 p-1 body-text font-medium">
+                                      <span className=" w-28 ml-[20px] p-1 body-text  font-medium">
                                         {Number(newLTV).toFixed(2)} %
                                       </span>
                                       {userInputColl + userInputDebt >= 1 && (
@@ -630,7 +623,7 @@ const Borrow = () => {
                                   </span>
                                 </div>
                                 <div className="flex  text-white mb-2 justify-between  items-center  md:flex-row flex-col">
-                                  <div className="flex">
+                                  <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
                                     <Image
                                       width={15}
@@ -646,7 +639,7 @@ const Borrow = () => {
                                       mouseTrackLeft={10}
                                     />
                                   </div>
-                                  <span className="body-text text-xs whitespace-nowrap">
+                                  <span className="body-text text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2.5">
                                       <span className=" w-28 body-text font-medium p-1">
                                         {Number(liquidation).toFixed(2)} PUSD
@@ -663,7 +656,7 @@ const Borrow = () => {
                                   </span>
                                 </div>
                                 <div className="flex  text-white mb-2  items-center justify-between  md:flex-row flex-col">
-                                  <div className="flex">
+                                  <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium  md:flex-row flex-col">Total Debt</span>
                                     <Image
                                       width={15}
@@ -679,7 +672,7 @@ const Borrow = () => {
                                       mouseTrackLeft={10}
                                     />
                                   </div>
-                                  <span className="body-text text-xs whitespace-nowrap">
+                                  <span className="body-text text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
                                       <span className="w-28 p-1 body-text font-medium">
                                         {Number(entireDebtAndColl.debt).toFixed(2)} PUSD
@@ -696,7 +689,7 @@ const Borrow = () => {
                                   </span>
                                 </div>
                                 <div className="flex  text-white mb-2  items-center md:flex-row flex-col justify-between">
-                                  <div className="flex">
+                                  <div className="flex w-full">
                                     <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Total Collateral</span>
                                     <Image
                                       width={15}
@@ -712,7 +705,7 @@ const Borrow = () => {
                                       mouseTrackLeft={10}
                                     />
                                   </div>
-                                  <span className="body-text text-xs whitespace-nowrap">
+                                  <span className="body-text text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
                                       <span className="p-1 w-28 body-text font-medium">
                                         {Number(entireDebtAndColl.coll).toFixed(8)} BTC
@@ -824,7 +817,7 @@ const Borrow = () => {
               ) : (
                 <Image src={conf} alt="box" width={140} />
               )}
-              <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
+              <div className="waiting-message title-text2 text-white">{loadingMessage}</div>
               {isSuccess && (
                 <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
               )}

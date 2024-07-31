@@ -303,7 +303,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </div>
             <div className="flex flex-col md:flex-row gap-x-5  justify-between">
               <span className="text-white items-center gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
-                <h6 className="text-white font-medium mt-[8px] body-text text-sm">
+                <h6 className="text-gray-500 font-medium mt-[8px] body-text text-sm">
                   Available
                 </h6>
                 {Number(totalAvailableRepay) >= 0 && (
@@ -314,7 +314,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 )}
               </span>
             </div>
-            <div className="flex w-full p-1 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 ">
+            <div className="flex w-full p-1 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-2">
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
@@ -342,8 +342,10 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <div className="flex flex-col md:flex-row gap-x-5 ">
               <span className="text-white gap-x-2 flex flex-col w-full  md:-ml-0 -ml-10 ">
                 <div className="mt-[10px]">
-                  <span className={`text-sm  text-[#84827a]  font-medium body-text w-full whitespace-nowrap mt-[10px]  ${parseFloat(userInputs.coll) > newAvailColl ? 'text-red-500' : 'text-white'}`}>
+                  <span className={`text-sm text-  text-[#84827a]  font-medium body-text w-full whitespace-nowrap mt-[10px]  ${parseFloat(userInputs.coll) > newAvailColl ? 'text-red-500' : 'text-white'}`}>
+                    <span className="text-[#84827a] font-medium body-text">
                     Available
+                    </span>
                   </span>
                   <span className="text-sm ml-1  font-medium body-text">
                     {(newAvailColl).toFixed(8)}
@@ -351,14 +353,14 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 </div>
               </span>
             </div>
-            <div className="flex w-full p-1 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-2">
+            <div className="flex w-full p-1  -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-[5px]">
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
             </div>
           </div>
-          <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)} className={`mt-5 md:-ml-0 -ml-6 w-full title-text h-[3rem]
+          <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)} className={`mt-3 md:-ml-0 -ml-6 w-full title-text h-[3rem]
              ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
               ? 'bg-yellow-300 text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-yellow-300 text-black'}`}
             disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
@@ -370,7 +372,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
         style={{ backgroundColor: "#2e2a1c" }}>
         <div className="mb-4  space-y-4">
           <div className="flex md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
-            <div className="flex">
+            <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
               <Image
                 width={15}
@@ -386,9 +388,9 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 mouseTrackLeft={10}
               />
             </div>
-            <span className="text-xs whitespace-nowrap body-text">
+            <span className="text-xs w-full whitespace-nowrap body-text">
               <div className="flex items-center gap-x-2.5">
-                <span className=" w-28 p-1 font-medium body-text ">
+                <span className="w-28 p-1 font-medium body-text ">
                   {Number(newLTV).toFixed(2)} %
                 </span>
                 {(userInputColl + userInputDebt >= 1) && (parseFloat(userInputs.coll) < Number(coll)) && (parseFloat(userInputs.lusdAmount) < Number(debt)) && (
@@ -403,7 +405,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </span>
           </div>
           <div className="flex text-white mb-2 md:flex-row flex-col  items-center  justify-between">
-            <div className="flex">
+            <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
               <Image
                 width={15}
@@ -419,7 +421,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 mouseTrackLeft={10}
               />
             </div>
-            <span className="body-text text-xs whitespace-nowrap">
+            <span className="body-text text-xs w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2.5">
                 <span className="p-1 font-medium body-text  w-28">
                   {Number(liquidation).toFixed(2)} PUSD
@@ -436,11 +438,11 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </span>
           </div>
           <div className="flex text-white mb-2 md:flex-row flex-col  items-center justify-between">
-            <div className="flex">
+            <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Total Debt</span>
               <Image
                 width={15}
-                className="toolTipHolding ml_5 -mt-[5px]"
+                className="toolTipHolding ml_5"
                 src={info}
                 data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
                 alt="info"
@@ -452,7 +454,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 mouseTrackLeft={10}
               />
             </div>
-            <span className="body-text text-xs whitespace-nowrap">
+            <span className="body-text text-xs  w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2">
                 <span className="p-1 w-28 body-text font-medium">
                   {Number(debt).toFixed(2)} PUSD
@@ -469,7 +471,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </span>
           </div>
           <div className="flex text-white mb-2 md:flex-row flex-col items-center  justify-between">
-            <div className="flex">
+            <div className="flex  w-full">
               <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium">Total Collateral</span>
               <Image
                 width={15}
@@ -485,7 +487,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 mouseTrackLeft={10}
               />
             </div>
-            <span className="body-text text-xs whitespace-nowrap">
+            <span className="body-text text-xs w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2">
                 <span className="p-1 body-text font-medium w-28">
                   {Number(coll).toFixed(8)} BTC
@@ -542,7 +544,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               ) : (
                 <Image src={conf} alt="box" width={140} />
               )}
-              <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
+              <div className="waiting-message title-text2 text-white">{loadingMessage}</div>
               {isSuccess && (
                 <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
               )}

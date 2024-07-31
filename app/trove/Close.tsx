@@ -128,7 +128,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
 
   return (
     <div className="md:w-[60rem] flex md:-ml-0 w-[2rem]">
-      <div className="relative text-white text-base flex flex-col gap-2 p-10">
+      <div className="relative text-white text-base flex flex-col  gap-2 p-5 md:p-10">
         <div className="space-y-7">
           <div className="flex md:gap-52 justify-between">
             <span className="flex">
@@ -276,7 +276,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
               ) : (
                 <Image src={conf} alt="box" width={140} />
               )}
-              <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
+              <div className="waiting-message title-text2 text-white">{loadingMessage}</div>
               {isSuccess && (
                 <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
               )}

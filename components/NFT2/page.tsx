@@ -14,7 +14,7 @@ export default function NFT2() {
                 <Image src={CB} alt="circuit breaker" />
             </div>
             <div className=" flex items-center">
-                <div className="ml-[14px] flex gap-x-10">
+                <div className="ml-[14px] flex gap-x-6">
                     <div className="">
                         <div className="relative hidden md:flex mt-[3.9rem] items-center justify-center max-sm:px-5">
                             <Image src={BORDER} alt="border" height={100} width={340} className="" />

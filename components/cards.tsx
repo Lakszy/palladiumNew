@@ -20,6 +20,9 @@ import PUSDglass from "../app/assets/images/PUSDglass.png";
 import PUSDexc from "../app/assets/images/PUSDexc.png";
 import coinStack from "../app/assets/images/coinStack.png";
 import PUSDCrate from "../app/assets/images/PUSDCrate.png";
+import ACTIVE from "../app/assets/images/ACTIVE.png";
+import INACTIVE from "../app/assets/images/INACTIVE.png";
+
 import Image from "next/image";
 import { useAccount, useWalletClient } from "wagmi";
 import troveManagerAbi from "../app/src/constants/abi/TroveManager.sol.json";
@@ -200,48 +203,41 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
     <>
       <div className="w-[25rem]  md:w-full">
         <div className="title-text h-full w-full pt-10 p-10" style={{ backgroundColor: "#1C1A0F" }}>
-          <div className="w-full  md:p-5 md:h-[14rem] md:flex pl-2 justify-between md:items-center" style={{ backgroundColor: "#272315" }}>
-            <div className="flex w-[60%]   md:p-2">
+          <div className="w-full md:p-5 md:h-[15rem] flex justify-between items-center" style={{ backgroundColor: "#272315" }}>
+            <div className="flex w-[50%] md:p-2">
               <Image src={circuitBreaker} alt="text" className="-ml-8 md:-ml-16" width={1200} />
             </div>
-            <div className="w-[50%]  sticky pl-10 h-[19rem] p-2 text-white gap-y-10">
-              <div className="absolute -ml-[5rem]  md:ml-[9rem] flex items-center gap-x-2">
+            <div className="w-[40%] sticky h-[19rem] p-2 text-white gap-y-10 flex-shrink-0 flex flex-col items-end">
+              <div className="flex items-center gap-x-2">
                 <Image src={points} alt="points" className="ml-[60%] md:ml-0 mt-[15px]" />
                 <div>
                   <h6 className="text-4xl mt-1 font-light title-text2 text-yellow-300">
                     {activitiesData?.point?.toLocaleString() || '0'}
                   </h6>
-                  <h5 className="text-2xl title-text2 font-semibold  text-yellow-300">
+                  <h5 className="text-2xl title-text2 font-semibold text-yellow-300">
                     JOULES
                   </h5>
                 </div>
               </div>
-              <div className="absolute  overflow-hidden  px-6 md:p-0  h-20 md:w-[14rem] md:-ml-[3rem]  mt-[10rem] bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200">
-                <div className="flex justify-between -mt-7 ml-6 items-center">
-                  <div className="p-2 mt-5">
-                    <h5 className="text-2xl mt-[10px] md:-mt-4 title-text2 text-yellow-300">
-                      1
-                    </h5>
+              <div className="flex justify-between -mt-4 w-full">
+                <div className="flex items-center bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200 p-2 h-20">
+                  <div className="flex flex-col">
+                    <h5 className="text-2xl title-text2 text-yellow-300">1</h5>
                     <div className="flex">
                       <h6 className="text-xl text-yellow-300 title-text2">NFT</h6>
                       <h6 className="text-sm mt-[6px] text-yellow-300 title-text2">s</h6>
                     </div>
                   </div>
-                  <Image width={140} src={nft} alt="robo2" className="hidden md:block mt-2 ml-5" />
+                  <Image width={140} src={nft} alt="robo2" className="hidden md:block  mt-2 ml-5" />
                 </div>
-              </div>
-              <div className="absolute  overflow-hidden p-2 md:p-0 ml-[10rem] w-[8rem] md:ml-[12rem]  mt-[10rem] h-20 md:w-[14rem] bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200">
-                <div className="flex justify-between  -mt-8 md:-mt-7 ml-[30px] md:ml-5 items-center">
-                  <div className=" mt-[10px]">
-                    <h5 className="text-2xl mt-5 title-text2 text-yellow-300">
-                      {(activitiesData && countClaimedBadges(activitiesData)) ||
-                        0}
+                <div className="flex items-center bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200 p-3 ml-4 h-20">
+                  <div className="flex flex-col ">
+                    <h5 className="text-2xl title-text2 text-yellow-300">
+                      {(activitiesData && countClaimedBadges(activitiesData)) || 0}
                     </h5>
-                    <h6 className="text-xl text-yellow-300 title-text2">
-                      BADGES
-                    </h6>
+                    <h6 className="text-xl text-yellow-300 title-text2">BaDGES</h6>
                   </div>
-                  <Image width={90} src={badge} alt="robo2" className="hidden md:block mt-8 transform " />
+                  <Image width={120} src={badge} alt="robo2" className="hidden md:block -mt-2 ml-5" />
                 </div>
               </div>
             </div>
@@ -274,27 +270,15 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               </div>
             </div>
           </div>
-
-          <div className="w-full md:gap-y-0 gap-5 mt-10 flex flex-col md:flex-row">
-            <div className="w-full md:w-[40%] pl-1 pb-7" style={{ backgroundColor: "#272315" }}>
+          <div className="w-full md:gap-y-0 gap-[4rem] mt-10 mb-7 flex flex-col md:flex-row">
+            <div className="w-full md:w-[45%] pl-1 pb-7" style={{ backgroundColor: "#272315" }}>
               <div className="p-4  items-center flex justify-between">
                 <h1 className="title-text2 whitespace-nowrap font-semibold text-yellow-300 text-md ">
-                  TROVE STATS
+                  TROVE STaTS
                 </h1>
                 {isConnected ? (
                   <>
-                    {troveStatus === "ACTIVE" ? (
-                      <div className={`border-[3px] ml-8 title-text2 p-4 flex items-center justify-center h-10 title-text2  w-30  ${troveStatus === "ACTIVE"
-                        ? "border-green-800 title-text2 bg-green-100"
-                        : "border-red-800 title-text2 bg-red-100"
-                        }`}
-                        style={{ borderTopRightRadius: "15px" }} >
-                        {troveStatus === "ACTIVE" ? (
-                          <h6 className="w-3 h-3 rounded-full bg-green-400 mr-1"></h6>
-                        ) : (<h6 className="w-3 h-3 rounded-full bg-red-400 mr-1"></h6>)}
-                        <h6 className="title-text2 text-md">{troveStatus}</h6>
-                      </div>
-                    ) : (<></>)}
+                    {troveStatus === "ACTIVE" ? <Image className="mt-[5px]" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                   </>
                 ) : (
                   <CustomConnectButton className="" />
@@ -338,7 +322,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
                         <Image
-                        width={15}
+                          width={15}
                           className="toolTipHolding ml_5 -mt-[2px]"
                           src={info}
                           data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
@@ -462,7 +446,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               )}
             </div>
           </div>
-          <div className="pt-10  w-100%">  <NFT2 /></div>
+          <div className="pt-10  w-100%"> <NFT2 /></div>
         </div>
       </div>
     </>

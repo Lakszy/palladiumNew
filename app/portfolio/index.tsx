@@ -206,11 +206,11 @@ const Portfolio = () => {
             {troveStatus === "ACTIVE" && (
               <div className=" flex  p-6 flex-col">
                 <div className="flex flex-col md:flex-row items-center md:gap-x-0 gap-x-2 md:w-full justify-between">
-                  <div className=" ml-[1.5rem]">
+                  <div className=" md:ml-[1.5rem]">
                     <h6 className="text-[#565348] title-text text-md font-bold mt-1 mb-4">
                       Portfolio Value
                     </h6>
-                    <span className="text-white body-text text-2xl font-bold  flex justify-between">
+                    <span className="text-white body-text text-2xl font-bold  whitespace-nowrap flex justify-between">
                       ${availableToBorrow.toFixed(2)} PUSD
                     </span>
                   </div>
@@ -224,7 +224,7 @@ const Portfolio = () => {
                             <div className="w-2 rounded-full h-2 bg-yellow-400"></div>
                             <span className="body-text font-normal">Borrowed</span>
                           </div>
-                          <span className="body-text text-right font-medium">{Number(entireDebtAndColl.debt).toFixed(2)} PUSD</span>
+                          <span className="body-text text-right whitespace-nowrap font-medium">{Number(entireDebtAndColl.debt).toFixed(2)} PUSD</span>
                         </div>
                         <div className="text-white flex flex-col mt-05">
                           <div className="flex items-center gap-x-1">
@@ -238,7 +238,7 @@ const Portfolio = () => {
                   </div>
 
                 </div>
-                <div className="mt-10 py-10 my-10 flex flex-col md:flex-row justify-between gap-10 md:w-full md:p-5  p-3 w-[24rem]">
+                <div className="mt-10 py-10 my-10 flex flex-col md:flex-row justify-between gap-10 md:w-full md:p-5">
                   <div className="flex-1 lg:w-[20rem] h-auto rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
                     <div className=" flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
                       <span className="title-text2 text-white">TROVE</span>
@@ -268,10 +268,10 @@ const Portfolio = () => {
                           <span className="body-text font-semibold ">{Number(entireDebtAndColl.coll).toFixed(8)} BTC</span>
                           <span className="text-xs font-semibold body-text text-gray-500">${price.toFixed(2)}</span>
                         </div>
-                        <div className="flex  flex-col">
+                        <div className="flex  flex-col whitespace-nowrap">
                           {" "}
                           <span className="body-text font-semibold text-gray-500">Debt</span>
-                          <span className="body-text font-semibold">{Number(entireDebtAndColl.debt).toFixed(2)} PUSD</span>
+                          <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndColl.debt).toFixed(2)} PUSD</span>
                         </div>
                       </div>
                     </div>
@@ -289,12 +289,12 @@ const Portfolio = () => {
                     <div className="text-white ml-3">
                       <div className="mb-[2rem] mt-2 whitespace-nowrap">
                         <p className="body-text text-sm text-[#565348]">Deposited</p>
-                        <p className="body-text font-medium">{Number(totalStakedValue).toFixed(2)} PUSD</p>
+                        <p className="body-text font-medium whitespace-nowrap">{Number(totalStakedValue).toFixed(2)} PUSD</p>
                       </div>
                       <div className="flex flex-row gap-10">
                         <div className="flex flex-col whitespace-nowrap">
                           <span className="body-text text-sm text-[#565348]">Claimable</span>
-                          <span className="body-text font-medium">{(lr).toFixed(2)} PUSD</span>
+                          <span className="body-text font-medium whitespace-nowrap">{(lr).toFixed(2)} PUSD</span>
                         </div>
                         <Image src={macPUSD} alt="home" width={200} />
                         {/* <Image src={port2} alt="home" width={200} /> */}

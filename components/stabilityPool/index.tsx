@@ -233,7 +233,7 @@ export const StabilityPool = () => {
 							) : (
 								<Image src={conf} alt="box" width={140} />
 							)}
-							<div className="waiting-message title-text2  text-white whitespace-nowrap">{loadingMessage}</div>
+							<div className="waiting-message title-text2  text-white ">{loadingMessage}</div>
 							<div className="pb-5">
 								{isSuccess && (
 									<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
