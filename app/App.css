@@ -3423,4 +3423,6 @@ sd1 {
 .p-tooltip-text  {
   background-color: #3A3522;
   font-family: "Montserrat";
+  max-width: 9rem;
+  min-height: fit-content !important;
 }

@@ -167,7 +167,8 @@ export const StabilityStats = () => {
 							width={15}
 							className="toolTipHolding ml_5"
 							src={info}
-							data-pr-tooltip="Although the LOAN rewards accrue every minute, the value on the UI only updates when a user transacts with the Stability Pool. Therefore you may receive more rewards than is displayed when you claim or adjust your deposit."
+							data-pr-tooltip="Rewards accrue every minute, value on the UI only updates when a user transacts with the Stability Pool. 
+							Therefore you may receive more rewards than is displayed when you claim or adjust your deposit."
 							alt="info"
 						/>
 						<Tooltip
