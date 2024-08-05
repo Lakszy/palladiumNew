@@ -9,7 +9,7 @@ import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
-import { useAccount, useBalance, useWalletClient } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import web3 from "web3";
 import Link from "next/link";
 import Image from "next/image";
@@ -207,15 +207,15 @@ const Portfolio = () => {
               <div className=" flex  p-6 flex-col">
                 <div className="flex flex-col md:flex-row items-center md:gap-x-0 gap-x-2 md:w-full justify-between">
                   <div className=" md:ml-[1.5rem]">
-                    <h6 className="text-[#565348] title-text text-md font-bold mt-1 mb-4">
+                    <h6 className="text-[#565348] title-text text-md -ml-[10px] font-bold mt-1 mb-4">
                       Portfolio Value
                     </h6>
-                    <span className="text-white body-text text-2xl font-bold  whitespace-nowrap flex justify-between">
+                    <span className="text-white body-text text-2xl font-bold ml-[10px]  whitespace-nowrap flex justify-between">
                       ${availableToBorrow.toFixed(2)} PUSD
                     </span>
                   </div>
 
-                  <div className="w-5/12 h-2 -ml-[12rem] md:ml-0 md:mr-10 mt-10">
+                  <div className="w-5/12 h-2 -ml-[12rem] md:ml-0 md:mr-10 mt-10 pb-12">
                     <Progress total={totalSupply} supplied={suppliedAmount} />
                     <h1 className="text-white text-sm ">
                       <div className="flex flex-row md:gap-x-0 gap-x-28 items-center justify-between">
@@ -238,10 +238,10 @@ const Portfolio = () => {
                   </div>
 
                 </div>
-                <div className="mt-10 py-10 my-10 flex flex-col md:flex-row justify-between gap-10 md:w-full md:p-5">
+                <div className="mt-10 py-10 my-10 flex flex-col md:flex-row justify-between gap-10 md:w-full md:p-8">
                   <div className="flex-1 lg:w-[20rem] h-auto rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
-                    <div className=" flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
-                      <span className="title-text2 text-white">TROVE</span>
+                    <div className=" flex items-center flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
+                      <span className="title-text2 text-white ml-1">TROVE</span>
                       <Link href="/trove">
                         <button
                           className="h-8 px-8 border-yellow-400 text-yellow-400 border title-text2 bg-transparent  title-text font-bold">
@@ -250,7 +250,7 @@ const Portfolio = () => {
                       </Link>
                     </div>
                     <div>
-                      <div className="flex flex-col mb-2 items-center">
+                      <div className="flex flex-col mb-2  items-center">
                         <Knob value={Number(newLTV) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
                         <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
                           <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
@@ -261,9 +261,9 @@ const Portfolio = () => {
                           {/* <span className="text-xs text-[#565348] body-text ">YOUR LTV</span> */}
                         </div>
                       </div>
-                      <div className="text-white  -mt-5 mb-6 p-2 flex flex-row justify-between mx-[2.5rem]">
+                      <div className="text-white  -mt-5 mb-6 p-2 flex flex-row justify-between md:mx-[2.5rem] mx-[1.5rem]">
                         {" "}
-                        <div className="flex  flex-col">
+                        <div className="flex -ml-3 flex-col">
                           <span className="body-text font-semibold text-gray-500">Collateral</span>
                           <span className="body-text font-semibold ">{Number(entireDebtAndColl.coll).toFixed(8)} BTC</span>
                           <span className="text-xs font-semibold body-text text-gray-500">${price.toFixed(2)}</span>
@@ -278,15 +278,15 @@ const Portfolio = () => {
                   </div>
 
                   <div className=" lg:w-[22rem] h-auto rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
-                    <div className=" flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
-                      <span className="text-white title-text2 -ml-2">STaBILITY POOL</span>
+                    <div className=" flex items-center flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
+                      <span className="text-white title-text2 ">STaBILITY POOL</span>
                       <Link href="/stake">
                         <button className="h-8 px-6 title-text2 border-yellow-400 border bg-transparent  text-yellow-400 font-bold">
                           Details
                         </button>
                       </Link>
                     </div>
-                    <div className="text-white ml-3">
+                    <div className="text-white ml-3  p-3">
                       <div className="mb-[2rem] mt-2 whitespace-nowrap">
                         <p className="body-text text-sm text-[#565348]">Deposited</p>
                         <p className="body-text font-medium whitespace-nowrap">{Number(totalStakedValue).toFixed(2)} PUSD</p>

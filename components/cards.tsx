@@ -20,8 +20,8 @@ import PUSDglass from "../app/assets/images/PUSDglass.png";
 import PUSDexc from "../app/assets/images/PUSDexc.png";
 import coinStack from "../app/assets/images/coinStack.png";
 import PUSDCrate from "../app/assets/images/PUSDCrate.png";
-import ACTIVE from "../app/assets/images/ACTIVE.png";
-import INACTIVE from "../app/assets/images/INACTIVE.png";
+import ACTIVE from "../app/assets/images/ACTIVE.svg";
+import INACTIVE from "../app/assets/images/INACTIVE.svg";
 
 import Image from "next/image";
 import { useAccount, useWalletClient } from "wagmi";
@@ -37,6 +37,7 @@ import ProgBar from "./ProgBar";
 import NFT2 from "./NFT2/page";
 import "../app/App.css"
 import { Tooltip } from "primereact/tooltip";
+
 interface Task {
   rewardType: string;
   rewardValue: string | number;
@@ -202,12 +203,12 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   return (
     <>
       <div className="w-[25rem]  md:w-full">
-        <div className="title-text h-full w-full pt-10 p-10" style={{ backgroundColor: "#1C1A0F" }}>
-          <div className="w-full md:p-5 md:h-[15rem] flex justify-between items-center" style={{ backgroundColor: "#272315" }}>
-            <div className="flex w-[50%] md:p-2">
-              <Image src={circuitBreaker} alt="text" className="-ml-8 md:-ml-16" width={1200} />
+        <div className="title-text h-full w-full  pt-10 p-10" style={{ backgroundColor: "#1C1A0F" }}>
+          <div className="w-full md:p-7 md:h-[15rem] md:flex justify-between items-center" style={{ backgroundColor: "#272315" }}>
+            <div className="flex md:w-[60%] md:p-2">
+              <Image src={circuitBreaker} alt="text" className="-ml-8  md:-ml-16" />
             </div>
-            <div className="w-[40%] sticky h-[19rem] p-2 text-white gap-y-10 flex-shrink-0 flex flex-col items-end">
+            <div className="md:w-[40%] w-[60%] -ml-10 md:-ml-0 sticky h-[16rem] md:h-[19rem] p-2 text-white gap-y-10 flex-shrink-0 flex flex-col items-end">
               <div className="flex items-center gap-x-2">
                 <Image src={points} alt="points" className="ml-[60%] md:ml-0 mt-[15px]" />
                 <div>
@@ -219,7 +220,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   </h5>
                 </div>
               </div>
-              <div className="flex justify-between -mt-4 w-full">
+              <div className="md:flex justify-between hidden -mt-4 w-full">
                 <div className="flex items-center bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200 p-2 h-20">
                   <div className="flex flex-col">
                     <h5 className="text-2xl title-text2 text-yellow-300">1</h5>
@@ -241,13 +242,36 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 </div>
               </div>
             </div>
+            <div className=" md:hidden flex w-full h-10">
+              <div className="flex  justify-between -mt-[30%] p-5 w-full">
+                <div className="flex items-center bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200 p-2 h-20">
+                  <div className="flex flex-col w-[7rem]">
+                    <h5 className="text-2xl title-text2 text-yellow-300">1</h5>
+                    <div className="flex">
+                      <h6 className="text-xl text-yellow-300 title-text2">NFT</h6>
+                      <h6 className="text-sm mt-[6px] text-yellow-300 title-text2">s</h6>
+                    </div>
+                  </div>
+                  <Image width={140} src={nft} alt="robo2" className="hidden md:block  mt-2 ml-5" />
+                </div>
+                <div className="flex  items-center bg-gradient-to-r from-[#272315] to-[#3F3A21] border-yellow-200 p-3 ml-4 h-20">
+                  <div className="flex flex-col w-[7rem] ">
+                    <h5 className="text-2xl title-text2 text-yellow-300  ml-[14px]">
+                      {(activitiesData && countClaimedBadges(activitiesData)) || 0}
+                    </h5>
+                    <h6 className="text-xl text-yellow-300 title-text2">BaDGES</h6>
+                  </div>
+                  <Image width={120} src={badge} alt="robo2" className="hidden md:block -mt-2 ml-5" />
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="py-10">
-            <div className="w-full p-5 h-[20rem] mt-10 upper mr-10   items-center justify-center" style={{ backgroundColor: "#272315" }}>
-              <div className=" pt-3.5">
+          <div className="py-10 md:p-5">
+            <div className="w-full p-5 h-[20rem] mt-10 upper mr-10 items-center justify-center" style={{ backgroundColor: "#272315" }}>
+              <div className="pt-6 md:pt-3.5">
                 <ProgBar />
               </div>
-              <div className="md:mt-10  justify-between h-20 md flex gap-x-3">
+              <div className="md:mt-10 -mt-12  justify-between h-20 md flex gap-x-3">
                 <div className=" h-20 w-1/4 flex justify-between p-2">
                   <div>
                     <Image src={TargetArrow} alt="arrow" className="md:ml-6 mt-[4px]" />
@@ -263,30 +287,30 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   <div></div>
                 </div>
                 <div className=" md:w-[85%]  md:p-2">
-                  <h5 className=" title-text2 -mt-[10px]  md:mt-[5px] text-[10px] md:text-lg ml-[6rem] md:ml-[14rem] text-yellow-300">
+                  <h5 className=" title-text2 mt-[10px]  md:mt-[5px] text-[10px] md:text-lg ml-[7rem] md:ml-[14rem] text-yellow-300">
                     EaRN EXCLUSIVE REWaRDS BY COMPLETING CHaLLENGES
                   </h5>
                 </div>
               </div>
             </div>
           </div>
-          <div className="w-full md:gap-y-0 gap-[4rem] mt-10 mb-7 flex flex-col md:flex-row">
+          <div className="w-full  p-5 md:gap-y-0 gap-[4rem] mt-10 mb-7 flex flex-col md:flex-row">
             <div className="w-full md:w-[45%] pl-1 pb-7" style={{ backgroundColor: "#272315" }}>
               <div className="p-4  items-center flex justify-between">
                 <h1 className="title-text2 whitespace-nowrap font-semibold text-yellow-300 text-md ">
                   TROVE STaTS
                 </h1>
                 {isConnected ? (
-                  <>
+                  <div className="-mt-1">
                     {troveStatus === "ACTIVE" ? <Image className="mt-[5px]" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
-                  </>
+                  </div>
                 ) : (
                   <CustomConnectButton className="" />
                 )}
                 <div className="bent-corner"></div>
               </div>
               {troveStatus === "ACTIVE" ? (
-                <div className="space-y-6  ml-1 pt-12">
+                <div className="space-y-6 ml-1 pt-12">
                   <div className="flex gap-x-[6rem]">
                     <Image src={btc} alt="coin" />
                     <div className=" flex flex-col">
@@ -300,7 +324,6 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                           alt="info"
                         />
                         <Tooltip
-                          className="custom-tooltip title-text2"
                           target=".toolTipHolding"
                           mouseTrack
                           mouseTrackLeft={10}
@@ -323,9 +346,9 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                         <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
                         <Image
                           width={15}
-                          className="toolTipHolding ml_5 -mt-[2px]"
+                          className="toolTipHolding ml_5  -mt-[2px]"
                           src={info}
-                          data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                          data-pr-tooltip="Total debt taken in PUSD"
                           alt="info"
                         />
                         <Tooltip
@@ -352,7 +375,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                           width={15}
                           className="toolTipHolding ml_5 -mt-[3px]"
                           src={info}
-                          data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                          data-pr-tooltip="The total value of BTC locked as collateral in the system. Shown as total BTC and PUSD value."
                           alt="info"
                         />
                         <Tooltip
@@ -381,16 +404,16 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 </div>
               )}
             </div>
-            <div className="w-full pb-[2.5rem] h-fit" style={{ backgroundColor: "#272315" }} >
+            <div className="w-full pb-[2.5rem]  h-fit" style={{ backgroundColor: "#272315" }} >
               <div className="pt-4 pl-4 pr-4  gap-x-1 flex  justify-between">
-                <h1 className="title-text2 text-yellow-300 text-md">
+                <h1 className="title-text2 mt-[10px] text-yellow-300 text-md">
                   aCTIVITIES STaTS
                 </h1>
                 <Image src={botanixLogo} alt="logo" className="-mt-4" />
               </div>
               {isConnected ? (
-                <div className=" my-5 pb-6 md:my-0 space-y-16">
-                  <div className="w-full h-24 flex">
+                <div className=" my-5 pb-6 md:my-0 space-y-16 ">
+                  <div className="w-full h-24 flex flex-wrap">
                     <div className="flex-1 h-fit -mt-4  flex flex-col items-center justify-center text-center">
                       <Image src={PUSDCrate} alt="giftBox" />
                       <h6 className="body-text font-semibold text-sm text-gray-400">Active Deposit</h6>
@@ -446,7 +469,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               )}
             </div>
           </div>
-          <div className="pt-10  w-100%"> <NFT2 /></div>
+          <div className="pt-10 p-5 w-100%"> <NFT2 /></div>
         </div>
       </div>
     </>

@@ -11,7 +11,7 @@ export default function NFT2() {
     return (
         <div className="w-full  border-yellow-300  p-6 border items-center justify-center" style={{ backgroundColor: '#272315' }}>
             <div className="box-1 md:ml-4">
-                <Image src={CB} alt="circuit breaker" />
+                <Image src={CB} alt="circuit breaker" className="-mb-5"/>
             </div>
             <div className=" flex items-center">
                 <div className="ml-[14px] flex gap-x-6">

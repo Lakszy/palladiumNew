@@ -68,21 +68,8 @@ export const StabilityStats = () => {
 				<div className="flex justify-between py-2">
 					<div className="flex">
 						<span className="text-[#827f77] font-medium text-sm ml body-text">
-							Your Total Staking Balance
+							Your Staking Balance
 						</span>
-						<Image
-							width={15}
-							className="toolTipHolding ml_5"
-							src={info}
-							data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
-							alt="info"
-						/>
-						<Tooltip
-							className="custom-tooltip title-text2"
-							target=".toolTipHolding"
-							mouseTrack
-							mouseTrackLeft={10}
-						/>
 					</div>
 					<span className="text-white font-medium ml-7 text-sm body-text whitespace-nowrap">
 						{isLoading ? (
@@ -104,7 +91,7 @@ export const StabilityStats = () => {
 							width={15}
 							className="toolTipHolding ml_5 "
 							src={info}
-							data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+							data-pr-tooltip="The total amount of LOAN tokens staked in the Staking Pool."
 							alt="info"
 						/>
 						<Tooltip
@@ -134,7 +121,7 @@ export const StabilityStats = () => {
 							width={15}
 							className="toolTipHolding ml_5"
 							src={info}
-							data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+							data-pr-tooltip="If your pool share size is smaller than 0.000000% the system will display 0.00%."
 							alt="info"
 						/>
 						<Tooltip
@@ -164,19 +151,6 @@ export const StabilityStats = () => {
 						<span className="text-[#827f77] text-sm font-medium body-text">
 							Liquidation Gains
 						</span>
-						<Image
-							width={15}
-							className="toolTipHolding ml_5"
-							src={info}
-							data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
-							alt="info"
-						/>
-						<Tooltip
-							className="custom-tooltip title-text2"
-							target=".toolTipHolding"
-							mouseTrack
-							mouseTrackLeft={10}
-						/>
 					</div>
 					<span className="text-white font-medium text-sm body-text">
 						{liquidGains.toString()} BTC
@@ -193,7 +167,7 @@ export const StabilityStats = () => {
 							width={15}
 							className="toolTipHolding ml_5"
 							src={info}
-							data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+							data-pr-tooltip="Although the LOAN rewards accrue every minute, the value on the UI only updates when a user transacts with the Stability Pool. Therefore you may receive more rewards than is displayed when you claim or adjust your deposit."
 							alt="info"
 						/>
 						<Tooltip

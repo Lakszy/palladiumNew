@@ -99,7 +99,7 @@ function NavBar() {
       <Toast ref={toast} className="custom-toast" />
       <div className="md:flex border-2 hidden w-full border-gray-100 border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50" style={{ backgroundColor: "#272315" }}>
         <div className="flex items-center gap-x-4">
-          <div className="w-full gap-x-10 hidden md:flex rounded-xl">
+          <div className="w-full ml-[1rem] gap-x-10 hidden md:flex rounded-xl">
             <div
               className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
               onClick={handleAddToken}
@@ -130,7 +130,7 @@ function NavBar() {
                     <div className="gap-1 flex">
                       <h1 className="text-white title-text2 text-xs">SCR</h1>
                       <h1 className="text-gray-400 body-text -mt-[4px] text-[10px]">(Normal Mode)</h1>
-                      <Tooltip>1</Tooltip>
+                      {/* <Tooltip>1</Tooltip> */}
                     </div>
                     <div className="flex">
 
@@ -140,11 +140,13 @@ function NavBar() {
                       <Image
                         className="toolTipHolding ml_5 title-text2"
                         src={info}
-                        data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                        data-pr-tooltip="SCR = System Collateral Ratio and is shown as:
+1 red bar - less than 110% - recovery mode 2 orange - between 150% and 110% - recovery 3 yellow - between 200% and 150% - normal 4-6 green - above 200% - normal mode
+You can be liquidated below 150%. In order to help avoid liquidation in Normal Mode and Recovery Mode, it is strongly recommended that users keep their individual collateral ratio significantly above 150%."
                         alt="info"
                       />
                       <Tooltip
-                        className="custom-tooltip title-text2"
+                        className=" title-text2"
                         target=".toolTipHolding"
                         mouseTrack
                         mouseTrackLeft={10}

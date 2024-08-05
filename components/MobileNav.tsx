@@ -46,9 +46,9 @@ export default function MobileNav() {
     <div className="w-12 h-12 title-text flex">
       <Sidebar visible={visible} onHide={() => setVisible(false)}>
         <div className={`sidebar bg-red-90 h-full font-mono font-extrabold  w-full grid-rows-[max-content_fr_max-content] text-white`} style={{ backgroundColor: "#2c2819" }}>
-          <div className="flex items-center gap-x-1  justify-center">
+          <div className="flex items-center px-6 py-3">
             <Link href="/">
-              <Image src={logo} alt="Logo" className="mr-10 w-40" />
+              <Image src={logo} alt="Logo" className=" w-40" />
             </Link>
           </div>
           <nav className="flex flex-col gap-y-2 px-4">

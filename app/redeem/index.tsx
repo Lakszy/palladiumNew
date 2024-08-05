@@ -82,7 +82,7 @@ export default function Redeem() {
             setPusdBalance(pusdBalanceFormatted);
         };
         fetchPrice();
-    }, [erc20Contract,address]);
+    }, [erc20Contract, address]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -229,7 +229,7 @@ export default function Redeem() {
 
     return (
         <>
-            <div className=" ml-3 md:ml-12 md:w-[40%] w-[22.5rem]">
+            <div className=" ml-3  md:ml-20 md:w-[40%] w-[22.5rem]">
                 <div className="grid items-start h-[20rem] gap-x-2  mx-auto border-[2px] border-yellow-400 p-5">
                     <div>
                         <div className="flex mb-2 items-center">
@@ -237,19 +237,22 @@ export default function Redeem() {
                                 className="bg-[#3b351b] body-text w-[20rem] md:w-full text-lg h-14 border border-yellow-300 text-white "
                             />
                         </div>
-                        <span className=" ml-[56%] md:ml-[64%] body-text  font-medium balance ">
-                            {isLoading ?
-                                (<div className="-mt-6 h-3 rounded-xl">
-                                    <div className="hex-loader"></div>
-                                </div>
-                                ) : (
-                                    <span className="whitespace-nowrap -ml-2 text-white body-text">Wallet: {" "}
-                                        <span className="body-text text-sm">
-                                            {Number(pusdBalance).toFixed(2) || ".."} PUSD
+                        <div className="flex justify-end">
+                            <span className="body-text  font-medium balance ">
+                                {isLoading ?
+                                    (<div className="-mt-6 h-3 rounded-xl">
+                                        <div className="hex-loader"></div>
+                                    </div>
+                                    ) : (
+                                        <span className="whitespace-nowrap  text-gray-400 body-text">Wallet: {" "}
+                                            <span className="body-text text-sm">
+                                                {Number(pusdBalance).toFixed(2) || ".."} PUSD
+                                            </span>
                                         </span>
-                                    </span>
-                                )}
-                        </span>
+                                    )}
+                            </span>
+                        </div>
+
                     </div>
                     <div className="flex w-full justify-between">
                         <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 border-yellow-300 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
@@ -309,14 +312,14 @@ export default function Redeem() {
                         ) : (
                             <Image src={conf} alt="box" width={140} />
                         )}
-                        <div className="waiting-message title-text2 text-white">{loadingMessage}</div>
+                        <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
                         {isSuccess && (
                             <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
                         )}
                         {(transactionRejected || (!isSuccess && showCloseButton)) && (
                             <>
-                                <p className="text-red-400 body-text">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                                <Button className="p-button-rounded p-button-text text-black title-text2" onClick={handleClose}>Close</Button>
+                                <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+                                <Button className=" mt-1 p-3 hover:bg-yellow-400 rounded-none w-[20rem] text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
                             </>
                         )}
                     </div>

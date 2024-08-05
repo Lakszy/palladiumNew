@@ -41,7 +41,7 @@ export default function Home() {
                 </TabPanel>
               </TabView>
             </div>
-            <div className='md:p-0 p-5 w-[25rem]'>
+            <div className='md:p-0 p-5 mr-10 mt-8 w-[25rem]'>
             <StabilityStats />
             </div>
           </div>

@@ -256,14 +256,14 @@ export const Unstake = () => {
 								) : (
 									<Image src={conf} alt="box" width={140} />
 								)}
-								<div className="waiting-message title-text2 text-white">{loadingMessage}</div>
+								<div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
 								{isSuccess && (
 									<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
 								)}
 								{(transactionRejected || (!isSuccess && showCloseButton)) && (
 									<>
-										<p className="body-text text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-										<Button className=" mt-1 p-3 hover:bg-yellow-400 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
+										<p className="body-text text-xs text-white">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+										<Button className=" mt-1 p-3 rounded-none hover:bg-yellow-400 text-black w-[20rem] title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>TRY aGain</Button>
 									</>
 								)}
 							</div>

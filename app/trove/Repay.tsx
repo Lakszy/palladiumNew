@@ -279,22 +279,23 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
     }, 200000);
     return () => clearTimeout(timer);
   }, []);
+  const marginClass = parseFloat(userInputs.coll) > 0 ? 'md:-ml-[7rem]' : 'md:-ml-[5rem]';
 
   return (
     <div className="flex-col mx-2  flex md:flex-row justify-between gap-10">
       <div>
-        <div className="grid w-full  max-w-sm items-start gap-2 mx-auto  p-5">
+        <div className="grid w-full space-y-7  max-w-sm items-start gap-2 mx-auto p-7 md:p-5">
           <div className="relative">
             <Label htmlFor="quantity" className="text-[#84827a] font-medium md:-ml-0 mb-2 -ml-10 body-text text-base">
               Repay PUSD
             </Label>
-            <div className="flex items-center mt-4 w-[18rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "bg-transparent" }}>
+            <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "bg-transparent" }}>
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img4} alt="home" className='ml-1' />
                 <h3 className='text-white body-text font-medium hidden md:block ml-1 text-sm'>PUSD</h3>
                 <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
               </div>
-              <input id="items" placeholder='Enter Collateral Amount'
+              <input id="items" placeholder=''
                 disabled={!isConnected}
                 value={userInputs.lusdAmount}
                 onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }}
@@ -323,18 +324,20 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
 
           </div>
           <div className="relative">
-            <Label htmlFor="items" className="text-[#84827a] font-medium md:-ml-0 -ml-10 body-text text-base">
-              Withdraw Collatoral
-            </Label>
-            <div className="flex items-center w-[18rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
+            <div className="mb-4">
+              <Label htmlFor="items" className="text-[#84827a]  font-medium md:-ml-0 -ml-10 body-text text-base">
+                Withdraw Collatoral
+              </Label>
+            </div>
+            <div className="flex mt-2 md:mt-0 items-center w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img3} alt="home" className='ml-1' />
                 <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>BTC</h6>
                 <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
               </div>
               <div className=" justify-between items-center flex gap-x-24">
-                <input id="items" placeholder='Enter Collateral Amount' disabled={!isConnected} value={userInputs.coll} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, coll: newCollValue, }); }} className="body-text w-full font-medium text-sm whitespace-nowrap ml-1 h-[4rem] text-white" style={{ backgroundColor: "#272315" }} />
-                <span className="text-sm body-text font-medium absolute flex-end ml-36  md:ml-44">
+                <input id="items" placeholder='' disabled={!isConnected} value={userInputs.coll} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, coll: newCollValue, }); }} className="body-text w-full text-sm whitespace-nowrap ml-1 h-[4rem] text-white" style={{ backgroundColor: "#272315" }} />
+                <span className={`text-sm body-text -ml-36 ${marginClass}`}>
                   ${(parseFloat(userInputs.coll) * Number(fetchedPrice)).toFixed(2)}
                 </span>
               </div>
@@ -344,7 +347,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 <div className="mt-[10px]">
                   <span className={`text-sm text-  text-[#84827a]  font-medium body-text w-full whitespace-nowrap mt-[10px]  ${parseFloat(userInputs.coll) > newAvailColl ? 'text-red-500' : 'text-white'}`}>
                     <span className="text-[#84827a] font-medium body-text">
-                    Available
+                      Available
                     </span>
                   </span>
                   <span className="text-sm ml-1  font-medium body-text">
@@ -360,9 +363,10 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
             </div>
           </div>
-          <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)} className={`mt-3 md:-ml-0 -ml-6 w-full title-text h-[3rem]
+          <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}
+            className={`mt-5 md:-ml-0 -ml-10 w-[19rem] md:w-full title-text h-[3rem]
              ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
-              ? 'bg-yellow-300 text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-yellow-300 text-black'}`}
+                ? 'bg-yellow-300 text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-yellow-300 text-black'}`}
             disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
             UPDATE TROVE
           </button>
@@ -371,14 +375,14 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       <div className={`px-1  w-[18rem] -ml-4 md:px-9 md:w-full md:h-[18rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
         style={{ backgroundColor: "#2e2a1c" }}>
         <div className="mb-4  space-y-4">
-          <div className="flex md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
+          <div className="flex  md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
               <Image
                 width={15}
                 className="toolTipHolding ml_5"
                 src={info}
-                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                data-pr-tooltip="It is a ratio that measures the amount of a loan compared to the value of the collateral."
                 alt="info"
               />
               <Tooltip
@@ -390,7 +394,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </div>
             <span className="text-xs w-full whitespace-nowrap body-text">
               <div className="flex items-center gap-x-2.5">
-                <span className="w-28 p-1 font-medium body-text ">
+                <span className="w-28 p-1  md:-ml-10 font-medium body-text ">
                   {Number(newLTV).toFixed(2)} %
                 </span>
                 {(userInputColl + userInputDebt >= 1) && (parseFloat(userInputs.coll) < Number(coll)) && (parseFloat(userInputs.lusdAmount) < Number(debt)) && (
@@ -411,7 +415,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 width={15}
                 className="toolTipHolding ml_5"
                 src={info}
-                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                data-pr-tooltip="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
                 alt="info"
               />
               <Tooltip
@@ -421,7 +425,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 mouseTrackLeft={10}
               />
             </div>
-            <span className="body-text text-xs w-full whitespace-nowrap">
+            <span className="body-text text-xs my-1 w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2.5">
                 <span className="p-1 font-medium body-text  w-28">
                   {Number(liquidation).toFixed(2)} PUSD
@@ -444,7 +448,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 width={15}
                 className="toolTipHolding ml_5"
                 src={info}
-                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                data-pr-tooltip="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance."
                 alt="info"
               />
               <Tooltip
@@ -454,7 +458,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 mouseTrackLeft={10}
               />
             </div>
-            <span className="body-text text-xs  w-full whitespace-nowrap">
+            <span className="body-text text-xs my-1  w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2">
                 <span className="p-1 w-28 body-text font-medium">
                   {Number(debt).toFixed(2)} PUSD
@@ -464,7 +468,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                     <span className="text-yellow-300 text-lg">
                       <FaArrowRightLong />
                     </span>
-                    <span className="ml-05 font-medium w-28 p-1 ">{" "}{Number(totalDebt).toFixed(2)} PUSD</span>
+                    <span className="ml-05 font-medium body-text w-28 p-1 ">{" "}{Number(totalDebt).toFixed(2)} PUSD</span>
                   </>
                 )}
               </div>
@@ -477,7 +481,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 width={15}
                 className="toolTipHolding ml_5 "
                 src={info}
-                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                data-pr-tooltip="The ratio of the USD value of the entire system collateral divided by the entire system debt."
                 alt="info"
               />
               <Tooltip
@@ -487,7 +491,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 mouseTrackLeft={10}
               />
             </div>
-            <span className="body-text text-xs w-full whitespace-nowrap">
+            <span className="body-text text-xs my-1 w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2">
                 <span className="p-1 body-text font-medium w-28">
                   {Number(coll).toFixed(8)} BTC
@@ -544,14 +548,14 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               ) : (
                 <Image src={conf} alt="box" width={140} />
               )}
-              <div className="waiting-message title-text2 text-white">{loadingMessage}</div>
+              <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
               {isSuccess && (
                 <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>
-                  <p className="body-text text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                  <Button className=" mt-1 p-3 text-black title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</Button>
+                  <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+                  <Button className=" mt-1 p-3 text-black rounded-none w-[20rem] title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
                 </>
               )}</div>
           </div>

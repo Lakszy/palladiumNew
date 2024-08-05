@@ -85,11 +85,11 @@ const ProgBar: React.FC = () => {
   const itemTemplate = (task: Task) => {
     const handleClick = task.status === 'locked' || task.status === 'claimed' ? undefined : () => handleLikeButtonClick(task.name);
     return (
-      <div className='w-full'>
+      <div className='w-full '>
         <button aria-label="Like button" onClick={handleClick} disabled={task.status === 'locked' || task.status === 'claimed'}>
-          <div className="task-info gap-x-10 flex flex-col items-center">
+          <div className="task-info gap-x-10  flex flex-col items-center">
             <p className=' body-text  font-semibold text-sm text-yellow-300  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
-            <div className="w-[10rem]  -ml-10 md:-ml-0 md:w-[7rem] md:p-0 p-8">
+            <div className="md:w-[7rem] md:-ml-0 md:pb-0 pb-10">
           {isLoading === task.name ? (
             <div className="text-left -mt-6 w-full h-2">
               <div className="hex-loader"></div>

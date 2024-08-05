@@ -44,7 +44,7 @@ export default function MobileNavFalse() {
     { id: "Redeem", icon: LiaHandHoldingUsdSolid, title: "Redeem PUSD", link: "Redeem" },
   ];
   return (
-    <div className="w-12 h-12 title-text flex">
+    <div className="w-12 h-12 title-text  flex">
       <Sidebar visible={visible} onHide={() => setVisible(false)}>
         <div className={`sidebar bg-red-90 h-full font-mono font-extrabold  w-full grid-rows-[max-content_fr_max-content] text-white`} style={{ backgroundColor: "#2c2819" }}>
           <div className="flex items-left align-text- gap-x-1 ">

@@ -797,6 +797,7 @@ body .p-buttonset .p-button {
   background-color: #272315;
   color: white !important;
 }
+
 .p-tabview .p-tabview-nav li:not(.p-highlight) .p-tabview-title {
   color: white;
 }
@@ -819,9 +820,10 @@ body .p-buttonset .p-button {
   border: none;
 }
 
-.p-tabview-panels{
+.p-tabview-panels {
   background-color: inherit;
 }
+
 .p-tabview .p-tabview-panels {
   color: white;
 }
@@ -2883,7 +2885,7 @@ nav ul {
   }
 }
 
-.custom-tooltip {
+/* .custom-tooltip {
   max-width: 10rem !important;
   height: 1rem !important;
 }
@@ -2892,7 +2894,7 @@ nav ul {
   font-family: "Montserrat";
   font-weight: 400;
   font-size: small;
-}
+} */
 
 .margBotSide {
   position: absolute !important;
@@ -3304,7 +3306,7 @@ sd1 {
   position: relative;
   width: 120%;
   height: 100%;
-  margin-left: 1rem; 
+  margin-left: 1rem;
 }
 
 .hex2-loader::before,
@@ -3315,7 +3317,7 @@ sd1 {
   top: 0;
   width: 150%;
   height: 100%;
-  background-color: #facc15; 
+  background-color: #facc15;
   transform-origin: 50% 50%;
 }
 
@@ -3373,6 +3375,7 @@ sd1 {
 .animate-color-change {
   animation: color-change 2s infinite;
 }
+
 .sticky-banner {
   background-color: #fcd34d;
   height: 3rem;
@@ -3383,7 +3386,7 @@ sd1 {
   width: 100%;
   height: 3rem;
   overflow: hidden;
-  background-color: #FBBF24; 
+  background-color: #FBBF24;
   display: flex;
   align-items: center;
 }
@@ -3391,8 +3394,8 @@ sd1 {
 .scrolling-text {
   display: inline-block;
   white-space: nowrap;
-  font-weight: 600; 
-  font-size: 1.125rem; 
+  font-weight: 600;
+  font-size: 1.125rem;
   animation: scroll-text 10s linear infinite;
 }
 
@@ -3400,6 +3403,7 @@ sd1 {
   0% {
     transform: translateX(100%);
   }
+
   100% {
     transform: translateX(-100%);
   }
@@ -3411,7 +3415,12 @@ sd1 {
   }
 }
 
-.p-carousel-items-content{
+.p-carousel-items-content {
   width: 100%;
-    margin-left: 5rem;
+  margin-left: 5rem;
+}
+
+.p-tooltip-text  {
+  background-color: #3A3522;
+  font-family: "Montserrat";
 }
