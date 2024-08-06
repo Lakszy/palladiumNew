@@ -148,7 +148,7 @@ export const StabilityPool = () => {
 
 
 	return (
-		<div className="grid bg-[#272315] items-start h-66 gap-2 mx-auto border border-yellow-400 p-5">
+		<div className="grid bg-[#272315] items-start h-66 gap-2 mx-auto border border-yellow-400 p-7">
 			<div className="">
 				<div className="flex items-center mb-2 mt-4 md:-ml-0 -ml- border border-yellow-300" style={{ backgroundColor: "#272315" }}>
 					<div className='flex items-center h-[3.5rem]'>

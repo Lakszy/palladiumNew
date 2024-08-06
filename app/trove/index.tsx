@@ -587,10 +587,17 @@ const Borrow = () => {
                                 <div className="flex  md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
                                   <div className="flex  w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
-                                    <Image width={15} className="toolTipHolding ml_5" src={info}
-                                      data-pr-tooltip="It is a ratio that measures the amount of a loan compared to the value of the collateral."
+                                    <Image width={15}
+                                      className="toolTipHolding9 ml_5"
+                                      src={info}
+                                      data-pr-tooltip=""
                                       alt="info" />
-                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding" mouseTrack mouseTrackLeft={10} />
+                                    <Tooltip
+                                      className="custom-tooltip title-text2"
+                                      target=".toolTipHolding9"
+                                      content="It is a ratio that measures the amount of a loan compared to the value of the collateral."
+                                      mouseTrack
+                                      mouseTrackLeft={10} />
                                   </div>
                                   <span className="text-xs w-full whitespace-nowrap body-text">
                                     <div className="flex items-center gap-x-2.5">
@@ -612,15 +619,16 @@ const Borrow = () => {
                                   <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
                                     <Image
-                                      width={15}
-                                      className="toolTipHolding ml_5 "
+                                      width={12}
+                                      className="toolTipHolding10 ml_5 "
                                       src={info}
-                                      data-pr-tooltip="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
+                                      data-pr-tooltip=""
                                       alt="info"
                                     />
                                     <Tooltip
                                       className="custom-tooltip title-text2"
-                                      target=".toolTipHolding"
+                                      target=".toolTipHolding10"
+                                      content="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
                                       mouseTrack
                                       mouseTrackLeft={10}
                                     />
@@ -645,16 +653,17 @@ const Borrow = () => {
                                   <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium  md:flex-row flex-col">Total Debt</span>
                                     <Image
-                                      width={15}
-                                      className="toolTipHolding ml_5"
+                                      width={12}
+                                      className="toolTipHolding11 ml_5"
                                       src={info}
-                                      data-pr-tooltip="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance."
+                                      data-pr-tooltip=""
                                       alt="info"
                                     />
                                     <Tooltip
                                       className="custom-tooltip title-text2"
-                                      target=".toolTipHolding"
+                                      target=".toolTipHolding11"
                                       mouseTrack
+                                      content="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance."
                                       mouseTrackLeft={10}
                                     />
                                   </div>
@@ -678,16 +687,17 @@ const Borrow = () => {
                                   <div className="flex w-full">
                                     <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Total Collateral</span>
                                     <Image
-                                      width={15}
-                                      className="toolTipHolding ml_5"
+                                      width={12}
+                                      className="toolTipHolding12 ml_5"
                                       src={info}
-                                      data-pr-tooltip="The ratio of the PUSD value of the entire system collateral divided by the entire system debt."
+                                      data-pr-tooltip=""
                                       alt="info"
                                     />
                                     <Tooltip
                                       className="custom-tooltip title-text2"
-                                      target=".toolTipHolding"
+                                      target=".toolTipHolding12"
                                       mouseTrack
+                                      content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt."
                                       mouseTrackLeft={10}
                                     />
                                   </div>
@@ -714,15 +724,16 @@ const Borrow = () => {
                                     <div className="flex">
                                       <span className="body-text body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Borrowing Fee</span>
                                       <Image
-                                        width={15}
-                                        className="toolTipHolding ml_5"
+                                        width={12}
+                                        className="toolTipHolding13 ml_5"
                                         src={info}
-                                        data-pr-tooltip="This amount is deducted from the borrowed amount as a one-time fee."
+                                        data-pr-tooltip=""
                                         alt="info"
                                       />
                                       <Tooltip
                                         className="custom-tooltip title-text2"
-                                        target=".toolTipHolding"
+                                        target=".toolTipHolding13"
+                                        content="This amount is deducted from the borrowed amount as a one-time fee."
                                         mouseTrack
                                         mouseTrackLeft={10}
                                       />

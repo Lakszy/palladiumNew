@@ -88,15 +88,16 @@ export const StabilityStats = () => {
 							Total Stability Pool Staked
 						</span>
 						<Image
-							width={15}
-							className="toolTipHolding ml_5 "
+							width={12}
+							className="toolTipHolding17 ml_5 "
 							src={info}
-							data-pr-tooltip="The total amount of LOAN tokens staked in the Staking Pool."
+							data-pr-tooltip=""
 							alt="info"
 						/>
 						<Tooltip
 							className="custom-tooltip title-text2"
-							target=".toolTipHolding"
+							target=".toolTipHolding17"
+							content="The total amount of LOAN tokens staked in the Staking Pool."
 							mouseTrack
 							mouseTrackLeft={10}
 						/>
@@ -118,15 +119,16 @@ export const StabilityStats = () => {
 							Your Pool Share
 						</span>
 						<Image
-							width={15}
-							className="toolTipHolding ml_5"
+							width={12}
+							className="toolTipHolding18 ml_5"
 							src={info}
-							data-pr-tooltip="If your pool share size is smaller than 0.000000% the system will display 0.00%."
+							data-pr-tooltip=""
 							alt="info"
 						/>
 						<Tooltip
 							className="custom-tooltip title-text2"
-							target=".toolTipHolding"
+							target=".toolTipHolding18"
+							content="If your pool share size is smaller than 0.000000% the system will display 0.00%."
 							mouseTrack
 							mouseTrackLeft={10}
 						/>
@@ -164,17 +166,18 @@ export const StabilityStats = () => {
 							PDM Rewards
 						</span>
 						<Image
-							width={15}
-							className="toolTipHolding ml_5"
+							width={12}
+							className="toolTipHolding19 ml_5"
 							src={info}
-							data-pr-tooltip="Rewards accrue every minute, value on the UI only updates when a user transacts with the Stability Pool. 
-							Therefore you may receive more rewards than is displayed when you claim or adjust your deposit."
+							data-pr-tooltip=""
 							alt="info"
 						/>
 						<Tooltip
 							className="custom-tooltip title-text2"
-							target=".toolTipHolding"
+							target=".toolTipHolding19"
 							mouseTrack
+							content="Rewards accrue every minute, value on the UI only updates when a user transacts with the Stability Pool. 
+							Therefore you may receive more rewards than is displayed when you claim or adjust your deposit."
 							mouseTrackLeft={10}
 						/>
 					</div>

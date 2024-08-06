@@ -379,15 +379,16 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
               <Image
-                width={15}
-                className="toolTipHolding ml_5"
+                width={12}
+                className="toolTipHolding14 ml_5"
                 src={info}
-                data-pr-tooltip="It is a ratio that measures the amount of a loan compared to the value of the collateral."
+                data-pr-tooltip=""
                 alt="info"
               />
               <Tooltip
                 className="custom-tooltip title-text2"
-                target=".toolTipHolding"
+                target=".toolTipHolding14"
+                content="It is a ratio that measures the amount of a loan compared to the value of the collateral."
                 mouseTrack
                 mouseTrackLeft={10}
               />
@@ -412,15 +413,16 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
               <Image
-                width={15}
-                className="toolTipHolding ml_5"
+                width={12}
+                className="toolTipHolding15 ml_5"
                 src={info}
-                data-pr-tooltip="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
+                data-pr-tooltip=""
                 alt="info"
               />
               <Tooltip
                 className="custom-tooltip title-text2"
-                target=".toolTipHolding"
+                target=".toolTipHolding15"
+                content="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
                 mouseTrack
                 mouseTrackLeft={10}
               />
@@ -445,15 +447,16 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Total Debt</span>
               <Image
-                width={15}
-                className="toolTipHolding ml_5"
+                width={12}
+                className="toolTipHolding16 ml_5"
                 src={info}
-                data-pr-tooltip="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance."
+                data-pr-tooltip=""
                 alt="info"
               />
               <Tooltip
                 className="custom-tooltip title-text2"
-                target=".toolTipHolding"
+                target=".toolTipHolding16"
+                content="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance."
                 mouseTrack
                 mouseTrackLeft={10}
               />
@@ -478,15 +481,16 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <div className="flex  w-full">
               <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium">Total Collateral</span>
               <Image
-                width={15}
-                className="toolTipHolding ml_5 "
+                width={12}
+                className="toolTipHolding17 ml_5 "
                 src={info}
-                data-pr-tooltip="The ratio of the USD value of the entire system collateral divided by the entire system debt."
+                data-pr-tooltip=""
                 alt="info"
               />
               <Tooltip
                 className="custom-tooltip title-text2"
-                target=".toolTipHolding"
+                target=".toolTipHolding17"
+                content="The ratio of the USD value of the entire system collateral divided by the entire system debt."
                 mouseTrack
                 mouseTrackLeft={10}
               />

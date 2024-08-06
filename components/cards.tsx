@@ -151,8 +151,8 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
       2: pendingLUSDDebtReward,
       3: pendingETHReward,
     } = await troveManagerContract.getEntireDebtAndColl(address);
-    const collDecimal = new Decimal(coll.toString()); // Convert coll to a Decimal
-    const collFormatted = collDecimal.div(_1e18.toString()).toString(); // Divide coll by _1e18 and convert to string
+    const collDecimal = new Decimal(coll.toString()); 
+    const collFormatted = collDecimal.div(_1e18.toString()).toString();
     setEntireDebtAndColl({
       debt: (debt / _1e18).toString(),
       coll: collFormatted,
@@ -317,16 +317,17 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       <div className="flex ">
                         <h1 className="text-gray-500 text-sm title-text2">Collateral</h1>
                         <Image
-                          width={15}
-                          className="toolTipHolding ml_5 -mt-[3px]"
+                          width={12}
+                          className="toolTipHolding1 ml_5 -mt-[3px]"
                           src={info}
-                          data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                          data-pr-tooltip=""
                           alt="info"
                         />
                         <Tooltip
-                          target=".toolTipHolding"
+                          target=".toolTipHolding1"
                           mouseTrack
                           mouseTrackLeft={10}
+                          content="The BTC you’ve staked to receive PUSD. This Bitcoin acts as security for the loan or transaction."
                         />
                       </div>
                       <h1 className="text-gray-100 text-sm  title-text2">
@@ -345,15 +346,16 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
                         <Image
-                          width={15}
-                          className="toolTipHolding ml_5  -mt-[2px]"
+                          width={12}
+                          className="toolTipHolding2 ml_5  -mt-[2px]"
                           src={info}
-                          data-pr-tooltip="Total debt taken in PUSD"
+                          data-pr-tooltip=""
                           alt="info"
                         />
                         <Tooltip
-                          target=".toolTipHolding"
+                          target=".toolTipHolding2"
                           mouseTrack
+                          content="Total debt taken in PUSD"
                           mouseTrackLeft={10}
                         />
                       </div>
@@ -372,16 +374,17 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>
                         <Image
-                          width={15}
-                          className="toolTipHolding ml_5 -mt-[3px]"
+                          width={12}
+                          className="toolTipHolding3 ml_5 -mt-[3px]"
                           src={info}
-                          data-pr-tooltip="The total value of BTC locked as collateral in the system. Shown as total BTC and PUSD value."
+                          data-pr-tooltip=""
                           alt="info"
                         />
                         <Tooltip
                           className="custom-tooltip title-text2"
-                          target=".toolTipHolding"
+                          target=".toolTipHolding3"
                           mouseTrack
+                          content="The total value of BTC locked as collateral in the system. Shown as total BTC and PUSD value."
                           mouseTrackLeft={10}
                         />
                       </div>
@@ -406,7 +409,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
             </div>
             <div className="w-full pb-[2.5rem]  h-fit" style={{ backgroundColor: "#272315" }} >
               <div className="pt-4 pl-4 pr-4  gap-x-1 flex  justify-between">
-                <h1 className="title-text2 mt-[10px] text-yellow-300 text-md">
+                <h1 className="title-text2 mt-[5px] text-yellow-300 text-md">
                   aCTIVITIES STaTS
                 </h1>
                 <Image src={botanixLogo} alt="logo" className="-mt-4" />

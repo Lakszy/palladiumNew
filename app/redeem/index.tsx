@@ -229,8 +229,8 @@ export default function Redeem() {
 
     return (
         <>
-            <div className=" ml-3  md:ml-20 md:w-[40%] w-[22.5rem]">
-                <div className="grid items-start h-[20rem] gap-x-2  mx-auto border-[2px] border-yellow-400 p-5">
+            <div className=" ml-3 md:ml-20 md:w-[40%] w-[22.5rem]">
+                <div className="grid  items-start h-[20rem] gap-x-2  mx-auto border-[2px] border-yellow-400 p-7">
                     <div>
                         <div className="flex mb-2 items-center">
                             <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }}

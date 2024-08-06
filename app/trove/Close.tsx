@@ -134,16 +134,17 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             <span className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Collateral</span>
               <Image
-                width={15}
-                className="toolTipHolding ml_5 -mt-[3px]"
+                width={12}
+                className="toolTipHolding5 ml_5 -mt-[3px]"
                 src={info}
-                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                data-pr-tooltip=""
                 alt="info"
               />
               <Tooltip
                 className="custom-tooltip title-text2"
-                target=".toolTipHolding"
+                target=".toolTipHolding5"
                 mouseTrack
+                content="The BTC you’ve staked to receive PUSD. This Bitcoin acts as security for the loan or transaction."
                 mouseTrackLeft={10}
               />
             </span>
@@ -153,16 +154,17 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             <div className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Debt</span>
               <Image
-                width={15}
-                className="toolTipHolding ml_5 -mt-[5px]"
+                width={12}
+                className="toolTipHolding6 ml_5 -mt-[5px]"
                 src={info}
-                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                data-pr-tooltip=""
                 alt="info"
               />
               <Tooltip
                 className="custom-tooltip title-text2"
-                target=".toolTipHolding"
+                target=".toolTipHolding6"
                 mouseTrack
+                content="The amount of PUSD you owe. This is the value you need to repay, with your BTC collateral backing it."
                 mouseTrackLeft={10}
               />
             </div>
@@ -172,16 +174,17 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             <div className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text font-medium text-[#84827a]">Liquidation Reserve</span>
               <Image
-                width={15}
-                className="toolTipHolding ml_5 -mt-[px]"
+                width={12}
+                className="toolTipHolding7 ml_5 -mt-[px]"
                 src={info}
-                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                data-pr-tooltip=""
                 alt="info"
               />
               <Tooltip
                 className="custom-tooltip title-text2"
-                target=".toolTipHolding"
+                target=".toolTipHolding7"
                 mouseTrack
+                content="The amount of PUSD set aside as a buffer to cover potential liquidation. This reserve helps ensure that there are sufficient funds to handle any shortfalls or losses that may occur."
                 mouseTrackLeft={10}
               />
             </div>
@@ -191,16 +194,17 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             <div className="flex">
               <span className="body-text font-medium text-[#84827a] text-sm ml-1 md:ml-0">Wallet Balance</span>
               <Image
-                width={15}
-                className="toolTipHolding ml_5 "
+                width={12}
+                className="toolTipHolding8 ml_5 "
                 src={info}
-                data-pr-tooltip="The displayed portfolio balance has already accounted for the vault performance fee."
+                data-pr-tooltip=""
                 alt="info"
               />
               <Tooltip
                 className="custom-tooltip title-text2"
-                target=".toolTipHolding"
+                target=".toolTipHolding8"
                 mouseTrack
+                content="The amount of PUSD currently available in your wallet for transactions or withdrawals"
                 mouseTrackLeft={10}
               />
             </div>

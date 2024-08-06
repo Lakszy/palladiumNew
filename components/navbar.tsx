@@ -138,17 +138,21 @@ function NavBar() {
                         {(systemCollRatio * 100).toFixed(2)} %
                       </h1>
                       <Image
-                        className="toolTipHolding ml_5 title-text2"
+                        className="toolTipHolding4 ml_5 title-text2"
                         src={info}
-                        data-pr-tooltip="SCR = System Collateral Ratio and is shown as:
-1 red bar - less than 110% - recovery mode 2 orange - between 150% and 110% - recovery 3 yellow - between 200% and 150% - normal 4-6 green - above 200% - normal mode
-You can be liquidated below 150%. In order to help avoid liquidation in Normal Mode and Recovery Mode, it is strongly recommended that users keep their individual collateral ratio significantly above 150%."
-                        alt="info"
+                        data-pr-tooltip="SCR (System Collateral Ratio) is shown as:
+                        - Red: less than 110% - recovery mode
+                        - Orange: 110%-150% - recovery mode
+                        - Yellow: 150%-200% - normal mode
+                        - Green: above 200% - normal mode
+                        To avoid liquidation, keep your collateral ratio well above 150%."
+                       alt="info"
                       />
                       <Tooltip
                         className=" title-text2"
-                        target=".toolTipHolding"
+                        target=".toolTipHolding4"
                         mouseTrack
+                        position="bottom"
                         mouseTrackLeft={10}
                       />
                     </div>
