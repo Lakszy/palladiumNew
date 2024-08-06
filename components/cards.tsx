@@ -297,7 +297,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
           <div className="w-full  p-5 md:gap-y-0 gap-[4rem] mt-10 mb-7 flex flex-col md:flex-row">
             <div className="w-full md:w-[45%] pl-1 pb-7" style={{ backgroundColor: "#272315" }}>
               <div className="p-4  items-center flex justify-between">
-                <h1 className="title-text2 whitespace-nowrap font-semibold text-yellow-300 text-md ">
+                <h1 className="title-text2  ml-1 whitespace-nowrap font-semibold text-yellow-300 text-md ">
                   TROVE STaTS
                 </h1>
                 {isConnected ? (
@@ -310,10 +310,10 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 <div className="bent-corner"></div>
               </div>
               {troveStatus === "ACTIVE" ? (
-                <div className="space-y-6 ml-1 pt-12">
-                  <div className="flex gap-x-[6rem]">
-                    <Image src={btc} alt="coin" />
-                    <div className=" flex flex-col">
+                <div className="space-y-6  ml-1 pt-12">
+                  <div className="flex  gap-x-[6rem]">
+                    <Image src={btc} alt="coin"  className="ml-[10px]"/>
+                    <div className=" flex  flex-col">
                       <div className="flex ">
                         <h1 className="text-gray-500 text-sm title-text2">Collateral</h1>
                         <Image
@@ -340,8 +340,8 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       </h1>
                     </div>
                   </div>
-                  <div className="flex gap-x-[4.4rem]">
-                    <Image src={doubleCoin} alt="coin" />
+                  <div className="flex gap-x-[5rem]">
+                    <Image src={doubleCoin} alt="coin" className="-ml-1"/>
                     <div className=" flex flex-col">
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
@@ -369,7 +369,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                   </div>
                   <div className="flex gap-x-[5.6rem]">
-                    <Image src={tripleCoin} alt="coin" />
+                    <Image src={tripleCoin} alt="coin" className="ml-[10px]" />
                     <div className=" flex flex-col">
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>
@@ -409,7 +409,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
             </div>
             <div className="w-full pb-[2.5rem]  h-fit" style={{ backgroundColor: "#272315" }} >
               <div className="pt-4 pl-4 pr-4  gap-x-1 flex  justify-between">
-                <h1 className="title-text2 mt-[5px] text-yellow-300 text-md">
+                <h1 className="title-text2 mt-[5px] ml-1 text-yellow-300 text-md">
                   aCTIVITIES STaTS
                 </h1>
                 <Image src={botanixLogo} alt="logo" className="-mt-4" />

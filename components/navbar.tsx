@@ -12,6 +12,7 @@ import MobileNav from "./MobileNav";
 import { Toast } from "primereact/toast";
 import "./navbar.css";
 import { Tooltip } from "primereact/tooltip";
+import TooltipContent from "./TooltipContent";
 
 function NavBar() {
   const [fetchedPrice, setFetchedPrice] = useState(0);
@@ -132,29 +133,22 @@ function NavBar() {
                       <h1 className="text-gray-400 body-text -mt-[4px] text-[10px]">(Normal Mode)</h1>
                       {/* <Tooltip>1</Tooltip> */}
                     </div>
-                    <div className="flex">
-
-                      <h1 className="text-gray-400 text-sm title-text2 ">
-                        {(systemCollRatio * 100).toFixed(2)} %
-                      </h1>
-                      <Image
-                        className="toolTipHolding4 ml_5 title-text2"
-                        src={info}
-                        data-pr-tooltip="SCR (System Collateral Ratio) is shown as:
-                        - Red: less than 110% - recovery mode
-                        - Orange: 110%-150% - recovery mode
-                        - Yellow: 150%-200% - normal mode
-                        - Green: above 200% - normal mode
-                        To avoid liquidation, keep your collateral ratio well above 150%."
-                       alt="info"
-                      />
-                      <Tooltip
-                        className=" title-text2"
-                        target=".toolTipHolding4"
-                        mouseTrack
-                        position="bottom"
-                        mouseTrackLeft={10}
-                      />
+                    <div className="relative">
+                      <div className="flex">
+                        <h1 className="text-gray-400 text-sm title-text2">
+                          {(systemCollRatio * 100).toFixed(2)} %
+                        </h1>
+                        <div className="">
+                          <Image
+                            className="toolTipHolding4 ml_5 title-text2"
+                            src={info}
+                            alt="info"
+                          />
+                          <div className="aboslute z-10">
+                          <TooltipContent />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
