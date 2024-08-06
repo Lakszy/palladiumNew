@@ -134,7 +134,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             <span className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Collateral</span>
               <Image
-                width={12}
+                width={15}
                 className="toolTipHolding5 ml_5 -mt-[3px]"
                 src={info}
                 data-pr-tooltip=""
@@ -154,7 +154,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             <div className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Debt</span>
               <Image
-                width={12}
+                width={15}
                 className="toolTipHolding6 ml_5 -mt-[5px]"
                 src={info}
                 data-pr-tooltip=""
@@ -174,7 +174,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             <div className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text font-medium text-[#84827a]">Liquidation Reserve</span>
               <Image
-                width={12}
+                width={15}
                 className="toolTipHolding7 ml_5 -mt-[px]"
                 src={info}
                 data-pr-tooltip=""
@@ -194,7 +194,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             <div className="flex">
               <span className="body-text font-medium text-[#84827a] text-sm ml-1 md:ml-0">Wallet Balance</span>
               <Image
-                width={12}
+                width={15}
                 className="toolTipHolding8 ml_5 "
                 src={info}
                 data-pr-tooltip=""

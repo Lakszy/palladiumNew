@@ -2885,16 +2885,6 @@ nav ul {
   }
 }
 
-/* .custom-tooltip {
-  max-width: 10rem !important;
-  height: 1rem !important;
-}
-
-.p-tooltip-text{
-  font-family: "Montserrat";
-  font-weight: 400;
-  font-size: small;
-} */
 
 .margBotSide {
   position: absolute !important;
@@ -3425,5 +3415,6 @@ sd1 {
   font-family: "Montserrat";
   font-size: 12px;
   max-width: 9rem;
+  padding: 10px;
   min-height: fit-content !important;
 }

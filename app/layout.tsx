@@ -20,7 +20,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className)}>
+      <body >
         {/* <Banner/> */}
         <ContextProvider>{children}</ContextProvider>
       </body>

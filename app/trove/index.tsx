@@ -588,12 +588,12 @@ const Borrow = () => {
                                   <div className="flex  w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
                                     <Image width={15}
-                                      className="toolTipHolding9 ml_5"
+                                      className="toolTipHolding9 ml_5 cursor-pointer"
                                       src={info}
                                       data-pr-tooltip=""
                                       alt="info" />
                                     <Tooltip
-                                      className="custom-tooltip title-text2"
+                                      className=" title-text2"
                                       target=".toolTipHolding9"
                                       content="It is a ratio that measures the amount of a loan compared to the value of the collateral."
                                       mouseTrack
@@ -619,7 +619,7 @@ const Borrow = () => {
                                   <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
                                     <Image
-                                      width={12}
+                                      width={15}
                                       className="toolTipHolding10 ml_5 "
                                       src={info}
                                       data-pr-tooltip=""
@@ -653,7 +653,7 @@ const Borrow = () => {
                                   <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium  md:flex-row flex-col">Total Debt</span>
                                     <Image
-                                      width={12}
+                                      width={15}
                                       className="toolTipHolding11 ml_5"
                                       src={info}
                                       data-pr-tooltip=""
@@ -687,7 +687,7 @@ const Borrow = () => {
                                   <div className="flex w-full">
                                     <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Total Collateral</span>
                                     <Image
-                                      width={12}
+                                      width={15}
                                       className="toolTipHolding12 ml_5"
                                       src={info}
                                       data-pr-tooltip=""
@@ -724,7 +724,7 @@ const Borrow = () => {
                                     <div className="flex">
                                       <span className="body-text body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Borrowing Fee</span>
                                       <Image
-                                        width={12}
+                                        width={15}
                                         className="toolTipHolding13 ml_5"
                                         src={info}
                                         data-pr-tooltip=""

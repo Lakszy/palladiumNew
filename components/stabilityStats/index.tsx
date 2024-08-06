@@ -88,7 +88,7 @@ export const StabilityStats = () => {
 							Total Stability Pool Staked
 						</span>
 						<Image
-							width={12}
+							width={15}
 							className="toolTipHolding17 ml_5 "
 							src={info}
 							data-pr-tooltip=""
@@ -119,7 +119,7 @@ export const StabilityStats = () => {
 							Your Pool Share
 						</span>
 						<Image
-							width={12}
+							width={15}
 							className="toolTipHolding18 ml_5"
 							src={info}
 							data-pr-tooltip=""
@@ -166,7 +166,7 @@ export const StabilityStats = () => {
 							PDM Rewards
 						</span>
 						<Image
-							width={12}
+							width={15}
 							className="toolTipHolding19 ml_5"
 							src={info}
 							data-pr-tooltip=""

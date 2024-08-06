@@ -277,16 +277,16 @@ const Portfolio = () => {
                     </div>
                   </div>
 
-                  <div className=" lg:w-[22rem] h-auto rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
+                  <div className=" lg:w-[22rem] h-auto rounded-sm " style={{ backgroundColor: "#2e2a1c" }}>
                     <div className=" flex items-center flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
-                      <span className="text-white title-text2 ">STaBILITY POOL</span>
+                      <span className="text-white title-text2 ml-[10px]">STaBILITY POOL</span>
                       <Link href="/stake">
                         <button className="h-8 px-6 title-text2 border-yellow-400 border bg-transparent  text-yellow-400 font-bold">
                           Details
                         </button>
                       </Link>
                     </div>
-                    <div className="text-white ml-3  p-3">
+                    <div className="text-white ml-5 p-3">
                       <div className="mb-[2rem] mt-2 whitespace-nowrap">
                         <p className="body-text text-sm text-[#565348]">Deposited</p>
                         <p className="body-text font-medium whitespace-nowrap">{Number(totalStakedValue).toFixed(2)} PUSD</p>
@@ -297,7 +297,6 @@ const Portfolio = () => {
                           <span className="body-text font-medium whitespace-nowrap">{(lr).toFixed(2)} PUSD</span>
                         </div>
                         <Image src={macPUSD} alt="home" width={200} />
-                        {/* <Image src={port2} alt="home" width={200} /> */}
                       </div>
                     </div>
                   </div>

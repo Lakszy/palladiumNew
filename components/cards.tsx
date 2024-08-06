@@ -317,7 +317,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       <div className="flex ">
                         <h1 className="text-gray-500 text-sm title-text2">Collateral</h1>
                         <Image
-                          width={12}
+                          width={15}
                           className="toolTipHolding1 ml_5 -mt-[3px]"
                           src={info}
                           data-pr-tooltip=""
@@ -346,7 +346,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
                         <Image
-                          width={12}
+                          width={15}
                           className="toolTipHolding2 ml_5  -mt-[2px]"
                           src={info}
                           data-pr-tooltip=""
@@ -374,7 +374,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>
                         <Image
-                          width={12}
+                          width={15}
                           className="toolTipHolding3 ml_5 -mt-[3px]"
                           src={info}
                           data-pr-tooltip=""

@@ -379,7 +379,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
               <Image
-                width={12}
+                width={15}
                 className="toolTipHolding14 ml_5"
                 src={info}
                 data-pr-tooltip=""
@@ -413,7 +413,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
               <Image
-                width={12}
+                width={15}
                 className="toolTipHolding15 ml_5"
                 src={info}
                 data-pr-tooltip=""
@@ -447,7 +447,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Total Debt</span>
               <Image
-                width={12}
+                width={15}
                 className="toolTipHolding16 ml_5"
                 src={info}
                 data-pr-tooltip=""
@@ -481,7 +481,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <div className="flex  w-full">
               <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium">Total Collateral</span>
               <Image
-                width={12}
+                width={15}
                 className="toolTipHolding17 ml_5 "
                 src={info}
                 data-pr-tooltip=""
