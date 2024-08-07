@@ -716,30 +716,6 @@ const Borrow = () => {
                                 </div>
                               </div>
                               {userInputDebt == 1 && (
-                                // <div className=" space-y-4">
-                                //   <div className="flex  pb-2 gap-x-[14%] fixed top-[0.3rem] text-white mb-2  items-start my-1">
-                                //     <div className="flex ">
-                                //       <span className="body-text body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Borrowing Fee</span>
-                                //       <Image
-                                //         width={15}
-                                //         className="toolTipHolding13 ml_5"
-                                //         src={info}
-                                //         data-pr-tooltip=""
-                                //         alt="info"
-                                //       />
-                                //       <Tooltip
-                                //         className="custom-tooltip title-text2"
-                                //         target=".toolTipHolding13"
-                                //         content="This amount is deducted from the borrowed amount as a one-time fee."
-                                //         mouseTrack
-                                //         mouseTrackLeft={10}
-                                //       />
-                                //     </div>
-                                //     <span className="font-medium body-text text-xs whitespace-nowrap">
-                                //       {Number(borrowingFee).toFixed(2)} PUSD
-                                //     </span>
-                                //   </div>
-                                // </div>
                                 <div className="flex text-white mb-2  items-center md:flex-row flex-col justify-between">
                                   <div className="flex w-full">
                                     <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Borrowing Fee</span>
@@ -766,7 +742,6 @@ const Borrow = () => {
                                       {userInputColl == 1 && (
                                         <>
                                           <span className="text-yellow-300  w-6 text-lg">
-                                            {/* <FaArrowRightLong /> */}
                                           </span>
                                           <span className="md:ml-05 p-1  w-28 body-text font-medium">{" "}</span>
                                         </>

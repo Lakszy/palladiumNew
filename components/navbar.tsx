@@ -4,6 +4,7 @@ import pusdbtc from "../app/assets/images/PUSD.svg";
 import btc from "../app/assets/images/btclive.svg";
 import info from "../app/assets/images/info.svg";
 import collR from "../app/assets/images/mode.svg";
+import mobileLogo from "../app/assets/images/mobileLogo.svg";
 import { CustomConnectButton } from "./connectBtn";
 import "../app/App.css";
 import { useAccount } from "wagmi";
@@ -11,7 +12,6 @@ import MobileNavFalse from "./MobileNavFalse";
 import MobileNav from "./MobileNav";
 import { Toast } from "primereact/toast";
 import "./navbar.css";
-import { Tooltip } from "primereact/tooltip";
 import TooltipContent from "./TooltipContent";
 
 function NavBar() {
@@ -89,9 +89,10 @@ function NavBar() {
 
   return (
     <>
-      <div className="flex justify-between items-center gap-x-4" style={{ backgroundColor: "#1c1a0f" }}>
-        <div className="md:hidden">
+      <div className="flex justify-between md:h-fit h-[5rem] items-center gap-x-4" style={{ backgroundColor: "#1c1a0f" }}>
+        <div className="md:hidden flex items-center ml-[10px] gap-x-">
           {userExists ? <MobileNav /> : <MobileNavFalse />}
+          {/* <Image src={mobileLogo} width={40} alt="mobileLogo"></Image> */}
         </div>
         <div className="md:hidden m-2">
           <CustomConnectButton className="" />
@@ -145,7 +146,7 @@ function NavBar() {
                             alt="info"
                           />
                           <div className="aboslute z-10">
-                          <TooltipContent />
+                            <TooltipContent />
                           </div>
                         </div>
                       </div>
