@@ -302,20 +302,20 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 className="body-text text-sm whitespace-nowrap h-[4rem] text-white" style={{ backgroundColor: "#272315" }}
               />
             </div>
-            <div className="flex flex-col md:flex-row gap-x-5  justify-between">
+            <div className="flex flex-col md:flex-row gap-x-5 mt-[7px]  justify-between">
               <span className="text-white items-center gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
                 <h6 className="text-gray-500 font-medium mt-[8px] body-text text-sm">
                   Available
                 </h6>
                 {Number(totalAvailableRepay) >= 0 && (
-                  <h6 className={`text-sm mt-[8px] body-text whitespace-nowrap ${parseFloat(userInputs.lusdAmount) > totalAvailableRepay ? 'text-red-500' : 'text-white'}`}>
+                  <h6 className={`text-sm mt-[8px] body-text font-medium whitespace-nowrap ${parseFloat(userInputs.lusdAmount) > totalAvailableRepay ? 'text-red-500' : 'text-white'}`}>
                     {Math.trunc(Number(totalAvailableRepay) * 100) / 100}
 
                   </h6>
                 )}
               </span>
             </div>
-            <div className="flex w-full p-1 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-2">
+            <div className="flex w-full py-3 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-2">
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
@@ -344,7 +344,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </div>
             <div className="flex flex-col md:flex-row gap-x-5 ">
               <span className="text-white gap-x-2 flex flex-col w-full  md:-ml-0 -ml-10 ">
-                <div className="mt-[10px]">
+                <div className="mt-[15px]">
                   <span className={`text-sm text-  text-[#84827a]  font-medium body-text w-full whitespace-nowrap mt-[10px]  ${parseFloat(userInputs.coll) > newAvailColl ? 'text-red-500' : 'text-white'}`}>
                     <span className="text-[#84827a] font-medium body-text">
                       Available
@@ -356,7 +356,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 </div>
               </span>
             </div>
-            <div className="flex w-full p-1  -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-[5px]">
+            <div className="flex w-full py-3  -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-[5px]">
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
               <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
@@ -372,7 +372,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
           </button>
         </div>
       </div>
-      <div className={`px-1  w-[18rem] -ml-4 md:px-9 md:w-full md:h-[18rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
+      <div className={`px-1  w-[18rem] -ml-4 md:px-9 md:w-full md:h-[20rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
         style={{ backgroundColor: "#2e2a1c" }}>
         <div className="mb-4  space-y-4">
           <div className="flex  md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">

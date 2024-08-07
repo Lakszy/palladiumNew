@@ -487,7 +487,7 @@ const Borrow = () => {
                                   </Label>
                                   <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-9  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] '>
-                                      <Image src={img3} alt="home" className='ml-1' width={41}/>
+                                      <Image src={img3} alt="home" className='ml-1' width={41} />
                                       <h3 className='text-white body-text font-medium  hidden md:block'>BTC</h3>
                                       <h3 className='h-full border border-yellow-300 mx-8 text-yellow-300'></h3>
                                     </div>
@@ -500,12 +500,12 @@ const Borrow = () => {
                                         }}
                                         className="body-text text-sm whitespace-nowrap ml-1 h-[4rem] text-white" style={{ backgroundColor: "#272315" }}
                                       />
-                                      <span className={`text-sm body-text -ml-36 ${marginClass}`}>
+                                      <span className={`text-sm body-text mr-2 ${marginClass}`}>
                                         ${totalCollateral.toFixed(2)}
                                       </span>
                                     </div>
                                   </div>
-                                  <div className="flex flex-col mt-[10px] gap-x-5 justify-between">
+                                  <div className="flex flex-col mt-[15px] gap-x-5 justify-between">
                                     <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
                                       <h6 className="text-[#84827a] font-medium body-text text-sm">
                                         Available{" "}
@@ -514,7 +514,7 @@ const Borrow = () => {
                                         {Number(balanceData?.formatted).toFixed(8)}{" "}
                                       </span>
                                     </span>
-                                    <div className="flex w-full p-1 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
+                                    <div className="flex w-full py-3 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
                                       <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
                                       <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
                                       <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
@@ -542,12 +542,9 @@ const Borrow = () => {
                                       }}
                                       className="body-text text-sm whitespace-nowrap h-[4rem] text-white" style={{ backgroundColor: "#272315" }}
                                     />
-                                    {/* <input id="quantity" placeholder="Enter Borrow Amount" value={Math.trunc(Number(userInputs.borrow) * 100) / 100} 
-                                    onChange={(e) => { const newBorrowValue = e.target.value; 
-                                    setUserInputs({ ...userInputs, borrow: newBorrowValue, }); }} 
-                                    className="w-[23.75rem] ml-1 h-[4rem] body-text text-sm whitespace-nowrap text-white" style={{ backgroundColor: "#272315" }} /> */}
+
                                   </div>
-                                  <div className="flex flex-col mt-[10px] gap-x-5 justify-between">
+                                  <div className="flex flex-col mt-[15px] gap-x-5 justify-between">
                                     <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
                                       <h6 className="text-[#84827a] font-medium body-text text-sm">
                                         Available{" "}
@@ -564,7 +561,7 @@ const Borrow = () => {
                                         </h6>
                                         )}
                                     </span>
-                                    <div className="flex w-full p-1 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3 -mt-4 ">
+                                    <div className="flex w-full py-3 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3 -mt-4 ">
                                       <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
                                       <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
                                       <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
@@ -581,7 +578,7 @@ const Borrow = () => {
                                 </div>
                               </div>
                             </div>
-                            <div className={`px-1 pl-5 w-[18rem] -ml-4 md:px-9 md:w-full md:h-[18rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
+                            <div className={`px-1 pl-5 w-[18rem] -ml-4 md:px-9 md:w-full md:h-[20rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
                               style={{ backgroundColor: "#2e2a1c" }}>
                               <div className="mb-4 space-y-4">
                                 <div className="flex  md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
@@ -683,7 +680,7 @@ const Borrow = () => {
                                     </div>
                                   </span>
                                 </div>
-                                <div className="flex  text-white mb-2  items-center md:flex-row flex-col justify-between">
+                                <div className="flex text-white mb-2  items-center md:flex-row flex-col justify-between">
                                   <div className="flex w-full">
                                     <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Total Collateral</span>
                                     <Image
@@ -701,9 +698,9 @@ const Borrow = () => {
                                       mouseTrackLeft={10}
                                     />
                                   </div>
-                                  <span className="body-text  my-1  text-xs w-full whitespace-nowrap">
+                                  <span className="body-text my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
-                                      <span className="p-1 w-28 body-text font-medium">
+                                      <span className="p-1 w-28 body-text  font-medium">
                                         {Number(entireDebtAndColl.coll).toFixed(8)} BTC
                                       </span>
                                       {userInputColl == 1 && (
@@ -719,29 +716,63 @@ const Borrow = () => {
                                 </div>
                               </div>
                               {userInputDebt == 1 && (
-                                <div className=" space-y-4">
-                                  <div className="flex  text-white mb-2 justify-start items-start flex-col  my-1">
-                                    <div className="flex">
-                                      <span className="body-text body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Borrowing Fee</span>
-                                      <Image
-                                        width={15}
-                                        className="toolTipHolding13 ml_5"
-                                        src={info}
-                                        data-pr-tooltip=""
-                                        alt="info"
-                                      />
-                                      <Tooltip
-                                        className="custom-tooltip title-text2"
-                                        target=".toolTipHolding13"
-                                        content="This amount is deducted from the borrowed amount as a one-time fee."
-                                        mouseTrack
-                                        mouseTrackLeft={10}
-                                      />
-                                    </div>
-                                    <span className="font-medium body-text p-1 w-28 pt-[10px] text-xs whitespace-nowrap">
-                                      {Number(borrowingFee).toFixed(2)} PUSD
-                                    </span>
+                                // <div className=" space-y-4">
+                                //   <div className="flex  pb-2 gap-x-[14%] fixed top-[0.3rem] text-white mb-2  items-start my-1">
+                                //     <div className="flex ">
+                                //       <span className="body-text body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Borrowing Fee</span>
+                                //       <Image
+                                //         width={15}
+                                //         className="toolTipHolding13 ml_5"
+                                //         src={info}
+                                //         data-pr-tooltip=""
+                                //         alt="info"
+                                //       />
+                                //       <Tooltip
+                                //         className="custom-tooltip title-text2"
+                                //         target=".toolTipHolding13"
+                                //         content="This amount is deducted from the borrowed amount as a one-time fee."
+                                //         mouseTrack
+                                //         mouseTrackLeft={10}
+                                //       />
+                                //     </div>
+                                //     <span className="font-medium body-text text-xs whitespace-nowrap">
+                                //       {Number(borrowingFee).toFixed(2)} PUSD
+                                //     </span>
+                                //   </div>
+                                // </div>
+                                <div className="flex text-white mb-2  items-center md:flex-row flex-col justify-between">
+                                  <div className="flex w-full">
+                                    <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Borrowing Fee</span>
+                                    <Image
+                                      width={15}
+                                      className="toolTipHolding12 ml_5"
+                                      src={info}
+                                      data-pr-tooltip=""
+                                      alt="info"
+                                    />
+                                    <Tooltip
+                                      className="custom-tooltip title-text2"
+                                      target=".toolTipHolding12"
+                                      mouseTrack
+                                      content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt."
+                                      mouseTrackLeft={10}
+                                    />
                                   </div>
+                                  <span className="body-text my-1  text-xs w-full whitespace-nowrap">
+                                    <div className="flex items-center gap-x-1 md:gap-x-3">
+                                      <span className="p-1 w-28 body-text pl-2 font-medium">
+                                        {Number(borrowingFee).toFixed(2)} PUSD
+                                      </span>
+                                      {userInputColl == 1 && (
+                                        <>
+                                          <span className="text-yellow-300  w-6 text-lg">
+                                            {/* <FaArrowRightLong /> */}
+                                          </span>
+                                          <span className="md:ml-05 p-1  w-28 body-text font-medium">{" "}</span>
+                                        </>
+                                      )}
+                                    </div>
+                                  </span>
                                 </div>
                               )}
                             </div>
