@@ -5,22 +5,22 @@ import BORDER from "../../app/assets/images/BORDER.svg"
 import newNFTCrate from "../../app/assets/images/newNFTCrate.png"
 import question from "../../app/assets/images/questionMarkBox.png"
 import Image from "next/image";
-import "../../app/App.css";
+// import "../../app/App.css";
 
 export default function NFT2() {
     return (
         <div className="w-full  border-yellow-300  p-6 border items-center justify-center" style={{ backgroundColor: '#272315' }}>
             <div className="box-1 md:ml-4">
-                <Image src={CB} alt="circuit breaker" className="-mb-5"/>
+                <Image src={CB} alt="circuit breaker" className="-mb-5" />
             </div>
             <div className=" flex items-center">
                 <div className="ml-[14px] flex gap-x-6">
                     <div className="">
-                        <div className="relative hidden md:flex mt-[3.9rem] items-center justify-center max-sm:px-5">
-                            <Image src={BORDER} alt="border" height={100} width={340} className="" />
+                        <div className="relative hidden md:flex mt-[3.9rem] p-5 items-center justify-center max-sm:px-5">
+                            <Image src={BORDER} alt="border" height={100} width={340} className="absolute" />
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
-                                <Image src={newNFTCrate} width={240} height={20} alt="home" className="mb-4 hover:cursor-not-allowed p-2" />
-                                <div className="w-4/5 title-text hover:cursor-not-allowed h-10 bg-[#806800] flex items-center justify-center">
+                                <Image src={newNFTCrate} width={305} height={25} alt="home" className="mb-4 hover:cursor-not-allowed p-2" />
+                                <div className=" title-text whitespace-nowrap hover:cursor-not-allowed h-10 w-fit px-3 bg-[#806800] flex items-center justify-center">
                                     MINTING IS OVER...
                                 </div>
                             </div>

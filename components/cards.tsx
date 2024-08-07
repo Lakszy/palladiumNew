@@ -7,7 +7,7 @@ import badge from "../app/assets/images/Badge2.png";
 import nft from "../app/assets/images/nft2.png";
 import points from "../app/assets/images/points.svg";
 import circuitBreaker from "../app/assets/images/cbcb.png";
-import tripleCoin from "../app/assets/images/tripleCoin.svg";
+import tripleCoin from "../app/assets/images/deskLTV.png";
 import botanixLogo from "../app/assets/images/botanixLogo.svg";
 import botanixTestnet from "@/app/src/constants/botanixTestnet.json";
 import { BOTANIX_RPC_URL } from "../app/src/constants/botanixRpcUrl";
@@ -369,7 +369,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                   </div>
                   <div className="flex gap-x-[5.6rem]">
-                    <Image src={tripleCoin} alt="coin" className="ml-[10px]" />
+                    <Image src={tripleCoin} alt="coin" className="ml-[10px]" width={55}/>
                     <div className=" flex flex-col">
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>

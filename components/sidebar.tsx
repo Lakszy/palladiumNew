@@ -34,7 +34,7 @@ export const TabsDemo = () => {
       </div>
       <nav className="flex flex-col gap-y-2 px-4">
         <Link href="/">
-          <div className={` hover:scale-95 cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/") ? "bg-yellow-400 text-black" : "text-gray-500"}`}>
+          <div className={` hover:scale-95 cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/") ? "bg-yellow-400 rounded-none text-black" : "text-gray-500"}`}>
             <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/") ? "text-black" : " text-white"}`}>
               {React.createElement(LayoutGrid, { size: 18 })}
             </div>
@@ -42,7 +42,7 @@ export const TabsDemo = () => {
           </div>
         </Link>
         <Link href="/portfolio">
-          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/portfolio") ? "bg-yellow-400 text-black" : "text-gray-500"}`}>
+          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/portfolio") ? "bg-yellow-400 rounded-none text-black" : "text-gray-500"}`}>
             <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/portfolio") ? "text-black" : " text-white"}`}>
               {React.createElement(RiCoinsLine, { size: 18 })}
             </div>
@@ -50,7 +50,7 @@ export const TabsDemo = () => {
           </div>
         </Link>
         <Link href="/trove">
-          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/trove") ? "bg-yellow-400 text-black" : "text-gray-500"}`}>
+          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/trove") ? "bg-yellow-400 rounded-none text-black" : "text-gray-500"}`}>
             <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/trove") ? "text-black" : " text-white"}`}>
               {React.createElement(GrTransaction, { size: 18 })}
             </div>
@@ -58,7 +58,7 @@ export const TabsDemo = () => {
           </div>
         </Link>
         <Link href="/stake">
-          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/stake") ? "bg-yellow-400 text-black" : "text-gray-500"}`}>
+          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/stake") ? "bg-yellow-400 rounded-none text-black" : "text-gray-500"}`}>
             <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/stake") ? "text-black" : " text-white"}`}>
               {React.createElement(GiUnbalanced, { size: 18 })}
             </div>
@@ -66,7 +66,7 @@ export const TabsDemo = () => {
           </div>
         </Link>
         <Link href="/redeem">
-          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/redeem") ? "bg-yellow-400 text-black" : "text-gray-500"}`}>
+          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2 ${isRoute("/redeem") ? "bg-yellow-400 rounded-none text-black" : "text-gray-500"}`}>
             <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/redeem") ? "text-black" : " text-white"}`}>
               {React.createElement(LiaHandHoldingUsdSolid, { size: 18 })}
             </div>

@@ -291,7 +291,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </Label>
             <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "bg-transparent" }}>
               <div className='flex items-center h-[3.5rem] '>
-                <Image src={img4} alt="home" className='ml-1' />
+                <Image src={img4} alt="home" className='ml-1' width={35}/>
                 <h3 className='text-white body-text font-medium hidden md:block ml-1 text-sm'>PUSD</h3>
                 <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
               </div>
@@ -331,7 +331,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             </div>
             <div className="flex mt-2 md:mt-0 items-center w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
               <div className='flex items-center h-[3.5rem] '>
-                <Image src={img3} alt="home" className='ml-1' />
+                <Image src={img3} alt="home" className='ml-1' width={41}/>
                 <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>BTC</h6>
                 <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
               </div>

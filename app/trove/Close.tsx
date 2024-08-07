@@ -168,7 +168,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
                 mouseTrackLeft={10}
               />
             </div>
-            {Number(debt) <= 0 ? "---" : <span className="body-text md:mr-0 mr-4 font-medium">{Number(debt).toFixed(2)} PUSD</span>}
+            {Number(debt) <= 0 ? "---" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(debt).toFixed(2)} PUSD</span>}
           </div>
           <div className="flex justify-between">
             <div className="flex">

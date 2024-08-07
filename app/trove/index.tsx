@@ -487,9 +487,9 @@ const Borrow = () => {
                                   </Label>
                                   <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-9  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] '>
-                                      <Image src={img3} alt="home" className='ml-1' />
+                                      <Image src={img3} alt="home" className='ml-1' width={41}/>
                                       <h3 className='text-white body-text font-medium  hidden md:block'>BTC</h3>
-                                      <h3 className='h-full border border-yellow-300 mx-5 text-yellow-300'></h3>
+                                      <h3 className='h-full border border-yellow-300 mx-8 text-yellow-300'></h3>
                                     </div>
                                     <div className=" justify-between items-center flex gap-x-24 text-white">
                                       <input id="items" placeholder='0'
@@ -532,7 +532,7 @@ const Borrow = () => {
                                     <div className='flex items-center h-[3.5rem] mx-1'>
                                       <Image src={img4} alt="home" className='ml-1' />
                                       <h3 className='text-white body-text ml-1 font-medium hidden md:block '>PUSD</h3>
-                                      <h3 className='h-full border  border-yellow-300 mx-3  text-yellow-300'></h3>
+                                      <h3 className='h-full border  border-yellow-300 mx-2  text-yellow-300'></h3>
                                     </div>
                                     <input id="items" placeholder='Enter Collateral Amount'
                                       disabled={!isConnected} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
