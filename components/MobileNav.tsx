@@ -46,9 +46,9 @@ export default function MobileNav() {
     <div className="w-12 h-12 title-text flex">
       <Sidebar visible={visible} onHide={() => setVisible(false)}>
         <div className={`sidebar bg-red-90 h-full font-mono font-extrabold  w-full grid-rows-[max-content_fr_max-content] text-white`} style={{ backgroundColor: "#2c2819" }}>
-          <div className="flex items-center gap-x-1  justify-center">
+          <div className="flex items-center px-6 py-3">
             <Link href="/">
-              <Image src={logo} alt="Logo" className="mr-10 w-40" />
+              <Image src={logo} alt="Logo" className=" w-40" />
             </Link>
           </div>
           <nav className="flex flex-col gap-y-2 px-4">
@@ -65,21 +65,21 @@ export default function MobileNav() {
               </Link>
             ))}
           </nav>
-          <div className="space-y-1 pt-16">
+          <div className="space-y-1 mt-56">
             <div className=" w-full h-full">
               <Link href="https://zealy.io/cw/palladiumlabs/questboard">
                 <Image src={zeally} alt="zeally" className="w-[297px] h-[100px]" />
               </Link>
             </div>
             <div className="flex items-center w-full  justify-around text-white gap-x-7 text-[19px] -mt-10">
-              <Link href="https://twitter.com/PalladiumLabs">  <Image src={tweet} alt="twitter" /></Link>
-              <Link href="https://discord.com/invite/9MMEyJ4JDz">  <Image src={discord} alt="twitter" /></Link>
-              <Link href="https://medium.com/palladium-labs">  <Image src={medium} alt="twitter" /></Link>
+              <Link target="_blank" href="https://twitter.com/PalladiumLabs">  <Image src={tweet} alt="twitter" /></Link>
+              <Link target="_blank" href="https://discord.com/invite/9MMEyJ4JDz">  <Image src={discord} alt="twitter" /></Link>
+              <Link target="_blank" href="https://medium.com/palladium-labs">  <Image src={medium} alt="twitter" /></Link>
             </div>
           </div>
         </div>
       </Sidebar>
-      <Button className="title-text font-bold" icon="pi pi-bars z-10" onClick={() => setVisible(true)} />
+      <Button className="ml-[10px]" icon="pi pi-bars z-10" onClick={() => setVisible(true)} />
     </div>
   );
 }

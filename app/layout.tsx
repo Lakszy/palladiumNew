@@ -20,8 +20,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className)}>
-        <Banner/>
+      <body >
+        {/* <Banner/> */}
         <ContextProvider>{children}</ContextProvider>
       </body>
     </html>

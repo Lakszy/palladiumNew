@@ -35,7 +35,7 @@ const ProgBar: React.FC = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`https://api.palladiumlabs.org/users/activities/${address}`);
+      const response = await fetch(`https://api.palladiumlabs.org/sepolia/users/activities/${address}`);
       if (!response.ok) {
         setError("We are recalibrating your points. Check back in some time for a surprise 😉.");
         return;
@@ -58,12 +58,12 @@ const ProgBar: React.FC = () => {
   if (isConnected && address) {
     fetchData();
   }
-  }, [isConnected, address, walletClient]);
+  }, [fetchData,isConnected, address, walletClient]);
 
   const handleLikeButtonClick = async (taskId: string) => {
     setIsLoading(taskId);
     try {
-      await axios.put(`https://api.palladiumlabs.org/users/activities/${address}/${taskId}`);
+      await axios.put(`https://api.palladiumlabs.org/sepolia/users/activities/${address}/${taskId}`);
       fetchData();
       const task = tasks.find((task) => task.name === taskId);
       if (task) {
@@ -85,11 +85,11 @@ const ProgBar: React.FC = () => {
   const itemTemplate = (task: Task) => {
     const handleClick = task.status === 'locked' || task.status === 'claimed' ? undefined : () => handleLikeButtonClick(task.name);
     return (
-      <div className='w-full'>
+      <div className='w-full '>
         <button aria-label="Like button" onClick={handleClick} disabled={task.status === 'locked' || task.status === 'claimed'}>
-          <div className="task-info gap-x-10 flex flex-col items-center">
+          <div className="task-info gap-x-10  flex flex-col items-center">
             <p className=' body-text  font-semibold text-sm text-yellow-300  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
-            <div className="w-[10rem]  -ml-10 md:-ml-0 md:w-[7rem] md:p-0 p-8">
+            <div className="md:w-[7rem] md:-ml-0 md:pb-0 pb-10">
           {isLoading === task.name ? (
             <div className="text-left -mt-6 w-full h-2">
               <div className="hex-loader"></div>
@@ -124,7 +124,7 @@ const ProgBar: React.FC = () => {
               )}
             </div>
             <div className='flex whitespace-nowrap'>
-              <p className='capitalize body-text font-medium text-sm text-white notMobileDevice '>{task.rewardValue} {task.rewardType === "point" ? "Points" : null}</p>
+              <p className='capitalize body-text font-medium text-sm text-white hidden md:block '>{task.rewardValue} {task.rewardType === "point" ? "Points" : null}</p>
             </div>
           </div>
         </button>
@@ -135,7 +135,7 @@ const ProgBar: React.FC = () => {
   return (
     <>
       {error ? (
-        <p className='error-message w-full text-center items-center title-text notMobileDevice'>{error}</p>
+        <p className='error-message w-full text-center items-center title-text hidden md:block'>{error}</p>
       ) : tasks.length === 0 ? (
         <Messages ref={msgs} />
       ) : (

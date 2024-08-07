@@ -20,8 +20,8 @@ export default function Home() {
           </div>
           <div className="flex md:flex-row flex-col mt-12 md:mt-28 justify-between">
             <Redeem />
-            <div className="md:-mt-7 w-1/2 p-6">
-              <h1 className="text-lg font-semibold whitespace-nowrap font-sans text-yellow-300 title-text2">About Redemptions</h1>
+            <div className="md:-mt-7 w-[40%] p-6 mr-16">
+              <h1 className="text-lg font-semibold whitespace-nowrap font-sans text-yellow-300 title-text2">about Redemptions</h1>
               <div className="text-gray-400 w-72 md:w-full text-sm body-text leading-normal">
                 Redemptions are one of Palladium’s most unique and important title-text protocol features. The redemption mechanism gives PUSD holders the ability to redeem the underlying BTC collateral at face value at any time.
                 <span className="mt-5 block body-text">

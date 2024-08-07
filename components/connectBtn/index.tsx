@@ -89,7 +89,7 @@ export const CustomConnectButton: React.FC<Props>  = ({ className }) => {
 												)}
 											</div>
 										)}
-										<h2 className="body-text notMobileDevice">
+										<h2 className="body-text hidden md:block">
 											{chain.name}
 										</h2>
 									</Button>

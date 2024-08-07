@@ -73,7 +73,7 @@ export default function Redeem() {
 
     useEffect(() => {
         mintStatus();
-    }, [address, mint, isConfirming, isConfirmed]);
+    }, [mintStatus,address, mint, isConfirming, isConfirmed]);
 
     useEffect(() => {
         if (isConfirmed) {

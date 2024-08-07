@@ -1,0 +1,27 @@
+.tooltip-content {
+    display: none;
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3A3522;
+    font-family: "Montserrat";
+    font-size: 12px;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 300px;
+}
+
+.flex {
+    position: relative;
+}
+
+.flex:hover .tooltip-content {
+    display: block;
+}
+
+.w300 {
+    width: 300px;
+}
