@@ -514,7 +514,7 @@ const Borrow = () => {
                                         {Number(balanceData?.formatted).toFixed(8)}{" "}
                                       </span>
                                     </span>
-                                    <div className="flex w-full py-3 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
+                                    <div className="flex w-full py-2 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
                                       <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
                                       <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
                                       <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
@@ -759,7 +759,7 @@ const Borrow = () => {
                                     />
                                   </div>
                                   <span className="body-text my-1  text-xs w-full whitespace-nowrap">
-                                    <div className="flex items-center gap-x-1 md:gap-x-3">
+                                    <div className="flex items-center gap-x-2">
                                       <span className="p-1 w-28 body-text pl-2 font-medium">
                                         {Number(borrowingFee).toFixed(2)} PUSD
                                       </span>
