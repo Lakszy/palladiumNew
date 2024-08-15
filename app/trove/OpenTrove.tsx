@@ -269,24 +269,24 @@ export const OpenTrove = () => {
 
   return (
     <>
-      <div className="h-full body-text md:ml-0">
+      <div className="h-full pt-3 body-text md:ml-0">
         <div className="p-10 ">
-          <div className="md:ml-2 -ml-6  border border-black p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#2e2a1c" }}>
+          <div className="md:ml-2 -ml-6 h-[9rem] p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#2e2a1c" }}>
             <div className="flex p-2 w-full">
               <div className="hidden md:block w-[22%]">
-                <Image src={floatPUSD} height={200} alt="home" className="-mt-[3rem]" />
+                <Image src={floatPUSD} height={200} alt="home" className="-mt-[3.5rem]" />
               </div>
-              <div className=" h-fit py-2 space-y-5">
+              <div className=" h-fit py- space-y-5">
                 <div>
-                  <p className="text-white body-text  text-xl font-medium ">
+                  <p className="text-white body-text  text-lg font-medium ">
                     You dont have an existing trove
                   </p>
                 </div>
                 <div>
-                  <p className="text-yellow-300 body-text font-medium text-left text-xl mb-2">
+                  <p className="text-yellow-300 body-text font-medium text-left text-lg">
                     Open a Zero-Interest trove
                   </p>
-                  <p className="text-[#827f77] text-sm body-text text-left">
+                  <p className="text-[#827f77] text-sm  font-medium body-text text-left">
                     Borrow against BTCs interest free
                   </p>
                 </div>
@@ -299,20 +299,20 @@ export const OpenTrove = () => {
           <div className="grid w-1/2 items-start space-y-7 gap-2 text-white md:p-5">
             <div className="w-full">
               <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collatoral</Label>
-              <div className="flex md:w-full items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-yellow-300">
-                <div className='flex items-center h-[3.5rem] '>
+              <div className="flex md:w-[90%] items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-yellow-300">
+                <div className='flex items-center  h-[3.5rem] '>
                   <Image src={btc} alt="home" className='ml-1' />
                   <h3 className='text-gray-400 body-text font-medium ml-1 mr-3 hidden md:block'>BTC</h3>
                   <h3 className='h-full border border-yellow-300 text-yellow-300 mx-3'></h3>
                 </div>
-                <input id="items" placeholder="" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[24.75rem] body-text font-medium h-[4rem] text-gray-400" style={{ backgroundColor: "#272315" }} />
-                <span className="md:max-w-[fit] md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text h-full">${totalCollateral.toFixed(2)}</span>
+                <input id="items" placeholder="" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[20.75rem] body-text font-medium h-[4rem] pl-3 text-gray-400" style={{ backgroundColor: "#272315" }} />
+                <span className="md:max-w-[fit]  md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text h-full">${totalCollateral.toFixed(2)}</span>
               </div>
-              <div className="pt-2 flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
+              <div className="pt-2 w-[90%] flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
                 <span className={`text-sm body-text w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
                   <span className="body-text text-gray-400 font-medium ">Available</span> {Number(balanceData?.formatted).toFixed(8)}{" "}
                 </span>
-                <div className="flex gap-x-4 w-full md:gap-x-3 mt-2">
+                <div className="flex gap-x-4 md:gap-x-2 w-full   mt-2">
                   <Button disabled={!isConnected} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
                   <Button disabled={!isConnected} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
                   <Button disabled={!isConnected} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
@@ -321,8 +321,8 @@ export const OpenTrove = () => {
               </div>
             </div>
             <div className="w-full">
-              <Label className="text-[#827f77] md:-ml-0 -ml-2  body-text text-lg" htmlFor="quantity">Borrow PUSD</Label>
-              <div className="flex  items-center md:space-x-2 mt-[10px] -ml-3 md:-ml-0 border border-yellow-300">
+              <Label className="text-[#827f77] md:-ml-0 -ml-2   body-text text-lg" htmlFor="quantity">Borrow PUSD</Label>
+              <div className="flex  md:w-[90%] items-center md:space-x-2 mt-[10px] -ml-3 md:-ml-0 border border-yellow-300">
                 <div className='flex items-center h-[3.5rem] '>
                   <Image src={img4} alt="home" className='ml-1' />
                   <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1'>PUSD</h3>
@@ -330,11 +330,11 @@ export const OpenTrove = () => {
                 </div>
                   <input id="quantity" placeholder="" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-gray-400 body-text font-medium" style={{ backgroundColor: "#272315" }} />
               </div>
-              <div className="pt-2 flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
+              <div className="pt-2 w-[90%] flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
                   <span className="body-text text-gray-400 font-medium ">Available</span> {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
                 </span>
-                <div className="flex gap-x-4 w-full -mr-2 md:gap-x-4  mt-2">
+                <div className="flex gap-x-4 md:gap-x-2 w-full -mr-2  mt-2">
                   <Button disabled={!isConnected} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
                   <Button disabled={!isConnected} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
                   <Button disabled={!isConnected} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
@@ -347,7 +347,7 @@ export const OpenTrove = () => {
             </div>
             <button
               onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
-              className={`mt-5 md:-ml-0 -ml-4 w-92 h-[3rem] bg-yellow-300 title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-yellow-300'}`}
+              className={`mt-5 md:-ml-0 -ml-4 w-[90%] h-[3rem] bg-yellow-300 title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-yellow-300'}`}
               disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
                 || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData?.formatted)
                 || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}
@@ -549,7 +549,7 @@ export const OpenTrove = () => {
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>
                   <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                  <Button className=" mt-1 p-3 hover:bg-yellow-400 rounded-none w-[20rem] text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
+                  <Button className=" mt-1 p-3 hover:bg-yellow-400 rounded-none md:w-[20rem] text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
                 </>
               )}
             </div>

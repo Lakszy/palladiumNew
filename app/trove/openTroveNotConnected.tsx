@@ -10,21 +10,21 @@ import { Label } from "@radix-ui/react-label";
 
 const OpenTroveNotConnected = () => {
   return (
-    <div className="md:pt-10 w-fu md:p-5 h-full px-2 pt-4 md:h-screen">
-      <div className=" shadow-lg w-[92%] mx-2" style={{ backgroundColor: "#3f3b2d" }}>
+    <div className="md:pt-10  md:p-5 h-full px-2 pt-4 md:h-screen">
+      <div className=" shadow-lg md:w-[92%] mx-2" style={{ backgroundColor: "#3f3b2d" }}>
         <div className="flex flex-col md:flex-row m-1  gap-x-12">
           <div className="n">
-            <Image src={img1} alt="home" />
+            <Image src={img1} alt="home" className='md:ml-0 ml-[20%]'/>
           </div>
-          <div className=" h-fit  mt-[10px] space-y-20">
+          <div className=" h-fit mb-3 md:mb-1 mt-[10px] space-y-20">
             <div>  <h6 className="text-white  text-center text-2xl title-text2  ">
               You dont have an existing trove  </h6>
             </div>
-            <div>
+            <div className=' md:ml-0 ml-[1.2rem]'>
               <h6 className="text-yellow-300 text-left title-text2 text-xl mb-2">
                 Open a zero interest trove
               </h6>
-              <h6 className="text-white body-text text-left font-medium">
+              <h6 className="text-white md:ml-0 ml-[3%] body-text text-left font-medium">
                 Borrow against BTCs interest free
               </h6>
             </div>
@@ -36,7 +36,7 @@ const OpenTroveNotConnected = () => {
           <div className="grid space-y-5 w-full max-w-sm items-start gap-2 mx-auto   p-5">
             <div className="">
               <Label htmlFor="items" className="body-text text-gray-500 font-medium body-text text-md "> Deposit Collatoral </Label>
-              <div className="flex mb-1.5 mt-[8px] items-center border w-[410px] border-yellow-300  "
+              <div className="flex mb-1.5 mt-[8px] items-center border w-[345px] md:w-[410px] border-yellow-300  "
                 style={{ backgroundColor: "#3f3b2d" }}>
                 <div className='flex items-center h-[3.5rem] '>
                   <Image src={img3} alt="home" className='ml-1' />
@@ -54,12 +54,12 @@ const OpenTroveNotConnected = () => {
               <Label htmlFor="quantity" className="body-text text-gray-500 font-medium text-md">
                 Borrow
               </Label>
-              <div className="flex  mt-[8px]  items-center w-[410px] border border-yellow-300 "
+              <div className="flex  mt-[8px]  items-center w-[345px] md:w-[410px] border border-yellow-300 "
                 style={{ backgroundColor: "#3f3b2d" }}>
                 <div className='flex items-center h-[3.5rem] '>
                   <Image src={img4} alt="home" className='ml-1' />
                   <h3 className='text-white body-text ml-1 font-medium '>PUSD</h3>
-                  <h3 className='h-full border   border-yellow-300 mx-3  text-yellow-300'></h3>
+                  <h3 className='h-full border   border-yellow-300 mx-3   text-yellow-300'></h3>
                 </div>
                 <input id="items" placeholder="" disabled onChange={(e) => { const newCollValue = e.target.value; }} className="md:w-[23.75rem]  body-text text-sm text-gray-400 whitespace-nowrap cursor-not-allowed ml-1 h-[4rem] " style={{ backgroundColor: "#3f3b2d" }} />
               </div>

@@ -198,7 +198,7 @@ const Portfolio = () => {
 
   return (
     <div>
-      {isLoading && afterLoad ? (
+      { afterLoad ? (
         <FullScreenLoader />
       ) : (
         <div>
@@ -336,28 +336,27 @@ const Portfolio = () => {
               </div>
             )}
             {!isConnected && (
-              <div className="md:p-10 flex flex-col md:flex-row justify-between gap-y-8 md:gap-10">
-                <div className="md:w-[35rem] md:h-[23.6rem] md:mx-0 mx-3 mt-4 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#3f3b2d" }}>
-                  <div className="  flex flex-row justify-between p-5" style={{ backgroundColor: "#3d3f37" }}>
-                    <span className="text-white  title-text2">TROVE</span>
-
+              <div className="md:p-10 flex flex-col md:flex-row justify-around gap-y-8 md:gap-10">
+                <div className="md:w-[35rem] md:h-[23.6rem] md:mx-0 mx-3 mt-4 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
+                  <div className=" items-center  flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
+                    <span className="text-white  title-text2 ">TROVE</span>
                     <CustomConnectButton className="" />
                   </div>
-                  <div className="grid place-items-center">
+                  <div className="grid  md:my-0 my-5 place-items-center">
                     <Image src={img1} alt="home" width={200} />
-                    <h6 className="text-white  body-text text-center font-semibold text-lg mt-4">
+                    <h6 className="text-white body-text text-center font-semibold text-lg mt-4">
                       You don't have an Active Trove
                     </h6>
                   </div>
                 </div>
-                <div className="md:w-[22rem] md:h-[23.6rem] md:ml-[2.5rem] md:mx-0 mx-3 rounded-sm" style={{ backgroundColor: "#3f3b2d" }}>
-                  <div className="  flex flex-row justify-between p-5" style={{ backgroundColor: "#3d3f37" }}>
+                <div className="md:w-[22rem]  md:h-[23.6rem] mt-[15px] md:ml-[2.5rem] md:mx-0 mx-3 rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
+                  <div className=" items-center flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
                     <span className="text-white title-text2">STABILITY POOL</span>
                     <CustomConnectButton className="" />
                   </div>
-                  <div className="grid place-items-center mt-[1rem]">
+                  <div className="grid md:my-7 my-5 place-items-center mt-[1rem]">
                     <Image src={port2} alt="home" width={200} />
-                    <h6 className="text-white text-center title-text font-semibold text-lg mt-4">
+                    <h6 className="text-white text-center body-text font-semibold text-lg mt-4">
                       You have not Staked
                     </h6>
                   </div>
@@ -368,6 +367,7 @@ const Portfolio = () => {
         </div>
       )}
     </div>
+
   );
 };
 

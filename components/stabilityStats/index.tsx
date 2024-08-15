@@ -9,7 +9,7 @@ import { ethers } from "ethers";
 import Image from "next/image";
 import "../../components/stabilityPool/Modal.css"
 import { useEffect, useState } from "react";
-import { useWalletClient } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import "../../app/App.css"
 import { Tooltip } from "primereact/tooltip";
 
@@ -17,7 +17,7 @@ const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 export const StabilityStats = () => {
 	const [loanRewards, setLoanRewards] = useState("0");
 	const [liquidGains, setLiquidGains] = useState("0");
-
+	const { isConnected } = useAccount()
 	const [totalStakedValue, setTotalStakedValue] = useState("0");
 	const [totalStabilityPool, setTotalStabilityPool] = useState("0");
 	const [isLoading, setIsLoading] = useState(true);
@@ -72,7 +72,7 @@ export const StabilityStats = () => {
 						</span>
 					</div>
 					<span className="text-white font-medium ml-7 text-sm body-text whitespace-nowrap">
-						{isLoading ? (
+						{isLoading && isConnected ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>
@@ -103,7 +103,7 @@ export const StabilityStats = () => {
 						/>
 					</div>
 					<span className="text-white font-medium text-sm body-text">
-						{isPoolLoading ? (
+						{isPoolLoading && isConnected ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>
@@ -134,7 +134,7 @@ export const StabilityStats = () => {
 						/>
 					</div>
 					<span className="text-white text-sm font-medium body-text">
-						{isLoading && isPoolLoading ? (
+						{isLoading && isPoolLoading && isConnected ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>

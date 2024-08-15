@@ -263,7 +263,7 @@ export const Unstake = () => {
 								{(transactionRejected || (!isSuccess && showCloseButton)) && (
 									<>
 										<p className="body-text text-xs text-white">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-										<Button className=" mt-1 p-3 rounded-none hover:bg-yellow-400 text-black w-[20rem] title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>TRY aGain</Button>
+										<Button className=" mt-1 p-3 rounded-none hover:bg-yellow-400 text-black md:w-[20rem] title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>TRY aGain</Button>
 									</>
 								)}
 							</div>

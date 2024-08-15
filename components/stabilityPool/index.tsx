@@ -162,7 +162,7 @@ export const StabilityPool = () => {
 				</div>
 				<div className="flex justify-end">
 					<span className={"body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-gray-400")}>
-						{isDataLoading ? (
+						{isDataLoading && isConnected ? (
 							<div className="mr-[82px]">
 								<div className="text-left w-full h-2">
 									<div className="hex-loader"></div>
@@ -241,7 +241,7 @@ export const StabilityPool = () => {
 								{(transactionRejected || (!isSuccess && showCloseButton)) && (
 									<>
 										<p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-										<Button className=" mt-1 p-3 text-black rounded-none w-[20rem] hover:bg-yellow-400 title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
+										<Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] hover:bg-yellow-400 title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
 									</>
 								)}
 							</div>

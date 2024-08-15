@@ -312,7 +312,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               {troveStatus === "ACTIVE" ? (
                 <div className="space-y-6  ml-1 pt-12">
                   <div className="flex  gap-x-[6rem]">
-                    <Image src={btc} alt="coin"  className="ml-[10px]"/>
+                    <Image src={btc} alt="coin"  className=""/>
                     <div className=" flex  flex-col">
                       <div className="flex ">
                         <h1 className="text-gray-500 text-sm title-text2">Collateral</h1>
@@ -341,7 +341,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                   </div>
                   <div className="flex gap-x-[5rem]">
-                    <Image src={doubleCoin} alt="coin" className="-ml-1"/>
+                    <Image src={doubleCoin} alt="coin" className="-ml-3"/>
                     <div className=" flex flex-col">
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
@@ -369,7 +369,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                   </div>
                   <div className="flex gap-x-[5.6rem]">
-                    <Image src={tripleCoin} alt="coin" className="ml-[10px]" width={55}/>
+                    <Image src={tripleCoin} alt="coin" className="" width={55}/>
                     <div className=" flex flex-col">
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>

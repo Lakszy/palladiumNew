@@ -92,7 +92,7 @@ function NavBar() {
       <div className="flex justify-between md:h-fit h-[5rem] items-center gap-x-4" style={{ backgroundColor: "#1c1a0f" }}>
         <div className="md:hidden flex items-center ml-[10px] gap-x-4">
           {userExists ? <MobileNav /> : <MobileNavFalse />}
-          <Image src={mobileLogo} width={35} alt="mobileLogo" className="mt-[5px]"></Image>
+          {/* <Image src={mobileLogo} width={29} alt="mobileLogo" className="mt-[5px]"></Image> */}
         </div>
         <div className="md:hidden m-2">
           <CustomConnectButton className="" />
