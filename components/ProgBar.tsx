@@ -14,6 +14,7 @@ import axios from 'axios';
 import "./Prog.css";
 import "../app/App.css"
 import { useAccount, useWalletClient } from 'wagmi';
+import { useAccounts } from '@particle-network/btc-connectkit';
 
 interface Task {
   name: string;
@@ -27,6 +28,8 @@ const ProgBar: React.FC = () => {
 
   const [error, setError] = useState<string | null>(null);
   const msgs = useRef<Messages>(null);
+  const { accounts } = useAccounts();
+
   const [isLoading, setIsLoading] = useState<string | null>(null);
   const [dialogVisible, setDialogVisible] = useState<boolean>(false);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
@@ -55,10 +58,10 @@ const ProgBar: React.FC = () => {
   };
 
   useEffect(() => {
-  if (isConnected && address) {
-    fetchData();
-  }
-  }, [fetchData,isConnected, address, walletClient]);
+    if ((isConnected || accounts.length > 0) && address) {
+      fetchData();
+    }
+  }, [fetchData, isConnected, address, walletClient]);
 
   const handleLikeButtonClick = async (taskId: string) => {
     setIsLoading(taskId);
@@ -90,41 +93,46 @@ const ProgBar: React.FC = () => {
           <div className="task-info gap-x-10  flex flex-col items-center">
             <p className=' body-text  font-semibold text-sm text-yellow-300  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
             <div className="md:w-[7rem] md:-ml-0 md:pb-0 pb-10">
-          {isLoading === task.name ? (
-            <div className="text-left -mt-6 w-full h-2">
-              <div className="hex-loader"></div>
-            </div>
-          ) : (
-            <>
-              {task.status === 'claimed' && task.rewardType === 'badge' && (
-                  <div className='tooltip'>
-                    <Image  width={100} src={badge} alt="Badge" className="hover:cursor-grabbing" />
-                    <span className="tooltiptext p-2 h-10 hover:cursor-grabbing">Reward has been claimed....✨</span>
-                  </div>
-              )}
-              {task.status === 'claimed' && task.rewardType === 'point' && (
-                  <div className='tooltip'>
-                    <Image  width={100} src={points} alt="Points" className="hover:cursor-grabbing" />
-                    <span className="tooltiptext p-2 h-10 hover:cursor-grabbing">Reward has been claimed....✨</span>
-                  </div>
-              )}
-              {task.status === 'unclaimed' && (
-                <div className="tooltip">
-                  <Image  width={100} src={unclaimed} alt="Unclaimed" />
-                  <span className="tooltiptext">Click To Claim Reward✨</span>
+              {isLoading === task.name ? (
+                <div className="text-left -mt-6 w-full h-2">
+                  <div className="hex-loader"></div>
                 </div>
-              )}
-              {task.status === 'locked' && (
+              ) : (
                 <>
-                  <Image  width={100} src={locked} alt="Locked" className="hover:cursor-not-allowed" />
-                  <div className='circle z-20' style={{ position: 'absolute',  transform: 'translate(-50%, -50%)' }}></div>
-                </>
-              )}
+                  {task.status === 'claimed' && task.rewardType === 'badge' && (
+                    <div className='tooltip'>
+                      <Image width={100} src={badge} alt="Badge" className="hover:cursor-grabbing" />
+                      <span className="tooltiptext p-2 h-10 hover:cursor-grabbing">Reward has been claimed....✨</span>
+                    </div>
+                  )}
+                  {task.status === 'claimed' && task.rewardType === 'point' && (
+                    <div className='tooltip'>
+                      <Image width={100} src={points} alt="Points" className="hover:cursor-grabbing" />
+                      <span className="tooltiptext p-2 h-10 hover:cursor-grabbing">Reward has been claimed....✨</span>
+                    </div>
+                  )}
+                  {task.status === 'unclaimed' && (
+                    <div className="tooltip">
+                      <Image width={100} src={unclaimed} alt="Unclaimed" />
+                      <span className="tooltiptext">Click To Claim Reward✨</span>
+                    </div>
+                  )}
+                  {task.status === 'locked' && (
+                    <>
+                      <Image width={100} src={locked} alt="Locked" className="hover:cursor-not-allowed" />
+                      <div className='circle z-20' style={{ position: 'absolute', transform: 'translate(-50%, -50%)' }}></div>
+                    </>
+                  )}
                 </>
               )}
             </div>
             <div className='flex whitespace-nowrap'>
-              <p className='capitalize body-text font-medium text-sm text-white hidden md:block '>{task.rewardValue} {task.rewardType === "point" ? "Points" : null}</p>
+              {task.status !== 'locked' && (
+                <>
+                  <p className='capitalize body-text font-medium text-sm text-white hidden md:block '>{task.rewardValue} {task.rewardType === "point" ? "Points" : null}</p>
+                </>
+              )
+              }
             </div>
           </div>
         </button>
@@ -163,7 +171,7 @@ const ProgBar: React.FC = () => {
           <div className="p-8 bg-[#2d2a1c] rounded-lg shadow-lg">
             <h1 className="text-2xl title-text mb-4">CONGRATULATIONS</h1>
             <div className="flex justify-center mb-4">
-              <Image  width={100} src={currentTask.rewardType === 'badge' ? badge : points} alt="Reward" className="w-32 h-32" />
+              <Image width={100} src={currentTask.rewardType === 'badge' ? badge : points} alt="Reward" className="w-32 h-32" />
             </div>
             <div className="text-2xl title-text text-yellow-300 font-bold mb-2">{currentTask.rewardValue}</div>
             <div className="text-lg title-text text-yellow-300 mb-6 capitalize">{currentTask.rewardType}</div>

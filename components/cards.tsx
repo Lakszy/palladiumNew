@@ -37,6 +37,8 @@ import ProgBar from "./ProgBar";
 import NFT2 from "./NFT2/page";
 import "../app/App.css"
 import { Tooltip } from "primereact/tooltip";
+import WalletConnectButton from "./WalletConnectButton";
+import { useAccounts } from "@particle-network/btc-connectkit";
 
 interface Task {
   rewardType: string;
@@ -78,6 +80,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   const [activitiesData, setActivitiesData] = useState<ActivitiesData | null>(
     null
   );
+  const { accounts } = useAccounts();
   const [isLoading, setIsLoading] = useState(true);
   const [firstTask, setFirstTask] = useState<string | null>("");
   const [fetchedPrice, setFetchedPrice] = useState("0");
@@ -151,7 +154,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
       2: pendingLUSDDebtReward,
       3: pendingETHReward,
     } = await troveManagerContract.getEntireDebtAndColl(address);
-    const collDecimal = new Decimal(coll.toString()); 
+    const collDecimal = new Decimal(coll.toString());
     const collFormatted = collDecimal.div(_1e18.toString()).toString();
     setEntireDebtAndColl({
       debt: (debt / _1e18).toString(),
@@ -300,7 +303,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 <h1 className="title-text2  ml-1 whitespace-nowrap font-semibold text-yellow-300 text-md ">
                   TROVE STaTS
                 </h1>
-                {isConnected ? (
+                {isConnected || accounts.length > 0 ? (
                   <div className="-mt-1">
                     {troveStatus === "ACTIVE" ? <Image className="mt-[5px]" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                   </div>
@@ -312,7 +315,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               {troveStatus === "ACTIVE" ? (
                 <div className="space-y-6  ml-1 pt-12">
                   <div className="flex  gap-x-[6rem]">
-                    <Image src={btc} alt="coin"  className=""/>
+                    <Image src={btc} alt="coin" className="" />
                     <div className=" flex  flex-col">
                       <div className="flex ">
                         <h1 className="text-gray-500 text-sm title-text2">Collateral</h1>
@@ -341,7 +344,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                   </div>
                   <div className="flex gap-x-[5rem]">
-                    <Image src={doubleCoin} alt="coin" className="-ml-3"/>
+                    <Image src={doubleCoin} alt="coin" className="-ml-3" />
                     <div className=" flex flex-col">
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
@@ -369,7 +372,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                   </div>
                   <div className="flex gap-x-[5.6rem]">
-                    <Image src={tripleCoin} alt="coin" className="" width={55}/>
+                    <Image src={tripleCoin} alt="coin" className="" width={55} />
                     <div className=" flex flex-col">
                       <div className="flex">
                         <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>
@@ -414,7 +417,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 </h1>
                 <Image src={botanixLogo} alt="logo" className="-mt-4" />
               </div>
-              {isConnected ? (
+              {isConnected || accounts.length > 0 ? (
                 <div className=" my-5 pb-6 md:my-0 space-y-16 ">
                   <div className="w-full h-24 flex flex-wrap">
                     <div className="flex-1 h-fit -mt-4  flex flex-col items-center justify-center text-center">

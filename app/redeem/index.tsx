@@ -31,9 +31,11 @@ import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import '../App.css';
 import "./redeem.css"
+import { useAccounts } from '@particle-network/btc-connectkit';
 
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
+    const { accounts } = useAccounts()
     const [isRedeeming, setIsRedeeming] = useState(false);
     const [isRecoveryMode, setIsRecoveryMode] = useState<boolean>(false);
     const [pusdBalance, setPusdBalance] = useState("0");
@@ -260,7 +262,7 @@ export default function Redeem() {
                         <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 border-yellow-300 ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100% </Button>
                     </div>
 
-                    {isConnected ? (
+                    {isConnected  || accounts.length > 0? (
                         <div className="space-y-2">
                             <button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-5  text-black title-text font-semibold w-[20rem] md:w-full border border-black h-10 ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
                                 {isLoading ? 'LOADING...' : 'REDEEM'}

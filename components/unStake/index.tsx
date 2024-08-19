@@ -21,12 +21,14 @@ import { CustomConnectButton } from "../connectBtn";
 import "../../app/App.css"
 import "../../components/stabilityPool/Modal.css"
 import { StabilityPoolbi } from "@/app/src/constants/abi/StabilityPoolbi";
+import { useAccounts } from "@particle-network/btc-connectkit";
 
 export const Unstake = () => {
 	const [userInput, setUserInput] = useState("0");
 	const [stakedValue, setStakedValue] = useState(0);
 	const [pusdBalance, setPusdBalance] = useState(0);
 	const { isConnected } = useAccount();
+	const { accounts } = useAccounts();
 	const [loadingModalVisible, setLoadingModalVisible] = useState(false);
 	const [loadingMessage, setLoadingMessage] = useState("");
 	const [userModal, setUserModal] = useState(false);
@@ -205,7 +207,7 @@ export const Unstake = () => {
 					<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
 					<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
 				</div>
-				{isConnected ? (
+				{isConnected || accounts.length > 0 ? (
 					<div className="my-2">
 						<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-2 text-black title-text font-semibold w-full border border-black h-10 border-none 
 					 ${isStateLoading

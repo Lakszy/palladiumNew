@@ -23,6 +23,7 @@ import macPUSD from "../assets/images/macPUSD.png";
 import { CustomConnectButton } from "@/components/connectBtn";
 import FullScreenLoader from "@/components/FullScreenLoader";
   import "../App.css";
+import { useAccounts } from "@particle-network/btc-connectkit";
 
 const Portfolio = () => {
 
@@ -70,7 +71,7 @@ const Portfolio = () => {
 
   const [troveStatus, setTroveStatus] = useState("");
   const [totalStakedValue, setTotalStakedValue] = useState("0");
-
+  const { accounts } = useAccounts();
   const { toBigInt } = web3.utils;
   const [lr, setLR] = useState(0)
   const [cCr,setCCR] = useState(0)
@@ -335,7 +336,7 @@ const Portfolio = () => {
                 </div>
               </div>
             )}
-            {!isConnected && (
+            {!isConnected || !(accounts.length > 0) && (
               <div className="md:p-10 flex flex-col md:flex-row justify-around gap-y-8 md:gap-10">
                 <div className="md:w-[35rem] md:h-[23.6rem] md:mx-0 mx-3 mt-4 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
                   <div className=" items-center  flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>

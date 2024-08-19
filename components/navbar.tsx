@@ -1,26 +1,36 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import pusdbtc from "../app/assets/images/PUSD.svg";
 import btc from "../app/assets/images/btclive.svg";
 import info from "../app/assets/images/info.svg";
 import collR from "../app/assets/images/mode.svg";
-import mobileLogo from "../app/assets/images/mobileLogo.svg";
+import { MdClose } from 'react-icons/md';
 import { CustomConnectButton } from "./connectBtn";
 import "../app/App.css";
 import { useAccount } from "wagmi";
 import MobileNavFalse from "./MobileNavFalse";
 import MobileNav from "./MobileNav";
 import { Toast } from "primereact/toast";
+import { Dialog } from "primereact/dialog";
 import "./navbar.css";
 import TooltipContent from "./TooltipContent";
+import WalletConnectButton from "./WalletConnectButton";
+import { Button } from "./ui/button";
+import { TfiClose } from "react-icons/tfi";
+import { useAccounts } from "@particle-network/btc-connectkit";
 
 function NavBar() {
   const [fetchedPrice, setFetchedPrice] = useState(0);
   const [systemCollRatio, setSystemCollRatio] = useState(0);
+  const { isConnected } = useAccount();
+  const { accounts } = useAccounts();
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const { address } = useAccount();
   const [userExists, setUserExists] = useState(false);
   const toast = useRef<Toast>(null);
+
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+
 
   useEffect(() => {
     fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${address}`)
@@ -87,12 +97,19 @@ function NavBar() {
     }
   };
 
+  const openDialog = () => {
+    setIsDialogVisible(true);
+  };
+
+  const closeDialog = () => {
+    setIsDialogVisible(false);
+  };
+
   return (
     <>
       <div className="flex justify-between md:h-fit h-[5rem] items-center gap-x-4" style={{ backgroundColor: "#1c1a0f" }}>
         <div className="md:hidden flex items-center ml-[10px] gap-x-4">
           {userExists ? <MobileNav /> : <MobileNavFalse />}
-          {/* <Image src={mobileLogo} width={29} alt="mobileLogo" className="mt-[5px]"></Image> */}
         </div>
         <div className="md:hidden m-2">
           <CustomConnectButton className="" />
@@ -132,7 +149,6 @@ function NavBar() {
                     <div className="gap-1 flex">
                       <h1 className="text-white title-text2 text-xs">SCR</h1>
                       <h1 className="text-gray-400 body-text -mt-[4px] text-[10px]">(Normal Mode)</h1>
-                      {/* <Tooltip>1</Tooltip> */}
                     </div>
                     <div className="relative">
                       <div className="flex">
@@ -157,8 +173,40 @@ function NavBar() {
             )}
           </div>
         </div>
-        <CustomConnectButton className="" />
+        <div className="flex items-center gap-x-10">
+          {(isConnected || accounts.length > 0) && (
+            <>
+              {isConnected ? (
+                <CustomConnectButton className="" />
+              ) : (
+                <WalletConnectButton />
+              )}
+            </>
+          )}
+
+        </div>
       </div>
+      <Dialog
+        visible={isDialogVisible}
+        onHide={closeDialog}
+        style={{ width: '30vw' }}
+      >
+        <div className="mt-4 flex justify-end">
+          <button onClick={closeDialog} className="w-fit h-fit text-white body-text">
+            <MdClose className="text-gray-500 text-lg" />
+          </button>
+        </div>
+        <div className="flex space-y-10 mt-4 py-10 items-center flex-col gap-4">
+          <div>
+            <h3 className="text-white title-text">EVM Wallets</h3>
+            <CustomConnectButton className={""} />
+          </div>
+          <div>
+            <h3 className="text-white title-text">BTC Wallets</h3>
+            <WalletConnectButton />
+          </div>
+        </div>
+      </Dialog>
     </>
   );
 }

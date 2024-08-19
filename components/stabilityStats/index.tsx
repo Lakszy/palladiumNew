@@ -12,12 +12,16 @@ import { useEffect, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
 import "../../app/App.css"
 import { Tooltip } from "primereact/tooltip";
+import { useAccounts } from "@particle-network/btc-connectkit";
+import { useWalletAddress } from "../useWalletAddress";
 
 const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 export const StabilityStats = () => {
 	const [loanRewards, setLoanRewards] = useState("0");
 	const [liquidGains, setLiquidGains] = useState("0");
 	const { isConnected } = useAccount()
+	const addressParticle = useWalletAddress();
+	const { accounts } = useAccounts();
 	const [totalStakedValue, setTotalStakedValue] = useState("0");
 	const [totalStabilityPool, setTotalStabilityPool] = useState("0");
 	const [isLoading, setIsLoading] = useState(true);
@@ -29,13 +33,15 @@ export const StabilityStats = () => {
 		stabilityPoolAbi,
 		provider
 	);
-
+	console.log(walletClient?.account.address, "alalal")
+	console.log(addressParticle, "lakshay")
 	useEffect(() => {
 		const getStakedValue = async () => {
 			if (!walletClient) return null;
 			const fetchedTotalStakedValue =
 				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
-					walletClient?.account.address
+					addressParticle
+					// walletClient?.account.address
 				);
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStakedValue(fixedtotal);
@@ -72,7 +78,7 @@ export const StabilityStats = () => {
 						</span>
 					</div>
 					<span className="text-white font-medium ml-7 text-sm body-text whitespace-nowrap">
-						{isLoading && isConnected ? (
+						{isLoading && (isConnected || accounts.length > 0) ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>
@@ -103,7 +109,7 @@ export const StabilityStats = () => {
 						/>
 					</div>
 					<span className="text-white font-medium text-sm body-text">
-						{isPoolLoading && isConnected ? (
+						{isPoolLoading && (isConnected || accounts.length > 0) ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>
@@ -134,7 +140,7 @@ export const StabilityStats = () => {
 						/>
 					</div>
 					<span className="text-white text-sm font-medium body-text">
-						{isLoading && isPoolLoading && isConnected ? (
+						{isLoading && isPoolLoading && (isConnected || accounts.length > 0) ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>

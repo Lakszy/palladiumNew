@@ -21,12 +21,14 @@ import { CustomConnectButton } from "@/components/connectBtn";
 import { useRouter } from "next/navigation";
 import { Dialog } from 'primereact/dialog';
 import "./Modal.css"
+import { useAccounts } from "@particle-network/btc-connectkit";
 
 export default function Redeem() {
     const { address, isConnected } = useAccount();
     const [mint, setMint] = useState("0");
     const [isModalVisible, setIsModalVisible] = useState(false);
     const router = useRouter();
+    const { accounts } = useAccounts();
     const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
     const nftContract = getContract(
         "0xD8C448dD8A4785835da7af461ebB015dD83d4a12",
@@ -122,7 +124,7 @@ export default function Redeem() {
                                 )}
                             </div>
                             <div className="mt-4 md:mt-[4rem]">
-                                {isConnected ? (
+                                {isConnected || accounts.length > 0 ? (
 
                                     mint.toString() === "0" ? (
                                         <>

@@ -40,6 +40,7 @@ import FullScreenLoader from "@/components/FullScreenLoader";
 import { Dialog } from "primereact/dialog";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
+import { useAccounts } from "@particle-network/btc-connectkit";
 
 const Borrow = () => {
   const [userInputs, setUserInputs] = useState({
@@ -81,8 +82,7 @@ const Borrow = () => {
   const [showCloseButton, setShowCloseButton] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const [transactionRejected, setTransactionRejected] = useState(false);
-
-
+  const { accounts } = useAccounts();
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
     debt: "0",
     coll: "0",
@@ -772,7 +772,7 @@ const Borrow = () => {
               <OpenTrove />
             </div>
           )}
-          {!isConnected && (
+          {!isConnected || !accounts.length && (
             <OpenTroveNotConnected />
           )}
         </Layout>

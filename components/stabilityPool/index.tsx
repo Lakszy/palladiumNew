@@ -22,11 +22,13 @@ import tick from "../../app/assets/images/tick.gif"
 import Image from "next/image";
 import "./Modal.css"
 import "../../app/App.css"
+import { useAccounts } from "@particle-network/btc-connectkit";
 
 export const StabilityPool = () => {
 	const [userInput, setUserInput] = useState("0");
 	const [pusdBalance, setPusdBalance] = useState("0");
 	const { address, isConnected } = useAccount();
+	const { accounts } = useAccounts();
 	const [isDataLoading, setIsDataLoading] = useState(true);
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [userModal, setUserModal] = useState(false);
@@ -146,7 +148,7 @@ export const StabilityPool = () => {
 		return () => clearTimeout(timer);
 	}, []);
 
-
+console.log(accounts.length > 0,"lo")
 	return (
 		<div className="grid bg-[#272315] items-start h-66 gap-2 mx-auto border border-yellow-400 p-7">
 			<div className="">
@@ -162,7 +164,7 @@ export const StabilityPool = () => {
 				</div>
 				<div className="flex justify-end">
 					<span className={"body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-gray-400")}>
-						{isDataLoading && isConnected ? (
+						{isDataLoading && (isConnected ) ? (
 							<div className="mr-[82px]">
 								<div className="text-left w-full h-2">
 									<div className="hex-loader"></div>

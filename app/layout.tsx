@@ -21,7 +21,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body >
-        {/* <Banner/> */}
         <ContextProvider>{children}</ContextProvider>
       </body>
     </html>
