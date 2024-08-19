@@ -185,6 +185,28 @@ function NavBar() {
           )}
 
         </div>
+        {(isConnected || accounts.length > 0) ? (
+          
+          <></>
+        ) : (
+          <Button
+            onClick={openDialog}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "#383427",
+              height: 50,
+              borderRadius: 3,
+              border: "1px solid gray",
+              borderWidth: "2px"
+            }}
+          >
+            <h2 className="title-text">
+              Connect Wallet
+            </h2>
+          </Button>
+        )}
+
       </div>
       <Dialog
         visible={isDialogVisible}
