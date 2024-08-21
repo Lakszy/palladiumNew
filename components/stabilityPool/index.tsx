@@ -22,7 +22,8 @@ import tick from "../../app/assets/images/tick.gif"
 import Image from "next/image";
 import "./Modal.css"
 import "../../app/App.css"
-import { useAccounts } from "@particle-network/btc-connectkit";
+import { useAccounts, useETHProvider } from "@particle-network/btc-connectkit";
+import WalletConnection from "../Connect/MutliConnectModal";
 
 export const StabilityPool = () => {
 	const [userInput, setUserInput] = useState("0");
@@ -33,10 +34,12 @@ export const StabilityPool = () => {
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [userModal, setUserModal] = useState(false);
 	const [message, setMessage] = useState("");
+	const { account, getSmartAccountInfo, chainId } = useETHProvider();
 	const [loadingModalVisible, setLoadingModalVisible] = useState(false);
 	const [loadingMessage, setLoadingMessage] = useState("");
 	const [showCloseButton, setShowCloseButton] = useState(false);
 	const { data: walletClient } = useWalletClient();
+	const [walletAdd, setWalletAdd] = useState<any>()
 	const [transactionRejected, setTransactionRejected] = useState(false);
 	const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 	const erc20Contract = getContract(
@@ -46,6 +49,7 @@ export const StabilityPool = () => {
 	);
 	const { data: hash, writeContract, error: writeError } = useWriteContract()
 	const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+
 
 	useEffect(() => {
 		if (isLoading) {
@@ -77,7 +81,10 @@ export const StabilityPool = () => {
 	};
 
 	const fetchPrice = async () => {
-		const pusdBalanceValue = await erc20Contract.balanceOf(address);
+		const accountInfo = await getSmartAccountInfo();
+		const walletAddress = accountInfo?.smartAccountAddress as unknown as `0x${string}`;
+		setWalletAdd(walletAddress)
+		const pusdBalanceValue = await erc20Contract.balanceOf(walletAddress);
 		const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
 		setPusdBalance(pusdBalanceFormatted);
 		// setAfterload(false);
@@ -148,7 +155,6 @@ export const StabilityPool = () => {
 		return () => clearTimeout(timer);
 	}, []);
 
-console.log(accounts.length > 0,"lo")
 	return (
 		<div className="grid bg-[#272315] items-start h-66 gap-2 mx-auto border border-yellow-400 p-7">
 			<div className="">
@@ -164,7 +170,7 @@ console.log(accounts.length > 0,"lo")
 				</div>
 				<div className="flex justify-end">
 					<span className={"body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-gray-400")}>
-						{isDataLoading && (isConnected ) ? (
+						{isDataLoading && (isConnected || accounts.length > 0) ? (
 							<div className="mr-[82px]">
 								<div className="text-left w-full h-2">
 									<div className="hex-loader"></div>
@@ -180,12 +186,13 @@ console.log(accounts.length > 0,"lo")
 				</div>
 			</div>
 			<div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
+				<Button>{walletAdd}</Button>
 				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
 				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
 				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
 				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
 			</div>
-			{isConnected ? (
+			{isConnected || accounts.length > 0 ? (
 				<div className=" my-2">
 					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick}
 						className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 title-text border-none 
@@ -194,7 +201,8 @@ console.log(accounts.length > 0,"lo")
 						disabled={isDataLoading || Number(userInput) <= 0 || Number(userInput) > Number(Math.trunc(Number(pusdBalance) * 100) / 100)}>
 						{isDataLoading ? 'LOADING...' : 'STAKE'}</button>
 				</div>
-			) : (<CustomConnectButton className="" />
+			) : (
+				<WalletConnection isConnected={isConnected} accounts={accounts} />
 			)}
 			<Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
 				<div className="dialog-overlay">

@@ -18,6 +18,7 @@ import WalletConnectButton from "./WalletConnectButton";
 import { Button } from "./ui/button";
 import { TfiClose } from "react-icons/tfi";
 import { useAccounts } from "@particle-network/btc-connectkit";
+import WalletConnection from "./Connect/MutliConnectModal";
 
 function NavBar() {
   const [fetchedPrice, setFetchedPrice] = useState(0);
@@ -109,10 +110,10 @@ function NavBar() {
     <>
       <div className="flex justify-between md:h-fit h-[5rem] items-center gap-x-4" style={{ backgroundColor: "#1c1a0f" }}>
         <div className="md:hidden flex items-center ml-[10px] gap-x-4">
-          {userExists ? <MobileNav /> : <MobileNavFalse />}
+          <MobileNav />
         </div>
         <div className="md:hidden m-2">
-          <CustomConnectButton className="" />
+          <WalletConnection isConnected={isConnected} accounts={accounts} />
         </div>
       </div>
       <Toast ref={toast} className="custom-toast" />
@@ -173,62 +174,9 @@ function NavBar() {
             )}
           </div>
         </div>
-        <div className="flex items-center gap-x-10">
-          {(isConnected || accounts.length > 0) && (
-            <>
-              {isConnected ? (
-                <CustomConnectButton className="" />
-              ) : (
-                <WalletConnectButton />
-              )}
-            </>
-          )}
-
-        </div>
-        {(isConnected || accounts.length > 0) ? (
-          
-          <></>
-        ) : (
-          <Button
-            onClick={openDialog}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              backgroundColor: "#383427",
-              height: 50,
-              borderRadius: 3,
-              border: "1px solid gray",
-              borderWidth: "2px"
-            }}
-          >
-            <h2 className="title-text">
-              Connect Wallet
-            </h2>
-          </Button>
-        )}
-
+        <WalletConnection isConnected={isConnected} accounts={accounts} />
       </div>
-      <Dialog
-        visible={isDialogVisible}
-        onHide={closeDialog}
-        style={{ width: '30vw' }}
-      >
-        <div className="mt-4 flex justify-end">
-          <button onClick={closeDialog} className="w-fit h-fit text-white body-text">
-            <MdClose className="text-gray-500 text-lg" />
-          </button>
-        </div>
-        <div className="flex space-y-10 mt-4 py-10 items-center flex-col gap-4">
-          <div>
-            <h3 className="text-white title-text">EVM Wallets</h3>
-            <CustomConnectButton className={""} />
-          </div>
-          <div>
-            <h3 className="text-white title-text">BTC Wallets</h3>
-            <WalletConnectButton />
-          </div>
-        </div>
-      </Dialog>
+
     </>
   );
 }

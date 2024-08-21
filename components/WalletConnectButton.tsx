@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { useConnectModal, useAccounts } from '@particle-network/btc-connectkit';
+import { useConnectModal, useAccounts, useBTCProvider } from '@particle-network/btc-connectkit';
 import { useETHProvider } from '@particle-network/btc-connectkit';
 import { Button } from './ui/button';
 import { Dialog } from 'primereact/dialog';
@@ -11,20 +11,29 @@ const WalletConnectButton = () => {
     const { openConnectModal, disconnect } = useConnectModal();
     const { publicClient } = useETHProvider();
     const { accounts } = useAccounts();
+    const { account, getSmartAccountInfo, chainId } = useETHProvider();
     const [isConnected, setIsConnected] = useState(false);
     const [balance, setBalance] = useState<string | null>(null);
     const [address, setAddress] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const { provider, getNetwork, switchNetwork, signMessage, getPublicKey, sendBitcoin } = useBTCProvider();
     const [showPopup, setShowPopup] = useState(false);
 
-    const fetchBalance = useCallback(async (accountAddress: string) => {
+    const fetchBalance = useCallback(async (accountAddress: any) => {
         if (accountAddress) {
             setIsLoading(true);
             try {
-                const formattedAddress: `0x${string}` = accountAddress.startsWith('0x') ? accountAddress as `0x${string}` : `0x${accountAddress}` as `0x${string}`;
+                const formattedAddress = accountAddress.startsWith('0x') ? accountAddress as `0x${string}` : `0x${accountAddress}` as `0x${string}`;
                 setAddress(formattedAddress);
-                const balance = await publicClient?.getBalance({ address: formattedAddress });
-                setBalance(balance ? `${balance}` : '0');
+                const accountInfo = await getSmartAccountInfo();
+                const walletAddress = accountInfo?.smartAccountAddress as unknown as `0x${string}`;
+                const balanceBigInt = await publicClient?.getBalance({ address: walletAddress });
+                const balance = balanceBigInt ? Number(balanceBigInt) : 0;
+                if (balanceBigInt && balanceBigInt > BigInt(Number.MAX_SAFE_INTEGER)) {
+                    console.log("Balance exceeds Number.MAX_SAFE_INTEGER and may lose precision.");
+                }
+                setBalance(balance.toString());
+                console.log(balance, "alala");
             } catch (error) {
                 console.error("Error fetching balance:", error);
                 setBalance(null);
@@ -91,7 +100,7 @@ const WalletConnectButton = () => {
                         }
                         modal={true}
                         onClick={hidePopup}
-                        style={{ width: '450px', height:'350px', borderRadius: '10px', padding: '10px' }}
+                        style={{ width: '450px', height: '350px', borderRadius: '10px', padding: '10px' }}
                     >
                         <div className="flex flex-col p-4 items-center">
                             <Image className='border' src={btnx} alt="User Avatar" style={{ width: 100, height: 100, borderRadius: '50%', marginBottom: '15px' }} />
@@ -114,3 +123,4 @@ const WalletConnectButton = () => {
 };
 
 export default WalletConnectButton;
+
