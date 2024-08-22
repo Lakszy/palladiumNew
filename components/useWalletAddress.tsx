@@ -15,6 +15,5 @@ export const useWalletAddress = () => {
             setAddress(null);
         }
     }, [accounts, account]);
-
     return address;
 };

@@ -39,6 +39,7 @@ import "../app/App.css"
 import { Tooltip } from "primereact/tooltip";
 import WalletConnectButton from "./WalletConnectButton";
 import { useAccounts } from "@particle-network/btc-connectkit";
+import { useWalletAddress } from "./useWalletAddress";
 
 interface Task {
   rewardType: string;
@@ -76,6 +77,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   const { data: walletClient } = useWalletClient();
   const [troveStatus, setTroveStatus] = useState("");
   const { address, isConnected } = useAccount();
+  const addressParticle = useWalletAddress();
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const [activitiesData, setActivitiesData] = useState<ActivitiesData | null>(
     null
@@ -116,9 +118,10 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
 
   const newLTV = ((Number(entireDebtAndColl.debt) * 100) / ((Number(entireDebtAndColl.coll) * Number(fetchedPrice)))).toFixed(2)
   const getTroveStatus = async () => {
-    if (!walletClient) return null;
+    // if (!walletClient) return null;
+    const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
     const troveStatusBigInt = await troveManagerContract.getTroveStatus(
-      walletClient?.account.address
+      addressToUse
     );
     const troveStatus = troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
     setTroveStatus(troveStatus);
@@ -126,8 +129,9 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
 
   const fetchActivitiesData = async () => {
     try {
+      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
       const response = await fetch(
-        `https://api.palladiumlabs.org/sepolia/users/activities/${address}`
+        `https://api.palladiumlabs.org/sepolia/users/activities/${addressToUse}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch activities data");
@@ -144,16 +148,17 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   };
 
   const fetchedData = async () => {
-    if (!walletClient) return null;
+
     setIsStateLoading(true)
     const pow = Decimal.pow(10, 18);
     const _1e18 = toBigInt(pow.toFixed());
+    const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
     const {
       0: debt,
       1: coll,
       2: pendingLUSDDebtReward,
       3: pendingETHReward,
-    } = await troveManagerContract.getEntireDebtAndColl(address);
+    } = await troveManagerContract.getEntireDebtAndColl(addressToUse);
     const collDecimal = new Decimal(coll.toString());
     const collFormatted = collDecimal.div(_1e18.toString()).toString();
     setEntireDebtAndColl({
@@ -188,7 +193,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
         // }
       }
     });
-  }, [walletClient, address, isConnected, troveStatus]);
+  }, [walletClient, address, isConnected, troveStatus, addressParticle]);
 
   const countClaimedBadges = (activitiesData: ActivitiesData): number => {
     if (!activitiesData || !activitiesData.task) return 0;
@@ -318,7 +323,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     <Image src={btc} alt="coin" className="" />
                     <div className=" flex  flex-col">
                       <div className="flex ">
-                        <h1 className="text-gray-500 text-sm title-text2">Collateral</h1>
+                        <h1 className="text-gray-400 text-sm font-medium body-text">Collateral</h1>
                         <Image
                           width={15}
                           className="toolTipHolding1 ml_5 -mt-[3px]"
@@ -333,7 +338,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                           content="The BTC you’ve staked to receive PUSD. This Bitcoin acts as security for the loan or transaction."
                         />
                       </div>
-                      <h1 className="text-gray-100 text-sm  title-text2">
+                      <h1 className="text-gray-100 text-sm body-text font-medium">
                         {isStateLoading ?
                           (
                             <div className="text-left w-full -mt-6 h-2">
@@ -347,7 +352,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     <Image src={doubleCoin} alt="coin" className="-ml-3" />
                     <div className=" flex flex-col">
                       <div className="flex">
-                        <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
+                        <h1 className="text-gray-400 text-sm font-medium body-text">Debt</h1>
                         <Image
                           width={15}
                           className="toolTipHolding2 ml_5  -mt-[2px]"
@@ -362,7 +367,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                           mouseTrackLeft={10}
                         />
                       </div>
-                      <h1 className="text-gray-100 text-sm title-text2">
+                      <h1 className="text-gray-100 text-sm body-text font-medium">
                         {isStateLoading ?
                           (<div className="text-left w-full -mt-6 h-2">
                             <div className="hex-loader"></div>
@@ -375,7 +380,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     <Image src={tripleCoin} alt="coin" className="" width={55} />
                     <div className=" flex flex-col">
                       <div className="flex">
-                        <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>
+                        <h1 className="text-gray-400 text-sm font-medium body-text">Your LTV</h1>
                         <Image
                           width={15}
                           className="toolTipHolding3 ml_5 -mt-[3px]"
@@ -391,7 +396,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                           mouseTrackLeft={10}
                         />
                       </div>
-                      <h1 className="text-gray-100 text-sm title-text2">
+                      <h1 className="text-gray-100 text-sm body-text font-medium">
                         {isStateLoading ?
                           (<div className="text-left w-full -mt-6 h-2">
                             <div className="hex-loader"></div>

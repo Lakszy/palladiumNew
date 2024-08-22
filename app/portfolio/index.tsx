@@ -22,8 +22,9 @@ import floatPUSD from "../assets/images/floatPUSD.png";
 import macPUSD from "../assets/images/macPUSD.png";
 import { CustomConnectButton } from "@/components/connectBtn";
 import FullScreenLoader from "@/components/FullScreenLoader";
-  import "../App.css";
+import "../App.css";
 import { useAccounts } from "@particle-network/btc-connectkit";
+import { useWalletAddress } from "@/components/useWalletAddress";
 
 const Portfolio = () => {
 
@@ -72,10 +73,11 @@ const Portfolio = () => {
   const [troveStatus, setTroveStatus] = useState("");
   const [totalStakedValue, setTotalStakedValue] = useState("0");
   const { accounts } = useAccounts();
+  const addressParticle = useWalletAddress();
   const { toBigInt } = web3.utils;
   const [lr, setLR] = useState(0)
-  const [cCr,setCCR] = useState(0)
-  const [mCR,setMCR] = useState(0)
+  const [cCr, setCCR] = useState(0)
+  const [mCR, setMCR] = useState(0)
   const [fetchedPrice, setFetchedPrice] = useState(0)
   const [recoveryMode, setRecoveryMode] = useState<boolean>(false)
   const [afterLoad, setAfterload] = useState(false);
@@ -99,9 +101,10 @@ const Portfolio = () => {
       }
     };
     const getTroveStatus = async () => {
-      if (!walletClient) return null;
+      // if (!walletClient) return null;
+      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
       const troveStatusBigInt = await troveManagerContract.getTroveStatus(
-        walletClient?.account.address
+        addressToUse
       );
       const troveStatus = troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
       setTroveStatus(troveStatus);
@@ -119,15 +122,14 @@ const Portfolio = () => {
     const _1e18 = toBigInt(pow.toFixed());
     const _1e16 = toBigInt(pow16.toFixed());
     const fetchedData = async () => {
-      if (!walletClient) return null;
+      // if (!walletClient) return null;
+      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
       const {
         0: debt,
         1: coll,
         2: pendingLUSDDebtReward,
         3: pendingETHReward,
-      } = await troveManagerContract.getEntireDebtAndColl(
-        walletClient?.account.address
-      );
+      } = await troveManagerContract.getEntireDebtAndColl(addressToUse);
       const collDecimal = new Decimal(coll.toString()); // Convert coll to a Decimal
       const collFormatted = collDecimal.div(_1e18.toString()).toString(); // Divide coll by _1e18 and convert to string
 
@@ -161,17 +163,18 @@ const Portfolio = () => {
     };
 
     const getStakedValue = async () => {
-      if (!walletClient) return null;
+      // if (!walletClient) return null;
+      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
       const fetchedTotalStakedValue =
         await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
-          walletClient?.account.address
+          addressToUse
         );
       const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
       setTotalStakedValue(fixedtotal);
     };
 
     const getStaticData = async () => {
-      if (!walletClient) return null;
+      // if (!walletClient) return null;
       if (!provider || hasGotStaticData) return null;
       setStaticCollAmount(Number(entireDebtAndColl.coll));
       const totalColl = Number(entireDebtAndColl.coll) * price;
@@ -191,7 +194,7 @@ const Portfolio = () => {
     fetchedData();
     getSystemLTV();
     getStakedValue();
-  }, [walletClient]);
+  }, [walletClient, addressParticle]);
 
   const divideBy = recoveryMode ? cCr : mCR;
   const availableToBorrow = (Number(entireDebtAndColl.coll) * Number(fetchedPrice)) / Number(divideBy) - Number(entireDebtAndColl.debt);
@@ -199,7 +202,7 @@ const Portfolio = () => {
 
   return (
     <div>
-      { afterLoad ? (
+      {afterLoad ? (
         <FullScreenLoader />
       ) : (
         <div>

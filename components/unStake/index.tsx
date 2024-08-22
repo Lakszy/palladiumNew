@@ -22,12 +22,15 @@ import "../../app/App.css"
 import "../../components/stabilityPool/Modal.css"
 import { StabilityPoolbi } from "@/app/src/constants/abi/StabilityPoolbi";
 import { useAccounts } from "@particle-network/btc-connectkit";
+import { useWalletAddress } from "../useWalletAddress";
+import WalletConnection from "../Connect/MutliConnectModal";
 
 export const Unstake = () => {
 	const [userInput, setUserInput] = useState("0");
 	const [stakedValue, setStakedValue] = useState(0);
 	const [pusdBalance, setPusdBalance] = useState(0);
 	const { isConnected } = useAccount();
+	const addressParticle = useWalletAddress();
 	const { accounts } = useAccounts();
 	const [loadingModalVisible, setLoadingModalVisible] = useState(false);
 	const [loadingMessage, setLoadingMessage] = useState("");
@@ -64,10 +67,11 @@ export const Unstake = () => {
 
 	const fetchStakedValue = useCallback(async () => {
 		try {
-			if (!walletClient) return null;
+			// if (!walletClient) return null;
+			const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
 			const fetchedPUSD =
 				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
-					walletClient?.account.address
+					addressToUse
 				);
 			setStakedValue(fetchedPUSD);
 		} catch (error) {
@@ -89,17 +93,18 @@ export const Unstake = () => {
 
 	useEffect(() => {
 		const getStakedValue = async () => {
-			if (!walletClient) return null;
+			// if (!walletClient) return null;
+			const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
 			const fetchedTotalStakedValue =
 				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
-					walletClient?.account.address
+					addressToUse
 				);
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStakedValue(fixedtotal);
 			setIsStateLoading(false)
 		};
 		getStakedValue();
-	}, [walletClient, stabilityPoolContractReadOnly]);
+	}, [walletClient, stabilityPoolContractReadOnly, addressParticle]);
 
 	const handlePercentageClick = (percentage: any) => {
 		const percentageDecimal = new Decimal(percentage).div(100);
@@ -178,7 +183,7 @@ export const Unstake = () => {
 							<h3 className='text-white body-text ml-1 hidden md:block'>PUSD</h3>
 							<h3 className='h-full border border-yellow-300 mx-3 text-yellow-300'></h3>
 							<div className=" justify-between items-center flex gap-x-24">
-								<input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1  text-white" style={{ backgroundColor: "#272315" }} />
+								<input id="items" placeholder="0.000 BTC" disabled={!(isConnected || accounts.length > 0)} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1  text-white" style={{ backgroundColor: "#272315" }} />
 							</div>
 						</div>
 					</div>
@@ -202,10 +207,10 @@ export const Unstake = () => {
 					</div>
 				</div>
 				<div className="flex w-full justify-between mt-2 mb-2">
-					<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-					<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-					<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-					<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+					<Button disabled={(!isConnected && !(accounts.length > 0))  || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+					<Button disabled={(!isConnected && !(accounts.length > 0))  || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+					<Button disabled={(!isConnected && !(accounts.length > 0))  || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+					<Button disabled={(!isConnected && !(accounts.length > 0))  || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
 				</div>
 				{isConnected || accounts.length > 0 ? (
 					<div className="my-2">
@@ -217,7 +222,7 @@ export const Unstake = () => {
 							disabled={isStateLoading || Math.trunc(Number(totalStakedValue) * 100) / 100 === 0 || Number(userInput) > Number(Math.trunc(Number(totalStakedValue) * 100) / 100)}>{isStateLoading ? 'LOADING...' : 'UNSTAKE'}</button>
 					</div>
 				) : (
-					<CustomConnectButton className="" />
+					<WalletConnection isConnected={isConnected} accounts={accounts} />
 				)}
 				<Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
 					<div className="dialog-overlay">
@@ -260,7 +265,7 @@ export const Unstake = () => {
 								)}
 								<div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
 								{isSuccess && (
-									<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+									<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
 								)}
 								{(transactionRejected || (!isSuccess && showCloseButton)) && (
 									<>

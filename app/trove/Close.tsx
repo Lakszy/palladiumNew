@@ -19,6 +19,7 @@ import "../../components/stabilityPool/Modal.css"
 import { Button } from "@/components/ui/button";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
+import { useWalletAddress } from "@/components/useWalletAddress";
 
 interface Props {
   entireDebtAndColl: number;
@@ -32,7 +33,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const { data: walletClient } = useWalletClient();
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const [afterLoad, setAfterload] = useState(false);
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const [pusdBalance, setPusdBalance] = useState("0");
@@ -41,6 +42,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   const { data: hash, writeContract, error: writeError } = useWriteContract();
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
+  const addressParticle = useWalletAddress();
 
   const erc20Contract = getContract(
     botanixTestnet.addresses.lusdToken,
@@ -58,8 +60,9 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   }, []);
 
   const fetchPrice = useCallback(async () => {
-    if (!address) return;
-    const pusdBalanceValue = await erc20Contract.balanceOf(address);
+    // if (!address) return;
+    const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
+    const pusdBalanceValue = await erc20Contract.balanceOf(addressToUse);
     const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
     if (Number(pusdBalanceFormatted) < (debt - liquidationReserve)) {
       setIsLowBalance(true);
@@ -70,12 +73,12 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
 
   useEffect(() => {
     fetchPrice();
-  }, [fetchPrice, walletClient, writeContract, hash]);
+  }, [fetchPrice, walletClient, writeContract, hash, addressParticle]);
 
   const handleConfirmClick = async () => {
     setIsModalVisible(true);
     try {
-      if (!walletClient) return null;
+      // if (!walletClient) return null;
       const tx = writeContract({
         abi: BorrowerOperationbi,
         address: '0xE0774dA339FA29bAf646B57B00644deA48fCaE23',
@@ -282,7 +285,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
               )}
               <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>

@@ -15,6 +15,7 @@ import "./Prog.css";
 import "../app/App.css"
 import { useAccount, useWalletClient } from 'wagmi';
 import { useAccounts } from '@particle-network/btc-connectkit';
+import { useWalletAddress } from './useWalletAddress';
 
 interface Task {
   name: string;
@@ -35,10 +36,12 @@ const ProgBar: React.FC = () => {
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
+  const addressParticle = useWalletAddress();
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`https://api.palladiumlabs.org/sepolia/users/activities/${address}`);
+      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
+      const response = await fetch(`https://api.palladiumlabs.org/sepolia/users/activities/${addressToUse}`);
       if (!response.ok) {
         setError("We are recalibrating your points. Check back in some time for a surprise 😉.");
         return;
@@ -58,15 +61,16 @@ const ProgBar: React.FC = () => {
   };
 
   useEffect(() => {
-    if ((isConnected || accounts.length > 0) && address) {
+    if ((isConnected || accounts.length > 0) && (address || addressParticle)) {
       fetchData();
     }
-  }, [fetchData, isConnected, address, walletClient]);
+  }, [fetchData, isConnected, address, walletClient,addressParticle]);
 
   const handleLikeButtonClick = async (taskId: string) => {
     setIsLoading(taskId);
     try {
-      await axios.put(`https://api.palladiumlabs.org/sepolia/users/activities/${address}/${taskId}`);
+      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
+      await axios.put(`https://api.palladiumlabs.org/sepolia/users/activities/${addressToUse}/${taskId}`);
       fetchData();
       const task = tasks.find((task) => task.name === taskId);
       if (task) {

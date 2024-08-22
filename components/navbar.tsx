@@ -7,7 +7,7 @@ import collR from "../app/assets/images/mode.svg";
 import { MdClose } from 'react-icons/md';
 import { CustomConnectButton } from "./connectBtn";
 import "../app/App.css";
-import { useAccount } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import MobileNavFalse from "./MobileNavFalse";
 import MobileNav from "./MobileNav";
 import { Toast } from "primereact/toast";
@@ -19,6 +19,7 @@ import { Button } from "./ui/button";
 import { TfiClose } from "react-icons/tfi";
 import { useAccounts } from "@particle-network/btc-connectkit";
 import WalletConnection from "./Connect/MutliConnectModal";
+import { useWalletAddress } from "./useWalletAddress";
 
 function NavBar() {
   const [fetchedPrice, setFetchedPrice] = useState(0);
@@ -29,12 +30,16 @@ function NavBar() {
   const { address } = useAccount();
   const [userExists, setUserExists] = useState(false);
   const toast = useRef<Toast>(null);
+	const { data: walletClient } = useWalletClient();
+	const addressParticle = useWalletAddress();
+
 
   const [isDialogVisible, setIsDialogVisible] = useState(false);
 
+  const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
 
   useEffect(() => {
-    fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${address}`)
+    fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${addressToUse}`)
       .then((response) => response.json())
       .then((data) => {
         setUserExists(data.userExists);
@@ -42,7 +47,7 @@ function NavBar() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [address]);
+  }, [address, addressParticle]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -142,7 +147,7 @@ function NavBar() {
                 </h1>
               </div>
             </div>
-            {address && userExists && (
+            {(address || addressParticle) && userExists && (
               <>
                 <div className="items-center flex gap-x-2">
                   <Image src={collR} alt="btc" width={40} />

@@ -24,12 +24,12 @@ import "./Modal.css"
 import "../../app/App.css"
 import { useAccounts, useETHProvider } from "@particle-network/btc-connectkit";
 import WalletConnection from "../Connect/MutliConnectModal";
+import { useWalletAddress } from "../useWalletAddress";
 
 export const StabilityPool = () => {
 	const [userInput, setUserInput] = useState("0");
 	const [pusdBalance, setPusdBalance] = useState("0");
 	const { address, isConnected } = useAccount();
-	const { accounts } = useAccounts();
 	const [isDataLoading, setIsDataLoading] = useState(true);
 	const [isModalVisible, setIsModalVisible] = useState(false);
 	const [userModal, setUserModal] = useState(false);
@@ -42,11 +42,9 @@ export const StabilityPool = () => {
 	const [walletAdd, setWalletAdd] = useState<any>()
 	const [transactionRejected, setTransactionRejected] = useState(false);
 	const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-	const erc20Contract = getContract(
-		botanixTestnet.addresses.lusdToken,
-		erc20Abi,
-		provider
-	);
+	const erc20Contract = getContract(botanixTestnet.addresses.lusdToken, erc20Abi, provider);
+	const { accounts } = useAccounts();
+	const addressParticle = useWalletAddress();
 	const { data: hash, writeContract, error: writeError } = useWriteContract()
 	const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
 
@@ -81,13 +79,10 @@ export const StabilityPool = () => {
 	};
 
 	const fetchPrice = async () => {
-		const accountInfo = await getSmartAccountInfo();
-		const walletAddress = accountInfo?.smartAccountAddress as unknown as `0x${string}`;
-		setWalletAdd(walletAddress)
-		const pusdBalanceValue = await erc20Contract.balanceOf(walletAddress);
+		const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
+		const pusdBalanceValue = await erc20Contract.balanceOf(addressToUse);
 		const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
 		setPusdBalance(pusdBalanceFormatted);
-		// setAfterload(false);
 		setIsDataLoading(false);
 	};
 	useEffect(() => {
@@ -164,13 +159,13 @@ export const StabilityPool = () => {
 						<h3 className='text-white body-text ml-1 hidden md:block'>PUSD</h3>
 						<h3 className='h-full border border-yellow-300 mx-3 text-yellow-300'></h3>
 						<div className="justify-between items-center flex gap-x-24">
-							<input id="items" placeholder='Enter Collateral Amount' disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1 text-white" style={{ backgroundColor: "#272315" }} />
+							<input id="items" placeholder='Enter Collateral Amount' disabled={!(isConnected || accounts.length > 0)} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1 text-white" style={{ backgroundColor: "#272315" }} />
 						</div>
 					</div>
 				</div>
 				<div className="flex justify-end">
 					<span className={"body-text font-medium balance " + (Number(userInput) > Math.trunc(Number(pusdBalance) * 100) / 100 ? "text-red-500" : "text-gray-400")}>
-						{isDataLoading && (isConnected || accounts.length > 0) ? (
+						{isDataLoading && !(isConnected || accounts.length > 0) ? (
 							<div className="mr-[82px]">
 								<div className="text-left w-full h-2">
 									<div className="hex-loader"></div>
@@ -186,13 +181,12 @@ export const StabilityPool = () => {
 				</div>
 			</div>
 			<div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
-				<Button>{walletAdd}</Button>
-				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-				<Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+				<Button disabled={(!isConnected && !(accounts.length > 0)) || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+				<Button disabled={(!isConnected && !(accounts.length > 0)) || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+				<Button disabled={(!isConnected && !(accounts.length > 0)) || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+				<Button disabled={(!isConnected && !(accounts.length > 0)) || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? 'cursor-not-allowed' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
 			</div>
-			{isConnected || accounts.length > 0 ? (
+			{isConnected || (accounts.length > 0) ? (
 				<div className=" my-2">
 					<button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick}
 						className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 title-text border-none 
@@ -246,7 +240,7 @@ export const StabilityPool = () => {
 							<div className="waiting-message title-text2  text-yellow-300 ">{loadingMessage}</div>
 							<div className="pb-5">
 								{isSuccess && (
-									<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+									<button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
 								)}
 								{(transactionRejected || (!isSuccess && showCloseButton)) && (
 									<>
