@@ -1,29 +1,45 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import pusdbtc from "../app/assets/images/PUSD.svg";
 import btc from "../app/assets/images/btclive.svg";
 import info from "../app/assets/images/info.svg";
 import collR from "../app/assets/images/mode.svg";
+import { MdClose } from 'react-icons/md';
 import { CustomConnectButton } from "./connectBtn";
 import "../app/App.css";
-import { useAccount } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import MobileNavFalse from "./MobileNavFalse";
 import MobileNav from "./MobileNav";
 import { Toast } from "primereact/toast";
+import { Dialog } from "primereact/dialog";
 import "./navbar.css";
-import { Tooltip } from "primereact/tooltip";
 import TooltipContent from "./TooltipContent";
+import WalletConnectButton from "./WalletConnectButton";
+import { Button } from "./ui/button";
+import { TfiClose } from "react-icons/tfi";
+import { useAccounts } from "@particle-network/btc-connectkit";
+import WalletConnection from "./Connect/MutliConnectModal";
+import { useWalletAddress } from "./useWalletAddress";
 
 function NavBar() {
   const [fetchedPrice, setFetchedPrice] = useState(0);
   const [systemCollRatio, setSystemCollRatio] = useState(0);
+  const { isConnected } = useAccount();
+  const { accounts } = useAccounts();
   const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const { address } = useAccount();
   const [userExists, setUserExists] = useState(false);
   const toast = useRef<Toast>(null);
+	const { data: walletClient } = useWalletClient();
+	const addressParticle = useWalletAddress();
+
+
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+
+  const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
 
   useEffect(() => {
-    fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${address}`)
+    fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${addressToUse}`)
       .then((response) => response.json())
       .then((data) => {
         setUserExists(data.userExists);
@@ -31,7 +47,7 @@ function NavBar() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [address]);
+  }, [address, addressParticle]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -87,14 +103,22 @@ function NavBar() {
     }
   };
 
+  const openDialog = () => {
+    setIsDialogVisible(true);
+  };
+
+  const closeDialog = () => {
+    setIsDialogVisible(false);
+  };
+
   return (
     <>
-      <div className="flex justify-between items-center gap-x-4" style={{ backgroundColor: "#1c1a0f" }}>
-        <div className="md:hidden">
-          {userExists ? <MobileNav /> : <MobileNavFalse />}
+      <div className="flex justify-between md:h-fit h-[5rem] items-center gap-x-4" style={{ backgroundColor: "#1c1a0f" }}>
+        <div className="md:hidden flex items-center ml-[10px] gap-x-4">
+          <MobileNav />
         </div>
         <div className="md:hidden m-2">
-          <CustomConnectButton className="" />
+          <WalletConnection isConnected={isConnected} accounts={accounts} />
         </div>
       </div>
       <Toast ref={toast} className="custom-toast" />
@@ -123,7 +147,7 @@ function NavBar() {
                 </h1>
               </div>
             </div>
-            {address && userExists && (
+            {(address || addressParticle) && userExists && (
               <>
                 <div className="items-center flex gap-x-2">
                   <Image src={collR} alt="btc" width={40} />
@@ -131,7 +155,6 @@ function NavBar() {
                     <div className="gap-1 flex">
                       <h1 className="text-white title-text2 text-xs">SCR</h1>
                       <h1 className="text-gray-400 body-text -mt-[4px] text-[10px]">(Normal Mode)</h1>
-                      {/* <Tooltip>1</Tooltip> */}
                     </div>
                     <div className="relative">
                       <div className="flex">
@@ -145,7 +168,7 @@ function NavBar() {
                             alt="info"
                           />
                           <div className="aboslute z-10">
-                          <TooltipContent />
+                            <TooltipContent />
                           </div>
                         </div>
                       </div>
@@ -156,8 +179,9 @@ function NavBar() {
             )}
           </div>
         </div>
-        <CustomConnectButton className="" />
+        <WalletConnection isConnected={isConnected} accounts={accounts} />
       </div>
+
     </>
   );
 }

@@ -31,6 +31,8 @@ import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import '../App.css';
 import "./redeem.css"
+import { useWalletAddress } from '@/components/useWalletAddress';
+import { useAccounts, useETHProvider } from '@particle-network/btc-connectkit';
 
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
@@ -43,6 +45,8 @@ export default function Redeem() {
     const { data: walletClient } = useWalletClient();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const { toBigInt } = web3.utils;
+    const { accounts } = useAccounts();
+    const addressParticle = useWalletAddress();
     const [loadingModalVisible, setLoadingModalVisible] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
     const [userModal, setUserModal] = useState(false);
@@ -50,6 +54,7 @@ export default function Redeem() {
     const { data: hash, writeContract, error: writeError } = useWriteContract();
     const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
     const [transactionRejected, setTransactionRejected] = useState(false);
+    const { getSmartAccountInfo } = useETHProvider();
 
     const priceFeedContract = getContract(
         botanixTestnet.addresses.priceFeed,
@@ -63,6 +68,8 @@ export default function Redeem() {
         provider
     );
 
+    console.log(provider, "provider")
+
     const handleClose = useCallback(() => {
         setLoadingModalVisible(false);
         setUserModal(false);
@@ -74,17 +81,18 @@ export default function Redeem() {
     const neTrove = getContract(
         botanixTestnet.addresses.troveManager,
         troveManagerContractQ,
-        walletClient
+        provider
     )
 
     useEffect(() => {
         const fetchPrice = async () => {
-            const pusdBalanceValue = await erc20Contract.balanceOf(address);
+            const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
+            const pusdBalanceValue = await erc20Contract.balanceOf(addressToUse);
             const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
             setPusdBalance(pusdBalanceFormatted);
         };
         fetchPrice();
-    }, [erc20Contract,address]);
+    }, [erc20Contract, address, addressParticle]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -235,7 +243,7 @@ export default function Redeem() {
                 <div className="grid items-start h-[20rem] gap-x-2  mx-auto border-[2px] border-yellow-400 p-5">
                     <div>
                         <div className="flex mb-2 items-center">
-                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }}
+                            <Input id="items" placeholder="0.000 BTC" disabled={!(isConnected || accounts.length > 0)} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }}
                                 className="bg-[#3b351b] body-text w-[20rem] md:w-full text-lg h-14 border border-yellow-300 text-white "
                             />
                         </div>
@@ -254,13 +262,13 @@ export default function Redeem() {
                         </span>
                     </div>
                     <div className="flex w-full justify-between">
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 border-yellow-300 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 border-yellow-300 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 border-yellow-300 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                        <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 border-yellow-300 ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100% </Button>
+                        <Button disabled={(!isConnected && !(accounts.length > 0)) || isLoading} className={`text-lg body-text border-2 border-yellow-300 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                        <Button disabled={(!isConnected && !(accounts.length > 0)) || isLoading} className={`text-lg body-text border-2 border-yellow-300 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                        <Button disabled={(!isConnected && !(accounts.length > 0)) || isLoading} className={`text-lg body-text border-2 border-yellow-300 ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                        <Button disabled={(!isConnected && !(accounts.length > 0)) || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 border-yellow-300 ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100% </Button>
                     </div>
 
-                    {isConnected ? (
+                    {(isConnected || accounts.length > 0) ? (
                         <div className="space-y-2">
                             <button style={{ backgroundColor: "#f5d64e" }} onClick={handleConfirmClick} className={`mt-5  text-black title-text font-semibold w-[20rem] md:w-full border border-black h-10 ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
                                 {isLoading ? 'LOADING...' : 'REDEEM'}
@@ -313,7 +321,7 @@ export default function Redeem() {
                         )}
                         <div className="waiting-message title-text2 text-white whitespace-nowrap">{loadingMessage}</div>
                         {isSuccess && (
-                            <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+                            <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
                         )}
                         {(transactionRejected || (!isSuccess && showCloseButton)) && (
                             <>

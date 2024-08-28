@@ -9,15 +9,19 @@ import { ethers } from "ethers";
 import Image from "next/image";
 import "../../components/stabilityPool/Modal.css"
 import { useEffect, useState } from "react";
-import { useWalletClient } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
 import "../../app/App.css"
 import { Tooltip } from "primereact/tooltip";
+import { useAccounts } from "@particle-network/btc-connectkit";
+import { useWalletAddress } from "../useWalletAddress";
 
 const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 export const StabilityStats = () => {
 	const [loanRewards, setLoanRewards] = useState("0");
 	const [liquidGains, setLiquidGains] = useState("0");
-
+	const { isConnected } = useAccount()
+	const addressParticle = useWalletAddress();
+	const { accounts } = useAccounts();
 	const [totalStakedValue, setTotalStakedValue] = useState("0");
 	const [totalStabilityPool, setTotalStabilityPool] = useState("0");
 	const [isLoading, setIsLoading] = useState(true);
@@ -32,17 +36,17 @@ export const StabilityStats = () => {
 
 	useEffect(() => {
 		const getStakedValue = async () => {
-			if (!walletClient) return null;
+			// if (!walletClient ) return null;
+			const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
+
 			const fetchedTotalStakedValue =
-				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
-					walletClient?.account.address
-				);
+				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(addressToUse);
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStakedValue(fixedtotal);
 			setIsLoading(false)
 		};
 		const totalStabilityPool = async () => {
-			if (!walletClient) return null;
+			// if (!walletClient) return null;
 			const fetchedTotalStakedValue =
 				await stabilityPoolContractReadOnly.getTotalLUSDDeposits();
 
@@ -52,7 +56,7 @@ export const StabilityStats = () => {
 		};
 		getStakedValue();
 		totalStabilityPool();
-	}, [walletClient]);
+	}, [walletClient, addressParticle]);
 
 	const stakedValue = parseFloat(totalStakedValue);
 	const stabilityPoolValue = parseFloat(totalStabilityPool);
@@ -72,7 +76,7 @@ export const StabilityStats = () => {
 						</span>
 					</div>
 					<span className="text-white font-medium ml-7 text-sm body-text whitespace-nowrap">
-						{isLoading ? (
+						{isLoading && isConnected ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>
@@ -103,7 +107,7 @@ export const StabilityStats = () => {
 						/>
 					</div>
 					<span className="text-white font-medium text-sm body-text">
-						{isPoolLoading ? (
+						{isPoolLoading && (isConnected || accounts.length > 0) ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>
@@ -134,7 +138,7 @@ export const StabilityStats = () => {
 						/>
 					</div>
 					<span className="text-white text-sm font-medium body-text">
-						{isLoading && isPoolLoading ? (
+						{isLoading && isPoolLoading && (isConnected || accounts.length > 0) ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>

@@ -40,6 +40,8 @@ import FullScreenLoader from "@/components/FullScreenLoader";
 import { Dialog } from "primereact/dialog";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
+import { useAccounts } from "@particle-network/btc-connectkit";
+import { useWalletAddress } from "@/components/useWalletAddress";
 
 const Borrow = () => {
   const [userInputs, setUserInputs] = useState({
@@ -51,7 +53,6 @@ const Borrow = () => {
   const [totalDebt, setTotalDebt] = useState(0);
   const [ltv, setLtv] = useState(0);
   const [price, setPrice] = useState<number>(0);
-
   const [liquidationPrice, setLiquidationPrice] = useState(0);
   const [hasPriceFetched, setHasPriceFetched] = useState(false);
   const [hasGotStaticData, setHasGotStaticData] = useState(false);
@@ -81,8 +82,8 @@ const Borrow = () => {
   const [showCloseButton, setShowCloseButton] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const [transactionRejected, setTransactionRejected] = useState(false);
-
-
+  const { accounts } = useAccounts();
+	const addressParticle = useWalletAddress();
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
     debt: "0",
     coll: "0",
@@ -90,8 +91,11 @@ const Borrow = () => {
     pendingETHReward: "0",
   });
   const { data: walletClient } = useWalletClient();
+  const { data: isConnected } = useWalletClient();
+  const addressToUse = isConnected ? walletClient?.account.address : addressParticle as `0x${string}`;
+
   const { data: balanceData } = useBalance({
-    address: walletClient?.account.address,
+    address:  addressToUse
   });
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
@@ -125,7 +129,6 @@ const Borrow = () => {
     provider
   );
 
-  const { data: isConnected } = useWalletClient();
   const { toBigInt } = web3.utils;
   const pow20 = Decimal.pow(10, 20);
   const pow18 = Decimal.pow(10, 18);
@@ -157,6 +160,7 @@ const Borrow = () => {
     const _1e18 = toBigInt(pow.toFixed());
     const fetchedData = async () => {
       if (!walletClient) return null;
+      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
 
       const {
         0: debt,
@@ -164,7 +168,7 @@ const Borrow = () => {
         2: pendingLUSDDebtReward,
         3: pendingETHReward,
       } = await troveManagerContract.getEntireDebtAndColl(
-        walletClient?.account.address
+        addressToUse
       );
       const collDecimal = new Decimal(coll.toString());
       const collFormatted = collDecimal.div(_1e18.toString()).toString();
@@ -409,8 +413,8 @@ const Borrow = () => {
         <Layout>
           {troveStatus === "ACTIVE" && (
             <div style={{ backgroundColor: "#272315" }} className="p-7">
-              <div className="w-[103%] h-[35rem] md:h-fit md:w-[97%] md:ml-4 p-3 justify-between flex flex-col md:flex-row" style={{ backgroundColor: "#2e2a1c" }}>
-                <div className="p-2 px-4 ">
+              <div className="w-[103%] -ml-2 h-[35rem] md:h-fit md:w-[97%] md:ml-4 p-3 justify-between flex flex-col md:flex-row" style={{ backgroundColor: "#2e2a1c" }}>
+                <div className="p-2 px-4  ">
                   <p className=" title-text2 text-gray-500 text-base mb-4">
                     Available to borrow
                   </p>
@@ -422,7 +426,7 @@ const Borrow = () => {
                       </h6>
                     )}
                   </div>
-                  <div className="flex -ml-5 flex-row justify-between mt-5 gap-4">
+                  <div className="flex -ml-5 flex-row justify-between mt-3 md:mt-5 md:gap-4">
                     <div className="flex flex-col text-white  h-28 p-5" style={{ backgroundColor: "" }}>
                       <span className="body-text font-medium  text-gray-500">Collateral</span>
                       <span className="body-text font-medium text-xl">{Number(entireDebtAndColl.coll).toFixed(8)} BTC</span>
@@ -446,7 +450,7 @@ const Borrow = () => {
                   </div>
                 </div>
                 {/* <div className="md:w-[25rem] h-[15rem] p-5 md:p-0 md:h-[13rem] mt-3 px-8 md:py-4 mr-5"*/}
-                <div className="md:w-[25rem] h-[15rem] md:h-[13rem] mt-3 pt-5 px-8 md:py-4 mr-5" style={{ backgroundColor: "#343127" }}>
+                <div className="md:w-[25rem] w-full h-[15rem] md:h-[13rem]  mt-3 pt-5 px-8 md:py-4 mr-5" style={{ backgroundColor: "#343127" }}>
                   <div className="flex justify-between text-white">
                     <div className="flex flex-col gap-y-16 ">
                       <div className="flex  p-1 flex-col">
@@ -471,7 +475,7 @@ const Borrow = () => {
                   </div>
                 </div>
               </div>
-              <div className=" mt-5" style={{ backgroundColor: "#272315" }}>
+              <div className=" md:mt-5" style={{ backgroundColor: "#272315" }}>
                 <div className="md:p-5 pt-20 flex-col flex gap-x-36">
                   <div className=" border-yellow-800">
                     <TabView className="md:-ml-0  -ml-2">
@@ -482,26 +486,23 @@ const Borrow = () => {
                             <div>
                               <div className="grid w-full  space-y-7  max-w-sm items-start gap-2 mx-auto p-7  md:p-5">
                                 <div className="relative">
-                                  <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-10 ">
+                                  <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-11 ">
                                     Deposit Collatoral
                                   </Label>
-                                  <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-9  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
+                                  <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] '>
                                       <Image src={img3} alt="home" className='ml-1' width={41} />
-                                      <h3 className='text-white body-text font-medium  hidden md:block'>BTC</h3>
-                                      <h3 className='h-full border border-yellow-300 mx-8 text-yellow-300'></h3>
+                                      <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>BTC</h6>
+                                      <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
                                     </div>
-                                    <div className=" justify-between items-center flex gap-x-24 text-white">
-                                      <input id="items" placeholder='0'
-                                        disabled={!isConnected} value={userInputs.depositCollateral}
-                                        onChange={(e) => {
-                                          const newCollValue = e.target.value;
-                                          setUserInputs({ ...userInputs, depositCollateral: newCollValue, });
-                                        }}
-                                        className="body-text text-sm whitespace-nowrap ml-1 h-[4rem] text-white" style={{ backgroundColor: "#272315" }}
-                                      />
-                                      <span className={`text-sm body-text mr-2 ${marginClass}`}>
-                                        ${totalCollateral.toFixed(2)}
+                                    <div className=" justify-between items-center flex gap-x-24">
+                                      <input id="items" placeholder='' disabled={!(isConnected || accounts.length > 0)} value={userInputs.depositCollateral} onChange={(e) => {
+                                        const newCollValue = e.target.value;
+                                        setUserInputs({ ...userInputs, depositCollateral: newCollValue, });
+                                      }}
+                                        className="body-text w-full text-sm whitespace-nowrap ml-1 h-[4rem] text-gray-400" style={{ backgroundColor: "#272315" }} />
+                                      <span className={`text-sm body-text text-gray-400 -ml-36 ${marginClass}`}>
+                                        ${(parseFloat(userInputs.depositCollateral) * Number(fetchedPrice)).toFixed(2)}
                                       </span>
                                     </div>
                                   </div>
@@ -515,32 +516,32 @@ const Borrow = () => {
                                       </span>
                                     </span>
                                     <div className="flex w-full py-2 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
-                                      <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                                      <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                                      <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                                      <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                                     </div>
                                   </div>
                                 </div>
                                 <div className="relative ">
                                   <div className="mb-4">
-                                    <Label htmlFor="quantity" className="text-[#84827a] font-medium md:-ml-0 p-1 -ml-10 body-text text-base">
+                                    <Label htmlFor="quantity" className="text-[#84827a] font-medium md:-ml-0 p-1 -ml-11 body-text text-base">
                                       Borrow
                                     </Label>
                                   </div>
-                                  <div className="flex  items-center  md:mt-0 w-[19rem] md:w-[24rem] md:-ml-0 -ml-9  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
+                                  <div className="flex  items-center  md:mt-0 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] mx-1'>
                                       <Image src={img4} alt="home" className='ml-1' />
                                       <h3 className='text-white body-text ml-1 font-medium hidden md:block '>PUSD</h3>
                                       <h3 className='h-full border  border-yellow-300 mx-2  text-yellow-300'></h3>
                                     </div>
                                     <input id="items" placeholder='Enter Collateral Amount'
-                                      disabled={!isConnected} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
+                                      disabled={!(isConnected || accounts.length > 0)} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
                                       onChange={(e) => {
                                         const newBorrowValue = e.target.value;
                                         setUserInputs({ ...userInputs, borrow: newBorrowValue, });
                                       }}
-                                      className="body-text text-sm whitespace-nowrap h-[4rem] text-white" style={{ backgroundColor: "#272315" }}
+                                      className="body-text text-sm whitespace-nowrap h-[4rem] text-gray-400 " style={{ backgroundColor: "#272315" }}
                                     />
 
                                   </div>
@@ -562,10 +563,10 @@ const Borrow = () => {
                                         )}
                                     </span>
                                     <div className="flex w-full py-3 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3 -mt-4 ">
-                                      <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                                      <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                                      <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                                      <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
                                     </div>
                                   </div>
                                   <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
@@ -578,7 +579,7 @@ const Borrow = () => {
                                 </div>
                               </div>
                             </div>
-                            <div className={`px-1 pl-5 w-[18rem] -ml-4 md:px-9 md:w-full md:h-[20rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
+                            <div className={`px-1 pl-5 w-[18rem] -ml-4 md:px-9 md:w-full pt-9 h-[18rem] md:h-[20rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
                               style={{ backgroundColor: "#2e2a1c" }}>
                               <div className="mb-4 space-y-4">
                                 <div className="flex  md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
@@ -598,7 +599,7 @@ const Borrow = () => {
                                   </div>
                                   <span className="text-xs w-full whitespace-nowrap body-text">
                                     <div className="flex items-center gap-x-2.5">
-                                      <span className="w-28 p-1  md:-ml-10 font-medium body-text ">
+                                      <span className="w-28 p-1  md:-ml-10 -ml-1 font-medium body-text ">
                                         {Number(newLTV).toFixed(2)} %
                                       </span>
                                       {userInputColl + userInputDebt >= 1 && ((<>
@@ -632,7 +633,7 @@ const Borrow = () => {
                                   </div>
                                   <span className="body-text  my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2.5">
-                                      <span className=" w-28 body-text font-medium p-1">
+                                      <span className=" w-28 -ml-[5px] body-text font-medium p-1">
                                         {Number(liquidation).toFixed(2)} PUSD
                                       </span>
                                       {userInputColl + userInputDebt >= 1 && (
@@ -666,7 +667,7 @@ const Borrow = () => {
                                   </div>
                                   <span className="body-text  my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
-                                      <span className="w-28 p-1 body-text font-medium">
+                                      <span className="w-28 -ml-[5px] p-1 body-text font-medium">
                                         {Number(entireDebtAndColl.debt).toFixed(2)} PUSD
                                       </span>
                                       {userInputColl == 1 && (
@@ -700,7 +701,7 @@ const Borrow = () => {
                                   </div>
                                   <span className="body-text my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
-                                      <span className="p-1 w-28 body-text  font-medium">
+                                      <span className="p-1 w-28 -ml-[5px] body-text  font-medium">
                                         {Number(entireDebtAndColl.coll).toFixed(8)} BTC
                                       </span>
                                       {userInputColl == 1 && (
@@ -716,30 +717,6 @@ const Borrow = () => {
                                 </div>
                               </div>
                               {userInputDebt == 1 && (
-                                // <div className=" space-y-4">
-                                //   <div className="flex  pb-2 gap-x-[14%] fixed top-[0.3rem] text-white mb-2  items-start my-1">
-                                //     <div className="flex ">
-                                //       <span className="body-text body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Borrowing Fee</span>
-                                //       <Image
-                                //         width={15}
-                                //         className="toolTipHolding13 ml_5"
-                                //         src={info}
-                                //         data-pr-tooltip=""
-                                //         alt="info"
-                                //       />
-                                //       <Tooltip
-                                //         className="custom-tooltip title-text2"
-                                //         target=".toolTipHolding13"
-                                //         content="This amount is deducted from the borrowed amount as a one-time fee."
-                                //         mouseTrack
-                                //         mouseTrackLeft={10}
-                                //       />
-                                //     </div>
-                                //     <span className="font-medium body-text text-xs whitespace-nowrap">
-                                //       {Number(borrowingFee).toFixed(2)} PUSD
-                                //     </span>
-                                //   </div>
-                                // </div>
                                 <div className="flex text-white mb-2  items-center md:flex-row flex-col justify-between">
                                   <div className="flex w-full">
                                     <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Borrowing Fee</span>
@@ -766,7 +743,6 @@ const Borrow = () => {
                                       {userInputColl == 1 && (
                                         <>
                                           <span className="text-yellow-300  w-6 text-lg">
-                                            {/* <FaArrowRightLong /> */}
                                           </span>
                                           <span className="md:ml-05 p-1  w-28 body-text font-medium">{" "}</span>
                                         </>
@@ -800,7 +776,7 @@ const Borrow = () => {
               <OpenTrove />
             </div>
           )}
-          {!isConnected && (
+          {!isConnected || !accounts.length && (
             <OpenTroveNotConnected />
           )}
         </Layout>
@@ -847,12 +823,12 @@ const Borrow = () => {
               )}
               <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>
                   <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                  <Button className=" mt-1 p-3 text-black rounded-none w-[20rem] title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
+                  <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
                 </>
               )}
             </div>

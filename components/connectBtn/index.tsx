@@ -46,7 +46,7 @@ export const CustomConnectButton: React.FC<Props>  = ({ className }) => {
 									<Button className={className} onClick={openConnectModal}
 										style={{ display: "flex", alignItems: "center", backgroundColor: "#383427", height: 50, borderRadius: 3, border: "1px solid gray", borderWidth: "2px" }}>
 										<h2 className="title-text">
-											Connect Wallet
+											Connect Wallet with RainbowKit
 										</h2>
 									</Button>
 								);

@@ -1,7 +1,6 @@
 "use client";
 
 import { Label } from "@/components/ui/label";
-import borrowerOperationAbi from "../src/constants/abi/BorrowerOperations.sol.json";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
@@ -9,7 +8,7 @@ import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
-import img3 from "../assets/images/Group 663.svg";
+import info from "../assets/images/info.svg";
 import btc from "../assets/images/btclive.svg";
 import rej from "../assets/images/TxnError.gif";
 import conf from "../assets/images/conf.gif"
@@ -17,7 +16,7 @@ import rec2 from "../assets/images/rec2.gif"
 import tick from "../assets/images/tick.gif"
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useAccount, useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
 import img4 from "../assets/images/Group 666.svg";
@@ -25,6 +24,9 @@ import floatPUSD from "../assets/images/floatPUSD.png";
 import { Button } from "@/components/ui/button";
 import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
+import { Tooltip } from "primereact/tooltip";
+import { useAccounts } from "@particle-network/btc-connectkit";
+import { useWalletAddress } from "@/components/useWalletAddress";
 
 export const OpenTrove = () => {
   const [userInputs, setUserInputs] = useState({
@@ -49,6 +51,8 @@ export const OpenTrove = () => {
   const { data: hash, writeContract, error: writeError } = useWriteContract()
   const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
+  const { accounts } = useAccounts();
+  const addressParticle = useWalletAddress();
 
   useEffect(() => {
     if (isLoading) {
@@ -74,8 +78,9 @@ export const OpenTrove = () => {
 
   const { data: isConnected } = useWalletClient();
   const { data: walletClient } = useWalletClient();
+  const addressToUse = isConnected ? walletClient?.account.address : addressParticle as `0x${string}`;
   const { data: balanceData } = useBalance({
-    address: walletClient?.account.address,
+    address: addressToUse
   });
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
@@ -269,24 +274,24 @@ export const OpenTrove = () => {
 
   return (
     <>
-      <div className="h-full body-text md:ml-0">
+      <div className="h-full pt-3 body-text md:ml-0">
         <div className="p-10 ">
-          <div className="md:ml-2 -ml-6  border border-black p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#2e2a1c" }}>
+          <div className="md:ml-2 -ml-6 h-[9rem] p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#2e2a1c" }}>
             <div className="flex p-2 w-full">
               <div className="hidden md:block w-[22%]">
-                <Image src={floatPUSD} height={200} alt="home" className="-mt-[3rem]" />
+                <Image src={floatPUSD} height={200} alt="home" className="-mt-[3.5rem]" />
               </div>
-              <div className=" h-fit py-2 space-y-5">
+              <div className=" h-fit py- space-y-5">
                 <div>
-                  <p className="text-white body-text  text-xl font-medium ">
+                  <p className="text-white body-text  text-lg font-medium ">
                     You dont have an existing trove
                   </p>
                 </div>
                 <div>
-                  <p className="text-yellow-300 body-text font-medium text-left text-xl mb-2">
+                  <p className="text-yellow-300 body-text font-medium text-left text-lg">
                     Open a Zero-Interest trove
                   </p>
-                  <p className="text-[#827f77] text-sm body-text text-left">
+                  <p className="text-[#827f77] text-sm  font-medium body-text text-left">
                     Borrow against BTCs interest free
                   </p>
                 </div>
@@ -295,50 +300,50 @@ export const OpenTrove = () => {
           </div>
         </div>
 
-        <div className="container flex flex-col md:flex-row justify-between gap-x-24 md:-mt-6">
-          <div className="grid w-1/2 items-start gap-2 text-white md:p-5">
+        <div className="container flex flex-col md:flex-row justify-between gap-x-28 md:-mt-6">
+          <div className="grid w-1/2 items-start space-y-7 gap-2 text-white md:p-5">
             <div className="w-full">
-              <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-6 body-text text-lg">Deposit Collatoral</Label>
-              <div className="flex md:w-full items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-yellow-300">
-                <div className='flex items-center h-[3.5rem] '>
+              <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collatoral</Label>
+              <div className="flex md:w-[90%] items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-yellow-300">
+                <div className='flex items-center  h-[3.5rem] '>
                   <Image src={btc} alt="home" className='ml-1' />
-                  <h3 className='h-full border border-yellow-300 text-yellow-300 mx-3'></h3>
                   <h3 className='text-gray-400 body-text font-medium ml-1 mr-3 hidden md:block'>BTC</h3>
+                  <h3 className='h-full border border-yellow-300 text-yellow-300 mx-3'></h3>
                 </div>
-                <input id="items" placeholder="Enter Collateral Amount" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[24.75rem] body-text font-medium h-[4rem] text-gray-400" style={{ backgroundColor: "#272315" }} />
-                <span className="md:max-w-[fit] md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text h-full">${totalCollateral.toFixed(2)}</span>
+                <input id="items" placeholder="" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[20.75rem] body-text font-medium h-[4rem] pl-3 text-gray-400" style={{ backgroundColor: "#272315" }} />
+                <span className="md:max-w-[fit]  md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text h-full">${totalCollateral.toFixed(2)}</span>
               </div>
-              <div className="pt-2 flex md:flex-row flex-col items-center justify-between ">
+              <div className="pt-2 w-[90%] flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
                 <span className={`text-sm body-text w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
                   <span className="body-text text-gray-400 font-medium ">Available</span> {Number(balanceData?.formatted).toFixed(8)}{" "}
                 </span>
-                <div className="flex gap-x-4 w-full md:gap-x-3 mt-2">
-                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                <div className="flex gap-x-4 md:gap-x-2 w-full   mt-2">
+                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                 </div>
               </div>
             </div>
             <div className="w-full">
-              <Label className="text-[#827f77] md:-ml-0 -ml-5  body-text text-lg" htmlFor="quantity">Borrow PUSD</Label>
-              <div className="flex  items-center md:space-x-2 mt-[10px] -ml-3 md:-ml-0 border border-yellow-300">
+              <Label className="text-[#827f77] md:-ml-0 -ml-2   body-text text-lg" htmlFor="quantity">Borrow PUSD</Label>
+              <div className="flex  md:w-[90%] items-center md:space-x-2 mt-[10px] -ml-3 md:-ml-0 border border-yellow-300">
                 <div className='flex items-center h-[3.5rem] '>
                   <Image src={img4} alt="home" className='ml-1' />
-                  <h3 className='h-full border border-yellow-300 text-yellow-300 mx-4'></h3>
                   <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1'>PUSD</h3>
+                  <h3 className='h-full border border-yellow-300 text-yellow-300 mx-4'></h3>
                 </div>
-                <input id="quantity" placeholder="Enter Borrow Amount" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-gray-400 body-text font-medium" style={{ backgroundColor: "#272315" }} />
+                <input id="quantity" placeholder="" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-gray-400 body-text font-medium" style={{ backgroundColor: "#272315" }} />
               </div>
-              <div className="pt-2 flex flex-col md:flex-row   items-center justify-between  p-2">
+              <div className="pt-2 w-[90%] flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
-                <span className="body-text text-gray-400 font-medium ">Available</span> {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
+                  <span className="body-text text-gray-400 font-medium ">Available</span> {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
                 </span>
-                <div className="flex gap-x-4 w-full -mr-2 md:gap-x-4  mt-2">
-                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                  <Button disabled={!isConnected} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                <div className="flex gap-x-4 md:gap-x-2 w-full -mr-2  mt-2">
+                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
                 </div>
               </div>
               {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (
@@ -347,7 +352,7 @@ export const OpenTrove = () => {
             </div>
             <button
               onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
-              className={`mt-5 md:-ml-0 -ml-4 w-92 h-[3rem] bg-yellow-300 title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-yellow-300'}`}
+              className={`mt-5 md:-ml-0 -ml-4 w-[90%] h-[3rem] bg-yellow-300 title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-yellow-300'}`}
               disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
                 || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData?.formatted)
                 || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}
@@ -371,35 +376,130 @@ export const OpenTrove = () => {
             </button>
           </div>
           {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData?.formatted) ? (
-            <div className="md:w-4/5 w-full mt-8 p-5 border-yellow-200 h-fit space-y-10  text-white"
-              style={{ backgroundColor: "#2e2a1c" }}
-            >
+            <div className="md:w-4/5 w-full mt-[55px] p-5 border-yellow-200 h-fit space-y-10  text-white"
+              style={{ backgroundColor: "#2e2a1c" }}>
               <div className="flex whitespace-nowrap justify-between">
-                <span className="body-text text-sm text-[#827f77]">Loan-To-Value</span>
+                <div className="flex items-center">
+                  <span className="body-text text-sm font-medium text-[#827f77]">Loan-To-Value</span>
+                  <Image
+                    width={15}
+                    className="toolTipHolding14 ml_5"
+                    src={info}
+                    data-pr-tooltip=""
+                    alt="info"
+                  />
+                  <Tooltip
+                    className="custom-tooltip title-text2"
+                    target=".toolTipHolding14"
+                    content="It is a ratio that measures the amount of a loan compared to the value of the collateral."
+                    mouseTrack
+                    mouseTrackLeft={10}
+                  />
+                </div>
                 {!isloading ? <span className={`overflow-x-clip text-sm body-text font-medium ${loanToValue > (100 / Number(divideBy)) ? 'text-red-500' : 'text-yellow-300'}`}>{loanToValue.toFixed(2)} % </span> : "--"}
               </div>
               <div className="flex body-text whitespace-nowrap justify-between">
-                <span className="body-text text-sm text-[#827f77]">Liq. Reserve</span>
+                <div className="flex items-center">
+                  <span className="body-text text-sm font-medium text-[#827f77]">Liq. Reserve</span>
+                  <Image
+                    width={15}
+                    className="toolTipHolding7 ml_5 -mt-[px]"
+                    src={info}
+                    data-pr-tooltip=""
+                    alt="info"
+                  />
+                  <Tooltip
+                    className="custom-tooltip title-text2"
+                    target=".toolTipHolding7"
+                    mouseTrack
+                    content="The amount of PUSD set aside as a buffer to cover potential liquidation. This reserve helps ensure that there are sufficient funds to handle any shortfalls or losses that may occur."
+                    mouseTrackLeft={10}
+                  />
+                </div>
                 <span className="body-text text-sm body-text font-medium">
                   {lr} PUSD
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className=" text-sm text-[#827f77]">Liquidation Price</span>
+                <div className="items-center flex">
+                  <span className=" text-sm body-text font-medium text-[#827f77]">Liquidation Price</span>
+                  <Image
+                    width={15}
+                    className="toolTipHolding15 ml_5"
+                    src={info}
+                    data-pr-tooltip=""
+                    alt="info"
+                  />
+                  <Tooltip
+                    className="custom-tooltip title-text2"
+                    target=".toolTipHolding15"
+                    content="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
+                    mouseTrack
+                    mouseTrackLeft={10}
+                  />
+                </div>
                 <span className=" text-sm body-text font-medium">{liquidationPrice.toFixed(2)} PUSD</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm body-text text-[#827f77]">Borrowing Fee</span>
+                <div className="flex items-center">
+                  <span className="text-sm body-text font-medium text-[#827f77]">Borrowing Fee</span>
+                  <Image
+                    width={15}
+                    className="toolTipHolding12 ml_5"
+                    src={info}
+                    data-pr-tooltip=""
+                    alt="info"
+                  />
+                  <Tooltip
+                    className="custom-tooltip title-text2"
+                    target=".toolTipHolding12"
+                    mouseTrack
+                    content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt."
+                    mouseTrackLeft={10}
+                  />
+                </div>
                 <span className="text-sm body-text font-medium">
                   {calculatedValues.expectedFee.toFixed(2)} PUSD
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className=" text-sm body-text text-[#827f77]">Total Debt</span>
+                <div className="flex items-center">
+                  <span className=" text-sm body-text font-medium text-[#827f77]">Total Debt</span>
+                  <Image
+                    width={15}
+                    className="toolTipHolding16 ml_5"
+                    src={info}
+                    data-pr-tooltip=""
+                    alt="info"
+                  />
+                  <Tooltip
+                    className="custom-tooltip title-text2"
+                    target=".toolTipHolding16"
+                    content="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance."
+                    mouseTrack
+                    mouseTrackLeft={10}
+                  />
+                </div>
                 {Number((calculatedValues.expectedDebt)) > lr ? <span className=" text-sm body-text font-medium">{(calculatedValues.expectedDebt).toFixed(2)} {" "} PUSD</span> : "---"}
               </div>
               <div className="flex justify-between">
-                <span className=" text-sm body-text text-[#827f77]">Total Collateral</span>
+                <div className="flex items-center ">
+                  <span className=" text-sm body-text font-medium text-[#827f77]">Total Collateral</span>
+                  <Image
+                    width={15}
+                    className="toolTipHolding17 ml_5 -mt-[2px] "
+                    src={info}
+                    data-pr-tooltip=""
+                    alt="info"
+                  />
+                  <Tooltip
+                    className="custom-tooltip title-text2"
+                    target=".toolTipHolding17"
+                    content="The ratio of the USD value of the entire system collateral divided by the entire system debt."
+                    mouseTrack
+                    mouseTrackLeft={10}
+                  />
+                </div>
                 <span className=" text-sm body-text font-medium">{(totalCollateral).toFixed(2)} {" "} PUSD</span>
               </div>
             </div>
@@ -449,12 +549,12 @@ export const OpenTrove = () => {
               )}
               <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Go Back to the Stake Page</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>
                   <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                  <Button className=" mt-1 p-3 hover:bg-yellow-400 rounded-none w-[20rem] text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
+                  <Button className=" mt-1 p-3 hover:bg-yellow-400 rounded-none md:w-[20rem] text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
                 </>
               )}
             </div>

@@ -8,9 +8,11 @@ import { useAccount } from "wagmi";
 import ConnectWalletDefault from "@/components/ConnectWalletDefault";
 import NotMinted from "@/components/NotMinted";
 import FullScreenLoader from "@/components/FullScreenLoader";
+import { useAccounts } from "@particle-network/btc-connectkit";
 
 export default function Home() {
   const { address } = useAccount();
+  const { accounts } = useAccounts();
   const [userExists, setUserExists] = useState(false);
   const [afterLoad, setAfterload] = useState(false);
 
@@ -38,14 +40,9 @@ export default function Home() {
             <div className="body text-black  overflow-y-scroll ">
               <div className="sticky z-50 mainT top-0  overflow-auto">
                 <NavBar />
-                {/* <div className="banner-container">
-                  <div className="scrolling-text body-text">
-                    We are facing network issues. The testnet will be live soon...🤖
-                  </div>
-                </div> */}
               </div>
               <div className=" w-full " style={{ backgroundColor: "#272315" }}>
-                {address ? (
+                {address || accounts.length > 0 ? (
                   <CardDemo />
                 ) : (<ConnectWalletDefault />)}
               </div>

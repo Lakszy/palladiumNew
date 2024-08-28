@@ -37,6 +37,9 @@ import ProgBar from "./ProgBar";
 import NFT2 from "./NFT2/page";
 import "../app/App.css"
 import { Tooltip } from "primereact/tooltip";
+import WalletConnectButton from "./WalletConnectButton";
+import { useAccounts } from "@particle-network/btc-connectkit";
+import { useWalletAddress } from "./useWalletAddress";
 
 interface Task {
   rewardType: string;
@@ -74,10 +77,12 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   const { data: walletClient } = useWalletClient();
   const [troveStatus, setTroveStatus] = useState("");
   const { address, isConnected } = useAccount();
+  const addressParticle = useWalletAddress();
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const [activitiesData, setActivitiesData] = useState<ActivitiesData | null>(
     null
   );
+  const { accounts } = useAccounts();
   const [isLoading, setIsLoading] = useState(true);
   const [firstTask, setFirstTask] = useState<string | null>("");
   const [fetchedPrice, setFetchedPrice] = useState("0");
@@ -113,9 +118,10 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
 
   const newLTV = ((Number(entireDebtAndColl.debt) * 100) / ((Number(entireDebtAndColl.coll) * Number(fetchedPrice)))).toFixed(2)
   const getTroveStatus = async () => {
-    if (!walletClient) return null;
+    // if (!walletClient) return null;
+    const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
     const troveStatusBigInt = await troveManagerContract.getTroveStatus(
-      walletClient?.account.address
+      addressToUse
     );
     const troveStatus = troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
     setTroveStatus(troveStatus);
@@ -123,8 +129,9 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
 
   const fetchActivitiesData = async () => {
     try {
+      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
       const response = await fetch(
-        `https://api.palladiumlabs.org/sepolia/users/activities/${address}`
+        `https://api.palladiumlabs.org/sepolia/users/activities/${addressToUse}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch activities data");
@@ -141,17 +148,18 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   };
 
   const fetchedData = async () => {
-    if (!walletClient) return null;
+
     setIsStateLoading(true)
     const pow = Decimal.pow(10, 18);
     const _1e18 = toBigInt(pow.toFixed());
+    const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
     const {
       0: debt,
       1: coll,
       2: pendingLUSDDebtReward,
       3: pendingETHReward,
-    } = await troveManagerContract.getEntireDebtAndColl(address);
-    const collDecimal = new Decimal(coll.toString()); 
+    } = await troveManagerContract.getEntireDebtAndColl(addressToUse);
+    const collDecimal = new Decimal(coll.toString());
     const collFormatted = collDecimal.div(_1e18.toString()).toString();
     setEntireDebtAndColl({
       debt: (debt / _1e18).toString(),
@@ -185,7 +193,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
         // }
       }
     });
-  }, [walletClient, address, isConnected, troveStatus]);
+  }, [walletClient, address, isConnected, troveStatus, addressParticle]);
 
   const countClaimedBadges = (activitiesData: ActivitiesData): number => {
     if (!activitiesData || !activitiesData.task) return 0;
@@ -300,7 +308,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 <h1 className="title-text2  ml-1 whitespace-nowrap font-semibold text-yellow-300 text-md ">
                   TROVE STaTS
                 </h1>
-                {isConnected ? (
+                {isConnected || accounts.length > 0 ? (
                   <div className="-mt-1">
                     {troveStatus === "ACTIVE" ? <Image className="mt-[5px]" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                   </div>
@@ -312,10 +320,10 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               {troveStatus === "ACTIVE" ? (
                 <div className="space-y-6  ml-1 pt-12">
                   <div className="flex  gap-x-[6rem]">
-                    <Image src={btc} alt="coin"  className="ml-[10px]"/>
+                    <Image src={btc} alt="coin" className="" />
                     <div className=" flex  flex-col">
                       <div className="flex ">
-                        <h1 className="text-gray-500 text-sm title-text2">Collateral</h1>
+                        <h1 className="text-gray-400 text-sm font-medium body-text">Collateral</h1>
                         <Image
                           width={15}
                           className="toolTipHolding1 ml_5 -mt-[3px]"
@@ -330,7 +338,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                           content="The BTC you’ve staked to receive PUSD. This Bitcoin acts as security for the loan or transaction."
                         />
                       </div>
-                      <h1 className="text-gray-100 text-sm  title-text2">
+                      <h1 className="text-gray-100 text-sm body-text font-medium">
                         {isStateLoading ?
                           (
                             <div className="text-left w-full -mt-6 h-2">
@@ -341,10 +349,10 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                   </div>
                   <div className="flex gap-x-[5rem]">
-                    <Image src={doubleCoin} alt="coin" className="-ml-1"/>
+                    <Image src={doubleCoin} alt="coin" className="-ml-3" />
                     <div className=" flex flex-col">
                       <div className="flex">
-                        <h1 className="text-gray-500 text-sm title-text2">Debt</h1>
+                        <h1 className="text-gray-400 text-sm font-medium body-text">Debt</h1>
                         <Image
                           width={15}
                           className="toolTipHolding2 ml_5  -mt-[2px]"
@@ -359,7 +367,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                           mouseTrackLeft={10}
                         />
                       </div>
-                      <h1 className="text-gray-100 text-sm title-text2">
+                      <h1 className="text-gray-100 text-sm body-text font-medium">
                         {isStateLoading ?
                           (<div className="text-left w-full -mt-6 h-2">
                             <div className="hex-loader"></div>
@@ -369,10 +377,10 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                     </div>
                   </div>
                   <div className="flex gap-x-[5.6rem]">
-                    <Image src={tripleCoin} alt="coin" className="ml-[10px]" width={55}/>
+                    <Image src={tripleCoin} alt="coin" className="" width={55} />
                     <div className=" flex flex-col">
                       <div className="flex">
-                        <h1 className="text-gray-500 text-sm title-text2">YOUR LTV</h1>
+                        <h1 className="text-gray-400 text-sm font-medium body-text">Your LTV</h1>
                         <Image
                           width={15}
                           className="toolTipHolding3 ml_5 -mt-[3px]"
@@ -388,7 +396,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                           mouseTrackLeft={10}
                         />
                       </div>
-                      <h1 className="text-gray-100 text-sm title-text2">
+                      <h1 className="text-gray-100 text-sm body-text font-medium">
                         {isStateLoading ?
                           (<div className="text-left w-full -mt-6 h-2">
                             <div className="hex-loader"></div>
@@ -414,7 +422,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 </h1>
                 <Image src={botanixLogo} alt="logo" className="-mt-4" />
               </div>
-              {isConnected ? (
+              {isConnected || accounts.length > 0 ? (
                 <div className=" my-5 pb-6 md:my-0 space-y-16 ">
                   <div className="w-full h-24 flex flex-wrap">
                     <div className="flex-1 h-fit -mt-4  flex flex-col items-center justify-center text-center">

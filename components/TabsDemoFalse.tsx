@@ -49,7 +49,7 @@ export const TabsDemoFalse = () => {
           <div
             key={menuItem.id}
             className={`opacity-50 cursor-not-allowed text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-lg p-2
-${isMenuSelected(menuItem.id) ? "bg-yellow-400 text-black" : "text-gray-500"}`} onClick={() => { if (!userExists) return; handleMenuClick(menuItem.id); }}>
+${isMenuSelected(menuItem.id) ? "bg-yellow-400 text-black" : "text-gray-500"}`} onClick={() => { handleMenuClick(menuItem.id); }}>
             <div
               className={`menu flex items-center gap-x-3 rounded-full p-2
           ${isMenuSelected(menuItem.id) ? "text-black" : "text-white"} `} >
