@@ -20,7 +20,6 @@ export const StabilityStats = () => {
 	const [loanRewards, setLoanRewards] = useState("0");
 	const [liquidGains, setLiquidGains] = useState("0");
 	const { isConnected } = useAccount()
-	const addressParticle = useWalletAddress();
 	const { accounts } = useAccounts();
 	const [totalStakedValue, setTotalStakedValue] = useState("0");
 	const [totalStabilityPool, setTotalStabilityPool] = useState("0");
@@ -36,11 +35,9 @@ export const StabilityStats = () => {
 
 	useEffect(() => {
 		const getStakedValue = async () => {
-			// if (!walletClient ) return null;
-			const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
-
+			if (!walletClient ) return null;
 			const fetchedTotalStakedValue =
-				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(addressToUse);
+				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(walletClient?.account.address);
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStakedValue(fixedtotal);
 			setIsLoading(false)
@@ -56,7 +53,7 @@ export const StabilityStats = () => {
 		};
 		getStakedValue();
 		totalStabilityPool();
-	}, [walletClient, addressParticle]);
+	}, [walletClient, ]);
 
 	const stakedValue = parseFloat(totalStakedValue);
 	const stabilityPoolValue = parseFloat(totalStabilityPool);
@@ -107,7 +104,7 @@ export const StabilityStats = () => {
 						/>
 					</div>
 					<span className="text-white font-medium text-sm body-text">
-						{isPoolLoading && (isConnected || accounts.length > 0) ? (
+						{isPoolLoading && (isConnected) ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>
@@ -138,7 +135,7 @@ export const StabilityStats = () => {
 						/>
 					</div>
 					<span className="text-white text-sm font-medium body-text">
-						{isLoading && isPoolLoading && (isConnected || accounts.length > 0) ? (
+						{isLoading && isPoolLoading && (isConnected) ? (
 							<div className="h-3 rounded-xl">
 								<div className="hex2-loader"></div>
 							</div>

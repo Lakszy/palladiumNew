@@ -5,6 +5,7 @@ import img3 from "../assets/images/Group 661.svg";
 import img4 from "../assets/images/Group 666.svg";
 import Image from 'next/image';
 import "../../app/App.css"
+import { EVMConnect } from '@/components/EVMConnect';
 import { Label } from "@radix-ui/react-label";
 
 
@@ -69,7 +70,7 @@ const OpenTroveNotConnected = () => {
               </div>
             </div>
             <div className="">
-              <CustomConnectButton className="w-full hover:scale-95" />
+            <EVMConnect className="" />
             </div>
           </div>
         </div>

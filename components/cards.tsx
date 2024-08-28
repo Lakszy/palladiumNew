@@ -31,7 +31,6 @@ import TargetArrow from "../app/assets/images/targetArrow.svg";
 import Decimal from "decimal.js";
 import web3 from "web3";
 import floatPUSD from "../app/assets/images/floatPUSD.png";
-import "./Loader.css";
 import { CustomConnectButton } from "./connectBtn";
 import ProgBar from "./ProgBar";
 import NFT2 from "./NFT2/page";
@@ -77,7 +76,6 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   const { data: walletClient } = useWalletClient();
   const [troveStatus, setTroveStatus] = useState("");
   const { address, isConnected } = useAccount();
-  const addressParticle = useWalletAddress();
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const [activitiesData, setActivitiesData] = useState<ActivitiesData | null>(
     null
@@ -118,10 +116,9 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
 
   const newLTV = ((Number(entireDebtAndColl.debt) * 100) / ((Number(entireDebtAndColl.coll) * Number(fetchedPrice)))).toFixed(2)
   const getTroveStatus = async () => {
-    // if (!walletClient) return null;
-    const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
+    if (!walletClient) return null;
     const troveStatusBigInt = await troveManagerContract.getTroveStatus(
-      addressToUse
+      walletClient?.account.address
     );
     const troveStatus = troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
     setTroveStatus(troveStatus);
@@ -129,13 +126,9 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
 
   const fetchActivitiesData = async () => {
     try {
-      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
       const response = await fetch(
-        `https://api.palladiumlabs.org/sepolia/users/activities/${addressToUse}`
+        `https://api.palladiumlabs.org/sepolia/users/activities/${address}`
       );
-      if (!response.ok) {
-        throw new Error("Failed to fetch activities data");
-      }
       const data = await response.json();
       setActivitiesData(data);
       const firstLockedTask = getFirstLockedTask(data.task);
@@ -152,13 +145,12 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
     setIsStateLoading(true)
     const pow = Decimal.pow(10, 18);
     const _1e18 = toBigInt(pow.toFixed());
-    const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
     const {
       0: debt,
       1: coll,
       2: pendingLUSDDebtReward,
       3: pendingETHReward,
-    } = await troveManagerContract.getEntireDebtAndColl(addressToUse);
+    } = await troveManagerContract.getEntireDebtAndColl(address);
     const collDecimal = new Decimal(coll.toString());
     const collFormatted = collDecimal.div(_1e18.toString()).toString();
     setEntireDebtAndColl({
@@ -193,7 +185,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
         // }
       }
     });
-  }, [walletClient, address, isConnected, troveStatus, addressParticle]);
+  }, [walletClient, address, isConnected, troveStatus,]);
 
   const countClaimedBadges = (activitiesData: ActivitiesData): number => {
     if (!activitiesData || !activitiesData.task) return 0;
@@ -308,12 +300,14 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 <h1 className="title-text2  ml-1 whitespace-nowrap font-semibold text-yellow-300 text-md ">
                   TROVE STaTS
                 </h1>
-                {isConnected || accounts.length > 0 ? (
+                {isConnected ? (
                   <div className="-mt-1">
                     {troveStatus === "ACTIVE" ? <Image className="mt-[5px]" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                   </div>
                 ) : (
-                  <CustomConnectButton className="" />
+                  <>
+                    {/* <CustomConnectButton className="w-2" /> */}
+                  </>
                 )}
                 <div className="bent-corner"></div>
               </div>
@@ -422,7 +416,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 </h1>
                 <Image src={botanixLogo} alt="logo" className="-mt-4" />
               </div>
-              {isConnected || accounts.length > 0 ? (
+              {isConnected ? (
                 <div className=" my-5 pb-6 md:my-0 space-y-16 ">
                   <div className="w-full h-24 flex flex-wrap">
                     <div className="flex-1 h-fit -mt-4  flex flex-col items-center justify-center text-center">
@@ -473,7 +467,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
               ) : (
                 <div className="grid place-items-center p-3">
                   <Image src={CHART} alt="home" width={200} />
-                  <p className="text-gray-400 text-sm title-text2 text-center font-medium  pt-5">
+                  <p className="f">
                     Connect your wallet to see your stats
                   </p>
                 </div>

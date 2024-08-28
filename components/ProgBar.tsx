@@ -4,6 +4,7 @@ import { Dialog } from 'primereact/dialog';
 import 'primereact/resources/themes/saga-blue/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import { ProgressSpinner } from 'primereact/progressspinner';
 import { Messages } from 'primereact/messages';
 import Image from 'next/image';
 import points from "../app/assets/images/Points.png";
@@ -36,41 +37,46 @@ const ProgBar: React.FC = () => {
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
   const { address, isConnected } = useAccount();
   const { data: walletClient } = useWalletClient();
-  const addressParticle = useWalletAddress();
 
   const fetchData = async () => {
     try {
-      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
-      const response = await fetch(`https://api.palladiumlabs.org/sepolia/users/activities/${addressToUse}`);
-      if (!response.ok) {
+      const userAddress = address || 1;
+      const response = await fetch(`https://api.palladiumlabs.org/sepolia/users/activities/${userAddress}`);
+      // const response = await fetch(`https://api.palladiumlabs.org/sepolia/users/activities/0xEF4930f7059cEdD367A3F6A621264384668Ea05B`);
+
+      const data = await response.json();
+      if (!data || !data.task) {
+        console.error("Data structure not as expected:", data);
         setError("We are recalibrating your points. Check back in some time for a surprise 😉.");
         return;
       }
-      const data = await response.json();
       const taskArray = Object.entries(data.task).map(([name, task]: [string, any]) => ({
         name,
         rewardType: task.rewardType,
         rewardValue: task.rewardValue,
         status: task.status,
       }));
+
       setTasks(taskArray);
     } catch (error) {
-      setError("You have no activity. Open your first trove and start collecting points.🫡");
       console.error('Error fetching data:', error);
+      setError("You have no activity. Open your first trove and start collecting points.🫡");
     }
   };
 
+  fetchData();
+
   useEffect(() => {
-    if ((isConnected || accounts.length > 0) && (address || addressParticle)) {
+    if (isConnected && address) {
       fetchData();
     }
-  }, [fetchData, isConnected, address, walletClient,addressParticle]);
+  }, [fetchData, isConnected, address, walletClient, ]);
 
   const handleLikeButtonClick = async (taskId: string) => {
     setIsLoading(taskId);
     try {
-      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
-      await axios.put(`https://api.palladiumlabs.org/sepolia/users/activities/${addressToUse}/${taskId}`);
+      await axios.put(`https://api.palladiumlabs.org/sepolia/users/activities/${address}/${taskId}`);
+      // await axios.put(`https://api.palladiumlabs.org/sepolia/users/activities/0xEF4930f7059cEdD367A3F6A621264384668Ea05B/${taskId}`);
       fetchData();
       const task = tasks.find((task) => task.name === taskId);
       if (task) {
@@ -84,6 +90,7 @@ const ProgBar: React.FC = () => {
       setIsLoading(null);
     }
   };
+
   const handleCloseDialog = () => {
     setDialogVisible(false);
     setCurrentTask(null);
@@ -98,9 +105,10 @@ const ProgBar: React.FC = () => {
             <p className=' body-text  font-semibold text-sm text-yellow-300  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
             <div className="md:w-[7rem] md:-ml-0 md:pb-0 pb-10">
               {isLoading === task.name ? (
-                <div className="text-left -mt-6 w-full h-2">
-                  <div className="hex-loader"></div>
+                <div className="flex justify-center items-center w-full h-full">
+                  <ProgressSpinner />
                 </div>
+
               ) : (
                 <>
                   {task.status === 'claimed' && task.rewardType === 'badge' && (
@@ -123,8 +131,8 @@ const ProgBar: React.FC = () => {
                   )}
                   {task.status === 'locked' && (
                     <>
-                      <Image width={100} src={locked} alt="Locked" className="hover:cursor-not-allowed" />
-                      <div className='circle z-20' style={{ position: 'absolute', transform: 'translate(-50%, -50%)' }}></div>
+                      <Image width={105} src={locked} alt="Locked" className="hover:cursor-not-allowed" />
+                      <div className='circle z-20' style={{ position: 'absolute' }}></div>
                     </>
                   )}
                 </>
@@ -170,19 +178,27 @@ const ProgBar: React.FC = () => {
         ]} />
       )}
 
-      <Dialog visible={dialogVisible} onHide={handleCloseDialog} className="w-fit bg-[#2d2a1c]">
+      <Dialog visible={dialogVisible} onHide={handleCloseDialog} className="w-fit bg-[#2d2a1c] p-4 rounded-md">
         {currentTask && (
-          <div className="p-8 bg-[#2d2a1c] rounded-lg shadow-lg">
-            <h1 className="text-2xl title-text mb-4">CONGRATULATIONS</h1>
-            <div className="flex justify-center mb-4">
+          <>
+            <h1 className="text-xl title-text2 mb-4 text-center">CONGRATULATIONS</h1>
+            <div className="flex flex-col items-center mb-4">
               <Image width={100} src={currentTask.rewardType === 'badge' ? badge : points} alt="Reward" className="w-32 h-32" />
             </div>
-            <div className="text-2xl title-text text-yellow-300 font-bold mb-2">{currentTask.rewardValue}</div>
-            <div className="text-lg title-text text-yellow-300 mb-6 capitalize">{currentTask.rewardType}</div>
-            <button onClick={handleCloseDialog} className="bg-yellow-500 title-text text-gray-900 font-bold py-2 px-6 rounded hover:bg-yellow-600">
-              COLLECT NOW
-            </button>
-          </div>
+            <div className="flex items-center justify-center gap-x-2 whitespace-nowrap mb-6">
+              <div className="text-xl body-text text-yellow-300 capitalize">
+                {currentTask.rewardValue}
+              </div>
+              <div className="text-lg body-text text-yellow-300 capitalize">
+                {currentTask.rewardType}
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <button onClick={handleCloseDialog} className="bg-yellow-500 body-text text-gray-900 font-medium py-2 px-6  hover:bg-yellow-600">
+                Collect Now
+              </button>
+            </div>
+          </>
         )}
       </Dialog>
     </>

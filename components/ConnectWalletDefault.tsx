@@ -22,7 +22,7 @@ const ConnectWalletDefault = () => {
               className="  lg:w-full h-full"
             />
           </div>
-          {/* <CustomConnectButton className="" /> */}
+          {/* <EVMConnect className="" /> */}
         </div>
       </div>
     </div>

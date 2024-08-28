@@ -83,7 +83,6 @@ const Borrow = () => {
   const [userModal, setUserModal] = useState(false);
   const [transactionRejected, setTransactionRejected] = useState(false);
   const { accounts } = useAccounts();
-	const addressParticle = useWalletAddress();
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
     debt: "0",
     coll: "0",
@@ -92,10 +91,9 @@ const Borrow = () => {
   });
   const { data: walletClient } = useWalletClient();
   const { data: isConnected } = useWalletClient();
-  const addressToUse = isConnected ? walletClient?.account.address : addressParticle as `0x${string}`;
 
   const { data: balanceData } = useBalance({
-    address:  addressToUse
+    address: walletClient?.account.address
   });
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
@@ -160,7 +158,6 @@ const Borrow = () => {
     const _1e18 = toBigInt(pow.toFixed());
     const fetchedData = async () => {
       if (!walletClient) return null;
-      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
 
       const {
         0: debt,
@@ -168,7 +165,7 @@ const Borrow = () => {
         2: pendingLUSDDebtReward,
         3: pendingETHReward,
       } = await troveManagerContract.getEntireDebtAndColl(
-        addressToUse
+        walletClient?.account.address
       );
       const collDecimal = new Decimal(coll.toString());
       const collFormatted = collDecimal.div(_1e18.toString()).toString();
@@ -496,7 +493,7 @@ const Borrow = () => {
                                       <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
                                     </div>
                                     <div className=" justify-between items-center flex gap-x-24">
-                                      <input id="items" placeholder='' disabled={!(isConnected || accounts.length > 0)} value={userInputs.depositCollateral} onChange={(e) => {
+                                      <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e) => {
                                         const newCollValue = e.target.value;
                                         setUserInputs({ ...userInputs, depositCollateral: newCollValue, });
                                       }}
@@ -516,10 +513,10 @@ const Borrow = () => {
                                       </span>
                                     </span>
                                     <div className="flex w-full py-2 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
-                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                                     </div>
                                   </div>
                                 </div>
@@ -536,7 +533,7 @@ const Borrow = () => {
                                       <h3 className='h-full border  border-yellow-300 mx-2  text-yellow-300'></h3>
                                     </div>
                                     <input id="items" placeholder='Enter Collateral Amount'
-                                      disabled={!(isConnected || accounts.length > 0)} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
+                                      disabled={!(isConnected)} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
                                       onChange={(e) => {
                                         const newBorrowValue = e.target.value;
                                         setUserInputs({ ...userInputs, borrow: newBorrowValue, });
@@ -563,10 +560,10 @@ const Borrow = () => {
                                         )}
                                     </span>
                                     <div className="flex w-full py-3 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3 -mt-4 ">
-                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                                      <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
                                     </div>
                                   </div>
                                   <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
@@ -776,7 +773,7 @@ const Borrow = () => {
               <OpenTrove />
             </div>
           )}
-          {!isConnected || !accounts.length && (
+          {!isConnected && (
             <OpenTroveNotConnected />
           )}
         </Layout>

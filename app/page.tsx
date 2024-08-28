@@ -36,15 +36,13 @@ export default function Home() {
           <FullScreenLoader />
         ) : (
           <div className="grid h-screen font-mono font-extrabold mainT w-full sm:grid-cols-[max-content_1fr] overflow text-white">
-            <TabsDemo /> 
+            <TabsDemo />
             <div className="body text-black  overflow-y-scroll ">
               <div className="sticky z-50 mainT top-0  overflow-auto">
                 <NavBar />
               </div>
               <div className=" w-full " style={{ backgroundColor: "#272315" }}>
-                {address || accounts.length > 0 ? (
-                  <CardDemo />
-                ) : (<ConnectWalletDefault />)}
+                <CardDemo />
               </div>
             </div>
           </div>

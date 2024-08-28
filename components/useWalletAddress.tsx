@@ -8,7 +8,7 @@ export const useWalletAddress = () => {
     const [address, setAddress] = useState<string | null>(null);
 
     useEffect(() => {
-        if (accounts.length > 0 && account) {
+        if (account) {
             const formattedAddress: `0x${string}` = account.startsWith('0x') ? account as `0x${string}` : `0x${account}` as `0x${string}`;
             setAddress(formattedAddress);
         } else {

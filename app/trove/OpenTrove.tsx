@@ -52,7 +52,6 @@ export const OpenTrove = () => {
   const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
   const { accounts } = useAccounts();
-  const addressParticle = useWalletAddress();
 
   useEffect(() => {
     if (isLoading) {
@@ -78,9 +77,8 @@ export const OpenTrove = () => {
 
   const { data: isConnected } = useWalletClient();
   const { data: walletClient } = useWalletClient();
-  const addressToUse = isConnected ? walletClient?.account.address : addressParticle as `0x${string}`;
   const { data: balanceData } = useBalance({
-    address: addressToUse
+    address: walletClient?.account.address
   });
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
@@ -318,10 +316,10 @@ export const OpenTrove = () => {
                   <span className="body-text text-gray-400 font-medium ">Available</span> {Number(balanceData?.formatted).toFixed(8)}{" "}
                 </span>
                 <div className="flex gap-x-4 md:gap-x-2 w-full   mt-2">
-                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                 </div>
               </div>
             </div>
@@ -340,10 +338,10 @@ export const OpenTrove = () => {
                   <span className="body-text text-gray-400 font-medium ">Available</span> {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
                 </span>
                 <div className="flex gap-x-4 md:gap-x-2 w-full -mr-2  mt-2">
-                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                  <Button disabled={!(isConnected || accounts.length > 0)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
                 </div>
               </div>
               {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (

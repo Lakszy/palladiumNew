@@ -45,12 +45,12 @@ const WalletConnectButton = () => {
         }
     }, [publicClient]);
 
-    useEffect(() => {
-        setIsConnected(accounts.length > 0);
-        if (accounts.length > 0) {
-            fetchBalance(accounts[0])
-        }
-    }, [accounts, fetchBalance]);
+    // useEffect(() => {
+    //     setIsConnected(  > 0);
+    //     if (  > 0) {
+    //         fetchBalance(accounts[0])
+    //     }
+    // }, [accounts, fetchBalance]);
 
     const handleDisconnect = useCallback(() => {
         if (disconnect) {

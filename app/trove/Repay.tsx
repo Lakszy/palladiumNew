@@ -69,7 +69,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   const [transactionRejected, setTransactionRejected] = useState(false);
   const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
   const { accounts } = useAccounts();
-	const addressParticle = useWalletAddress();
 
   const handleClose = useCallback(() => {
     setLoadingModalVisible(false);
@@ -97,14 +96,14 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
     const pow = Decimal.pow(10, 18);
     const _1e18 = toBigInt(pow.toFixed());
     const fetchedData = async () => {
-      // if (!walletClient) return null;
+      if (!walletClient) return null;
 
       const collDecimal = new Decimal(coll.toString());
       const collFormatted = collDecimal.div(_1e18.toString()).toString();
 
     };
     const getStaticData = async () => {
-      // if (!walletClient) return null;
+      if (!walletClient) return null;
       if (!provider || hasGotStaticData) return null;
       const ltvValue = (Number(debt) * 100) / ((Number(coll) * Number(fetchedPrice)) || 1);
       setStaticLtv(ltvValue);
@@ -300,7 +299,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
               </div>
               <input id="items" placeholder=''
-                disabled={!(isConnected || accounts.length > 0)}
+                disabled={!(isConnected)}
                 value={userInputs.lusdAmount}
                 onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }}
                 className="body-text text-sm whitespace-nowrap h-[4rem] text-gray-400" style={{ backgroundColor: "#272315" }}
@@ -320,10 +319,10 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               </span>
             </div>
             <div className="flex w-full py-3 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-2">
-              <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-              <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-              <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-              <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
             </div>
 
           </div>
@@ -340,7 +339,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
               </div>
               <div className=" justify-between items-center flex gap-x-24">
-                <input id="items" placeholder='' disabled={!(isConnected || accounts.length > 0)} value={userInputs.coll} onChange={(e) => {
+                <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.coll} onChange={(e) => {
                   const newCollValue = e.target.value;
                   setUserInputs({ ...userInputs, coll: newCollValue, });
                 }}
@@ -365,10 +364,10 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               </span>
             </div>
             <div className="flex w-full py-3  -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-[5px]">
-              <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-              <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-              <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-              <Button disabled={(!isConnected && !(accounts.length > 0))} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
             </div>
           </div>
           <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}

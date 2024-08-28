@@ -7,6 +7,7 @@ import { ethers } from "ethers";
 import CB from "../../app/assets/images/CB.svg"
 import crate from "../../app/assets/images/crate.svg"
 import btc from "../../app/assets/images/btc.svg"
+import { EVMConnect } from "../EVMConnect";
 import { useEffect, useState } from "react";
 import {
     useAccount,
@@ -124,7 +125,7 @@ export default function Redeem() {
                                 )}
                             </div>
                             <div className="mt-4 md:mt-[4rem]">
-                                {isConnected || accounts.length > 0 ? (
+                                {isConnected ? (
 
                                     mint.toString() === "0" ? (
                                         <>
@@ -150,7 +151,7 @@ export default function Redeem() {
                                 ) : (
                                     <div className="items-center  h-[19rem] flex flex-col justify-between -mt-10">
                                         <Image src={crate} alt="home" className="-mt-10" />
-                                        <CustomConnectButton className="" />
+                                        <EVMConnect className="" />
                                     </div>
                                 )}
                             </div>

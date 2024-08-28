@@ -7,6 +7,7 @@ import collR from "../app/assets/images/mode.svg";
 import { MdClose } from 'react-icons/md';
 import { CustomConnectButton } from "./connectBtn";
 import "../app/App.css";
+import { EVMConnect } from "./EVMConnect";
 import { useAccount, useWalletClient } from "wagmi";
 import MobileNavFalse from "./MobileNavFalse";
 import MobileNav from "./MobileNav";
@@ -18,7 +19,6 @@ import WalletConnectButton from "./WalletConnectButton";
 import { Button } from "./ui/button";
 import { TfiClose } from "react-icons/tfi";
 import { useAccounts } from "@particle-network/btc-connectkit";
-import WalletConnection from "./Connect/MutliConnectModal";
 import { useWalletAddress } from "./useWalletAddress";
 
 function NavBar() {
@@ -30,16 +30,10 @@ function NavBar() {
   const { address } = useAccount();
   const [userExists, setUserExists] = useState(false);
   const toast = useRef<Toast>(null);
-	const { data: walletClient } = useWalletClient();
-	const addressParticle = useWalletAddress();
-
-
+  const { data: walletClient } = useWalletClient();
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-
-  const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
-
   useEffect(() => {
-    fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${addressToUse}`)
+    fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${address}`)
       .then((response) => response.json())
       .then((data) => {
         setUserExists(data.userExists);
@@ -47,7 +41,7 @@ function NavBar() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [address, addressParticle]);
+  }, [address]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,7 +112,7 @@ function NavBar() {
           <MobileNav />
         </div>
         <div className="md:hidden m-2">
-          <WalletConnection isConnected={isConnected} accounts={accounts} />
+        <EVMConnect className="" />
         </div>
       </div>
       <Toast ref={toast} className="custom-toast" />
@@ -147,7 +141,7 @@ function NavBar() {
                 </h1>
               </div>
             </div>
-            {(address || addressParticle) && userExists && (
+            {(address) && userExists && (
               <>
                 <div className="items-center flex gap-x-2">
                   <Image src={collR} alt="btc" width={40} />
@@ -179,7 +173,7 @@ function NavBar() {
             )}
           </div>
         </div>
-        <WalletConnection isConnected={isConnected} accounts={accounts} />
+        <EVMConnect className="" />
       </div>
 
     </>

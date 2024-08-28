@@ -42,7 +42,6 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   const { data: hash, writeContract, error: writeError } = useWriteContract();
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
-  const addressParticle = useWalletAddress();
 
   const erc20Contract = getContract(
     botanixTestnet.addresses.lusdToken,
@@ -60,9 +59,8 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   }, []);
 
   const fetchPrice = useCallback(async () => {
-    // if (!address) return;
-    const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
-    const pusdBalanceValue = await erc20Contract.balanceOf(addressToUse);
+    if (!address) return;
+    const pusdBalanceValue = await erc20Contract.balanceOf(address);
     const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
     if (Number(pusdBalanceFormatted) < (debt - liquidationReserve)) {
       setIsLowBalance(true);
@@ -73,7 +71,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
 
   useEffect(() => {
     fetchPrice();
-  }, [fetchPrice, walletClient, writeContract, hash, addressParticle]);
+  }, [fetchPrice, walletClient, writeContract, hash, ]);
 
   const handleConfirmClick = async () => {
     setIsModalVisible(true);

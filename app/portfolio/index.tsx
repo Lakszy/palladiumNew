@@ -7,6 +7,7 @@ import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
+import { EVMConnect } from "@/components/EVMConnect";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
@@ -73,14 +74,12 @@ const Portfolio = () => {
   const [troveStatus, setTroveStatus] = useState("");
   const [totalStakedValue, setTotalStakedValue] = useState("0");
   const { accounts } = useAccounts();
-  const addressParticle = useWalletAddress();
   const { toBigInt } = web3.utils;
   const [lr, setLR] = useState(0)
   const [cCr, setCCR] = useState(0)
   const [mCR, setMCR] = useState(0)
   const [fetchedPrice, setFetchedPrice] = useState(0)
   const [recoveryMode, setRecoveryMode] = useState<boolean>(false)
-  const [afterLoad, setAfterload] = useState(false);
 
 
   useEffect(() => {
@@ -101,17 +100,15 @@ const Portfolio = () => {
       }
     };
     const getTroveStatus = async () => {
-      // if (!walletClient) return null;
-      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
+      if (!walletClient) return null;
       const troveStatusBigInt = await troveManagerContract.getTroveStatus(
-        addressToUse
+        walletClient?.account.address
       );
       const troveStatus = troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
       setTroveStatus(troveStatus);
       setIsLoading(false)
     };
-    setIsLoading(true)
-    setAfterload(true)
+    // setIsLoading(true)
     fetchData();
     getTroveStatus();
   }, []);
@@ -122,14 +119,13 @@ const Portfolio = () => {
     const _1e18 = toBigInt(pow.toFixed());
     const _1e16 = toBigInt(pow16.toFixed());
     const fetchedData = async () => {
-      // if (!walletClient) return null;
-      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
+      if (!walletClient) return null;
       const {
         0: debt,
         1: coll,
         2: pendingLUSDDebtReward,
         3: pendingETHReward,
-      } = await troveManagerContract.getEntireDebtAndColl(addressToUse);
+      } = await troveManagerContract.getEntireDebtAndColl(walletClient?.account.address);
       const collDecimal = new Decimal(coll.toString()); // Convert coll to a Decimal
       const collFormatted = collDecimal.div(_1e18.toString()).toString(); // Divide coll by _1e18 and convert to string
 
@@ -139,7 +135,6 @@ const Portfolio = () => {
         pendingLUSDDebtReward: (pendingLUSDDebtReward / _1e18).toString(),
         pendingETHReward: (pendingETHReward / _1e18).toString(),
       });
-      setAfterload(false)
 
       if (!hasPriceFetched) {
         try {
@@ -163,18 +158,17 @@ const Portfolio = () => {
     };
 
     const getStakedValue = async () => {
-      // if (!walletClient) return null;
-      const addressToUse = isConnected ? walletClient?.account.address : addressParticle;
+      if (!walletClient) return null;
       const fetchedTotalStakedValue =
         await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
-          addressToUse
+          walletClient?.account.address
         );
       const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
       setTotalStakedValue(fixedtotal);
     };
 
     const getStaticData = async () => {
-      // if (!walletClient) return null;
+      if (!walletClient) return null;
       if (!provider || hasGotStaticData) return null;
       setStaticCollAmount(Number(entireDebtAndColl.coll));
       const totalColl = Number(entireDebtAndColl.coll) * price;
@@ -194,7 +188,7 @@ const Portfolio = () => {
     fetchedData();
     getSystemLTV();
     getStakedValue();
-  }, [walletClient, addressParticle]);
+  }, [walletClient,]);
 
   const divideBy = recoveryMode ? cCr : mCR;
   const availableToBorrow = (Number(entireDebtAndColl.coll) * Number(fetchedPrice)) / Number(divideBy) - Number(entireDebtAndColl.debt);
@@ -202,7 +196,7 @@ const Portfolio = () => {
 
   return (
     <div>
-      {afterLoad ? (
+      {isLoading ? (
         <FullScreenLoader />
       ) : (
         <div>
@@ -339,28 +333,28 @@ const Portfolio = () => {
                 </div>
               </div>
             )}
-            {!isConnected || !(accounts.length > 0) && (
+            {!isConnected && (
               <div className="md:p-10 flex flex-col md:flex-row justify-around gap-y-8 md:gap-10">
                 <div className="md:w-[35rem] md:h-[23.6rem] md:mx-0 mx-3 mt-4 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
                   <div className=" items-center  flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
-                    <span className="text-white  title-text2 ">TROVE</span>
-                    <CustomConnectButton className="" />
+                    <span className="text-yellow-300 title-text2 ">TROVE</span>
+                    <EVMConnect className="" />
                   </div>
                   <div className="grid  md:my-0 my-5 place-items-center">
                     <Image src={img1} alt="home" width={200} />
-                    <h6 className="text-white body-text text-center font-semibold text-lg mt-4">
+                    <p className="mt-4 font-medium text-gray-400 title-text2 text-center pt-5">
                       You don't have an Active Trove
-                    </h6>
+                    </p>
                   </div>
                 </div>
                 <div className="md:w-[22rem]  md:h-[23.6rem] mt-[15px] md:ml-[2.5rem] md:mx-0 mx-3 rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
                   <div className=" items-center flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
-                    <span className="text-white title-text2">STABILITY POOL</span>
-                    <CustomConnectButton className="" />
+                    <span className="text-yellow-300 title-text2">STABILITY POOL</span>
+                    <EVMConnect className="" />
                   </div>
                   <div className="grid md:my-7 my-5 place-items-center mt-[1rem]">
                     <Image src={port2} alt="home" width={200} />
-                    <h6 className="text-white text-center body-text font-semibold text-lg mt-4">
+                    <h6 className="mt-4 pt-5 font-medium text-gray-400 title-text2 text-center">
                       You have not Staked
                     </h6>
                   </div>

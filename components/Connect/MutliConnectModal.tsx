@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../ui/button';
 import { Dialog } from "primereact/dialog";
 import { MdClose } from 'react-icons/md';
+import { EVMConnect } from '../EVMConnect';
 import { CustomConnectButton } from '../connectBtn';
 import WalletConnectButton from '../WalletConnectButton';
 interface WalletConnectionProps {
@@ -18,10 +19,10 @@ interface WalletConnectionProps {
   return (
     <div>
       <div className="flex items-center gap-x-10">
-        {(isConnected || accounts.length > 0) && (
+        {(isConnected) && (
           <>
             {isConnected ? (
-              <CustomConnectButton className="" />
+              <EVMConnect className="" />
             ) : (
               <WalletConnectButton />
             )}
@@ -29,7 +30,7 @@ interface WalletConnectionProps {
         )}
       </div>
 
-      {(isConnected || accounts.length > 0) ? (
+      {(isConnected) ? (
         <></>
       ) : (
         <Button
@@ -59,16 +60,16 @@ interface WalletConnectionProps {
           </button>
         </div>
         <div className="flex space-y-10 mt-4 py-10 items-center flex-col gap-4">
-          <div>
+          {/* <div>
             <h3 className="text-white title-text">EVM Wallets</h3>
-            {accounts.length > 0 ? (
+            {  > 0 ? (
               <button className="text-red-400 title-text2 cursor-not-allowed" disabled>
                 Connected already
               </button>
             ) : (
               <CustomConnectButton className={""} />
             )}
-          </div>
+          </div> */}
           <div>
             <h3 className="text-white title-text">BTC Wallets</h3>
             {isConnected ? (
