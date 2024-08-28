@@ -89,7 +89,9 @@ export const Unstake = () => {
 		const getStakedValue = async () => {
 			if (!walletClient) return null;
 			const fetchedTotalStakedValue =
-				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(walletClient?.account.address);
+				await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
+					walletClient?.account.address
+				);
 			const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
 			setTotalStakedValue(fixedtotal);
 			setIsStateLoading(false)
@@ -119,7 +121,7 @@ export const Unstake = () => {
 			const inputValue = inputBeforeConv.mul(pow).toFixed();
 			const inputBigInt = BigInt(inputValue);
 
-			writeContract({
+			await writeContract({
 				abi: StabilityPoolbi,
 				address: '0x8FBa9ab010923d3E1c60eD34DAE255A2E7b98Edc',
 				functionName: 'withdrawFromSP',
@@ -160,7 +162,7 @@ export const Unstake = () => {
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setShowCloseButton(true);
-		}, 90000);
+		}, 180000);
 		return () => clearTimeout(timer);
 	}, []);
 
@@ -198,10 +200,10 @@ export const Unstake = () => {
 					</div>
 				</div>
 				<div className="flex w-full justify-between mt-2 mb-2">
-					<Button disabled={(!isConnected) || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-					<Button disabled={(!isConnected) || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-					<Button disabled={(!isConnected) || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-					<Button disabled={(!isConnected) || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+					<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+					<Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+					<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+					<Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
 				</div>
 				{isConnected ? (
 					<div className="my-2">

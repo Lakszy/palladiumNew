@@ -495,11 +495,11 @@ const Borrow = () => {
                                     <div className=" justify-between items-center flex gap-x-24">
                                       <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e) => {
                                         const newCollValue = e.target.value;
-                                        setUserInputs({ ...userInputs, depositCollateral: newCollValue, });
+                                        setUserInputs({ ...userInputs, depositCollateral: newCollValue });
                                       }}
                                         className="body-text w-full text-sm whitespace-nowrap ml-1 h-[4rem] text-gray-400" style={{ backgroundColor: "#272315" }} />
                                       <span className={`text-sm body-text text-gray-400 -ml-36 ${marginClass}`}>
-                                        ${(parseFloat(userInputs.depositCollateral) * Number(fetchedPrice)).toFixed(2)}
+                                        ${(parseFloat(userInputs.depositCollateral || "0") * Number(fetchedPrice)).toFixed(2)}
                                       </span>
                                     </div>
                                   </div>

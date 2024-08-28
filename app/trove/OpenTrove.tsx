@@ -59,7 +59,7 @@ export const OpenTrove = () => {
       setLoadingMessage("Waiting for transaction to confirm..");
       setLoadingModalVisible(true);
     } else if (isSuccess) {
-      setLoadingMessage("Close Transaction completed successfully");
+      setLoadingMessage("Open Trove Transaction completed successfully");
       setLoadingModalVisible(true);
     } else if (transactionRejected) {
       setLoadingMessage("Transaction was rejected");
@@ -209,6 +209,7 @@ export const OpenTrove = () => {
 
   const handleClose = () => {
     setLoadingModalVisible(false);
+    setUserModal(false);
     window.location.reload()
   };
   const handlePercentageClick = (percentage: any) => {
@@ -265,7 +266,7 @@ export const OpenTrove = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowCloseButton(true);
-    }, 90000);
+    }, 180000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -519,7 +520,7 @@ export const OpenTrove = () => {
           </div>
         </div>
       </Dialog>
-      <Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
+      {/* <Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
         <div className="dialog-overlay">
           <div className="dialog-content">
             <div className="p-5">
@@ -528,7 +529,7 @@ export const OpenTrove = () => {
             </div>
           </div>
         </div>
-      </Dialog>
+      </Dialog> */}
       <Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
         <div className="dialog-overlay">
           <div className="dialog-content">
@@ -538,7 +539,7 @@ export const OpenTrove = () => {
                   <Image src={conf} alt="rectangle" width={150} />
                   <div className="my-5 ml-[6rem] mb-5"></div>
                 </>
-              ) : loadingMessage === 'Close Transaction completed successfully' ? (
+              ) : loadingMessage === 'Open Trove Transaction completed successfully' ? (
                 <Image src={tick} alt="tick" width={200} />
               ) : transactionRejected ? (
                 <Image src={rej} alt="rejected" width={140} />

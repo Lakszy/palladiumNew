@@ -268,7 +268,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       setLoadingMessage("Waiting for transaction to confirm..");
       setLoadingModalVisible(true);
     } else if (isSuccess) {
-      setLoadingMessage("Close Transaction completed successfully");
+      setLoadingMessage("Repay Transaction completed successfully");
       setLoadingModalVisible(true);
     } else if (transactionRejected) {
       setLoadingMessage("Transaction was rejected");
@@ -552,7 +552,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                   <Image src={conf} alt="rectangle" width={150} />
                   <div className="my-5 ml-[6rem] mb-5"></div>
                 </>
-              ) : loadingMessage === 'Close Transaction completed successfully' ? (
+              ) : loadingMessage === 'Repay Transaction completed successfully' ? (
                 <Image src={tick} alt="tick" width={200} />
               ) : transactionRejected ? (
                 <Image src={rej} alt="rejected" width={140} />

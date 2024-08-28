@@ -144,7 +144,7 @@ export const StabilityPool = () => {
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			setShowCloseButton(true);
-		}, 90000);
+		}, 180000);
 		return () => clearTimeout(timer);
 	}, []);
 

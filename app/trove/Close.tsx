@@ -113,7 +113,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowCloseButton(true);
-    }, 90000);
+    }, 180000);
     return () => clearTimeout(timer);
   }, []);
 
