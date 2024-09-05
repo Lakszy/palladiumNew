@@ -465,9 +465,9 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                   </div>
                 </div>
               ) : (
-                <div className="grid place-items-center p-3">
-                  <Image src={CHART} alt="home" width={200} />
-                  <p className="f">
+                <div className="grid place-items-center mt-5 pt-5">
+                  <Image src={CHART} alt="home" width={200} className="pt-2" />
+                  <p className="text-gray-400 text-sm title-text2 text-center font-medium">
                     Connect your wallet to see your stats
                   </p>
                 </div>
