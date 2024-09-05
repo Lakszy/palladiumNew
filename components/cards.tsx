@@ -404,7 +404,7 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
                 <div className="grid place-items-center">
                   <Image src={floatPUSD} alt="home" width={220} />
                   <p className="text-gray-400 text-sm title-text2 text-center font-medium  pt-5">
-                    `You don&apos;t have an Active Trove`
+                    You don&apos;t have an Active Trove
                   </p>
                 </div>
               )}
