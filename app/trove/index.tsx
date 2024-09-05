@@ -484,7 +484,7 @@ const Borrow = () => {
                               <div className="grid w-full  space-y-7  max-w-sm items-start gap-2 mx-auto p-7  md:p-5">
                                 <div className="relative">
                                   <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-11 ">
-                                    Deposit Collatoral
+                                    Deposit Collateral 
                                   </Label>
                                   <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] '>

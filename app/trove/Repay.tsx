@@ -329,7 +329,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
           <div className="relative">
             <div className="mb-4">
               <Label htmlFor="items" className="text-[#84827a]  font-medium md:-ml-0 -ml-10 body-text text-base">
-                Withdraw Collatoral
+                Withdraw Collateral
               </Label>
             </div>
             <div className="flex mt-2 md:mt-0 items-center w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>

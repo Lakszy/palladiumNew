@@ -36,7 +36,7 @@ const OpenTroveNotConnected = () => {
         <div className=''>
           <div className="grid space-y-5 w-full max-w-sm items-start gap-2 mx-auto   p-5">
             <div className="">
-              <Label htmlFor="items" className="body-text text-gray-500 font-medium body-text text-md "> Deposit Collatoral </Label>
+              <Label htmlFor="items" className="body-text text-gray-500 font-medium body-text text-md "> Deposit Collateral </Label>
               <div className="flex mb-1.5 mt-[8px] items-center border w-[345px] md:w-[410px] border-yellow-300  "
                 style={{ backgroundColor: "#3f3b2d" }}>
                 <div className='flex items-center h-[3.5rem] '>

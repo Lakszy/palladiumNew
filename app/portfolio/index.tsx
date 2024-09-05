@@ -353,7 +353,7 @@ const Portfolio = () => {
                     <EVMConnect className="" />
                   </div>
                   <div className="grid md:my-7 my-5 place-items-center mt-[1rem]">
-                    <Image src={port2} alt="home" width={200} />
+                    <Image src={macPUSD} alt="home" width={200} />
                     <h6 className="mt-4 pt-5 font-medium text-gray-400 title-text2 text-center">
                       You have not Staked
                     </h6>

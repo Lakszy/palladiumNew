@@ -302,7 +302,7 @@ export const OpenTrove = () => {
         <div className="container flex flex-col md:flex-row justify-between gap-x-28 md:-mt-6">
           <div className="grid w-1/2 items-start space-y-7 gap-2 text-white md:p-5">
             <div className="w-full">
-              <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collatoral</Label>
+              <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collateral</Label>
               <div className="flex md:w-[90%] items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-yellow-300">
                 <div className='flex items-center  h-[3.5rem] '>
                   <Image src={btc} alt="home" className='ml-1' />

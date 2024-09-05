@@ -150,7 +150,7 @@ export const OpenTrove = () => {
 	return (
 		<div className="grid w-full max-w-sm items-start gap-2 mx-auto mt-44 border rounded-md border-black p-5">
 			<div className="relative">
-				<Label htmlFor="items">Collatoral</Label>
+				<Label htmlFor="items">Collateral</Label>
 				<div className="flex items-center space-x-2">
 					<Input
 						id="items"
@@ -200,7 +200,7 @@ export const OpenTrove = () => {
 						<span>{expectedDebt} PUSD</span>
 					</div>
 					<div className="flex flex-col">
-						<span>Collatoral Ratio</span>
+						<span>Collateral Ratio</span>
 						<span className="text-green-500">{collatoralRatio}%</span>
 					</div>
 				</div>

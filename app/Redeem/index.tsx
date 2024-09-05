@@ -14,6 +14,7 @@ import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
+import { EVMConnect } from '@/components/EVMConnect';
 import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt } from "wagmi";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
@@ -213,7 +214,7 @@ export default function Redeem() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowCloseButton(true);
-        }, 90000);
+        }, 180000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -270,7 +271,7 @@ export default function Redeem() {
                             </div>
                         </div>
                     ) : (
-                        <CustomConnectButton className="" />
+                        <EVMConnect className="" />
                     )}
                 </div>
             </div>
@@ -317,8 +318,8 @@ export default function Redeem() {
                         )}
                         {(transactionRejected || (!isSuccess && showCloseButton)) && (
                             <>
-                                <p className="text-red-400 body-text">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                                <Button className="p-button-rounded p-button-text text-black title-text2" onClick={handleClose}>Close</Button>
+                                <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+                                <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
                             </>
                         )}
                     </div>
