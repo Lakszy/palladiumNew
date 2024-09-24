@@ -2,7 +2,7 @@
 import React from "react";
 import { TabsDemo } from "@/components/sidebar";
 import NavBar from "@/components/navbar";
-import Redeem from "./index"
+import Redeem from "."
 import "../App.css"
 
 export default function Home() {

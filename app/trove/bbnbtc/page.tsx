@@ -2,9 +2,9 @@
 import React from "react";
 import { TabsDemo } from "@/components/sidebar";
 import NavBar from "@/components/navbar";
-import ThreeTroveCard from "@/components/ThreeTroveCard";
+import Borrow from "..";
 
-export default function BTCTROVE() {
+export default function Home() {
   
   return (
     <div className="grid h-screen mainT w-full grid-cols-[max-content_1fr] overflow text-white">
@@ -14,8 +14,7 @@ export default function BTCTROVE() {
           <NavBar />
         </div>
         <div className="h-screen md:w-full w-screen " style={{ backgroundColor: "#272315" }}>
-          {/* <Borrow /> */}
-          <ThreeTroveCard/>
+          <Borrow />
         </div>
       </div>
     </div>

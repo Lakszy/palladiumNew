@@ -22,7 +22,9 @@ import web3 from "web3";
 import { CustomConnectButton } from "@/components/connectBtn";
 import { wagmiConfig } from "../src/config/config";
 import { Dialog } from 'primereact/dialog';
-import BotanixLOGO from "../../app/assets/images/newpalladium.svg"
+import trove3 from "../../app/assets/images/TROVE3.svg"
+import trove2 from "../../app/assets/images/TROVE1.svg"
+import trove1 from "../../app/assets/images/TROVE2.svg"
 import rej from "../../app/assets/images/TxnError.gif";
 import conf from "../../app/assets/images/conf.gif"
 import rec2 from "../../app/assets/images/rec2.gif"
@@ -51,6 +53,12 @@ export default function Redeem() {
     const { data: hash, writeContract, error: writeError } = useWriteContract();
     const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
     const [transactionRejected, setTransactionRejected] = useState(false);
+    const [selectedButton, setSelectedButton] = useState(null)
+
+    const handleButtonClick = (buttonId: any) => {
+        setSelectedButton(buttonId);
+        console.log("Selected button:", buttonId);
+    };
 
     const priceFeedContract = getContract(
         botanixTestnet.addresses.priceFeed,
@@ -234,11 +242,32 @@ export default function Redeem() {
         <>
             <div className=" ml-3 md:ml-12 md:w-[40%] w-[22.5rem]">
                 <div className="grid items-start h-[20rem] gap-x-2  mx-auto border-[2px] border-yellow-400 p-5">
+                    <div className='mb-2 pb-1 threeButtons gap-x-4 flex items-center justify-between w-full h-10 my-2'>
+                        <div
+                            className={`items-center flex w-1/3 gap-x-2 text-lg body-text border-2 border-yellow-300 h-fit p-1 cursor-pointer ${selectedButton === 'btc' ? "absolute inset-0 bg-yellow opacity-50" : ''}`}
+                            onClick={() => handleButtonClick('btc')}
+                        >
+                            <Image src={trove3} alt='btc' width={40} className='p-1' />
+                            <p className='font-light body-text text-white text-sm'>BTC</p>
+                        </div>
+                        <div
+                            className={`items-center flex w-1/3 gap-x-2 text-lg body-text border-2 border-yellow-300 h-fit p-1 cursor-pointer ${selectedButton === 'rovbtc' ? "absolute inset-0 bg-yellow opacity-50" : ''}`}
+                            onClick={() => handleButtonClick('rovbtc')} 
+                        >
+                            <Image src={trove1} alt='rovbtc' width={40} className='p-1' />
+                            <p className='font-light body-text text-white text-sm'>rovBTC</p>
+                        </div>
+                        <div
+                            className={`items-center flex w-1/3 gap-x-2 text-lg body-text border-2 border-yellow-300 h-fit p-1 cursor-pointer ${selectedButton === 'bbnbtc' ? "absolute inset-0 bg-yellow opacity-50" : ''}`}
+                            onClick={() => handleButtonClick('bbnbtc')} 
+                        >
+                            <Image src={trove2} alt='bbnbtc' width={40} className='p-1' />
+                            <p className='font-light body-text text-white text-sm'>bbnBTC</p>
+                        </div>
+                    </div>
                     <div>
                         <div className="flex mb-2 items-center">
-                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }}
-                                className="bg-[#3b351b] body-text w-[20rem] md:w-full text-lg h-14 border border-yellow-300 text-white "
-                            />
+                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#3b351b] body-text w-[20rem] md:w-full text-lg h-14 border border-yellow-300 text-white " />
                         </div>
                         <span className=" ml-[56%] md:ml-[66%] body-text  font-medium balance ">
                             {isLoading ?

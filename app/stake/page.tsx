@@ -39,6 +39,9 @@ export default function Home() {
                 <TabPanel className='p-[2px] bg-yellow-400 text-sm  text-black' header={<CustomTabHeader title="Unstake" />}>
                   <Unstake />
                 </TabPanel>
+                <TabPanel className='p-[2px] bg-yellow-400 text-sm  text-black' header={<CustomTabHeader title="Unstake" />}>
+                  <Unstake />
+                </TabPanel>
               </TabView>
             </div>
             <div className='md:p-0 p-5 mr-10 mt-8 w-[25rem]'>

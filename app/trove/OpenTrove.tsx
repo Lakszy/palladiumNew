@@ -20,7 +20,7 @@ import { useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteCont
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
 import img4 from "../assets/images/Group 666.svg";
-import floatPUSD from "../assets/images/floatPUSD.png";
+import trove1 from "../assets/images/TROVE3.svg";
 import { Button } from "@/components/ui/button";
 import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
@@ -275,27 +275,14 @@ export const OpenTrove = () => {
     <>
       <div className="h-full pt-3 body-text md:ml-0">
         <div className="p-10 ">
-          <div className="md:ml-2 -ml-6 h-[9rem] p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#2e2a1c" }}>
-            <div className="flex p-2 w-full">
-              <div className="hidden md:block w-[22%]">
-                <Image src={floatPUSD} height={200} alt="home" className="-mt-[3.5rem]" />
-              </div>
-              <div className=" h-fit py- space-y-5">
-                <div>
-                  <p className="text-white body-text  text-lg font-medium ">
-                    You dont have an existing trove
-                  </p>
-                </div>
-                <div>
-                  <p className="text-yellow-300 body-text font-medium text-left text-lg">
-                    Open a Zero-Interest trove
-                  </p>
-                  <p className="text-[#827f77] text-sm  font-medium body-text text-left">
-                    Borrow against BTCs interest free
-                  </p>
-                </div>
-              </div>
-            </div>
+          <div className="md:ml-2 flex items-center gap-x-3 -ml-6 h-[2rem] p-2 md:w-full w-[22.5rem]">
+            <button onClick={() => window.history.back()} className="text-white hover:text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <Image src={trove1} alt="btc" width={50} />
+            <p className="body-text text-2xl font-semibold text-white">BTC Trove</p>
           </div>
         </div>
 
