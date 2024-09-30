@@ -2,12 +2,12 @@
 
 import { Label } from "@/components/ui/label";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
+import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
-import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
-import { ethers } from "ethers";
+import { ethers, JsonRpcSigner } from "ethers";
 import info from "../assets/images/info.svg";
 import btc from "../assets/images/btclive.svg";
 import rej from "../assets/images/TxnError.gif";
@@ -16,7 +16,7 @@ import rec2 from "../assets/images/rec2.gif"
 import tick from "../assets/images/tick.gif"
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
 import img4 from "../assets/images/Group 666.svg";
@@ -26,7 +26,6 @@ import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
 import { Tooltip } from "primereact/tooltip";
 import { useAccounts } from "@particle-network/btc-connectkit";
-import { useWalletAddress } from "@/components/useWalletAddress";
 
 export const OpenTrove = () => {
   const [userInputs, setUserInputs] = useState({
@@ -51,7 +50,7 @@ export const OpenTrove = () => {
   const { data: hash, writeContract, error: writeError } = useWriteContract()
   const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
-  const { accounts } = useAccounts();
+  const [balanceData, setBalanceData] = useState<any>()
 
   useEffect(() => {
     if (isLoading) {
@@ -77,26 +76,45 @@ export const OpenTrove = () => {
 
   const { data: isConnected } = useWalletClient();
   const { data: walletClient } = useWalletClient();
-  const { data: balanceData } = useBalance({
-    address: walletClient?.account.address
-  });
+  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
 
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+  const erc20Contract = getContract("0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", erc20Abi, provider);
+  const providerTwo = new ethers.JsonRpcSigner(provider, walletClient?.account?.address as string)
+  // const signer = provider.getSigner(walletClient?.account?.address);
+  const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)
+  const collToken = new ethers.Contract(
+    "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", // ERC20 token address
+    erc20Abi, // ERC20 token ABI
+    signer
+  )
+  console.log(erc20Contract, "erc20ContractJSR")
+  const getEtherContract = (address: string, abi: any, provider: any) => {
+    return new ethers.Contract(address, abi, provider);
+  };
+
+
+  const contract = getEtherContract(
+    "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
+    erc20Abi,
+    signer
+  );
 
   const sortedTrovesContract = getContract(
-    botanixTestnet.addresses.sortedTroves,
+    botanixTestnet.addresses.SortedVessels,
     sortedTroveAbi,
     provider
   );
 
   const hintHelpersContract = getContract(
-    botanixTestnet.addresses.hintHelpers,
+    botanixTestnet.addresses.VesselManagerOperations,
     hintHelpersAbi,
     provider
   );
 
 
   const pow18 = Decimal.pow(10, 18);
+  const pow6 = Decimal.pow(10, 6);
   const pow20 = Decimal.pow(10, 20);
 
   useEffect(() => {
@@ -104,15 +122,17 @@ export const OpenTrove = () => {
       try {
         const response = await fetch("https://api.palladiumlabs.org/sepolia/protocol/metrics");
         const data = await response.json();
+
         const protocolMetrics = data[0];
+        console.log(data, protocolMetrics, 'data', "protocolMetrics")
 
         setRecoveryMode(protocolMetrics.recoveryMode);
         setFetchedPrice(protocolMetrics.priceBTC);
-        setMCR(protocolMetrics.MCR)
-        setCCR(protocolMetrics.CCR)
-        setLR(protocolMetrics.LR)
-        setBorrowRate(protocolMetrics.borrowRate)
-        setMinDebt(protocolMetrics.minDebt)
+        setMCR(protocolMetrics?.MCR)
+        setCCR(protocolMetrics?.CCR)
+        setLR(protocolMetrics?.LR)
+        setBorrowRate(protocolMetrics?.borrowRate)
+        setMinDebt(protocolMetrics?.minDebt)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -122,9 +142,11 @@ export const OpenTrove = () => {
 
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
-
     try {
+      console.log("1) Setting modal visible");
       setIsModalVisible(true);
+
+      console.log("2) Parsing input values");
       const collValue = Number(xCollatoral);
       const borrowValue = Number(xBorrow);
       const expectedFeeFormatted = (borrowRate * borrowValue) / 100;
@@ -132,39 +154,71 @@ export const OpenTrove = () => {
       let NICR = collValue / expectedDebt;
 
       const NICRDecimal = new Decimal(NICR.toString());
-      const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
-      const numTroves = await sortedTrovesContract.getSize();
+      const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed());
+
+      console.log("3) Fetching number of troves");
+      const numTroves = await sortedTrovesContract.getSize("0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3");
+      console.log("3.1) numTroves: ", numTroves);
+
       const numTrials = numTroves * BigInt("15");
+
+      console.log("4) Getting approximate hint");
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
+        "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
         NICRBigint,
         numTrials,
         42
       );
-      const { 0: upperHint, 1: lowerHint } =
-        await sortedTrovesContract.findInsertPosition(
-          NICRBigint,
-          approxHint,
-          approxHint
-        );
+      console.log("4.1) approxHint: ", approxHint);
+
+      const { 0: upperHint, 1: lowerHint } = await sortedTrovesContract.findInsertPosition(
+        "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
+        NICRBigint,
+        approxHint,
+        approxHint
+      );
+
       const collDecimal = new Decimal(collValue.toString());
-      const collBigint = BigInt(collDecimal.mul(pow18).toFixed());
+      const collBigint = BigInt(collDecimal.mul(pow6).toFixed());
+
       const borrowDecimal = new Decimal(borrowValue.toString());
-      const borrowBigint = BigInt(borrowDecimal.mul(pow18).toFixed());
-      const maxFee = "6".concat("0".repeat(16));
+      const borrowBigint = BigInt(borrowDecimal.mul(pow6).toFixed());
+
+      const maxFee = "5".concat("0".repeat(16));
+
+      console.log("beforeSIGNER");
+      // const resolvedSigner = await signer;
+      // console.log("afterSigner", resolvedSigner);
+
+      // Approve collateral before writing the contract
+      console.log("5) Approving collateral");
+      // const approvalTxn = await collToken.approve(
+      //   "0xADB2820fCbe5E237843088bA2766daBa199b0d43",
+      //   collBigint
+      // );
+
+      // console.log("Approval transaction:", approvalTxn);
+      // await approvalTxn.wait();  // Wait for the approval transaction to be mined
+      console.log("6) Collateral approved");
+
+      // Now write the contract after collateral approval
+      console.log("7) Writing contract to openVessel");
       await writeContract({
         abi: BorrowerOperationbi,
-        address: '0xE0774dA339FA29bAf646B57B00644deA48fCaE23',
-        functionName: 'openTrove',
-        args: [maxFee, borrowBigint, upperHint, lowerHint],
-        value: collBigint,
+        address: "0xADB2820fCbe5E237843088bA2766daBa199b0d43",
+        functionName: "openVessel",
+        args: ["0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", collBigint, borrowBigint, upperHint, lowerHint],
       });
-    }
-    catch (error) {
-      console.error('Error sending transaction:', error);
+
+      console.log("9) Transaction sent successfully");
+
+    } catch (error) {
+      console.error("Error sending transaction:", error);
       setTransactionRejected(true);
       setUserModal(true);
     }
   };
+
 
   useEffect(() => {
     if (writeError) {
@@ -207,6 +261,15 @@ export const OpenTrove = () => {
     }
   };
 
+  const fetchPrice = async () => {
+    const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
+    const collateralValueFormatted = ethers.formatUnits(collateralValue, 6)
+    setBalanceData(collateralValueFormatted)
+  };
+  useEffect(() => {
+    fetchPrice();
+  }, [fetchPrice, walletClient?.account?.address, walletClient, writeContract, hash]);
+
   const handleClose = () => {
     setLoadingModalVisible(false);
     setUserModal(false);
@@ -215,6 +278,7 @@ export const OpenTrove = () => {
   const handlePercentageClick = (percentage: any) => {
     const percentageDecimal = new Decimal(percentage).div(100);
     const pusdBalanceNumber = parseFloat(maxBorrow.toString());
+    console.log(maxBorrow, "maxBorrow")
     if (!isNaN(pusdBalanceNumber)) {
       const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
       const stakeFixed = maxStake.toFixed(2);
@@ -228,7 +292,7 @@ export const OpenTrove = () => {
   const handlePercentageClickBTC = (percentage: any) => {
     const percentageDecimal = new Decimal(percentage).div(100);
 
-    const pusdBalanceNumber = parseFloat(balanceData?.formatted || '0');
+    const pusdBalanceNumber = parseFloat(balanceData || '0');
 
     if (!isNaN(pusdBalanceNumber)) {
       const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
@@ -236,7 +300,7 @@ export const OpenTrove = () => {
 
       setUserInputs({ collatoral: stakeFixed, borrow: userInputs.borrow });
     } else {
-      console.error("Invalid PUSD balance:", balanceData?.formatted);
+      console.error("Invalid PUSD balance:", balanceData);
     }
   };
 
@@ -253,16 +317,6 @@ export const OpenTrove = () => {
   const liquidationPrice = (Number(divideBy) * calculatedValues.expectedDebt) / (Number(Number(userInputs.collatoral)) || 1);
   const bothInputsEntered = userInputs.collatoral !== "0" && userInputs.borrow !== "0";
 
-  const renderHeader = () => {
-    return (
-      <div className="flex justify-content-between align-items-center">
-        <Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>
-          Close
-        </Button>
-      </div>
-    );
-  };
-
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowCloseButton(true);
@@ -270,6 +324,31 @@ export const OpenTrove = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleApproveClick = async (collateral: string) => {
+    let aprvTxt;
+    try {
+      const collValue = Number(collateral);
+      const collBigint = BigInt(new Decimal(collValue.toString()).mul(pow6).toFixed());
+
+      // Log the signer address before transaction
+      console.log("Signer address:", await signer.getAddress());
+      aprvTxt = await contract.approve(
+        "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
+        collBigint
+      );
+      aprvTxt = await contract.approve("0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", collBigint);
+  
+      console.log("Approval transaction:", aprvTxt);
+      await aprvTxt.wait();
+      console.log("Collateral approved");
+  
+    } catch (error) {
+      console.error("Error approving collateral:", error);
+      setTransactionRejected(true);
+      setUserModal(true);
+    }
+  };
+  
 
   return (
     <>
@@ -300,14 +379,15 @@ export const OpenTrove = () => {
                 <span className="md:max-w-[fit]  md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text h-full">${totalCollateral.toFixed(2)}</span>
               </div>
               <div className="pt-2 w-[90%] flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
-                <span className={`text-sm body-text w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
-                  <span className="body-text text-gray-400 font-medium ">Available</span> {Number(balanceData?.formatted).toFixed(8)}{" "}
+                <span className={`text-sm body-text w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData) ? 'text-red-500' : 'text-white'}`}>
+                  <span className="body-text text-gray-400 font-medium ">Available</span> {Number(balanceData).toFixed(8)}{" "}
                 </span>
+                <Button onClick={() => handleApproveClick(userInputs.collatoral)}>Approve</Button>
                 <div className="flex gap-x-4 md:gap-x-2 w-full   mt-2">
-                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                 </div>
               </div>
             </div>
@@ -326,10 +406,10 @@ export const OpenTrove = () => {
                   <span className="body-text text-gray-400 font-medium ">Available</span> {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
                 </span>
                 <div className="flex gap-x-4 md:gap-x-2 w-full -mr-2  mt-2">
-                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                  <Button disabled={!(isConnected )} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
                 </div>
               </div>
               {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (
@@ -340,28 +420,28 @@ export const OpenTrove = () => {
               onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
               className={`mt-5 md:-ml-0 -ml-4 w-[90%] h-[3rem] bg-yellow-300 title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-yellow-300'}`}
               disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
-                || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData?.formatted)
+                || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData)
                 || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}
               style={{
                 cursor: (!userInputs.borrow || isModalVisible ||
                   !userInputs.collatoral ||
                   loanToValue > (100 / Number(divideBy)) ||
                   parseFloat(userInputs.borrow) > maxBorrow ||
-                  parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
+                  parseFloat(userInputs.collatoral) > Number(balanceData) ||
                   parseFloat(userInputs.borrow) <= minDebt)
                   ? 'not-allowed' : 'pointer',
                 opacity: (!userInputs.borrow || isModalVisible ||
                   !userInputs.collatoral ||
                   loanToValue > (100 / Number(divideBy)) ||
                   parseFloat(userInputs.borrow) > maxBorrow ||
-                  parseFloat(userInputs.collatoral) > Number(balanceData?.formatted) ||
+                  parseFloat(userInputs.collatoral) > Number(balanceData) ||
                   parseFloat(userInputs.borrow) <= minDebt)
                   ? 0.5 : 1
               }}>
               {isModalVisible ? "Opening Trove..." : "Open Trove"}
             </button>
           </div>
-          {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData?.formatted) ? (
+          {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData) ? (
             <div className="md:w-4/5 w-full mt-[55px] p-5 border-yellow-200 h-fit space-y-10  text-white"
               style={{ backgroundColor: "#2e2a1c" }}>
               <div className="flex whitespace-nowrap justify-between">
@@ -507,16 +587,6 @@ export const OpenTrove = () => {
           </div>
         </div>
       </Dialog>
-      {/* <Dialog visible={userModal} onHide={() => setUserModal(false)} header={renderHeader}>
-        <div className="dialog-overlay">
-          <div className="dialog-content">
-            <div className="p-5">
-              <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Transaction rejected</div>
-              <Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>Close</Button>
-            </div>
-          </div>
-        </div>
-      </Dialog> */}
       <Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
         <div className="dialog-overlay">
           <div className="dialog-content">

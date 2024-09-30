@@ -37,9 +37,9 @@ const ThreeTroveCard = () => {
                 </div>
             </div>
 
-            <div className='flex md:flex-row flex-col pl-5 pt-5 pb-5 w-full justify-between items-center'>
+            <div className='flex md:flex-row flex-col md:pl-5 pt-5 pb-5 w-full justify-between items-center'>
                 {/* Card 1 */}
-                <div className="bg-[#2e2a1c] text-white p-6 rounded-none flex-1 space-y-10 mx-2">
+                <div className="bg-[#2e2a1c] text-white md:p-6 md:mb-0 mb-3 p-16 rounded-none flex-1 space-y-10 mx-2">
                     <div className="flex items-center mb-6">
                         <div className="rounded-full">
                             <Image src={trove1} alt='btc' />
@@ -69,7 +69,7 @@ const ThreeTroveCard = () => {
                         </div>
                     </div>
                     <div>
-                        <Link href="/trove/btc" passHref>
+                        <Link href="/trove/susdt" passHref>
                             <Button
                                 className="bg-yellow-500 rounded-none text-black font-semibold w-full title-text hover:bg-yellow-600 transition">
                                 OPEN TROVE
@@ -79,7 +79,7 @@ const ThreeTroveCard = () => {
                 </div>
 
                 {/* Card 2 */}
-                <div className="bg-[#2e2a1c] text-white p-6 rounded-none flex-1 space-y-10 mx-2">
+                <div className="bg-[#2e2a1c] text-white md:p-6 p-16  md:mb-0 mb-3 rounded-none flex-1 space-y-10 mx-2">
                     <div className="flex items-center mb-6">
                         <div className="rounded-full">
                             <Image src={trove3} alt='btc' />
@@ -109,7 +109,7 @@ const ThreeTroveCard = () => {
                         </div>
                     </div>
                     <div>
-                        <Link href="/trove/rovbtc" passHref>
+                        <Link href="/trove/wbtc" passHref>
                             <Button
                                 className="bg-yellow-500 rounded-none text-black font-semibold w-full title-text hover:bg-yellow-600 transition">
                                 OPEN TROVE
@@ -119,7 +119,7 @@ const ThreeTroveCard = () => {
                 </div>
 
                 {/* Card 3 */}
-                <div className="bg-[#2e2a1c] text-white p-6 rounded-none flex-1 space-y-10 mx-2">
+                <div className="bg-[#2e2a1c] text-white  md:mb-0 mb-3 md:p-6 p-[3.7rem] rounded-none flex-1 space-y-10 mx-2">
                     <div className="flex items-center mb-6">
                         <div className="rounded-full">
                             <Image src={trove2} alt='btc' />
@@ -149,7 +149,7 @@ const ThreeTroveCard = () => {
                         </div>
                     </div>
                     <div>
-                        <Link href="/trove/bbnbtc" passHref>
+                        <Link href="/trove/wcore" passHref>
                             <Button
                                 className="bg-yellow-500 rounded-none text-black font-semibold w-full title-text hover:bg-yellow-600 transition">
                                 OPEN TROVE

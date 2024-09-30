@@ -95,11 +95,12 @@ const Borrow = () => {
   const { data: balanceData } = useBalance({
     address: walletClient?.account.address
   });
+  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
 
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
 
   const { data: hash, writeContract, error: writeError } = useWriteContract()
-  const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
 
   const handleClose = useCallback(() => {
     setLoadingModalVisible(false);
@@ -110,19 +111,19 @@ const Borrow = () => {
   }, []);
 
   const troveManagerContract = getContract(
-    botanixTestnet.addresses.troveManager,
+    botanixTestnet.addresses.VesselManager,
     troveManagerAbi,
     provider
   );
 
   const sortedTrovesContract = getContract(
-    botanixTestnet.addresses.sortedTroves,
+    botanixTestnet.addresses.SortedVessels,
     sortedTroveAbi,
     provider
   );
 
   const hintHelpersContract = getContract(
-    botanixTestnet.addresses.hintHelpers,
+    botanixTestnet.addresses.VesselManagerOperations,
     hintHelpersAbi,
     provider
   );
@@ -165,6 +166,7 @@ const Borrow = () => {
         2: pendingLUSDDebtReward,
         3: pendingETHReward,
       } = await troveManagerContract.getEntireDebtAndColl(
+        "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
         walletClient?.account.address
       );
       const collDecimal = new Decimal(coll.toString());
@@ -193,12 +195,15 @@ const Borrow = () => {
     const getTroveStatus = async () => {
       try {
         if (!walletClient) return null;
-        const troveStatusBigInt = await troveManagerContract.getTroveStatus(
+        const troveStatusBigInt = await troveManagerContract.getVesselStatus(
+          walletClient?.account.address,
+          // "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
           walletClient?.account.address
         );
         const troveStatus =
           troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
-        setTroveStatus(troveStatus)
+        console.log(troveStatusBigInt,"troveStatusBigInt-----------------------------------")
+          setTroveStatus(troveStatus)
       } catch (error) {
         console.log(error)
       }
@@ -247,10 +252,11 @@ const Borrow = () => {
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
 
-      const numTroves = await sortedTrovesContract.getSize();
+      const numTroves = await sortedTrovesContract.getSize("0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3");
       const numTrials = numTroves * BigInt("15");
 
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
+        "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
         NICRBigint,
         numTrials,
         42
@@ -258,6 +264,7 @@ const Borrow = () => {
 
       const { 0: upperHint, 1: lowerHint } =
         await sortedTrovesContract.findInsertPosition(
+          "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
           NICRBigint,
           approxHint,
           approxHint
@@ -484,7 +491,7 @@ const Borrow = () => {
                               <div className="grid w-full  space-y-7  max-w-sm items-start gap-2 mx-auto p-7  md:p-5">
                                 <div className="relative">
                                   <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-11 ">
-                                    Deposit Collateral 
+                                    Deposit Collateral
                                   </Label>
                                   <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] '>

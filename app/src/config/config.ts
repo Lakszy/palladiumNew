@@ -43,22 +43,47 @@ const botanixChain: Chain = {
 	},
 };
 
+// Core Blockchain TestNet Chain
+const coreTestNetChain: Chain = {
+	id: 1115,
+	name: "Core Blockchain TestNet",
+	nativeCurrency: {
+		decimals: 18,
+		name: "Core Blockchain TestNet",
+		symbol: "tCORE",
+	},
+	rpcUrls: {
+		default: {
+			http: ["https://rpc.test.btcs.network"],
+		},
+		public: {
+			http: ["https://rpc.test.btcs.network"],
+		},
+	},
+	blockExplorers: {
+		default: {
+			url: "https://scan.test.btcs.network",
+			name: "Core TestNet Explorer",
+		},
+	},
+};
+
 export const wagmiConfig = getDefaultConfig({
 	appName: "My RainbowKit App",
 	projectId: "ee56c353983496c87480ff2ae841a933",
-	// chains: [botanixChain, sepoliaChain],
-	chains: [sepoliaChain],
-
+	// chains: [botanixChain, sepoliaChain], 
+	chains: [botanixChain, sepoliaChain, coreTestNetChain],  // Added Core TestNet here
 });
 
 
 export const config = createConfig({
-	chains: [botanixChain,sepoliaChain],
+	chains: [botanixChain, sepoliaChain, coreTestNetChain],  // Added Core TestNet here
 	transports: {
 		[mainnet.id]: http(),
 		[sepolia.id]: http(),
 		// [3636]: http('https://node.botanixlabs.dev'),
 		[sepoliaChain.id]: http ('https://sepolia.infura.io/v3/ad9cef41c9c844a7b54d10be24d416e5'),
+		[coreTestNetChain.id]: http('https://rpc.test.btcs.network'),  // Added Core TestNet RPC URL
 	},
 })
 
