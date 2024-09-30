@@ -26,6 +26,7 @@ import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
 import { Tooltip } from "primereact/tooltip";
 import { useAccounts } from "@particle-network/btc-connectkit";
+import Web3 from "web3";
 
 export const OpenTrove = () => {
   const [userInputs, setUserInputs] = useState({
@@ -83,6 +84,7 @@ export const OpenTrove = () => {
   const providerTwo = new ethers.JsonRpcSigner(provider, walletClient?.account?.address as string)
   // const signer = provider.getSigner(walletClient?.account?.address);
   const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)
+  const signerToken = new JsonRpcSigner(provider, "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3")
   const collToken = new ethers.Contract(
     "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", // ERC20 token address
     erc20Abi, // ERC20 token ABI
@@ -94,10 +96,16 @@ export const OpenTrove = () => {
   };
 
 
+  const web3 = new Web3(window.ethereum)
+  const tokenAddress = "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3"
+  const spenderAddress = walletClient?.account?.address
+  const amount = web3.utils.toWei("100", "ether");
+  const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
+
   const contract = getEtherContract(
     "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
     erc20Abi,
-    signer
+    signerToken
   );
 
   const sortedTrovesContract = getContract(
@@ -324,31 +332,58 @@ export const OpenTrove = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleApproveClick = async (collateral: string) => {
-    let aprvTxt;
+  const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
     try {
-      const collValue = Number(collateral);
-      const collBigint = BigInt(new Decimal(collValue.toString()).mul(pow6).toFixed());
-
-      // Log the signer address before transaction
-      console.log("Signer address:", await signer.getAddress());
-      aprvTxt = await contract.approve(
-        "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
-        collBigint
-      );
-      aprvTxt = await contract.approve("0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", collBigint);
-  
-      console.log("Approval transaction:", aprvTxt);
-      await aprvTxt.wait();
-      console.log("Collateral approved");
-  
+      const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call();
+      console.log("Approved amount:", approvedAmount);
+      return approvedAmount;
     } catch (error) {
-      console.error("Error approving collateral:", error);
-      setTransactionRejected(true);
-      setUserModal(true);
+      console.error("Error fetching approved amount:", error);
+      return null; 
     }
   };
   
+  const handleCheckApprovedClick = async () => {
+    const userAddress = walletClient?.account?.address;
+    const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
+    
+    if (approvedAmount) {
+      alert(`Approved amount for ${spenderAddress}: ${approvedAmount}`);
+    } else {
+      alert("Could not retrieve approved amount.");
+    }
+  };
+
+  const handleApproveClick = async (amount: string) => {
+    console.log("started");
+    handleCheckApprovedClick()
+    console.log("I AM ALLOWANCE")
+    try {
+      const userAddress = walletClient?.account?.address;
+      const gasPrice = (await web3.eth.getGasPrice()).toString();
+      const amountInWei = (parseFloat(amount) * 1000000).toString();
+  
+      const tx = await tokenContract.methods.approve(spenderAddress, amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+  
+      if (tx.status) {
+        console.log("Transaction successful", tx);
+        alert("Transaction successful!");
+      } else {
+        console.log("Transaction failed", tx);
+        alert("Transaction failed. Please try again.");
+      }
+    } catch (error) {
+      const e = error as { code?: number; message?: string };
+      if (e.code === 4001) {
+        console.error("User rejected the transaction:", e.message);
+        alert("Transaction rejected by the user.");
+      } else {
+        console.error("Error during token approval:", e.message);
+        alert("An error occurred during token approval. Please try again.");
+      }
+    }
+  };
+  getApprovedAmount("0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",walletClient?.account?.address)
 
   return (
     <>
