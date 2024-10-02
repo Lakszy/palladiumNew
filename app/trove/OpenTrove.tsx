@@ -83,13 +83,13 @@ export const OpenTrove = () => {
   const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
-  const erc20Contract = getContract("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", erc20Abi, provider);
+  const erc20Contract = getContract("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", erc20Abi, provider);
   const providerTwo = new ethers.JsonRpcSigner(provider, walletClient?.account?.address as string)
   // const signer = provider.getSigner(walletClient?.account?.address);
   const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)
-  const signerToken = new JsonRpcSigner(provider, "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f")
+  const signerToken = new JsonRpcSigner(provider, "0x5FB4E66C918f155a42d4551e871AD3b70c52275d")
   const collToken = new ethers.Contract(
-    "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", // ERC20 token address
+    "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", // ERC20 token address
     erc20Abi, // ERC20 token ABI
     signer
   )
@@ -99,13 +99,13 @@ export const OpenTrove = () => {
 
 
   const web3 = new Web3(window.ethereum)
-  const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+  const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
   const spenderAddress = walletClient?.account?.address
   const amount = web3.utils.toWei("100", "ether");
   const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
   const contract = getEtherContract(
-    "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+    "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
     erc20Abi,
     signerToken
   );
@@ -167,18 +167,12 @@ export const OpenTrove = () => {
     try {
       setIsModalVisible(true);
       // from here we can approve and to txn from a single click in a flow
-
-      // const gasPrice = (await web3.eth.getGasPrice()).toString();
-      // const amount = "28000";
-      // const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-      // const tx = await tokenContract.methods.approve(spenderAddress, amountInWei).send({ from: walletClient?.account?.address, gasPrice: gasPrice });
-
       const status = await troveManagerContract.getVesselStatus(
-        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+        "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
         walletClient?.account.address
       );
 
-      const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
+      const allowance = await tokenContract.methods.allowance("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", spenderAddress).call();
       const collValue = Number(xCollatoral);
       const borrowValue = Number(xBorrow);
       const expectedFeeFormatted = (borrowRate * borrowValue) / 100;
@@ -187,19 +181,19 @@ export const OpenTrove = () => {
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed());
 
-      const numTroves = await sortedTrovesContract.getSize("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f");
-      const minDebt = await adminContract.getMinNetDebt("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f");
+      const numTroves = await sortedTrovesContract.getSize("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
+      const minDebt = await adminContract.getMinNetDebt("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
       const minDebtInDecimal = new Decimal(minDebt.toString()).div(pow18);
       const numTrials = numTroves * BigInt("15");
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
-        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+        "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
         NICRBigint,
         numTrials,
         42
       );
 
       const { 0: upperHint, 1: lowerHint } = await sortedTrovesContract.findInsertPosition(
-        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+        "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
         NICRBigint,
         approxHint,
         approxHint
@@ -211,13 +205,11 @@ export const OpenTrove = () => {
       const borrowDecimal = new Decimal(borrowValue.toString());
       const borrowBigint = BigInt(borrowDecimal.mul(pow18).toFixed());
 
-      const maxFee = "5".concat("0".repeat(16));
-
       await writeContract({
         abi: BorrowerOperationbi,
         address: "0xADB2820fCbe5E237843088bA2766daBa199b0d43",
         functionName: "openVessel",
-        args: ["0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", collBigint, borrowBigint, upperHint, lowerHint],
+        args: ["0x5FB4E66C918f155a42d4551e871AD3b70c52275d", collBigint, borrowBigint, upperHint, lowerHint],
       });
 
     } catch (error) {

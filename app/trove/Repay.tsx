@@ -78,8 +78,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
     window.location.reload();
   }, []);
 
-
-
   const hintHelpersContract = getContract(
     botanixTestnet.addresses.hintHelpers,
     hintHelpersAbi,
@@ -131,8 +129,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       const lusdValue = Number(xLusdAmount);
       const collValue = Number(xColl);
 
-      // if (!walletClient) return null;
-
       const newDebt = Number(debt) - lusdValue;
       const newColl = Number(coll) - collValue;
 
@@ -180,8 +176,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
 
       const lusdValue = Number(xLusdAmount);
       const collValue = Number(xColl);
-
-      // if (!walletClient) return null;
 
       const debtTotal = Number(debt) - lusdValue;
       setTotalDebt(debtTotal);
@@ -232,7 +226,6 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       console.error("Invalid PUSD balance:");
     }
   };
-
 
   const divideBy = recoveryMode ? cCR : mCR;
   const availableToBorrow = price / divideBy - Number(debt);
@@ -385,20 +378,8 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
           <div className="flex  md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
-              <Image
-                width={15}
-                className="toolTipHolding14 ml_5"
-                src={info}
-                data-pr-tooltip=""
-                alt="info"
-              />
-              <Tooltip
-                className="custom-tooltip title-text2"
-                target=".toolTipHolding14"
-                content="It is a ratio that measures the amount of a loan compared to the value of the collateral."
-                mouseTrack
-                mouseTrackLeft={10}
-              />
+              <Image  width={15}  className="toolTipHolding14 ml_5"  src={info}  data-pr-tooltip=""  alt="info"/>
+              <Tooltip  className="custom-tooltip title-text2"  target=".toolTipHolding14"  content="It is a ratio that measures the amount of a loan compared to the value of the collateral."  mouseTrack  mouseTrackLeft={10}/>
             </div>
             <span className="text-xs w-full whitespace-nowrap body-text">
               <div className="flex items-center gap-x-2.5">
@@ -419,20 +400,8 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
           <div className="flex text-white mb-2 md:flex-row flex-col  items-center  justify-between">
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
-              <Image
-                width={15}
-                className="toolTipHolding15 ml_5"
-                src={info}
-                data-pr-tooltip=""
-                alt="info"
-              />
-              <Tooltip
-                className="custom-tooltip title-text2"
-                target=".toolTipHolding15"
-                content="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
-                mouseTrack
-                mouseTrackLeft={10}
-              />
+              <Image width={15} className="toolTipHolding15 ml_5" src={info} data-pr-tooltip="" alt="info" />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding15" content="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price." mouseTrack mouseTrackLeft={10} />
             </div>
             <span className="body-text text-xs my-1 w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2.5">
@@ -453,20 +422,8 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
           <div className="flex text-white mb-2 md:flex-row flex-col  items-center justify-between">
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Total Debt</span>
-              <Image
-                width={15}
-                className="toolTipHolding16 ml_5"
-                src={info}
-                data-pr-tooltip=""
-                alt="info"
-              />
-              <Tooltip
-                className="custom-tooltip title-text2"
-                target=".toolTipHolding16"
-                content="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance."
-                mouseTrack
-                mouseTrackLeft={10}
-              />
+              <Image width={15} className="toolTipHolding16 ml_5" src={info} data-pr-tooltip="" alt="info" />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding16" content="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance." mouseTrack mouseTrackLeft={10} />
             </div>
             <span className="body-text text-xs my-1  w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2">
@@ -487,20 +444,8 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
           <div className="flex text-white mb-2 md:flex-row flex-col items-center  justify-between">
             <div className="flex  w-full">
               <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium">Total Collateral</span>
-              <Image
-                width={15}
-                className="toolTipHolding17 ml_5 "
-                src={info}
-                data-pr-tooltip=""
-                alt="info"
-              />
-              <Tooltip
-                className="custom-tooltip title-text2"
-                target=".toolTipHolding17"
-                content="The ratio of the USD value of the entire system collateral divided by the entire system debt."
-                mouseTrack
-                mouseTrackLeft={10}
-              />
+              <Image width={15} className="toolTipHolding17 ml_5 " src={info} data-pr-tooltip="" alt="info" />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding17" content="The ratio of the USD value of the entire system collateral divided by the entire system debt." mouseTrack mouseTrackLeft={10} />
             </div>
             <span className="body-text text-xs my-1 w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2">
