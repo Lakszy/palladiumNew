@@ -6,7 +6,7 @@ import rec2 from "../../app/assets/images/rec2.gif"
 import conf from "../../app/assets/images/conf.gif"
 import tick from "../../app/assets/images/tick.gif"
 import rej from "../../app/assets/images/TxnError.gif"
-import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
+import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
@@ -25,8 +25,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "primereact/dialog";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
-import { useWalletAddress } from "@/components/useWalletAddress";
 import { useAccounts } from "@particle-network/btc-connectkit";
+import Web3 from "web3";
 
 interface Props {
   coll: number;
@@ -64,11 +64,17 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   const [newAvailColl, setNewAvailColl] = useState(0)
   const [staticLtv, setStaticLtv] = useState(0);
   const { data: walletClient } = useWalletClient();
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
+  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
   const { data: hash, writeContract, error: writeError } = useWriteContract()
   const [transactionRejected, setTransactionRejected] = useState(false);
   const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
   const { accounts } = useAccounts();
+  const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
+  const web3 = new Web3(window.ethereum)
+  const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
+  const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
+  const spenderAddress = walletClient?.account?.address
 
   const handleClose = useCallback(() => {
     setLoadingModalVisible(false);
@@ -78,15 +84,15 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
     window.location.reload();
   }, []);
 
-  const hintHelpersContract = getContract(
-    botanixTestnet.addresses.hintHelpers,
-    hintHelpersAbi,
+  const sortedTrovesContract = getContract(
+    botanixTestnet.addresses.SortedVessels,
+    sortedTroveAbi,
     provider
   );
 
-  const sortedTrovesContract = getContract(
-    botanixTestnet.addresses.sortedTroves,
-    sortedTroveAbi,
+  const hintHelpersContract = getContract(
+    botanixTestnet.addresses.VesselManagerOperations,
+    hintHelpersAbi,
     provider
   );
 
@@ -121,13 +127,14 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   );
 
   const handleConfirmClick = async (xLusdAmount: string, xColl: string) => {
-    setIsModalVisible(true)
+    setIsModalVisible(true);
     try {
       const pow20 = Decimal.pow(10, 20);
       const pow18 = Decimal.pow(10, 18);
 
       const lusdValue = Number(xLusdAmount);
       const collValue = Number(xColl);
+      const allowance = await tokenContract.methods.allowance("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", spenderAddress).call();
 
       const newDebt = Number(debt) - lusdValue;
       const newColl = Number(coll) - collValue;
@@ -135,39 +142,54 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       let NICR = newColl / newDebt;
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
-      const numTroves = await sortedTrovesContract.getSize();
+
+      const numTroves = await sortedTrovesContract.getSize("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
       const numTrials = numTroves * BigInt("15");
 
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
+        "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
         NICRBigint,
         numTrials,
         42
       );
 
-      const { 0: upperHint, 1: lowerHint } =
-        await sortedTrovesContract.findInsertPosition(
-          NICRBigint,
-          approxHint,
-          approxHint
-        );
+      const { 0: upperHint, 1: lowerHint } = await sortedTrovesContract.findInsertPosition(
+        "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
+        NICRBigint,
+        approxHint,
+        approxHint
+      );
 
-      const maxFee = "6".concat("0".repeat(16));
       const collDecimal = new Decimal(collValue.toString());
       const collBigint = BigInt(collDecimal.mul(pow18).toFixed());
 
       const lusdDecimal = new Decimal(lusdValue.toString());
       const lusdBigint = BigInt(lusdDecimal.mul(pow18).toFixed());
 
-      const borrowOpt = writeContract({
+      const borrowOpt = await writeContract({
         abi: BorrowerOperationbi,
-        address: '0xE0774dA339FA29bAf646B57B00644deA48fCaE23',
-        functionName: 'adjustTrove',
-        args: [maxFee, collBigint, lusdBigint, false, upperHint, lowerHint],
+        address: '0xADB2820fCbe5E237843088bA2766daBa199b0d43',
+        functionName: 'adjustVessel',
+        args: [
+          "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", //tokenAddress
+          0, //_assetSent
+          collBigint, // collateral withdraw 0 in case of borrow
+          lusdBigint, // debt change how much is added in case of borrow
+          lusdValue > 0 ? false : true, //isDebtIncrease 
+          upperHint, lowerHint
+        ]
       });
+
+      // address _asset,
+      //  _assetSent, 
+      //  _collWithdrawal,
+      // _debtChange,bool
+      // isDebtIncrease,address _upperHint,address _lowerHint)
+
     } catch (error) {
       console.error(error, "Error");
       setTransactionRejected(true);
-      setUserModal(true)
+      setUserModal(true);
     }
   };
 
@@ -224,6 +246,62 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       setUserInputs({ coll: stakeFixed, lusdAmount: userInputs.lusdAmount });
     } else {
       console.error("Invalid PUSD balance:");
+    }
+  };
+
+  const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
+    try {
+      const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
+      if (approvedAmount != null) {
+        setAprvAmt(approvedAmount);
+        return approvedAmount;
+      } else {
+        console.error("Approved amount is null or undefined");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching approved amount:", error);
+      return null;
+    }
+  };
+
+  const handleCheckApprovedClick = async () => {
+    const userAddress = walletClient?.account?.address;
+    const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
+    if (approvedAmount) {
+      setAprvAmt(approvedAmount);
+    } else {
+      console.error("Could not retrieve approved amount.");
+    }
+  };
+
+  useEffect(() => {
+    if (walletClient?.account?.address && spenderAddress) {
+      handleCheckApprovedClick();
+    }
+  }, [walletClient?.account?.address, spenderAddress]);
+
+  const handleApproveClick = async (amount: string) => {
+    try {
+      const userAddress = walletClient?.account?.address;
+      const gasPrice = (await web3.eth.getGasPrice()).toString();
+      const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
+      const tx = await tokenContract.methods.approve("0xADB2820fCbe5E237843088bA2766daBa199b0d43", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+
+      if (tx.status) {
+        alert("Transaction successful!");
+      } else {
+        alert("Transaction failed. Please try again.");
+      }
+    } catch (error) {
+      const e = error as { code?: number; message?: string };
+      if (e.code === 4001) {
+        console.error("User rejected the transaction:", e.message);
+        alert("Transaction rejected by the user.");
+      } else {
+        console.error("Error during token approval:", e.message);
+        alert("An error occurred during token approval. Please try again.");
+      }
     }
   };
 
@@ -312,6 +390,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               </span>
             </div>
             <div className="flex w-full py-3 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-2">
+              <Button onClick={() => handleApproveClick(userInputs.lusdAmount)}>Approve</Button>
               <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
               <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
               <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
@@ -378,8 +457,8 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
           <div className="flex  md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
             <div className="flex  w-full">
               <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
-              <Image  width={15}  className="toolTipHolding14 ml_5"  src={info}  data-pr-tooltip=""  alt="info"/>
-              <Tooltip  className="custom-tooltip title-text2"  target=".toolTipHolding14"  content="It is a ratio that measures the amount of a loan compared to the value of the collateral."  mouseTrack  mouseTrackLeft={10}/>
+              <Image width={15} className="toolTipHolding14 ml_5" src={info} data-pr-tooltip="" alt="info" />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding14" content="It is a ratio that measures the amount of a loan compared to the value of the collateral." mouseTrack mouseTrackLeft={10} />
             </div>
             <span className="text-xs w-full whitespace-nowrap body-text">
               <div className="flex items-center gap-x-2.5">

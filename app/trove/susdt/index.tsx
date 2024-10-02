@@ -185,10 +185,6 @@ const Borrow = () => {
       );
       const collDecimal = new Decimal(coll.toString());
       const collFormatted = collDecimal.div(_1e18.toString()).toString();
-      // console.log("Debt:", (debt / _1e18).toString());
-      // console.log("Pending LUSD Debt Reward:", (pendingLUSDDebtReward / _1e18));
-      // console.log("Pending ETH Reward:", (pendingETHReward / _1e18));
-      // console.log("Collateral:", collFormatted);
       setEntireDebtAndColl({
         debt: (debt / _1e18).toString(),
         coll: collFormatted,
@@ -220,7 +216,7 @@ const Borrow = () => {
           troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
           setTroveStatus(troveStatus)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
 
@@ -245,9 +241,8 @@ const Borrow = () => {
 
   useDebounce(
     () => {
-      makeCalculations(userInputs.borrow, userInputs.depositCollateral);
-    },
-    10,
+      makeCalculations(userInputs.borrow, userInputs.depositCollateral)
+    }, 10,
     [userInputs.borrow, userInputs.depositCollateral]
   );
 
@@ -265,7 +260,6 @@ const Borrow = () => {
 
       const allowance = await tokenContract.methods.allowance("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", spenderAddress).call();
       setAllwnce(allowance)
-      const debtChange = BigInt(Math.floor(Number(newDebtValue) * Number(pow18)));
 
       let NICR = newCollValue / newDebtValue;
       const NICRDecimal = new Decimal(NICR.toString());
