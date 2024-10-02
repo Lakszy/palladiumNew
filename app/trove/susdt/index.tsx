@@ -196,13 +196,11 @@ const Borrow = () => {
       try {
         if (!walletClient) return null;
         const troveStatusBigInt = await troveManagerContract.getVesselStatus(
-          walletClient?.account.address,
-          // "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
+          "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
           walletClient?.account.address
         );
         const troveStatus =
           troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
-        console.log(troveStatusBigInt,"troveStatusBigInt-----------------------------------")
           setTroveStatus(troveStatus)
       } catch (error) {
         console.log(error)

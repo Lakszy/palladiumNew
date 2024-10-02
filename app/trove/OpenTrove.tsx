@@ -4,6 +4,8 @@ import { Label } from "@/components/ui/label";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
+import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
+import adminConAbi from "../src/constants/abi/AdminContract.sol.json"
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
@@ -16,7 +18,7 @@ import rec2 from "../assets/images/rec2.gif"
 import tick from "../assets/images/tick.gif"
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useContractRead, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
 import img4 from "../assets/images/Group 666.svg";
@@ -52,6 +54,7 @@ export const OpenTrove = () => {
   const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
   const [balanceData, setBalanceData] = useState<any>()
+  const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
 
   useEffect(() => {
     if (isLoading) {
@@ -80,30 +83,29 @@ export const OpenTrove = () => {
   const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
-  const erc20Contract = getContract("0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", erc20Abi, provider);
+  const erc20Contract = getContract("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", erc20Abi, provider);
   const providerTwo = new ethers.JsonRpcSigner(provider, walletClient?.account?.address as string)
   // const signer = provider.getSigner(walletClient?.account?.address);
   const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)
-  const signerToken = new JsonRpcSigner(provider, "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3")
+  const signerToken = new JsonRpcSigner(provider, "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f")
   const collToken = new ethers.Contract(
-    "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", // ERC20 token address
+    "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", // ERC20 token address
     erc20Abi, // ERC20 token ABI
     signer
   )
-  console.log(erc20Contract, "erc20ContractJSR")
   const getEtherContract = (address: string, abi: any, provider: any) => {
     return new ethers.Contract(address, abi, provider);
   };
 
 
   const web3 = new Web3(window.ethereum)
-  const tokenAddress = "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3"
+  const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
   const spenderAddress = walletClient?.account?.address
   const amount = web3.utils.toWei("100", "ether");
   const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
   const contract = getEtherContract(
-    "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
+    "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
     erc20Abi,
     signerToken
   );
@@ -111,6 +113,18 @@ export const OpenTrove = () => {
   const sortedTrovesContract = getContract(
     botanixTestnet.addresses.SortedVessels,
     sortedTroveAbi,
+    provider
+  );
+
+  const troveManagerContract = getContract(
+    botanixTestnet.addresses.VesselManager,
+    troveManagerAbi,
+    provider
+  );
+
+  const adminContract = getContract(
+    botanixTestnet.addresses.AdminContract,
+    adminConAbi,
     provider
   );
 
@@ -132,7 +146,7 @@ export const OpenTrove = () => {
         const data = await response.json();
 
         const protocolMetrics = data[0];
-        console.log(data, protocolMetrics, 'data', "protocolMetrics")
+        console.log(data, protocolMetrics, "protocolMetrics")
 
         setRecoveryMode(protocolMetrics.recoveryMode);
         setFetchedPrice(protocolMetrics.priceBTC);
@@ -151,77 +165,62 @@ export const OpenTrove = () => {
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
     try {
-      console.log("1) Setting modal visible");
       setIsModalVisible(true);
+      // from here we can approve and to txn from a single click in a flow
 
-      console.log("2) Parsing input values");
+      // const gasPrice = (await web3.eth.getGasPrice()).toString();
+      // const amount = "28000";
+      // const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
+      // const tx = await tokenContract.methods.approve(spenderAddress, amountInWei).send({ from: walletClient?.account?.address, gasPrice: gasPrice });
+
+      const status = await troveManagerContract.getVesselStatus(
+        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+        walletClient?.account.address
+      );
+
+      const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
       const collValue = Number(xCollatoral);
       const borrowValue = Number(xBorrow);
       const expectedFeeFormatted = (borrowRate * borrowValue) / 100;
       const expectedDebt = borrowValue + expectedFeeFormatted + lr;
       let NICR = collValue / expectedDebt;
-
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed());
 
-      console.log("3) Fetching number of troves");
-      const numTroves = await sortedTrovesContract.getSize("0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3");
-      console.log("3.1) numTroves: ", numTroves);
-
+      const numTroves = await sortedTrovesContract.getSize("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f");
+      const minDebt = await adminContract.getMinNetDebt("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f");
+      const minDebtInDecimal = new Decimal(minDebt.toString()).div(pow18);
       const numTrials = numTroves * BigInt("15");
-
-      console.log("4) Getting approximate hint");
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
-        "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
+        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
         NICRBigint,
         numTrials,
         42
       );
-      console.log("4.1) approxHint: ", approxHint);
 
       const { 0: upperHint, 1: lowerHint } = await sortedTrovesContract.findInsertPosition(
-        "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
+        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
         NICRBigint,
         approxHint,
         approxHint
       );
 
       const collDecimal = new Decimal(collValue.toString());
-      const collBigint = BigInt(collDecimal.mul(pow6).toFixed());
+      const collBigint = BigInt(collDecimal.mul(pow18).toFixed());
 
       const borrowDecimal = new Decimal(borrowValue.toString());
-      const borrowBigint = BigInt(borrowDecimal.mul(pow6).toFixed());
+      const borrowBigint = BigInt(borrowDecimal.mul(pow18).toFixed());
 
       const maxFee = "5".concat("0".repeat(16));
 
-      console.log("beforeSIGNER");
-      // const resolvedSigner = await signer;
-      // console.log("afterSigner", resolvedSigner);
-
-      // Approve collateral before writing the contract
-      console.log("5) Approving collateral");
-      // const approvalTxn = await collToken.approve(
-      //   "0xADB2820fCbe5E237843088bA2766daBa199b0d43",
-      //   collBigint
-      // );
-
-      // console.log("Approval transaction:", approvalTxn);
-      // await approvalTxn.wait();  // Wait for the approval transaction to be mined
-      console.log("6) Collateral approved");
-
-      // Now write the contract after collateral approval
-      console.log("7) Writing contract to openVessel");
       await writeContract({
         abi: BorrowerOperationbi,
         address: "0xADB2820fCbe5E237843088bA2766daBa199b0d43",
         functionName: "openVessel",
-        args: ["0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", collBigint, borrowBigint, upperHint, lowerHint],
+        args: ["0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", collBigint, borrowBigint, upperHint, lowerHint],
       });
 
-      console.log("9) Transaction sent successfully");
-
     } catch (error) {
-      console.error("Error sending transaction:", error);
       setTransactionRejected(true);
       setUserModal(true);
     }
@@ -271,7 +270,7 @@ export const OpenTrove = () => {
 
   const fetchPrice = async () => {
     const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
-    const collateralValueFormatted = ethers.formatUnits(collateralValue, 6)
+    const collateralValueFormatted = ethers.formatUnits(collateralValue, 18)
     setBalanceData(collateralValueFormatted)
   };
   useEffect(() => {
@@ -286,7 +285,6 @@ export const OpenTrove = () => {
   const handlePercentageClick = (percentage: any) => {
     const percentageDecimal = new Decimal(percentage).div(100);
     const pusdBalanceNumber = parseFloat(maxBorrow.toString());
-    console.log(maxBorrow, "maxBorrow")
     if (!isNaN(pusdBalanceNumber)) {
       const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
       const stakeFixed = maxStake.toFixed(2);
@@ -312,6 +310,64 @@ export const OpenTrove = () => {
     }
   };
 
+  const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
+    try {
+      const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
+      console.log("Approved amount:", approvedAmount);
+      if (approvedAmount != null) {
+        setAprvAmt(approvedAmount);
+        return approvedAmount;
+      } else {
+        console.error("Approved amount is null or undefined");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching approved amount:", error);
+      return null;
+    }
+  };
+
+  const handleCheckApprovedClick = async () => {
+    const userAddress = walletClient?.account?.address;
+    const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
+    if (approvedAmount) {
+      setAprvAmt(approvedAmount);
+    } else {
+      console.error("Could not retrieve approved amount.");
+    }
+  };
+
+  useEffect(() => {
+    if (walletClient?.account?.address && spenderAddress) {
+      handleCheckApprovedClick();
+    }
+  }, [walletClient?.account?.address, spenderAddress]);
+
+  const handleApproveClick = async (amount: string) => {
+    try {
+      const userAddress = walletClient?.account?.address;
+      const gasPrice = (await web3.eth.getGasPrice()).toString();
+      // const amountInWei = (parseFloat(amount) * 1000000).toString();
+      const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
+      const tx = await tokenContract.methods.approve("0xADB2820fCbe5E237843088bA2766daBa199b0d43", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+
+      if (tx.status) {
+        alert("Transaction successful!");
+      } else {
+        alert("Transaction failed. Please try again.");
+      }
+    } catch (error) {
+      const e = error as { code?: number; message?: string };
+      if (e.code === 4001) {
+        console.error("User rejected the transaction:", e.message);
+        alert("Transaction rejected by the user.");
+      } else {
+        console.error("Error during token approval:", e.message);
+        alert("An error occurred during token approval. Please try again.");
+      }
+    }
+  };
+
   useDebounce(() => {
     makeCalculations(userInputs.borrow, userInputs.collatoral);
   }, 10, [userInputs.borrow, userInputs.collatoral]
@@ -332,58 +388,6 @@ export const OpenTrove = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
-    try {
-      const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call();
-      console.log("Approved amount:", approvedAmount);
-      return approvedAmount;
-    } catch (error) {
-      console.error("Error fetching approved amount:", error);
-      return null; 
-    }
-  };
-  
-  const handleCheckApprovedClick = async () => {
-    const userAddress = walletClient?.account?.address;
-    const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
-    
-    if (approvedAmount) {
-      alert(`Approved amount for ${spenderAddress}: ${approvedAmount}`);
-    } else {
-      alert("Could not retrieve approved amount.");
-    }
-  };
-
-  const handleApproveClick = async (amount: string) => {
-    console.log("started");
-    handleCheckApprovedClick()
-    console.log("I AM ALLOWANCE")
-    try {
-      const userAddress = walletClient?.account?.address;
-      const gasPrice = (await web3.eth.getGasPrice()).toString();
-      const amountInWei = (parseFloat(amount) * 1000000).toString();
-  
-      const tx = await tokenContract.methods.approve(spenderAddress, amountInWei).send({ from: userAddress, gasPrice: gasPrice });
-  
-      if (tx.status) {
-        console.log("Transaction successful", tx);
-        alert("Transaction successful!");
-      } else {
-        console.log("Transaction failed", tx);
-        alert("Transaction failed. Please try again.");
-      }
-    } catch (error) {
-      const e = error as { code?: number; message?: string };
-      if (e.code === 4001) {
-        console.error("User rejected the transaction:", e.message);
-        alert("Transaction rejected by the user.");
-      } else {
-        console.error("Error during token approval:", e.message);
-        alert("An error occurred during token approval. Please try again.");
-      }
-    }
-  };
-  getApprovedAmount("0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",walletClient?.account?.address)
 
   return (
     <>
