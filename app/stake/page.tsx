@@ -7,6 +7,7 @@ import { StabilityPool } from "@/components/stabilityPool";
 import { Unstake } from "@/components/unStake";
 import { StabilityStats } from "@/components/stabilityStats";
 import "../../app/App.css"
+import Claim from "@/components/claim";
 
 export default function Home() {
   interface CustomTabHeaderProps {
@@ -33,19 +34,28 @@ export default function Home() {
           <div className='md:p-10  pt-12 md:flex md:gap-x-36'>
             <div className="second_section w-[24rem] md:w-1/2 outer_section_detail pos_sticky">
               <TabView className='card'>
-                <TabPanel className='p-[2px]  bg-yellow-400 text-sm text-black' header={<CustomTabHeader title="Stake" />}>
-                  <StabilityPool />
+                <TabPanel className='p-[1px] pb-0  bg-yellow-400 w-[20rem] text-sm text-black' header={<CustomTabHeader title="Stake" />}>
+                  <div className='border border-yellow-400  w-fit flex md:flex-row flex-col gap-x-10 items-center'>
+                    <StabilityPool />
+                    <div className='md:p-0 p-5 mr-10 mt-8 w-[25rem]'>
+                      <StabilityStats />
+                    </div>
+                  </div>
                 </TabPanel>
-                <TabPanel className='p-[2px] bg-yellow-400 text-sm  text-black' header={<CustomTabHeader title="Unstake" />}>
+                <TabPanel className='p-[1px] pb-0 bg-yellow-400 w-[20rem] text-sm  text-black' header={<CustomTabHeader title="Unstake" />}>
+                  <div className='border border-yellow-400 w-fit flex md:flex-row flex-col gap-x-10 items-center'>
                   <Unstake />
+                    <div className='md:p-0 p-5 mr-10 mt-8 w-[25rem]'>
+                      <StabilityStats />
+                    </div>
+                  </div>
                 </TabPanel>
-                <TabPanel className='p-[2px] bg-yellow-400 text-sm  text-black' header={<CustomTabHeader title="Unstake" />}>
-                  <Unstake />
+                <TabPanel className='p-[1px] w-[56rem] bg-yellow-400 text-sm  text-black' header={<CustomTabHeader title="Claim" />}>
+                  <div className='border w-[56rem] h-2 ' style={{ backgroundColor: '#272315' }}>
+                    <Claim/>
+                  </div>
                 </TabPanel>
               </TabView>
-            </div>
-            <div className='md:p-0 p-5 mr-10 mt-8 w-[25rem]'>
-            <StabilityStats />
             </div>
           </div>
         </div>
