@@ -2,14 +2,10 @@
 
 
 "use client";
-import { readContract } from '@wagmi/core'
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { HintHelpers } from "../src/constants/abi/HintHelpers";
-import priceFeedAbi from "../src/constants/abi/PriceFeedTestnet.sol.json";
-import { sortedTroves } from "../src/constants/abi/SortedTroves";
-import troveManagerContractQ from "../src/constants/abi/TroveManager.sol.json"
-import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
+import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
+import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import { getContract } from "../src/utils/getContract";
@@ -19,14 +15,13 @@ import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionRec
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import web3 from "web3";
-import { CustomConnectButton } from "@/components/connectBtn";
-import { wagmiConfig } from "../src/config/config";
 import { Dialog } from 'primereact/dialog';
 import trove3 from "../../app/assets/images/TROVE3.svg"
 import trove2 from "../../app/assets/images/TROVE1.svg"
 import trove1 from "../../app/assets/images/TROVE2.svg"
 import rej from "../../app/assets/images/TxnError.gif";
 import conf from "../../app/assets/images/conf.gif"
+import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
 import rec2 from "../../app/assets/images/rec2.gif"
 import tick from "../../app/assets/images/tick.gif"
 import Image from "next/image";
@@ -37,12 +32,9 @@ import "./redeem.css"
 
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
-    const [isRedeeming, setIsRedeeming] = useState(false);
     const [isRecoveryMode, setIsRecoveryMode] = useState<boolean>(false);
     const [pusdBalance, setPusdBalance] = useState("0");
-    const [hasPriceFetched, setHasPriceFetched] = useState(false);
     const { address, isConnected } = useAccount();
-    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
     const { data: walletClient } = useWalletClient();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const { toBigInt } = web3.utils;
@@ -54,23 +46,17 @@ export default function Redeem() {
     const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
     const [transactionRejected, setTransactionRejected] = useState(false);
     const [selectedButton, setSelectedButton] = useState(null)
+    const [fetchedPrice, setFetchedPrice] = useState(0)
 
     const handleButtonClick = (buttonId: any) => {
         setSelectedButton(buttonId);
         console.log("Selected button:", buttonId);
     };
-
-    const priceFeedContract = getContract(
-        botanixTestnet.addresses.priceFeed,
-        priceFeedAbi,
-        provider
-    );
-
-    const erc20Contract = getContract(
-        botanixTestnet.addresses.lusdToken,
+    const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
+    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+    const erc20Contract = getContract("0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
         erc20Abi,
-        provider
-    );
+        provider);
 
     const handleClose = useCallback(() => {
         setLoadingModalVisible(false);
@@ -82,9 +68,15 @@ export default function Redeem() {
 
     const neTrove = getContract(
         botanixTestnet.addresses.troveManager,
-        troveManagerContractQ,
+        troveManagerAbi,
         walletClient
     )
+
+    const hintHelpersContract = getContract(
+        botanixTestnet.addresses.VesselManagerOperations,
+        hintHelpersAbi,
+        provider
+    );
 
     useEffect(() => {
         const fetchPrice = async () => {
@@ -93,17 +85,18 @@ export default function Redeem() {
             setPusdBalance(pusdBalanceFormatted);
         };
         fetchPrice();
-    }, [erc20Contract,address]);
+    }, [erc20Contract, address]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(
-                    "https://api.palladiumlabs.org/sepolia/protocol/metrics"
+                    "https://api.palladiumlabs.org/core/protocol/metrics"
                 );
                 const data = await response.json();
-                const protocolMetrics = data[0];
+                const protocolMetrics = data[0].metrics[1]
                 setIsRecoveryMode(protocolMetrics.recoveryMode);
+                setFetchedPrice(protocolMetrics.price);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -111,6 +104,11 @@ export default function Redeem() {
 
         fetchData();
     }, []);
+    const sortedTrovesContract = getContract(
+        botanixTestnet.addresses.SortedVessels,
+        sortedTroveAbi,
+        provider
+    );
 
     const handlePercentageClick = (percentage: any) => {
         const percentageDecimal = new Decimal(percentage).div(100);
@@ -125,75 +123,44 @@ export default function Redeem() {
             console.error("Invalid PUSD balance:", pusdBalance);
         }
     };
-
-
     const handleConfirmClick = async () => {
         setIsModalVisible(true);
         try {
             const pow = Decimal.pow(10, 18);
-            const fetchedPrice = await priceFeedContract.getPrice();
-
             const inputBeforeConv = new Decimal(userInput);
+    
             const inputValue = inputBeforeConv.mul(pow).toFixed();
-
-            const redemptionhint = await readContract(wagmiConfig, {
-                abi: HintHelpers,
-                address: '0x59356e69d4447D1225482f966C984Bcc62C3Ef1b',
-                functionName: 'getRedemptionHints',
-
-                args: [BigInt(inputValue), fetchedPrice, 50n]
-            })
-            const {
-                0: firstRedemptionHint,
-                1: partialRedemptionNewICR,
-                2: truncatedLUSDAmount,
-            } = redemptionhint;
-
-            const numTroves = await readContract(wagmiConfig, {
-                abi: sortedTroves,
-                address: '0x34C3C2DBe369c23d07fCB7dBf1c6472faf2232Bd',
-                functionName: 'getSize'
-            })
-
+            const priceAsBigInt = BigInt(Math.floor(fetchedPrice * 10 ** 18));
+    
+            const redemptionhint = await hintHelpersContract.getRedemptionHints("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", BigInt(inputValue), priceAsBigInt, 50);
+            const { 0: firstRedemptionHint, 1: partialRedemptionNewICR, 2: truncatedLUSDAmount } = redemptionhint;
+            const numTroves = await sortedTrovesContract.getSize("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
             const numTrials = numTroves * toBigInt("15");
-
-            const approxPartialRedemptionHint = await readContract(wagmiConfig, {
-                abi: HintHelpers,
-                address: '0x59356e69d4447D1225482f966C984Bcc62C3Ef1b',
-                functionName: 'getApproxHint',
-
-                args: [partialRedemptionNewICR, numTrials, 42n]
-            })
-
-            const approxPartialRedemptionHintString = approxPartialRedemptionHint[0];
-
-            const exactPartialRedemptionHint = await readContract(wagmiConfig, {
-                abi: sortedTroves,
-                address: '0x34C3C2DBe369c23d07fCB7dBf1c6472faf2232Bd',
-                functionName: 'findInsertPosition',
-                args: [partialRedemptionNewICR, approxPartialRedemptionHintString, approxPartialRedemptionHintString]
-            })
-
-            const maxFee = "6".concat("0".repeat(13));
-
-            const x = await neTrove.redeemCollateral(
+            const { hintAddress: approxPartialRedemptionHint } = await hintHelpersContract.getApproxHint("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", partialRedemptionNewICR, numTrials, 42);
+            const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
+            // const maxFee = (5 * 10**16).toString(); // Represents 6% in wei
+            const maxFee = BigInt(5e16);
+            console.log('Max Fee:', maxFee);            
+            const result = await writeContract({
+                address: "0x1AdD91f2Bf28C416D7C636Cc62B6e162fC33b4EF",
+                abi: hintHelpersAbi, // Replace with your contract's ABI
+                functionName: 'redeemCollateral',
+                args: [
+                    "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
                 truncatedLUSDAmount,
+                exactPartialRedemptionHint[0], // upper hint
+                exactPartialRedemptionHint[1], // lower hint
                 firstRedemptionHint,
-                exactPartialRedemptionHint[0],
-                exactPartialRedemptionHint[1],
                 partialRedemptionNewICR,
                 0,
-                maxFee,
-            );
-
+                maxFee],
+            });
         } catch (error) {
-            console.error(error);
+            console.error('Error:', error);
             setTransactionRejected(true);
             setUserModal(true);
         }
     };
-
-
     useEffect(() => {
         if (writeError) {
             console.error('Write contract error:', writeError);
@@ -217,16 +184,12 @@ export default function Redeem() {
         }
     }, [isSuccess, isLoading, transactionRejected]);
 
-
-
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowCloseButton(true);
         }, 180000);
         return () => clearTimeout(timer);
     }, []);
-
-
 
     const renderHeader = () => {
         return (

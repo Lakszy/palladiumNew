@@ -134,17 +134,16 @@ const Borrow = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.palladiumlabs.org/sepolia/protocol/metrics");
+        const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
         const data = await response.json();
-        const protocolMetrics = data[0];
-
+        const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
         setRecoveryMode(protocolMetrics.recoveryMode);
-        setFetchedPrice(protocolMetrics.priceBTC);
-        setMCR(protocolMetrics.MCR)
-        setCCR(protocolMetrics.CCR)
-        setLR(protocolMetrics.LR)
-        setBorrowRate(protocolMetrics.borrowRate)
-        setMinDebt(protocolMetrics.minDebt)
+        setFetchedPrice(protocolMetrics.price);
+        setMCR(protocolMetrics.MCR);
+        setCCR(protocolMetrics.CCR);
+        setLR(protocolMetrics.LR);
+        setBorrowRate(protocolMetrics.borrowRate);
+        setMinDebt(protocolMetrics.minDebt);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

@@ -175,16 +175,12 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
           0, //_assetSent
           collBigint, // collateral withdraw 0 in case of borrow
           lusdBigint, // debt change how much is added in case of borrow
-          lusdValue > 0 ? false : true, //isDebtIncrease 
+          lusdValue >= 0 ? false : true, //isDebtIncrease 
           upperHint, lowerHint
         ]
       });
 
-      // address _asset,
-      //  _assetSent, 
-      //  _collWithdrawal,
-      // _debtChange,bool
-      // isDebtIncrease,address _upperHint,address _lowerHint)
+      // address _asset, _assetSent, //  _collWithdrawal,// _debtChange,bool// isDebtIncrease,address _upperHint,address _lowerHint)
 
     } catch (error) {
       console.error(error, "Error");

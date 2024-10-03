@@ -35,7 +35,8 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   const { data: walletClient } = useWalletClient();
   const { address, isConnected } = useAccount();
   const [afterLoad, setAfterload] = useState(false);
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
+  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
   const [pusdBalance, setPusdBalance] = useState("0");
   const [userModal, setUserModal] = useState(false);
   const [showCloseButton, setShowCloseButton] = useState(false);
@@ -44,7 +45,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   const [transactionRejected, setTransactionRejected] = useState(false);
 
   const erc20Contract = getContract(
-    botanixTestnet.addresses.lusdToken,
+    botanixTestnet.addresses.DebtToken,
     erc20Abi,
     provider
   );
@@ -60,7 +61,9 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
 
   const fetchPrice = useCallback(async () => {
     if (!address) return;
-    const pusdBalanceValue = await erc20Contract.balanceOf(address);
+    const pusdBalanceValue = await erc20Contract.balanceOf(
+      walletClient?.account?.address
+    );
     const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
     if (Number(pusdBalanceFormatted) < (debt - liquidationReserve)) {
       setIsLowBalance(true);
@@ -168,7 +171,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
                   <div className="hex-loader"></div>
                 </div>
               ) : (
-                `${Number(pusdBalance).toFixed(2)} PUSD`
+                `${Math.trunc(Number(pusdBalance) * 100) / 100} PUSD`
               )}
             </span>
           </div>

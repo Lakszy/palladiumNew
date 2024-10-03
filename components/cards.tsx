@@ -103,10 +103,10 @@ export const CardDemo: React.FC<Props> = ({ userExists }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.palladiumlabs.org/sepolia/protocol/metrics");
+        const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
         const data = await response.json();
-        const protocolMetrics = data[0];
-        setFetchedPrice(protocolMetrics.priceBTC);
+        const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
+        setFetchedPrice(protocolMetrics.price);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

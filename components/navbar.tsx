@@ -46,16 +46,14 @@ function NavBar() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          "https://api.palladiumlabs.org/sepolia/protocol/metrics"
-        );
+        const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
         const data = await response.json();
-        const protocolMetrics = data[0];
+        const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
+        setFetchedPrice(protocolMetrics.price);
         setIsRecoveryMode(protocolMetrics.recoveryMode);
-        setFetchedPrice(protocolMetrics.priceBTC);
         setSystemCollRatio(protocolMetrics.TCR);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error('Error fetching data:', error);
       }
     };
 

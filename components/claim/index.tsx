@@ -50,13 +50,14 @@ const Claim = () => {
         address: "0x0F8D43b7792c3D297dDf285f357d3DA6970EDe5e", // stability pool contract address
         functionName: "withdrawFromSP",
         args: [
-          BigInt(0), // amount as 0
+          inputBigInt,
           [
             "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3", // collateral tokens
             "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
             "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
           ],
         ],
+        value: undefined,
       });
     } catch (error) {
       console.error("Error sending transaction:", error);

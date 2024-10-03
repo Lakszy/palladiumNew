@@ -18,7 +18,7 @@ import rec2 from "../assets/images/rec2.gif"
 import tick from "../assets/images/tick.gif"
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useContractRead, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
 import img4 from "../assets/images/Group 666.svg";
@@ -142,19 +142,16 @@ export const OpenTrove = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.palladiumlabs.org/sepolia/protocol/metrics");
+        const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
         const data = await response.json();
-
-        const protocolMetrics = data[0];
-        console.log(data, protocolMetrics, "protocolMetrics")
-
+        const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
         setRecoveryMode(protocolMetrics.recoveryMode);
-        setFetchedPrice(protocolMetrics.priceBTC);
-        setMCR(protocolMetrics?.MCR)
-        setCCR(protocolMetrics?.CCR)
-        setLR(protocolMetrics?.LR)
-        setBorrowRate(protocolMetrics?.borrowRate)
-        setMinDebt(protocolMetrics?.minDebt)
+        setFetchedPrice(protocolMetrics.price);
+        setMCR(protocolMetrics.MCR);
+        setCCR(protocolMetrics.CCR);
+        setLR(protocolMetrics.LR);
+        setBorrowRate(protocolMetrics.borrowRate);
+        setMinDebt(protocolMetrics.minDebt);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
