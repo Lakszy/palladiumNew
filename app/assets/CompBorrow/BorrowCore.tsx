@@ -1,13 +1,13 @@
 /* eslint-disable */
 "use client";
 
-import hintHelpersAbi from "../../../app/src/constants/abi/HintHelpers.sol.json";
-import sortedTroveAbi from "../../../app/src/constants/abi/SortedTroves.sol.json";
-import troveManagerAbi from "../../../app/src/constants/abi/TroveManager.sol.json";
-import { BOTANIX_RPC_URL } from "../../../app/src/constants/botanixRpcUrl";
-import botanixTestnet from "../../../app/src/constants/botanixTestnet.json";
-import erc20Abi from "../../../app/src/constants/abi/ERC20.sol.json"
-import { getContract } from "../../../app/src/utils/getContract";
+import hintHelpersAbi from "../../src/constants/abi/HintHelpers.sol.json";
+import sortedTroveAbi from "../../src/constants/abi/SortedTroves.sol.json";
+import troveManagerAbi from "../../src/constants/abi/TroveManager.sol.json";
+import { BOTANIX_RPC_URL } from "../../src/constants/botanixRpcUrl";
+import botanixTestnet from "../../src/constants/botanixTestnet.json";
+import erc20Abi from "../../src/constants/abi/ERC20.sol.json"
+import { getContract } from "../../src/utils/getContract";
 import { Label } from "@radix-ui/react-label";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
@@ -16,7 +16,7 @@ import { useDebounce } from "react-use";
 import { useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import web3 from "web3";
 import { Button } from "@/components/ui/button";
-import OpenTroveNotConnected from "../openTroveNotConnected";
+import OpenTroveNotConnected from "../../trove/openTroveNotConnected";
 import Image from "next/image";
 import INACTIVE from "../../assets/images/INACTIVE.svg";
 import ACTIVE from "../../assets/images/ACTIVE.svg";
@@ -30,15 +30,15 @@ import info from "../../assets/images/info.svg"
 import tick from "../../assets/images/tick.gif"
 import { Knob } from "primereact/knob";
 import { TabView, TabPanel } from "primereact/tabview";
-import { Repay } from "../Repay";
-import { CloseTrove } from "../Close";
-import { OpenTrove } from "../OpenTrove";
-import Layout from "../layout";
+import { Repay } from "../../trove/Repay";
+import { CloseTrove } from "../../trove/Close";
+import { OpenTrove } from "../../trove/OpenTrove";
+import Layout from "../../trove/layout";
 import { FaArrowRightLong } from "react-icons/fa6";
 import "../../App.css"
 import FullScreenLoader from "@/components/FullScreenLoader";
 import { Dialog } from "primereact/dialog";
-import { BorrowerOperationbi } from "../../../app/src/constants/abi/borrowerOperationAbi";
+import { BorrowerOperationbi } from "../../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
 import { useAccounts } from "@particle-network/btc-connectkit";
 import { useWalletAddress } from "@/components/useWalletAddress";

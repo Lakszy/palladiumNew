@@ -16,7 +16,7 @@ import { useDebounce } from "react-use";
 import { useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import web3 from "web3";
 import { Button } from "@/components/ui/button";
-import OpenTroveNotConnected from "../openTroveNotConnected";
+import OpenTroveNotConnected from "../../trove/openTroveNotConnected";
 import Image from "next/image";
 import INACTIVE from "../../assets/images/INACTIVE.svg";
 import ACTIVE from "../../assets/images/ACTIVE.svg";
@@ -30,10 +30,10 @@ import info from "../../assets/images/info.svg"
 import tick from "../../assets/images/tick.gif"
 import { Knob } from "primereact/knob";
 import { TabView, TabPanel } from "primereact/tabview";
-import { Repay } from "../Repay";
-import { CloseTrove } from "../Close";
-import { OpenTrove } from "../OpenTrove";
-import Layout from "../layout";
+import { Repay } from "../../trove/Repay";
+import { CloseTrove } from "../../trove/Close";
+import { OpenTrove } from "../../trove/OpenTrove";
+import Layout from "../../trove/layout";
 import { FaArrowRightLong } from "react-icons/fa6";
 import "../../App.css"
 import FullScreenLoader from "@/components/FullScreenLoader";
@@ -43,9 +43,9 @@ import { Tooltip } from "primereact/tooltip";
 import { useAccounts } from "@particle-network/btc-connectkit";
 import { useWalletAddress } from "@/components/useWalletAddress";
 import Web3 from "web3";
-import { OpenTroveBTC } from "../OpenTroveBTC";
-import { RepayBTC } from "../RepayBTC";
-import { CloseTroveBTC } from "../CloseTroveBTC";
+import { OpenTroveBTC } from "../../trove/OpenTroveBTC";
+import { RepayBTC } from "../../trove/RepayBTC";
+import { CloseTroveBTC } from "../../trove/CloseTroveBTC";
 
 const BorrowBTC = () => {
   const [userInputs, setUserInputs] = useState({

@@ -2,7 +2,7 @@
 import React from "react";
 import { TabsDemo } from "@/components/sidebar";
 import NavBar from "@/components/navbar";
-import BorrowCore from "./BorrowCore";
+import BorrowCore from "../../assets/CompBorrow/BorrowCore";
 export default function Home() {
   
   return (
