@@ -22,7 +22,9 @@ import { useAccounts } from "@particle-network/btc-connectkit";
 import { useWalletAddress } from "./useWalletAddress";
 
 function NavBar() {
+
   const [fetchedPrice, setFetchedPrice] = useState(0);
+  const [fetchedPriceBTC, setFetchedPriceBTC] = useState(0);
   const [systemCollRatio, setSystemCollRatio] = useState(0);
   const { isConnected } = useAccount();
   const { accounts } = useAccounts();
@@ -49,6 +51,8 @@ function NavBar() {
         const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
         const data = await response.json();
         const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
+        const protocolMetricsBTC = data[0].metrics[0]; // Fetch the metrics for WCORE (at index 1)
+        setFetchedPriceBTC(protocolMetricsBTC.price);
         setFetchedPrice(protocolMetrics.price);
         setIsRecoveryMode(protocolMetrics.recoveryMode);
         setSystemCollRatio(protocolMetrics.TCR);
@@ -58,7 +62,7 @@ function NavBar() {
     };
 
     fetchData();
-  }, []);
+  }, [walletClient, fetchedPrice, fetchedPriceBTC]);
 
   const showSuccess = (message: string) => {
     toast.current?.show({
@@ -95,13 +99,6 @@ function NavBar() {
     }
   };
 
-  const openDialog = () => {
-    setIsDialogVisible(true);
-  };
-
-  const closeDialog = () => {
-    setIsDialogVisible(false);
-  };
 
   return (
     <>
@@ -110,7 +107,7 @@ function NavBar() {
           <MobileNav />
         </div>
         <div className="md:hidden m-2">
-        <EVMConnect className="" />
+          <EVMConnect className="" />
         </div>
       </div>
       <Toast ref={toast} className="custom-toast" />
@@ -133,40 +130,23 @@ function NavBar() {
             <div className="items-center flex gap-x-2">
               <Image src={btc} alt="btc" width={40} />
               <div>
-                <h1 className="text-white title-text2 text-sm ">BTC</h1>
+                <h1 className="text-white title-text2 text-sm ">WCORE</h1>
                 <h1 className="text-gray-400 text-sm title-text2 ">
                   ${Number(fetchedPrice).toFixed(2)}
                 </h1>
               </div>
             </div>
+            <div className="items-center flex gap-x-2">
+              <Image src={btc} alt="btc" width={40} />
+              <div>
+                <h1 className="text-white title-text2 text-sm ">wBTC</h1>
+                <h1 className="text-gray-400 text-sm title-text2 ">
+                  ${Number(fetchedPriceBTC).toFixed(2)}
+                </h1>
+              </div>
+            </div>
             {(address) && userExists && (
               <>
-                <div className="items-center flex gap-x-2">
-                  <Image src={collR} alt="btc" width={40} />
-                  <div>
-                    <div className="gap-1 flex">
-                      <h1 className="text-white title-text2 text-xs">SCR</h1>
-                      <h1 className="text-gray-400 body-text -mt-[4px] text-[10px]">(Normal Mode)</h1>
-                    </div>
-                    <div className="relative">
-                      <div className="flex">
-                        <h1 className="text-gray-400 text-sm title-text2">
-                          {(systemCollRatio * 100).toFixed(2)} %
-                        </h1>
-                        <div className="">
-                          <Image
-                            className="toolTipHolding4 ml_5 title-text2"
-                            src={info}
-                            alt="info"
-                          />
-                          <div className="aboslute z-10">
-                            <TooltipContent />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </>
             )}
           </div>

@@ -9,8 +9,8 @@ import Image from "next/image";
 
 export default function NFT2() {
     return (
-        <div className="w-full  border-yellow-300  p-6 border items-center justify-center" style={{ backgroundColor: '#272315' }}>
-            <div className="box-1 md:ml-4">
+        <div className="w-full hidden border-yellow-300  p-6 border items-center justify-center" style={{ backgroundColor: '#272315' }}>
+            {/* <div className="box-1 md:ml-4">
                 <Image src={CB} alt="circuit breaker" className="-mb-5" />
             </div>
             <div className=" flex items-center">
@@ -61,7 +61,7 @@ export default function NFT2() {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     );
 }

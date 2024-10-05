@@ -1,13 +1,13 @@
 /* eslint-disable */
 "use client";
 
-import hintHelpersAbi from "../../src/constants/abi/HintHelpers.sol.json";
-import sortedTroveAbi from "../../src/constants/abi/SortedTroves.sol.json";
-import troveManagerAbi from "../../src/constants/abi/TroveManager.sol.json";
-import { BOTANIX_RPC_URL } from "../../src/constants/botanixRpcUrl";
-import botanixTestnet from "../../src/constants/botanixTestnet.json";
-import erc20Abi from "../../src/constants/abi/ERC20.sol.json"
-import { getContract } from "../../src/utils/getContract";
+import hintHelpersAbi from "../../../app/src/constants/abi/HintHelpers.sol.json";
+import sortedTroveAbi from "../../../app/src/constants/abi/SortedTroves.sol.json";
+import troveManagerAbi from "../../../app/src/constants/abi/TroveManager.sol.json";
+import { BOTANIX_RPC_URL } from "../../../app/src/constants/botanixRpcUrl";
+import botanixTestnet from "../../../app/src/constants/botanixTestnet.json";
+import erc20Abi from "../../../app/src/constants/abi/ERC20.sol.json"
+import { getContract } from "../../../app/src/utils/getContract";
 import { Label } from "@radix-ui/react-label";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
@@ -38,13 +38,13 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import "../../App.css"
 import FullScreenLoader from "@/components/FullScreenLoader";
 import { Dialog } from "primereact/dialog";
-import { BorrowerOperationbi } from "../../src/constants/abi/borrowerOperationAbi";
+import { BorrowerOperationbi } from "../../../app/src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
 import { useAccounts } from "@particle-network/btc-connectkit";
 import { useWalletAddress } from "@/components/useWalletAddress";
 import Web3 from "web3";
 
-const Borrow = () => {
+const BorrowCore = () => {
   const [userInputs, setUserInputs] = useState({
     depositCollateral: "",
     borrow: "",
@@ -81,6 +81,8 @@ const Borrow = () => {
   const [recoveryMode, setRecoveryMode] = useState<boolean>(false)
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
+  const [isApproving, setIsApproving] = useState(false);
+  const [approveMessage, setApproveMessage] = useState("");
   const [showCloseButton, setShowCloseButton] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const [transactionRejected, setTransactionRejected] = useState(false);
@@ -213,7 +215,7 @@ const Borrow = () => {
         );
         const troveStatus =
           troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
-          setTroveStatus(troveStatus)
+        setTroveStatus(troveStatus)
       } catch (error) {
         console.error(error)
       }
@@ -246,6 +248,11 @@ const Borrow = () => {
   );
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
+
+    if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
+      await handleApproveClick(xCollatoral);
+    }
+
     setIsModalVisible(true)
     try {
       const borrowValue = Number(xBorrow);
@@ -303,19 +310,6 @@ const Borrow = () => {
           upperHint, lowerHint
         ]
       });
-      // adjustVessel(address _asset,
-      //  _assetSent, 
-      //  _collWithdrawal,
-      // _debtChange,bool
-      // isDebtIncrease,address _upperHint,address _lowerHint)
-
-      // _assetSent: collateral amount sent in case of increase collateral otherwise 0
-      // _collWithdrawal : collateral withdraw amount otherwise 0
-      // _debtChange : debt increase or decrease amount otherwise 0
-
-      console.log("WritngEnded")
-      console.log("Borrow Option:", borrowOpt);
-
     } catch (error) {
       console.error(error, "Error");
       setTransactionRejected(true);
@@ -422,23 +416,30 @@ const Borrow = () => {
       const userAddress = walletClient?.account?.address;
       const gasPrice = (await web3.eth.getGasPrice()).toString();
       const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-      console.log(amountInWei, "amntWei")
+
+      setIsApproving(true);
+      setApproveMessage("Approval is initiated. Please confirm in Metamask.");
+      setLoadingModalVisible(true);
+
       const tx = await tokenContract.methods.approve("0xADB2820fCbe5E237843088bA2766daBa199b0d43", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
       if (tx.status) {
-        alert("Transaction successful!");
+        setApproveMessage("Approval completed successfully!");
+        setIsApproving(false);
       } else {
-        alert("Transaction failed. Please try again.");
+        setApproveMessage("Approval failed. Please try again.");
+        setIsApproving(false);
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };
       if (e.code === 4001) {
-        console.error("User rejected the transaction:", e.message);
-        alert("Transaction rejected by the user.");
+        setApproveMessage("Transaction rejected by the user.");
       } else {
-        console.error("Error during token approval:", e.message);
-        alert("An error occurred during token approval. Please try again.");
+        setApproveMessage("An error occurred during approval. Please try again.");
       }
+      setIsApproving(false);
+    } finally {
+      setLoadingModalVisible(false);
     }
   };
 
@@ -500,8 +501,13 @@ const Borrow = () => {
         <Layout>
           {troveStatus === "ACTIVE" && (
             <div style={{ backgroundColor: "#272315" }} className="p-7">
+
               <div className="w-[103%] -ml-2 h-[35rem] md:h-fit md:w-[97%] md:ml-4 p-3 justify-between flex flex-col md:flex-row" style={{ backgroundColor: "#2e2a1c" }}>
-                <div className="p-2 px-4  ">
+
+                <div className="p-2 px-4 ">
+                  <p className=" title-text2 text-2xl text-white mb-4">
+                    WCORE Vessel
+                  </p>
                   <p className=" title-text2 text-gray-500 text-base mb-4">
                     Available to borrow
                   </p>
@@ -516,7 +522,7 @@ const Borrow = () => {
                   <div className="flex -ml-5 flex-row justify-between mt-3 md:mt-5 md:gap-4">
                     <div className="flex flex-col text-white  h-28 p-5" style={{ backgroundColor: "" }}>
                       <span className="body-text font-medium  text-gray-500">Collateral</span>
-                      <span className="body-text font-medium text-xl">{Number(entireDebtAndColl.coll).toFixed(8)} BTC</span>
+                      <span className="body-text font-medium text-xl">{Number(entireDebtAndColl.coll).toFixed(2)} WCORE</span>
                       <span className="body-text font-medium text-xs  p-1 text-gray-500">${(Number(fetchedPrice) * Number(entireDebtAndColl.coll)).toFixed(2)}</span>
                     </div>
                     <div className="flex flex-col text-white w-[9rem]  h-28 p-5" style={{ backgroundColor: "" }} >
@@ -579,8 +585,8 @@ const Borrow = () => {
                                   <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] '>
                                       <Image src={img3} alt="home" className='ml-1' width={41} />
-                                      <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>BTC</h6>
-                                      <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
+                                      <h6 className='text-white text-sm font-medium hidden md:block body-text ml-'>WCORE</h6>
+                                      <h3 className='h-full border border-yellow-300 ml-1 text-yellow-300'></h3>
                                     </div>
                                     <div className=" justify-between items-center flex gap-x-24">
                                       <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e) => {
@@ -599,10 +605,10 @@ const Borrow = () => {
                                         Available{" "}
                                       </h6>
                                       <span className={`text-sm  font-medium body-text whitespace-nowrap ${parseFloat(userInputs.depositCollateral) > Number(balanceData) ? 'text-red-500' : 'text-white'}`}>
-                                        {Number(balanceData).toFixed(8)}{" "}
+                                        {Number(balanceData).toFixed(2)}{" "}
                                       </span>
                                     </span>
-                                    <Button onClick={() => handleApproveClick(userInputs.depositCollateral)}>Approve</Button>
+                                    {/* <Button onClick={() => handleApproveClick(userInputs.depositCollateral)}>Approve</Button> */}
                                     <div className="flex w-full py-2 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
@@ -621,7 +627,7 @@ const Borrow = () => {
                                     <div className='flex items-center h-[3.5rem] mx-1'>
                                       <Image src={img4} alt="home" className='ml-1' />
                                       <h3 className='text-white body-text ml-1 font-medium hidden md:block '>PUSD</h3>
-                                      <h3 className='h-full border  border-yellow-300 mx-2  text-yellow-300'></h3>
+                                      <h3 className='h-full border  border-yellow-300 mx-2 ml-3 text-yellow-300'></h3>
                                     </div>
                                     <input id="items" placeholder='Enter Collateral Amount'
                                       disabled={!(isConnected)} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
@@ -657,13 +663,16 @@ const Borrow = () => {
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
                                     </div>
                                   </div>
-                                  <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
+                                  <button
+                                    onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
                                     className={`mt-9 md:-ml-0 -ml-10 w-[19rem] md:w-full title-text h-[3rem]
-                                   ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
-                                        ? 'bg-yellow-300 text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-yellow-300  text-black'}`}
+        ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
+                                        ? 'bg-yellow-300 text-black opacity-50 cursor-not-allowed'
+                                        : 'hover:scale-95 cursor-pointer bg-yellow-300 text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
-                                    UPDATE TROVE
+                                    {(userInputColl !== undefined && !isNaN(Number(userInputColl)) && Number(userInputColl) > 0) ? 'APPROVE' : 'UPDATE TROVE'}
                                   </button>
+
                                 </div>
                               </div>
                             </div>
@@ -745,14 +754,14 @@ const Borrow = () => {
                                   <span className="body-text my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
                                       <span className="p-1 w-28 -ml-[5px] body-text  font-medium">
-                                        {Number(entireDebtAndColl.coll).toFixed(8)} BTC
+                                        {Number(entireDebtAndColl.coll).toFixed(2)} WCORE
                                       </span>
                                       {userInputColl == 1 && (
                                         <>
                                           <span className="text-yellow-300 text-lg">
                                             <FaArrowRightLong />
                                           </span>
-                                          <span className="md:ml-05 p-1 w-28 body-text font-medium">{" "}{Number(newUserColl).toFixed(8)} BTC</span>
+                                          <span className="md:ml-05 p-1 w-28 body-text font-medium">{" "}{Number(newUserColl).toFixed(2)} WCORE</span>
                                         </>
                                       )}
                                     </div>
@@ -866,8 +875,19 @@ const Borrow = () => {
           </div>
         </div>
       </Dialog>
+      <Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            <div className="p-5">
+              <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">
+                {approveMessage}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 };
 
-export default Borrow;
+export default BorrowCore;

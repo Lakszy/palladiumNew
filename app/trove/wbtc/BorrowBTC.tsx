@@ -1,12 +1,13 @@
 /* eslint-disable */
 "use client";
 
-import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
-import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
-import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
-import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
-import botanixTestnet from "../src/constants/botanixTestnet.json";
-import { getContract } from "../src/utils/getContract";
+import hintHelpersAbi from "../../src/constants/abi/HintHelpers.sol.json";
+import sortedTroveAbi from "../../src/constants/abi/SortedTroves.sol.json";
+import troveManagerAbi from "../../src/constants/abi/TroveManager.sol.json";
+import { BOTANIX_RPC_URL } from "../../src/constants/botanixRpcUrl";
+import botanixTestnet from "../../src/constants/botanixTestnet.json";
+import erc20Abi from "../../src/constants/abi/ERC20.sol.json"
+import { getContract } from "../../src/utils/getContract";
 import { Label } from "@radix-ui/react-label";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
@@ -15,35 +16,38 @@ import { useDebounce } from "react-use";
 import { useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import web3 from "web3";
 import { Button } from "@/components/ui/button";
-import OpenTroveNotConnected from "./openTroveNotConnected";
+import OpenTroveNotConnected from "../openTroveNotConnected";
 import Image from "next/image";
-import INACTIVE from "../assets/images/INACTIVE.svg";
-import ACTIVE from "../assets/images/ACTIVE.svg";
-import img2 from "../assets/images/Group 663.svg";
-import img3 from "../assets/images/Group 661.svg";
-import img4 from "../assets/images/Group 666.svg";
-import rej from "../assets/images/TxnError.gif";
-import conf from "../assets/images/conf.gif"
-import rec2 from "../assets/images/rec2.gif"
-import info from "../assets/images/info.svg"
-import tick from "../assets/images/tick.gif"
+import INACTIVE from "../../assets/images/INACTIVE.svg";
+import ACTIVE from "../../assets/images/ACTIVE.svg";
+import img2 from "../../assets/images/Group 663.svg";
+import img3 from "../../assets/images/Group 661.svg";
+import img4 from "../../assets/images/Group 666.svg";
+import rej from "../../assets/images/TxnError.gif";
+import conf from "../../assets/images/conf.gif"
+import rec2 from "../../assets/images/rec2.gif"
+import info from "../../assets/images/info.svg"
+import tick from "../../assets/images/tick.gif"
 import { Knob } from "primereact/knob";
 import { TabView, TabPanel } from "primereact/tabview";
-import { Repay } from "./Repay";
-import { CloseTrove } from "./Close";
-import { OpenTrove } from "./OpenTrove";
-import Layout from "./layout";
+import { Repay } from "../Repay";
+import { CloseTrove } from "../Close";
+import { OpenTrove } from "../OpenTrove";
+import Layout from "../../layout";
 import { FaArrowRightLong } from "react-icons/fa6";
-import "../../app/App.css"
-import "../../components/stabilityPool/Modal.css"
+import "../../App.css"
 import FullScreenLoader from "@/components/FullScreenLoader";
 import { Dialog } from "primereact/dialog";
-import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
+import { BorrowerOperationbi } from "../../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
 import { useAccounts } from "@particle-network/btc-connectkit";
 import { useWalletAddress } from "@/components/useWalletAddress";
+import Web3 from "web3";
+import { OpenTroveBTC } from "../OpenTroveBTC";
+import { RepayBTC } from "../RepayBTC";
+import { CloseTroveBTC } from "../CloseTroveBTC";
 
-const Borrow = () => {
+const BorrowBTC = () => {
   const [userInputs, setUserInputs] = useState({
     depositCollateral: "",
     borrow: "",
@@ -68,6 +72,7 @@ const Borrow = () => {
 
   const [userInputColl, setUserInputColl] = useState(0)
   const [userInputDebt, setUserInputDebt] = useState(0)
+  const [allwnce, setAllwnce] = useState<any>(BigInt(0));
 
   // API
   const [minDebt, setMinDebt] = useState(0)
@@ -83,23 +88,35 @@ const Borrow = () => {
   const [userModal, setUserModal] = useState(false);
   const [transactionRejected, setTransactionRejected] = useState(false);
   const { accounts } = useAccounts();
+  const [balanceData, setBalanceData] = useState<any>()
+  const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
     debt: "0",
     coll: "0",
     pendingLUSDDebtReward: "0",
     pendingETHReward: "0",
   });
+  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+  const erc20Contract = getContract("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", erc20Abi, provider);
   const { data: walletClient } = useWalletClient();
   const { data: isConnected } = useWalletClient();
+  const spenderAddress = walletClient?.account?.address
 
-  const { data: balanceData } = useBalance({
-    address: walletClient?.account.address
-  });
-
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
+  const fetchPrice = async () => {
+    const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
+    const collateralValueFormatted = ethers.formatUnits(collateralValue, 18)
+    setBalanceData(collateralValueFormatted)
+  };
+  useEffect(() => {
+    fetchPrice();
+  }, [fetchPrice, walletClient?.account?.address, walletClient]);
 
   const { data: hash, writeContract, error: writeError } = useWriteContract()
-  const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const web3 = new Web3(window.ethereum)
+  const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+  const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
   const handleClose = useCallback(() => {
     setLoadingModalVisible(false);
@@ -110,19 +127,19 @@ const Borrow = () => {
   }, []);
 
   const troveManagerContract = getContract(
-    botanixTestnet.addresses.troveManager,
+    botanixTestnet.addresses.VesselManager,
     troveManagerAbi,
     provider
   );
 
   const sortedTrovesContract = getContract(
-    botanixTestnet.addresses.sortedTroves,
+    botanixTestnet.addresses.SortedVessels,
     sortedTroveAbi,
     provider
   );
 
   const hintHelpersContract = getContract(
-    botanixTestnet.addresses.hintHelpers,
+    botanixTestnet.addresses.VesselManagerOperations,
     hintHelpersAbi,
     provider
   );
@@ -136,7 +153,8 @@ const Borrow = () => {
       try {
         const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
         const data = await response.json();
-        const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
+        console.log(data, "data");
+        const protocolMetrics = data[0].metrics[0]; // Fetch the metrics for WCORE (at index 1)
         setRecoveryMode(protocolMetrics.recoveryMode);
         setFetchedPrice(protocolMetrics.price);
         setMCR(protocolMetrics.MCR);
@@ -164,11 +182,11 @@ const Borrow = () => {
         2: pendingLUSDDebtReward,
         3: pendingETHReward,
       } = await troveManagerContract.getEntireDebtAndColl(
+        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
         walletClient?.account.address
       );
       const collDecimal = new Decimal(coll.toString());
       const collFormatted = collDecimal.div(_1e18.toString()).toString();
-
       setEntireDebtAndColl({
         debt: (debt / _1e18).toString(),
         coll: collFormatted,
@@ -192,14 +210,15 @@ const Borrow = () => {
     const getTroveStatus = async () => {
       try {
         if (!walletClient) return null;
-        const troveStatusBigInt = await troveManagerContract.getTroveStatus(
+        const troveStatusBigInt = await troveManagerContract.getVesselStatus(
+          "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
           walletClient?.account.address
         );
         const troveStatus =
           troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
         setTroveStatus(troveStatus)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
 
@@ -224,13 +243,17 @@ const Borrow = () => {
 
   useDebounce(
     () => {
-      makeCalculations(userInputs.borrow, userInputs.depositCollateral);
-    },
-    10,
+      makeCalculations(userInputs.borrow, userInputs.depositCollateral)
+    }, 10,
     [userInputs.borrow, userInputs.depositCollateral]
   );
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
+
+    if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
+    await  handleApproveClick(xCollatoral);
+    }
+
     setIsModalVisible(true)
     try {
       const borrowValue = Number(xBorrow);
@@ -242,25 +265,31 @@ const Borrow = () => {
       const newCollValue = Number(entireDebtAndColl.coll) + collValue;
       setNewDebt(newDebtValue);
 
+      const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
+      setAllwnce(allowance)
+
       let NICR = newCollValue / newDebtValue;
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
 
-      const numTroves = await sortedTrovesContract.getSize();
+      const numTroves = await sortedTrovesContract.getSize("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f");
+      console.log("Number of Troves:", numTroves);
+
       const numTrials = numTroves * BigInt("15");
 
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
+        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
         NICRBigint,
         numTrials,
         42
       );
 
-      const { 0: upperHint, 1: lowerHint } =
-        await sortedTrovesContract.findInsertPosition(
-          NICRBigint,
-          approxHint,
-          approxHint
-        );
+      const { 0: upperHint, 1: lowerHint } = await sortedTrovesContract.findInsertPosition(
+        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+        NICRBigint,
+        approxHint,
+        approxHint
+      );
 
       const maxFee = "6".concat("0".repeat(16));
       const collDecimal = new Decimal(collValue.toString());
@@ -271,19 +300,17 @@ const Borrow = () => {
 
       const borrowOpt = await writeContract({
         abi: BorrowerOperationbi,
-        address: '0xE0774dA339FA29bAf646B57B00644deA48fCaE23',
-        functionName: 'adjustTrove',
+        address: '0x6117bde97352372eb8041bc631738402DEfA79a4',
+        functionName: 'adjustVessel',
         args: [
-          maxFee,
-          0,
-          borrowBigint,
-          borrowValue === 0 ? false : true,
-          upperHint,
-          lowerHint,
-        ],
-        value: collBigint,
+          "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", //tokenAddress
+          collBigint, //_assetSent
+          0, // collateral withdraw 0 in case of borrow
+          borrowBigint, // debt change how much is added in case of borrow
+          borrowValue > 0 ? true : false, //isDebtIncrease 
+          upperHint, lowerHint
+        ]
       });
-
     } catch (error) {
       console.error(error, "Error");
       setTransactionRejected(true);
@@ -340,14 +367,73 @@ const Borrow = () => {
   const handlePercentageClickBTC = (percentage: any) => {
     const percentageDecimal = new Decimal(percentage).div(100);
 
-    const pusdBalanceNumber = parseFloat(balanceData?.formatted || '0');
+    const pusdBalanceNumber = parseFloat(balanceData || '0');
 
     if (!isNaN(pusdBalanceNumber)) {
       const maxStake = new Decimal(pusdBalanceNumber).mul(percentageDecimal);
       const stakeFixed = maxStake.toFixed(8);
       setUserInputs({ depositCollateral: stakeFixed, borrow: userInputs.borrow });
     } else {
-      console.error("Invalid PUSD balance:", balanceData?.formatted);
+      console.error("Invalid PUSD balance:", balanceData);
+    }
+  };
+
+
+  const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
+    try {
+      const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
+      console.log("Approved amount:", approvedAmount);
+      if (approvedAmount != null) {
+        setAprvAmt(approvedAmount);
+        return approvedAmount;
+      } else {
+        console.error("Approved amount is null or undefined");
+        return null;
+      }
+    } catch (error) {
+      console.error("Error fetching approved amount:", error);
+      return null;
+    }
+  };
+
+  const handleCheckApprovedClick = async () => {
+    const userAddress = walletClient?.account?.address;
+    const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
+    if (approvedAmount) {
+      setAprvAmt(approvedAmount);
+    } else {
+      console.error("Could not retrieve approved amount.");
+    }
+  };
+
+  useEffect(() => {
+    if (walletClient?.account?.address && spenderAddress) {
+      handleCheckApprovedClick();
+    }
+  }, [walletClient?.account?.address, spenderAddress]);
+
+  const handleApproveClick = async (amount: string) => {
+    try {
+      const userAddress = walletClient?.account?.address;
+      const gasPrice = (await web3.eth.getGasPrice()).toString();
+      const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
+      console.log(amountInWei, "amntWei")
+      const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+
+      if (tx.status) {
+        alert("Transaction successful!");
+      } else {
+        alert("Transaction failed. Please try again.");
+      }
+    } catch (error) {
+      const e = error as { code?: number; message?: string };
+      if (e.code === 4001) {
+        console.error("User rejected the transaction:", e.message);
+        alert("Transaction rejected by the user.");
+      } else {
+        console.error("Error during token approval:", e.message);
+        alert("An error occurred during token approval. Please try again.");
+      }
     }
   };
 
@@ -357,7 +443,7 @@ const Borrow = () => {
   const totalAvailableBorrow = Number(newUserColl) * Number(fetchedPrice) / Number(divideBy) - Number(entireDebtAndColl.debt)
   const newLTV = ((Number(entireDebtAndColl.debt) * 100) / ((Number(entireDebtAndColl.coll) * Number(fetchedPrice)))).toFixed(2)
 
-  const isCollInValid = parseFloat(userInputs.depositCollateral) > Number(balanceData?.formatted)
+  const isCollInValid = parseFloat(userInputs.depositCollateral) > Number(balanceData)
   const isDebtInValid = parseFloat(userInputs.borrow) > totalAvailableBorrow
   const condition = (userInputColl + userInputDebt >= 1) || (parseFloat(userInputs.depositCollateral) < Number(entireDebtAndColl.coll)) || (parseFloat(userInputs.borrow) < Number(entireDebtAndColl.debt));
 
@@ -411,6 +497,9 @@ const Borrow = () => {
             <div style={{ backgroundColor: "#272315" }} className="p-7">
               <div className="w-[103%] -ml-2 h-[35rem] md:h-fit md:w-[97%] md:ml-4 p-3 justify-between flex flex-col md:flex-row" style={{ backgroundColor: "#2e2a1c" }}>
                 <div className="p-2 px-4  ">
+                  <p className=" title-text2 text-2xl text-white mb-4">
+                    WBTC Vessel
+                  </p>
                   <p className=" title-text2 text-gray-500 text-base mb-4">
                     Available to borrow
                   </p>
@@ -425,7 +514,7 @@ const Borrow = () => {
                   <div className="flex -ml-5 flex-row justify-between mt-3 md:mt-5 md:gap-4">
                     <div className="flex flex-col text-white  h-28 p-5" style={{ backgroundColor: "" }}>
                       <span className="body-text font-medium  text-gray-500">Collateral</span>
-                      <span className="body-text font-medium text-xl">{Number(entireDebtAndColl.coll).toFixed(8)} wCORE</span>
+                      <span className="body-text font-medium text-xl">{Number(entireDebtAndColl.coll).toFixed(8)} WCORE</span>
                       <span className="body-text font-medium text-xs  p-1 text-gray-500">${(Number(fetchedPrice) * Number(entireDebtAndColl.coll)).toFixed(2)}</span>
                     </div>
                     <div className="flex flex-col text-white w-[9rem]  h-28 p-5" style={{ backgroundColor: "" }} >
@@ -483,12 +572,12 @@ const Borrow = () => {
                               <div className="grid w-full  space-y-7  max-w-sm items-start gap-2 mx-auto p-7  md:p-5">
                                 <div className="relative">
                                   <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-11 ">
-                                    Deposit Collateral 
+                                    Deposit Collateral
                                   </Label>
                                   <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] '>
                                       <Image src={img3} alt="home" className='ml-1' width={41} />
-                                      <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>wCORE</h6>
+                                      <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>WCORE</h6>
                                       <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
                                     </div>
                                     <div className=" justify-between items-center flex gap-x-24">
@@ -507,10 +596,11 @@ const Borrow = () => {
                                       <h6 className="text-[#84827a] font-medium body-text text-sm">
                                         Available{" "}
                                       </h6>
-                                      <span className={`text-sm  font-medium body-text whitespace-nowrap ${parseFloat(userInputs.depositCollateral) > Number(balanceData?.formatted) ? 'text-red-500' : 'text-white'}`}>
-                                        {Number(balanceData?.formatted).toFixed(8)}{" "}
+                                      <span className={`text-sm  font-medium body-text whitespace-nowrap ${parseFloat(userInputs.depositCollateral) > Number(balanceData) ? 'text-red-500' : 'text-white'}`}>
+                                        {Number(balanceData).toFixed(8)}{" "}
                                       </span>
                                     </span>
+                                    {/* <Button onClick={() => handleApproveClick(userInputs.depositCollateral)}>Approve</Button> */}
                                     <div className="flex w-full py-2 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
@@ -581,17 +671,8 @@ const Borrow = () => {
                                 <div className="flex  md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
                                   <div className="flex  w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Loan-To-Value</span>
-                                    <Image width={15}
-                                      className="toolTipHolding9 ml_5 cursor-pointer"
-                                      src={info}
-                                      data-pr-tooltip=""
-                                      alt="info" />
-                                    <Tooltip
-                                      className=" title-text2"
-                                      target=".toolTipHolding9"
-                                      content="It is a ratio that measures the amount of a loan compared to the value of the collateral."
-                                      mouseTrack
-                                      mouseTrackLeft={10} />
+                                    <Image width={15} className="toolTipHolding9 ml_5 cursor-pointer" src={info} data-pr-tooltip="" alt="info" />
+                                    <Tooltip className=" title-text2" target=".toolTipHolding9" content="It is a ratio that measures the amount of a loan compared to the value of the collateral." mouseTrack mouseTrackLeft={10} />
                                   </div>
                                   <span className="text-xs w-full whitespace-nowrap body-text">
                                     <div className="flex items-center gap-x-2.5">
@@ -612,20 +693,8 @@ const Borrow = () => {
                                 <div className="flex  text-white mb-2 justify-between  items-center  md:flex-row flex-col">
                                   <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
-                                    <Image
-                                      width={15}
-                                      className="toolTipHolding10 ml_5 "
-                                      src={info}
-                                      data-pr-tooltip=""
-                                      alt="info"
-                                    />
-                                    <Tooltip
-                                      className="custom-tooltip title-text2"
-                                      target=".toolTipHolding10"
-                                      content="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
-                                      mouseTrack
-                                      mouseTrackLeft={10}
-                                    />
+                                    <Image width={15} className="toolTipHolding10 ml_5 " src={info} data-pr-tooltip="" alt="info" />
+                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding10" content="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price." mouseTrack mouseTrackLeft={10} />
                                   </div>
                                   <span className="body-text  my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2.5">
@@ -646,20 +715,8 @@ const Borrow = () => {
                                 <div className="flex  text-white mb-2  items-center justify-between  md:flex-row flex-col">
                                   <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium  md:flex-row flex-col">Total Debt</span>
-                                    <Image
-                                      width={15}
-                                      className="toolTipHolding11 ml_5"
-                                      src={info}
-                                      data-pr-tooltip=""
-                                      alt="info"
-                                    />
-                                    <Tooltip
-                                      className="custom-tooltip title-text2"
-                                      target=".toolTipHolding11"
-                                      mouseTrack
-                                      content="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance."
-                                      mouseTrackLeft={10}
-                                    />
+                                    <Image width={15} className="toolTipHolding11 ml_5" src={info} data-pr-tooltip="" alt="info" />
+                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding11" mouseTrack content="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance." mouseTrackLeft={10} />
                                   </div>
                                   <span className="body-text  my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
@@ -680,32 +737,20 @@ const Borrow = () => {
                                 <div className="flex text-white mb-2  items-center md:flex-row flex-col justify-between">
                                   <div className="flex w-full">
                                     <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Total Collateral</span>
-                                    <Image
-                                      width={15}
-                                      className="toolTipHolding12 ml_5"
-                                      src={info}
-                                      data-pr-tooltip=""
-                                      alt="info"
-                                    />
-                                    <Tooltip
-                                      className="custom-tooltip title-text2"
-                                      target=".toolTipHolding12"
-                                      mouseTrack
-                                      content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt."
-                                      mouseTrackLeft={10}
-                                    />
+                                    <Image width={15} className="toolTipHolding12 ml_5" src={info} data-pr-tooltip="" alt="info" />
+                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding12" mouseTrack content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt." mouseTrackLeft={10} />
                                   </div>
                                   <span className="body-text my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
                                       <span className="p-1 w-28 -ml-[5px] body-text  font-medium">
-                                        {Number(entireDebtAndColl.coll).toFixed(8)} wCORE
+                                        {Number(entireDebtAndColl.coll).toFixed(8)} WCORE
                                       </span>
                                       {userInputColl == 1 && (
                                         <>
                                           <span className="text-yellow-300 text-lg">
                                             <FaArrowRightLong />
                                           </span>
-                                          <span className="md:ml-05 p-1 w-28 body-text font-medium">{" "}{Number(newUserColl).toFixed(8)} wCORE</span>
+                                          <span className="md:ml-05 p-1 w-28 body-text font-medium">{" "}{Number(newUserColl).toFixed(8)} WCORE</span>
                                         </>
                                       )}
                                     </div>
@@ -716,20 +761,8 @@ const Borrow = () => {
                                 <div className="flex text-white mb-2  items-center md:flex-row flex-col justify-between">
                                   <div className="flex w-full">
                                     <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Borrowing Fee</span>
-                                    <Image
-                                      width={15}
-                                      className="toolTipHolding12 ml_5"
-                                      src={info}
-                                      data-pr-tooltip=""
-                                      alt="info"
-                                    />
-                                    <Tooltip
-                                      className="custom-tooltip title-text2"
-                                      target=".toolTipHolding12"
-                                      mouseTrack
-                                      content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt."
-                                      mouseTrackLeft={10}
-                                    />
+                                    <Image width={15} className="toolTipHolding12 ml_5" src={info} data-pr-tooltip="" alt="info" />
+                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding12" mouseTrack content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt." mouseTrackLeft={10} />
                                   </div>
                                   <span className="body-text my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
@@ -753,12 +786,12 @@ const Borrow = () => {
                       </TabPanel>
                       <TabPanel className="p-[2px] bg-yellow-400 text-sm body-text " header="Repay">
                         <div className="w-full h-full border p-5 border-yellow-400" style={{ backgroundColor: "#272315" }}>
-                          <Repay coll={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} lr={lr} fetchedPrice={Number(fetchedPrice)} borrowRate={borrowRate} minDebt={minDebt} recoveryMode={recoveryMode} cCR={cCr} mCR={mCR} troveStatus={troveStatus} />
+                          <RepayBTC coll={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} lr={lr} fetchedPrice={Number(fetchedPrice)} borrowRate={borrowRate} minDebt={minDebt} recoveryMode={recoveryMode} cCR={cCr} mCR={mCR} troveStatus={troveStatus} />
                         </div>
                       </TabPanel>
                       <TabPanel className="p-[2px] bg-yellow-400 text-sm title-text" header="Close">
                         <div className="w-full h-full" style={{ backgroundColor: "#272315" }}  >
-                          <CloseTrove entireDebtAndColl={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} liquidationReserve={lr} />
+                          <CloseTroveBTC entireDebtAndColl={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} liquidationReserve={lr} />
                         </div>
                       </TabPanel>
                     </TabView>
@@ -767,17 +800,11 @@ const Borrow = () => {
               </div>
             </div>
           )}
-          {troveStatus === "INACTIVE" && (
-            <div className="w-full h-auto" style={{ backgroundColor: "#272315" }}>
-              <OpenTrove />
-            </div>
-          )}
           {!isConnected && (
             <OpenTroveNotConnected />
           )}
         </Layout>
       )}
-
       <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
         <div className="dialog-overlay">
           <div className="dialog-content">
@@ -835,4 +862,4 @@ const Borrow = () => {
   );
 };
 
-export default Borrow;
+export default BorrowBTC;

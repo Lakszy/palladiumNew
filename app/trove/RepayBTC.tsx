@@ -41,7 +41,7 @@ interface Props {
   troveStatus?: string
 }
 
-export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryMode, minDebt, cCR, mCR }) => {
+export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryMode, minDebt, cCR, mCR }) => {
   const [userInputs, setUserInputs] = useState({
     lusdAmount: "0",
     coll: "0",
@@ -72,7 +72,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   const { accounts } = useAccounts();
   const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
   const web3 = new Web3(window.ethereum)
-  const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
+  const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
   const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
   const spenderAddress = walletClient?.account?.address
 
@@ -134,7 +134,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
 
       const lusdValue = Number(xLusdAmount);
       const collValue = Number(xColl);
-      const allowance = await tokenContract.methods.allowance("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", spenderAddress).call();
+      const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
 
       const newDebt = Number(debt) - lusdValue;
       const newColl = Number(coll) - collValue;
@@ -143,18 +143,18 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
 
-      const numTroves = await sortedTrovesContract.getSize("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
+      const numTroves = await sortedTrovesContract.getSize("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f");
       const numTrials = numTroves * BigInt("15");
 
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
-        "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
+        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
         NICRBigint,
         numTrials,
         42
       );
 
       const { 0: upperHint, 1: lowerHint } = await sortedTrovesContract.findInsertPosition(
-        "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
+        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
         NICRBigint,
         approxHint,
         approxHint
@@ -171,7 +171,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
         address: '0x6117bde97352372eb8041bc631738402DEfA79a4',
         functionName: 'adjustVessel',
         args: [
-          "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", //tokenAddress
+          "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", //tokenAddress
           0, //_assetSent
           collBigint, // collateral withdraw 0 in case of borrow
           lusdBigint, // debt change how much is added in case of borrow
@@ -403,7 +403,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img3} alt="home" className='ml-1' width={41} />
                 <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>WCORE</h6>
-                <h3 className='h-full border border-yellow-300 ml-3 text-yellow-300'></h3>
+                <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
               </div>
               <div className=" justify-between items-center flex gap-x-24">
                 <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.coll} onChange={(e) => {
@@ -425,7 +425,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                     </span>
                   </span>
                   <span className="text-sm ml-1   font-medium body-text">
-                    {(newAvailColl).toFixed(2)}
+                    {(newAvailColl).toFixed(8)}
                   </span>
                 </div>
               </span>
@@ -524,14 +524,14 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
             <span className="body-text text-xs my-1 w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2">
                 <span className="p-1 body-text font-medium -ml-[5px] w-28">
-                  {Number(coll).toFixed(2)} WCORE
+                  {Number(coll).toFixed(8)} WCORE
                 </span>
                 {(userInputColl == 1) && (parseFloat(userInputs.coll) < Number(coll)) && (
                   <>
                     <span className="text-yellow-300 text-lg">
                       <FaArrowRightLong />
                     </span>
-                    <span className="ml-05 p-1 w-28 body-text font-medium ">{" "}{Number(totalColl).toFixed(2)} WCORE</span>
+                    <span className="ml-05 p-1 w-28 body-text font-medium ">{" "}{Number(totalColl).toFixed(8)} WCORE</span>
                   </>
                 )}
               </div>

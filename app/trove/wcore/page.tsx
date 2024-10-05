@@ -2,8 +2,7 @@
 import React from "react";
 import { TabsDemo } from "@/components/sidebar";
 import NavBar from "@/components/navbar";
-import Borrow from "..";
-
+import BorrowCore from "./BorrowCore";
 export default function Home() {
   
   return (
@@ -14,7 +13,7 @@ export default function Home() {
           <NavBar />
         </div>
         <div className="h-screen md:w-full w-screen " style={{ backgroundColor: "#272315" }}>
-          <Borrow />
+          <BorrowCore />
         </div>
       </div>
     </div>

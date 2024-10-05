@@ -1,3 +1,5 @@
+"use client"
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -7,7 +9,7 @@ import Banner from "@/components/Banner";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
+const metadata: Metadata = {
   title: "Palladium Circuit Breaker",
   description:
     "Join the Palladium incentivised testnet to earn Joule points and exclusive rewards.",

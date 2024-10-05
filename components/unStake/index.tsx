@@ -163,7 +163,7 @@ export const Unstake = () => {
 
       await writeContract({
         abi: StabilityPoolbi,
-        address: "0x0F8D43b7792c3D297dDf285f357d3DA6970EDe5e",
+        address: "0x7779C10ae22632955846fa8c8EfA4cBd241f1659",
         functionName: "withdrawFromSP",
         args: [
           inputBigInt,
@@ -221,31 +221,8 @@ export const Unstake = () => {
 
   return (
     <>
-      <div className="grid border bg-[#272315] items-start h-66 gap-2 mx-auto border-yellow-400 p-7">
+      <div className="grid space-y-8 bg-[#272315] items-start md:h-66 gap-2 mx-auto p-7">
         <div className="">
-          <div className="mb-2">
-            {" "}
-            <span className="text-gray-400 body-text ">Select Collateral</span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {collateralTokens.map((token) => (
-              <label
-                key={token.address}
-                className="text-xs md:text-lg border-2 border-yellow-300 body-text flex items-center text-white"
-                style={{
-                  backgroundColor: "#3b351b",
-                  borderRadius: "0",
-                  padding: "0.5rem",
-                }}
-              >
-                <input type="checkbox" checked={true} disabled={true} className="mr-2" />
-                <Image src={token.img} alt={token.name} width={26} height={26} className="mr-2" />{" "}
-                <p className="text-sm body-text font-medium">
-                  {token.name}
-                </p>
-              </label>
-            ))}
-          </div>
           <div
             className="flex items-center mt-4 mb-2  md:-ml-0 -ml-  border border-yellow-300 "
             style={{ backgroundColor: "#272315" }}

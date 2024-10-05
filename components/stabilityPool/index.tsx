@@ -141,7 +141,7 @@ export const StabilityPool = () => {
       console.log("Assets: ", assets);
       writeContract({
         abi: StabilityPoolbi,
-        address: "0x0F8D43b7792c3D297dDf285f357d3DA6970EDe5e",
+        address: "0x7779C10ae22632955846fa8c8EfA4cBd241f1659",
         functionName: "provideToSP",
         args: [
           inputBigInt,
@@ -197,26 +197,8 @@ export const StabilityPool = () => {
     console.log("Collateral Token Address: ", address);
   };
   return (
-    <div className="grid bg-[#272315] items-start h-66 gap-2 mx-auto border border-t-0 border-yellow-400 p-7">
-      <div className="">
-        <div className="mb-2">
-          <span className="text-gray-400 body-text ">Select Collateral</span>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {collateralTokens.map((token) => (
-            <label
-              key={token.address}
-              className="text-xs md:text-lg border-2 border-yellow-300 body-text flex items-center text-white"
-              style={{ backgroundColor: "#3b351b", borderRadius: "0", padding: "0.5rem", }}
-            >
-              <input type="checkbox" checked={true} disabled={true} className="mr-2" />
-              <Image src={token.img} alt={token.name} width={26} height={26} className="mr-2" />{" "}
-              <p className="text-sm body-text font-medium">
-                {token.name}
-              </p>
-            </label>
-          ))}
-        </div>
+    <div className="grid bg-[#272315] -mt-10 items-start h-72 space-y-8  gap-2 mx-auto  border-yellow-400 p-7">
+      <div className=" mt-10 md:mt-0">
         <div
           className="flex items-center mb-2 mt-4 md:-ml-0 -ml- border border-yellow-300"
           style={{ backgroundColor: "#272315" }}

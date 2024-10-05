@@ -47,11 +47,7 @@ export const StabilityStats = () => {
       address: "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
       oracle: "0x81A64473D102b38eDcf35A7675654768D11d7e24",
     },
-    {
-      name: "sUSDT",
-      address: "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
-      oracle: "0x6e9Cd926Bf8F57FCe14b5884d9Ee0323126A772E",
-    },
+
   ];
   const fetchDepositorGains = useCallback(async () => {
     if (!walletClient) return;
@@ -62,7 +58,6 @@ export const StabilityStats = () => {
       );
 
       const assets = sortedAssets.map((token) => token.address);
-      // const assets = collateralTokens.map((token) => token.address);
       const [returnedAssets, gains] =
         await stabilityPoolContractReadOnly.getDepositorGains(
           walletClient.account.address,
@@ -70,7 +65,7 @@ export const StabilityStats = () => {
         );
       console.log("Returned Assets:", returnedAssets);
       console.log("Gains:", gains);
-     
+
       const gainsObject: { [key: string]: string } = {};
       returnedAssets.forEach((asset: string, index: number) => {
         const gain = gains[index];
@@ -100,7 +95,6 @@ export const StabilityStats = () => {
       setIsLoading(false);
     };
     const totalStabilityPool = async () => {
-      // if (!walletClient) return null;
       const fetchedTotalStakedValue =
         await stabilityPoolContractReadOnly.getTotalDebtTokenDeposits();
 
@@ -151,7 +145,7 @@ export const StabilityStats = () => {
         <div className="flex justify-between py-2">
           <div className="flex">
             <span className="text-[#827f77] text-sm font-medium body-text">
-              Total Stability Pool Staked
+              Total Pool Staked
             </span>
             <Image
               width={15}
@@ -168,7 +162,7 @@ export const StabilityStats = () => {
               mouseTrackLeft={10}
             />
           </div>
-          <span className="text-white font-medium text-sm body-text">
+          <span className="text-white  font-medium text-sm body-text">
             {isPoolLoading && isConnected ? (
               <div className="h-3 rounded-xl">
                 <div className="hex2-loader"></div>
@@ -226,44 +220,30 @@ export const StabilityStats = () => {
         </div>
 
         {/* Display all tokens, including those with 0 gains */}
-        {Object.entries(allTokenGains).map(([token, amount]) => (
-          <div key={token} className="flex justify-between py-2">
-            <div className="flex">
-              <span className="text-[#827f77] text-sm font-medium body-text">
-                {token} Gains
+        {Object.entries(allTokenGains).map(([token, amount]) => {
+          let formattedAmount;
+
+          if (token === "WCORE") {
+            formattedAmount = parseFloat(amount).toFixed(2);
+          } else if (token === "WBTC") {
+            formattedAmount = parseFloat(amount).toFixed(8);
+          } else {
+            formattedAmount = parseFloat(amount).toFixed(6);
+          }
+
+          return (
+            <div key={token} className="flex justify-between py-2">
+              <div className="flex">
+                <span className="text-[#827f77] text-sm font-medium body-text">
+                  {token} Gains
+                </span>
+              </div>
+              <span className="text-white font-medium text-sm body-text">
+                {formattedAmount} {token}
               </span>
             </div>
-            <span className="text-white font-medium text-sm body-text">
-              {parseFloat(amount).toFixed(6)} {token}
-            </span>
-          </div>
-        ))}
-
-        <div className="flex justify-between py-2">
-          <div className="flex">
-            <span className="text-[#827f77] text-sm font-medium body-text">
-              PDM Rewards
-            </span>
-            <Image
-              width={15}
-              className="toolTipHolding19 ml_5"
-              src={info}
-              data-pr-tooltip=""
-              alt="info"
-            />
-            <Tooltip
-              className="custom-tooltip title-text2"
-              target=".toolTipHolding19"
-              mouseTrack
-              content="Rewards accrue every minute, value on the UI only updates when a user transacts with the Stability Pool. 
-							Therefore you may receive more rewards than is displayed when you claim or adjust your deposit."
-              mouseTrackLeft={10}
-            />
-          </div>
-          <span className="text-white text-sm font-medium body-text">
-            {loanRewards.toString()} PDM
-          </span>
-        </div>
+          );
+        })}
       </div>
     </div>
   );

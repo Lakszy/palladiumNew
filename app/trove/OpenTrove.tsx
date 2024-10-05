@@ -163,6 +163,8 @@ export const OpenTrove = () => {
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
     try {
       setIsModalVisible(true);
+
+      await  handleApproveClick(xCollatoral);
       // from here we can approve and to txn from a single click in a flow
       const status = await troveManagerContract.getVesselStatus(
         "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
@@ -204,7 +206,7 @@ export const OpenTrove = () => {
 
       await writeContract({
         abi: BorrowerOperationbi,
-        address: "0xADB2820fCbe5E237843088bA2766daBa199b0d43",
+        address: "0x6117bde97352372eb8041bc631738402DEfA79a4",
         functionName: "openVessel",
         args: ["0x5FB4E66C918f155a42d4551e871AD3b70c52275d", collBigint, borrowBigint, upperHint, lowerHint],
       });
@@ -338,7 +340,7 @@ export const OpenTrove = () => {
       const gasPrice = (await web3.eth.getGasPrice()).toString();
       // const amountInWei = (parseFloat(amount) * 1000000).toString();
       const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-      const tx = await tokenContract.methods.approve("0xADB2820fCbe5E237843088bA2766daBa199b0d43", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+      const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
       if (tx.status) {
         alert("Transaction successful!");
@@ -389,7 +391,7 @@ export const OpenTrove = () => {
               </svg>
             </button>
             <Image src={trove1} alt="btc" width={50} />
-            <p className="body-text text-2xl font-semibold text-white">BTC Trove</p>
+            <p className="body-text text-2xl font-semibold text-white">wCORE Trove</p>
           </div>
         </div>
 
@@ -400,7 +402,7 @@ export const OpenTrove = () => {
               <div className="flex md:w-[90%] items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-yellow-300">
                 <div className='flex items-center  h-[3.5rem] '>
                   <Image src={btc} alt="home" className='ml-1' />
-                  <h3 className='text-gray-400 body-text font-medium ml-1 mr-3 hidden md:block'>BTC</h3>
+                  <h3 className='text-gray-400 body-text font-medium ml-1 mr-3 hidden md:block'>WCORE</h3>
                   <h3 className='h-full border border-yellow-300 text-yellow-300 mx-3'></h3>
                 </div>
                 <input id="items" placeholder="" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[20.75rem] body-text font-medium h-[4rem] pl-3 text-gray-400" style={{ backgroundColor: "#272315" }} />
@@ -408,9 +410,9 @@ export const OpenTrove = () => {
               </div>
               <div className="pt-2 w-[90%] flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
                 <span className={`text-sm body-text w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData) ? 'text-red-500' : 'text-white'}`}>
-                  <span className="body-text text-gray-400 font-medium ">Available</span> {Number(balanceData).toFixed(8)}{" "}
+                  <span className="body-text text-gray-400 font-medium ">Available</span> {Number(balanceData).toFixed(2)}{" "}
                 </span>
-                <Button onClick={() => handleApproveClick(userInputs.collatoral)}>Approve</Button>
+                {/* <Button onClick={() => handleApproveClick(userInputs.collatoral)}>Approve</Button> */}
                 <div className="flex gap-x-4 md:gap-x-2 w-full   mt-2">
                   <Button disabled={!(isConnected)} className={`text-sm border border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
                   <Button disabled={!(isConnected)} className={`text-sm border border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>

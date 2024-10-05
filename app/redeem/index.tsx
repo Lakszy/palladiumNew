@@ -29,6 +29,7 @@ import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import '../App.css';
 import "./redeem.css"
+import { GiConsoleController } from "react-icons/gi";
 
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
@@ -45,16 +46,31 @@ export default function Redeem() {
     const { data: hash, writeContract, error: writeError } = useWriteContract();
     const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
     const [transactionRejected, setTransactionRejected] = useState(false);
-    const [selectedButton, setSelectedButton] = useState(null)
+    const [selectedButton, setSelectedButton] = useState("WCORE")
     const [fetchedPrice, setFetchedPrice] = useState(0)
+
+    const [collTokenAddress, setCollTokenAddress] = useState<string>("")
 
     const handleButtonClick = (buttonId: any) => {
         setSelectedButton(buttonId);
-        console.log("Selected button:", buttonId);
+
+        let address = '';
+        if (buttonId === 'WCORE') {
+            address = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d";
+        } else if (buttonId === 'WBTC') {
+            address = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f";
+        }
+        setCollTokenAddress(address);
+        setTimeout(() => {
+            console.log("Selected button:", buttonId, "Collateral Token Address:", address);
+        }, 0);
     };
+
+
     const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
     const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
-    const erc20Contract = getContract("0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
+    const erc20Contract = getContract(
+        botanixTestnet.addresses.DebtToken,
         erc20Abi,
         provider);
 
@@ -80,9 +96,12 @@ export default function Redeem() {
 
     useEffect(() => {
         const fetchPrice = async () => {
-            const pusdBalanceValue = await erc20Contract.balanceOf(address);
-            const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
-            setPusdBalance(pusdBalanceFormatted);
+            const pusdBalanceValue = await erc20Contract.balanceOf(
+                walletClient?.account?.address
+              );
+              console.log("PUSD Balance: ", pusdBalanceValue);
+              const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
+              setPusdBalance(pusdBalanceFormatted);
         };
         fetchPrice();
     }, [erc20Contract, address]);
@@ -128,10 +147,10 @@ export default function Redeem() {
         try {
             const pow = Decimal.pow(10, 18);
             const inputBeforeConv = new Decimal(userInput);
-    
+
             const inputValue = inputBeforeConv.mul(pow).toFixed();
             const priceAsBigInt = BigInt(Math.floor(fetchedPrice * 10 ** 18));
-    
+
             const redemptionhint = await hintHelpersContract.getRedemptionHints("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", BigInt(inputValue), priceAsBigInt, 50);
             const { 0: firstRedemptionHint, 1: partialRedemptionNewICR, 2: truncatedLUSDAmount } = redemptionhint;
             const numTroves = await sortedTrovesContract.getSize("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
@@ -140,20 +159,23 @@ export default function Redeem() {
             const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
             // const maxFee = (5 * 10**16).toString(); // Represents 6% in wei
             const maxFee = BigInt(5e16);
-            console.log('Max Fee:', maxFee);            
+            console.log('Max Fee:', maxFee);
+            console.log(collTokenAddress,"collTokenAddress")
+
+            console.log("starting")
             const result = await writeContract({
-                address: "0x1AdD91f2Bf28C416D7C636Cc62B6e162fC33b4EF",
+                address: "0x21F46c75F3c12FE2cA6714e6085B65FACA61102f",
                 abi: hintHelpersAbi, // Replace with your contract's ABI
                 functionName: 'redeemCollateral',
                 args: [
-                    "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
-                truncatedLUSDAmount,
-                exactPartialRedemptionHint[0], // upper hint
-                exactPartialRedemptionHint[1], // lower hint
-                firstRedemptionHint,
-                partialRedemptionNewICR,
-                0,
-                maxFee],
+                    collTokenAddress,
+                    truncatedLUSDAmount,
+                    exactPartialRedemptionHint[0], // upper hint
+                    exactPartialRedemptionHint[1], // lower hint
+                    firstRedemptionHint,
+                    partialRedemptionNewICR,
+                    0,
+                    maxFee],
             });
         } catch (error) {
             console.error('Error:', error);
@@ -205,27 +227,14 @@ export default function Redeem() {
         <>
             <div className=" ml-3 md:ml-12 md:w-[40%] w-[22.5rem]">
                 <div className="grid items-start h-[20rem] gap-x-2  mx-auto border-[2px] border-yellow-400 p-5">
-                    <div className='mb-2 pb-1 threeButtons gap-x-4 flex items-center justify-between w-full h-10 my-2'>
-                        <div
-                            className={`items-center flex w-1/3  text-lg body-text border-2 border-yellow-300 h-fit p-1 cursor-pointer ${selectedButton === 'btc' ? "absolute inset-0 bg-yellow opacity-50" : ''}`}
-                            onClick={() => handleButtonClick('btc')}
-                        >
-                            <Image src={trove3} alt='btc' width={40} className='p-1' />
-                            <p className='font-light body-text text-white text-xs'>BTC</p>
-                        </div>
-                        <div
-                            className={`items-center flex w-1/3 text-lg  md:-ml-0 -ml-2 body-text border-2 border-yellow-300 h-fit p-1 cursor-pointer ${selectedButton === 'rovbtc' ? "absolute inset-0 bg-yellow opacity-50" : ''}`}
-                            onClick={() => handleButtonClick('rovbtc')} 
-                        >
+                    <div className='mb-2 pb-1 threeButtons gap-x-4 flex items-center  w-full h-10 my-2'>
+                        <div className={`items-center flex w-1/3 text-lg body-text border-2 border-yellow-300 h-fit p-1 cursor-pointer ${selectedButton === 'WCORE' ? "bg-yellow-300 opacity-80" : "opacity-50"}`} onClick={() => handleButtonClick('WCORE')}>
                             <Image src={trove1} alt='rovbtc' width={40} className='p-1' />
-                            <p className='font-light body-text text-white text-xs'>rovBTC</p>
+                            <p className={`font-light body-text text-xs ${selectedButton === 'WCORE' ? 'text-black body-text font-medium' : 'text-white'}`}>WCORE</p>
                         </div>
-                        <div
-                            className={`items-center flex w-1/3 text-lg md:-ml-0 -ml-2 body-text border-2 border-yellow-300 h-fit p-1 cursor-pointer ${selectedButton === 'bbnbtc' ? "absolute inset-0 bg-yellow opacity-50" : ''}`}
-                            onClick={() => handleButtonClick('bbnbtc')} 
-                        >
+                        <div className={`items-center flex w-1/3 text-lg body-text border-2 border-yellow-300 h-fit p-1 cursor-pointer ${selectedButton === 'WBTC' ? "bg-yellow-300 opacity-90" : "opacity-50"}`} onClick={() => handleButtonClick('WBTC')}>
                             <Image src={trove2} alt='bbnbtc' width={40} className='p-1' />
-                            <p className='font-light body-text text-white text-xs'>bbnBTC</p>
+                            <p className={`font-light body-text text-xs ${selectedButton === 'WBTC' ? 'text-black body-text font-medium' : 'text-white'}`}>WBTC</p>
                         </div>
                     </div>
                     <div className='my-4'>

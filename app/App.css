@@ -27,6 +27,10 @@
 .body-text {
   font-family: "Montserrat";
 }
+.body-textsm {
+  font-family: "Montserrat";
+  font-size: 13px;
+}
 
 /* .medium-text {
   font-family: "MontechMedium";
@@ -3417,4 +3421,11 @@ sd1 {
   max-width: 9rem;
   padding: 10px;
   min-height: fit-content !important;
+}
+
+.p-tabview-selected {
+  background-color: #facc15 !important; /* bg-yellow-400 corresponds to this color */
+}
+.p-tabview-header {
+  background-color: transparent; /* transparent for unselected tabs */
 }

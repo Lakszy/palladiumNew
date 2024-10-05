@@ -27,7 +27,7 @@ interface Props {
   liquidationReserve: number;
 }
 
-export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidationReserve }) => {
+export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquidationReserve }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLowBalance, setIsLowBalance] = useState(false);
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
@@ -84,7 +84,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
         abi: BorrowerOperationbi,
         address: '0x6117bde97352372eb8041bc631738402DEfA79a4',
         functionName: 'closeVessel',
-        args: ["0x5FB4E66C918f155a42d4551e871AD3b70c52275d"],
+        args: ["0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"],
       });
     } catch (error) {
       console.error('Error sending transaction:', error);
@@ -141,7 +141,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
               <Image width={15} className="toolTipHolding5 ml_5 -mt-[3px]" src={info} data-pr-tooltip="" alt="info" />
               <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding5" mouseTrack content="The BTC you’ve staked to receive PUSD. This Bitcoin acts as security for the loan or transaction." mouseTrackLeft={10} />
             </span>
-            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(2)} wCore</span>}
+            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(8)} BTC</span>}
           </div>
           <div className="flex justify-between">
             <div className="flex">
