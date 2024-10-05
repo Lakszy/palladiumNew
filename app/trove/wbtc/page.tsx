@@ -2,7 +2,7 @@
 import React from "react";
 import { TabsDemo } from "@/components/sidebar";
 import NavBar from "@/components/navbar";
-import BorrowBTC from "../../assets/CompBorrow";
+import BorrowBTC from "@/CompBorrow";
 export default function Home() {
   
   return (
