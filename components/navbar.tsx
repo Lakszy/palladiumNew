@@ -102,7 +102,7 @@ function NavBar() {
 
   return (
     <>
-      <div className="flex justify-between md:h-fit h-[5rem] items-center gap-x-4" style={{ backgroundColor: "#1c1a0f" }}>
+      <div className="flex justify-between md:h-fit h-[5rem] items-center gap-x-4" style={{ backgroundColor: "black" }}>
         <div className="md:hidden flex items-center ml-[10px] gap-x-4">
           <MobileNav />
         </div>
@@ -111,7 +111,7 @@ function NavBar() {
         </div>
       </div>
       <Toast ref={toast} className="custom-toast" />
-      <div className="md:flex border-2 hidden w-full border-gray-100 border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50" style={{ backgroundColor: "#272315" }}>
+      <div className="md:flex border-2 hidden w-full border-gray-100 border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50" style={{ backgroundColor: "black" }}>
         <div className="flex items-center gap-x-4">
           <div className="w-full ml-[1rem] gap-x-10 hidden md:flex rounded-xl">
             <div

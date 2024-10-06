@@ -25,6 +25,7 @@ import "../../app/App.css";
 import wcore from "../../app/assets/images/btcc.svg";
 import wbtc from "../../app/assets/images/btccc.svg";
 import susdt from "../../app/assets/images/bbn.svg";
+import { EVMConnect } from "../EVMConnect";
 
 export const StabilityPool = () => {
   const [userInput, setUserInput] = useState("0");
@@ -132,7 +133,7 @@ export const StabilityPool = () => {
       const inputBeforeConv = new Decimal(userInput);
       const inputValue = inputBeforeConv.mul(pow).toFixed();
       const inputBigInt = BigInt(inputValue);
-      
+
       const sortedAssets = [...collateralTokens].sort((a, b) =>
         a.address.toLowerCase().localeCompare(b.address.toLowerCase())
       );
@@ -197,18 +198,18 @@ export const StabilityPool = () => {
     console.log("Collateral Token Address: ", address);
   };
   return (
-    <div className="grid bg-[#272315] -mt-10 items-start h-72 space-y-8  gap-2 mx-auto  border-yellow-400 p-7">
+    <div className="grid bg-[black] -mt-10 items-start h-72 space-y-8  gap-2 mx-auto rounded-lg  border-[#88e273] p-7">
       <div className=" mt-10 md:mt-0">
         <div
-          className="flex items-center mb-2 mt-4 md:-ml-0 -ml- border border-yellow-300"
-          style={{ backgroundColor: "#272315" }}
+          className="flex items-center mb-2 mt-4 md:-ml-0 -ml- border rounded-lg border-[#88e273]"
+          style={{ backgroundColor: "black" }}
         >
           <div className="flex items-center h-[3.5rem]">
             <Image src={img3} alt="home" className="ml-1" width={30} />
             <h3 className="text-white body-text ml-1 hidden md:block">PUSD</h3>
-            <h3 className="h-full border border-yellow-300 mx-3 text-yellow-300"></h3>
+            <h3 className="h-full border rounded-lg border-[#88e273] mx-3 text-[#88e273]"></h3>
             <div className="justify-between items-center flex gap-x-24">
-              <input id="items" placeholder="Enter Collateral Amount" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1 text-white" style={{ backgroundColor: "#272315" }} />
+              <input id="items" placeholder="Enter Collateral Amount" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1 text-white" style={{ backgroundColor: "black" }} />
             </div>
           </div>
         </div>
@@ -221,7 +222,7 @@ export const StabilityPool = () => {
                 : "text-gray-400")
             }
           >
-            {isDataLoading ? (
+            {isDataLoading && isConnected ? (
               <div className="mr-[82px]">
                 <div className="text-left w-full h-2">
                   <div className="hex-loader"></div>
@@ -237,17 +238,17 @@ export const StabilityPool = () => {
         </div>
       </div>
       <div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 border-yellow-300 body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
       </div>
       {isConnected ? (
         <div className=" my-2">
           <button
-            style={{ backgroundColor: "#f5d64e" }}
+            style={{ backgroundColor: "#88e273" }}
             onClick={handleConfirmClick}
-            className={`mt-2 text-black text-md font-semibold w-full border border-black h-10 title-text border-none 
+            className={`mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-10 title-text border-none 
                             ${isDataLoading ||
                 Number(userInput) <= 0 ||
                 Number(userInput) >
@@ -261,14 +262,14 @@ export const StabilityPool = () => {
               isDataLoading ||
               Number(userInput) <= 0 ||
               Number(userInput) >
-                Number(Math.trunc(Number(pusdBalance) * 100) / 100)
+              Number(Math.trunc(Number(pusdBalance) * 100) / 100)
             }
           >
             {isDataLoading ? "LOADING..." : "STAKE"}
           </button>
         </div>
       ) : (
-        <CustomConnectButton className="" />
+        <EVMConnect className="w-full" />
       )}
       <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
         <div className="dialog-overlay">
@@ -277,7 +278,7 @@ export const StabilityPool = () => {
               <Image src={rec2} alt="box" width={140} className="" />
             </div>
             <div className="p-5">
-              <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">
+              <div className="waiting-message text-lg title-text2 text-[#88e273] whitespace-nowrap">
                 Transaction is initiated
               </div>
               <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">
@@ -328,7 +329,7 @@ export const StabilityPool = () => {
               ) : (
                 <Image src={conf} alt="box" width={140} />
               )}
-              <div className="waiting-message title-text2  text-yellow-300 ">
+              <div className="waiting-message title-text2  text-[#88e273] ">
                 {loadingMessage}
               </div>
               <div className="pb-5">

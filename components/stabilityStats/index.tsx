@@ -117,10 +117,10 @@ export const StabilityStats = () => {
     return acc;
   }, {} as { [key: string]: string });
   return (
-    <div className="bg-[#272315]">
+    <div className="bg-black">
       <div>
         <div className="flex justify-center">
-          <h2 className="font-bold text-sm my-3 text-yellow-400 title-text">
+          <h2 className="font-bold text-sm my-3 text-[#88e273] title-text">
             Stability Pool
           </h2>
         </div>
@@ -205,7 +205,7 @@ export const StabilityStats = () => {
         </div>
 
         <div className="flex justify-center">
-          <h2 className="font-bold text-yellow-400 my-3 text-sm title-text">
+          <h2 className="font-bold text-[#88e273] my-3 text-sm title-text">
             Your Rewards
           </h2>
         </div>

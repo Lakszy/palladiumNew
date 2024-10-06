@@ -352,24 +352,24 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
   const marginClass = parseFloat(userInputs.coll) > 0 ? 'md:-ml-[7rem]' : 'md:-ml-[5rem]';
 
   return (
-    <div className="flex-col mx-2  flex md:flex-row justify-between gap-10">
+    <div className="flex-col mx-2  flex md:flex-row justify-between gap-10 bg-black">
       <div>
         <div className="grid w-full space-y-7  max-w-sm items-start gap-2 mx-auto p-7 md:p-5">
           <div className="relative">
             <Label htmlFor="quantity" className="text-[#84827a] font-medium md:-ml-0 mb-2 -ml-10 body-text text-base">
               Repay PUSD
             </Label>
-            <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "bg-transparent" }}>
+            <div className="flex items-center mt-4 w-[19rem] bg-black md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl  border border-[#88e273] " style={{ backgroundColor: "bg-transparent" }}>
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img4} alt="home" className='ml-1' width={35} />
                 <h3 className='text-white body-text font-medium hidden md:block ml-1 text-sm'>PUSD</h3>
-                <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
+                <h3 className='h-full border border-[#88e273] mx-4 text-[#88e273]'></h3>
               </div>
               <input id="items" placeholder=''
                 disabled={!(isConnected)}
                 value={userInputs.lusdAmount}
                 onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }}
-                className="body-text text-sm whitespace-nowrap h-[4rem] text-gray-400" style={{ backgroundColor: "#272315" }}
+                className="body-text text-sm whitespace-nowrap h-[4rem] text-gray-400" style={{ backgroundColor: "black" }}
               />
             </div>
             <div className="flex flex-col md:flex-row gap-x-5 mt-[7px]  justify-between">
@@ -386,10 +386,10 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
               </span>
             </div>
             <div className="flex w-full py-3 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-2">
-              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273]  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
             </div>
 
           </div>
@@ -399,18 +399,18 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
                 Withdraw Collateral
               </Label>
             </div>
-            <div className="flex mt-2 md:mt-0 items-center w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
+            <div className="flex mt-2 md:mt-0 items-center w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl  border border-[#88e273] " style={{ backgroundColor: "black" }}>
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img3} alt="home" className='ml-1' width={41} />
                 <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>WCORE</h6>
-                <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
+                <h3 className='h-full border border-[#88e273] mx-4 text-[#88e273]'></h3>
               </div>
               <div className=" justify-between items-center flex gap-x-24">
                 <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.coll} onChange={(e) => {
                   const newCollValue = e.target.value;
                   setUserInputs({ ...userInputs, coll: newCollValue, });
                 }}
-                  className="body-text text-gray-400 w-full text-sm whitespace-nowrap ml-1 h-[4rem] " style={{ backgroundColor: "#272315" }} />
+                  className="body-text text-gray-400 w-full text-sm whitespace-nowrap ml-1 h-[4rem] " style={{ backgroundColor: "black" }} />
                 <span className={`text-sm body-text text-gray-400 -ml-36 ${marginClass}`}>
                   ${(parseFloat(userInputs.coll) * Number(fetchedPrice)).toFixed(2)}
                 </span>
@@ -431,23 +431,23 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
               </span>
             </div>
             <div className="flex w-full py-3  -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-[5px]">
-              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273]  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
             </div>
           </div>
           <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}
             className={`mt-5 md:-ml-0 -ml-11 w-[19.5rem] md:w-full title-text h-[3rem]
              ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
-                ? 'bg-yellow-300 text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-yellow-300 text-black'}`}
+                ? 'bg-[#88e273] text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
             disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
             UPDATE TROVE
           </button>
         </div>
       </div>
-      <div className={`px-1  w-[18rem] -ml-4 md:px-9 md:w-full  pt-9 h-[18rem] pl-5 md:h-[20rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
-        style={{ backgroundColor: "#2e2a1c" }}>
+      <div className={`px-1  w-[18rem] rounded-2xl -ml-4 md:px-9 md:w-full  pt-9 h-[18rem] pl-5 md:h-[20rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
+        style={{ backgroundColor: "#282828" }}>
         <div className="mb-4  space-y-4">
           <div className="flex  md:gap-x-20 text-white md:flex-row flex-col  items-center justify-between">
             <div className="flex  w-full">
@@ -462,7 +462,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
                 </span>
                 {(userInputColl + userInputDebt >= 1) && (parseFloat(userInputs.coll) < Number(coll)) && (parseFloat(userInputs.lusdAmount) < Number(debt)) && (
                   <>
-                    <span className="text-yellow-300 text-lg">
+                    <span className="text-[#88e273] text-lg">
                       <FaArrowRightLong />
                     </span>
                     <span className={`overflow-x-clip text-sm body-text font-medium w-28 p-1 ${ltv > (100 / Number(divideBy)) ? 'text-red-500' : ''}`}>{" "}{Number(ltv).toFixed(2)} %</span>
@@ -484,7 +484,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
                 </span>
                 {(userInputColl + userInputDebt >= 1) && (parseFloat(userInputs.coll) < Number(coll)) && (parseFloat(userInputs.lusdAmount) < Number(debt)) && (
                   <>
-                    <span className="text-yellow-300 text-lg">
+                    <span className="text-[#88e273] text-lg">
                       <FaArrowRightLong />
                     </span>
                     <span className="body-text font-medium text-xs whitespace-nowrap w-28  p-1">{" "}{Number(liquidationPrice).toFixed(2)} PUSD</span>
@@ -506,7 +506,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
                 </span>
                 {(userInputDebt == 1) && (parseFloat(userInputs.lusdAmount) < Number(debt)) && (
                   <>
-                    <span className="text-yellow-300 text-lg">
+                    <span className="text-[#88e273] text-lg">
                       <FaArrowRightLong />
                     </span>
                     <span className="ml-05 font-medium body-text w-28 p-1 ">{" "}{Number(totalDebt).toFixed(2)} PUSD</span>
@@ -528,7 +528,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
                 </span>
                 {(userInputColl == 1) && (parseFloat(userInputs.coll) < Number(coll)) && (
                   <>
-                    <span className="text-yellow-300 text-lg">
+                    <span className="text-[#88e273] text-lg">
                       <FaArrowRightLong />
                     </span>
                     <span className="ml-05 p-1 w-28 body-text font-medium ">{" "}{Number(totalColl).toFixed(8)} WCORE</span>
@@ -546,7 +546,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
               <Image src={rec2} alt="box" width={140} className="" />
             </div>
             <div className="p-5">
-              <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+              <div className="waiting-message text-lg title-text2 text-[#88e273] whitespace-nowrap">Transaction is initiated</div>
               <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
             </div>
           </div>
@@ -578,14 +578,14 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
               ) : (
                 <Image src={conf} alt="box" width={140} />
               )}
-              <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
+              <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
                 <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>
                   <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                  <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
+                  <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2 hover:bg-[#88e273] hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
                 </>
               )}</div>
           </div>

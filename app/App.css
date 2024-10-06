@@ -276,7 +276,7 @@ input[type="radio"]:checked+label.radioButtonLevel {
 
 /* Ensure higher specificity */
 body .p-button.p-component {
-  background-color: #ffd300;
+  background-color: #88e273;
   border-radius: 0px !important;
   margin-top: 0.5rem;
   width: 9rem;
@@ -285,7 +285,7 @@ body .p-button.p-component {
 
 @media (max-width: 768px) {
   .p-button.p-component {
-    background-color: #ffd300;
+    background-color: #88e273;
     border-radius: 0px !important;
     margin-top: 0.5rem;
     width: 9rem;
@@ -304,13 +304,13 @@ body .p-button.p-component {
 }
 
 body .p-button.p-component:hover {
-  background-color: #ffd300;
-  background: #ffd300;
+  background-color: #88e273;
+  background: #88e273;
 }
 
 body .p-button.p-component:focus {
   /* outline: #000; */
-  background: #ffd300;
+  background: #88e273;
   /* box-shadow: 5px 5px 0px var(--body_color); */
 }
 
@@ -783,8 +783,7 @@ body .p-buttonset .p-button {
 }
 
 .p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
-  border: 1px solid transparent;
-  border-radius: 0;
+  border-radius: 0.5rem;
   background: transparent;
   filter: none;
   color: white;
@@ -792,44 +791,63 @@ body .p-buttonset .p-button {
 
 .p-tabview .p-tabview-nav .p-tabview-ink-bar {
   height: 0;
+  border-radius: 0.5rem;
+  
 }
 
 .p-tabview .p-tabview-nav li .p-tabview-nav-link {
   padding: 15px 20px;
   font-weight: 500;
   margin: 0;
-  background-color: #272315;
+  background-color: #282828;
   color: white !important;
+  border-radius: 0.5rem;
+
 }
 
 .p-tabview .p-tabview-nav li:not(.p-highlight) .p-tabview-title {
   color: white;
+  border-radius: 0.5rem;
+
 }
 
 .p-tabview .p-tabview-nav li .p-tabview-nav-link:focus {
   box-shadow: none;
+  border-radius: 0.5rem;
+
   color: white !important;
 }
 
 .p-tabview .p-tabview-nav li {
   border: none;
-  color: red !important;
+  border-radius: 0.5rem;
+
 }
 
 .p-tabview .p-tabview-nav {
   background: var(--body_background);
+  border-radius: 0.5rem;
+
 }
 
 .p-tabview .p-tabview-nav {
   border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+
+
 }
 
 .p-tabview-panels {
   background-color: inherit;
+  /* border-radius: 2rem; */
+
 }
 
 .p-tabview .p-tabview-panels {
   color: white;
+  border-radius: 0.5rem;
+
 }
 
 .wdth_46 {
@@ -3216,7 +3234,7 @@ sd1 {
   top: 0;
   width: 50%;
   height: 100%;
-  background-color: #b4ad23;
+  background-color: #88e273;
   transform-origin: 50% 50%;
 }
 
@@ -3253,13 +3271,13 @@ sd1 {
 }
 
 .p-sidebar-close {
-  color: yellow;
+  color: white;
   width: 3rem;
   height: 3rem;
   top: 0%;
   left: 85%;
   position: absolute;
-  border: 3px solid yellow;
+  border: 3px solid #88e273;
   border-radius: 50%;
   font-weight: bold;
   /* Increase font weight */
@@ -3271,13 +3289,13 @@ sd1 {
 }
 
 .p-sidebar-header {
-  background-color: #2c2819;
+  background-color: #222222;
 }
 
 .custom-loader {
   width: 20px;
   height: 10px;
-  background-color: #facc15;
+  background-color: #88e273;
   animation: pulse-animation 2.5s infinite;
 }
 
@@ -3311,7 +3329,7 @@ sd1 {
   top: 0;
   width: 150%;
   height: 100%;
-  background-color: #facc15;
+  background-color: #88e273;
   transform-origin: 50% 50%;
 }
 
@@ -3350,7 +3368,7 @@ sd1 {
   }
 
   25% {
-    border-color: #f1c40f;
+    border-color: #88e273;
   }
 
   50% {
@@ -3358,7 +3376,7 @@ sd1 {
   }
 
   75% {
-    border-color: #f1c40f;
+    border-color: #88e273;
   }
 
   100% {
@@ -3371,7 +3389,7 @@ sd1 {
 }
 
 .sticky-banner {
-  background-color: #fcd34d;
+  background-color: #88e273;
   height: 3rem;
 }
 
@@ -3380,7 +3398,7 @@ sd1 {
   width: 100%;
   height: 3rem;
   overflow: hidden;
-  background-color: #FBBF24;
+  background-color: #88e273;
   display: flex;
   align-items: center;
 }
@@ -3424,7 +3442,7 @@ sd1 {
 }
 
 .p-tabview-selected {
-  background-color: #facc15 !important; /* bg-yellow-400 corresponds to this color */
+  background-color: #88e273 !important; /* bg-yellow-400 corresponds to this color */
 }
 .p-tabview-header {
   background-color: transparent; /* transparent for unselected tabs */

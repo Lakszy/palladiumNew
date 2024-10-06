@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "../app/App.css"
 import Image from 'next/image'
-import floatPUSD from "../app/assets/images/floatPUSD.png";
+import floatPUSD from "../app/assets/images/floatPUSD2.png";
 import trove3 from "../app/assets/images/TROVE2.svg"
 import botanixTestnet from "../app/src/constants/botanixTestnet.json";
 import trove2 from "../app/assets/images/TROVE1.svg"
@@ -185,23 +185,23 @@ const ThreeTroveCard = () => {
     const newLTVBTC = ((Number(entireDebtAndCollBTC.debtBTC) * 100) / ((Number(entireDebtAndCollBTC.collBTC) * Number(fetchedPriceBTC)))).toFixed(2)
 
     return (
-        <div className='p-5 h-scree w-full' style={{ backgroundColor: "#272315" }}>
+        <div className='p-5 h-scree w-full' style={{ backgroundColor: "black" }}>
             {troveStatusBTC && troveStatuscore === "INACTIVE" ? (<>
 
                 <div className="p-5">
-                    <div className="md:ml-2 -ml-7 h-[10rem] p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#2e2a1c" }}>
+                    <div className="md:ml-2 -ml-7 rounded-lg h-[10rem] p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#222222" }}>
                         <div className="flex p-2 w-full">
                             <div className="hidden md:block w-[22%]">
                                 <Image src={floatPUSD} height={200} alt="home" className="-mt-[3.5rem]" />
                             </div>
                             <div className=" h-fit py- space-y-5">
                                 <div>
-                                    <p className="text-white body-text   font-medium ">
+                                    <p className="text-white body-text text-2xl font-medium ">
                                         You dont have an existing trove
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-yellow-300 body-text font-medium text-left ">
+                                    <p className="text-[#88e273] body-text font-medium text-left ">
                                         Open a Zero-Interest trove
                                     </p>
                                     <p className="text-[#827f77] text-sm  font-medium body-text text-left">
@@ -220,11 +220,11 @@ const ThreeTroveCard = () => {
                 )}
 
             <div className='flex md:flex-row flex-col md:pl-5 pt-5 pb-5 w-full justify-between items-center'>
-                <div className={`bg-[#2e2a1c] text-white md:p-6 md:mb-0 mb-3 p-3 rounded-none flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-16"}`}>
+                <div className={`bg-[#222222] rounded-lg text-white md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-16"}`}>
                     <div className="flex  md:w-full  px-2 justify-between items-center mb-6">
                         <div className='flex items-center gap-x-1'>
                             <Image src={trove1} alt="btc" />
-                            <h2 className="ml-4 md:text-xl text-lg font-medium  body-text">WCORE Trove</h2>
+                            <h2 className="ml-4 md:text-xl text-lg rounded-xl font-medium  body-text">WCORE Trove</h2>
                         </div>
                         {troveStatuscore === "ACTIVE" && (
                             <Image src={ACTIVE} alt="status-icon" width={120} height={100} />
@@ -280,11 +280,11 @@ const ThreeTroveCard = () => {
                         {isConnected ? (<>
                             <Link href="/trove/wcore" passHref>
                                 {troveStatuscore === "ACTIVE" ? (
-                                    <Button className="border-yellow-500 border bg-transparent rounded-none font-semibold w-full title-text text-yellow-400 hover:scale-95 hover:bg-transparent transition">
+                                    <Button className="border-[#88e273] border bg-transparent rounded-3xl font-semibold w-full title-text text-[#88e273] hover:scale-95 hover:bg-transparent transition">
                                         See Details
                                     </Button>
                                 ) : (
-                                    <Button className="bg-yellow-500 rounded-none text-black font-semibold w-full title-text hover:bg-yellow-600 transition">
+                                    <Button className="bg-[#88e273] rounded-3xl text-black font-semibold w-full title-text transition">
                                         OPEN TROVE
                                     </Button>
                                 )}
@@ -298,7 +298,7 @@ const ThreeTroveCard = () => {
                 </div>
 
                 {/* Card 2 */}
-                <div className={`bg-[#2e2a1c] text-white md:p-6 md:mb-0 mb-3 p-3 rounded-none flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-16"}`}>
+                <div className={`bg-[#222222]  rounded-lg text-white md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-16"}`}>
                     <div className="flex  gap-x-2 justify-between items-center mb-6">
                         <div className='flex  items-center gap-x-1'>
                             <Image src={trove1} alt="btc" />
@@ -358,11 +358,11 @@ const ThreeTroveCard = () => {
                         {isConnected ? (<>
                             <Link href="/trove/wbtc" passHref>
                                 {troveStatusBTC === "ACTIVE" ? (
-                                    <Button className="border-yellow-500 border bg-transparent rounded-none font-semibold w-full title-text text-yellow-400 hover:scale-95 hover:bg-transparent transition">
+                                    <Button className="border-[#88e273] border bg-transparent rounded-3xl font-semibold w-full title-text text-[#88e273] hover:scale-95 hover:bg-transparent transition">
                                         See Details
                                     </Button>
                                 ) : (
-                                    <Button className="bg-yellow-500 rounded-none text-black font-semibold w-full title-text hover:bg-yellow-600 transition">
+                                    <Button className="bg-[#88e273] rounded-3xl text-black font-semibold w-full title-text transition">
                                         OPEN TROVE
                                     </Button>
                                 )}

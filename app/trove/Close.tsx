@@ -132,7 +132,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   };
 
   return (
-    <div className="md:w-[60rem] flex md:-ml-0 w-[2rem]">
+    <div className="md:w-[60rem] flex md:-ml-0 w-[2rem] bg-black">
       <div className="relative text-white text-base flex flex-col  gap-2 p-5 md:p-10">
         <div className="space-y-7">
           <div className="flex md:gap-52 justify-between">
@@ -179,7 +179,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
         <button
           onClick={handleConfirmClick}
           disabled={isLowBalance || afterLoad}
-          className={`mt-20 md:w-full md:ml-0 ml-1 w-[18.2rem] h-[3rem] bg-yellow-300 text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer'}`}
+          className={`mt-20 md:w-full md:ml-0 ml-1 rounded-3xl w-[18.2rem] h-[3rem] bg-[#88e273] text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer'}`}
         >
           Close Trove
         </button>
@@ -194,7 +194,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
               <Image src={rec2} alt="box" width={140} className="" />
             </div>
             <div className="p-5">
-              <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+              <div className="waiting-message text-lg title-text2 text-[#88e273] whitespace-nowrap">Transaction is initiated</div>
               <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
             </div>
           </div>
@@ -226,14 +226,14 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
               ) : (
                 <Image src={conf} alt="box" width={140} />
               )}
-              <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
+              <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
                 <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>
                   <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                  <Button className=" mt-1 p-3 rounded-none md:w-[20rem] text-black title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
+                  <Button className=" mt-1 p-3 rounded-none md:w-[20rem] text-black title-text2 hover:bg-[#88e273] hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
                 </>
               )}
             </div>

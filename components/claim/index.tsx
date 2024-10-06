@@ -145,9 +145,9 @@ const Claim = () => {
   };
 
   return (
-    <div className="p-4 md:p-8 w-full md:h-[25.6rem] border-yellow-400 bg-[#272315] text-white border rounded-none">
+    <div className="p-4 md:p-8 w-full md:h-[25.6rem] border-[#88e273] bg-black text-white border rounded-none">
       <div className="flex flex-col md:flex-row gap-y-4 md:gap-x-2">
-        <div className="flex-1 pr-0 " style={{ backgroundColor: "rgb(56,52,39)" }}>
+        <div className="flex-1 pr-0 " style={{ backgroundColor: "" }}>
           <div className="w-full grid grid-cols-3 gap-4 text-left">
             <div className="text-gray-400 body-text font-medium pb-4 pl-2">Assets</div>
             <div className="text-gray-400 body-text font-medium whitespace-nowrap pb-4">Market Price</div>
@@ -171,7 +171,7 @@ const Claim = () => {
           </div>
         </div>
         <div className="flex flex-col gap-2">
-          <div className="flex-1 px-2 py-4" style={{ backgroundColor: "rgb(56,52,39)" }}>
+          <div className="flex-1 px-2 py-4" style={{ backgroundColor: "" }}>
             <div className="mb-6 mt-2">
               <div className="flex justify-between gap-x-16 mb-2">
                 <span className="text-gray-400 body-text font-medium ">
@@ -196,7 +196,7 @@ const Claim = () => {
 
             </div>
           </div>
-          <button className="w-full bg-yellow-400 text-black py-3 rounded hover:bg-yellow-500 title-text2 transition-colors mt-4  font-medium" onClick={handleConfirmClick}>
+          <button className="w-full bg-[#88e273] text-black py-3 rounded title-text2 transition-colors mt-4  font-medium" onClick={handleConfirmClick}>
             CLaIM
           </button>
         </div>

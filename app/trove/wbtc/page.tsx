@@ -2,7 +2,7 @@
 import React from "react";
 import { TabsDemo } from "@/components/sidebar";
 import NavBar from "@/components/navbar";
-import BorrowBTC from "@/CompBorrow";
+import BorrowBTCNEW from "@/CompBorrow";
 export default function Home() {
   
   return (
@@ -12,8 +12,8 @@ export default function Home() {
         <div className="sticky z-50 mainT top-0  overflow-auto">
           <NavBar />
         </div>
-        <div className="h-screen md:w-full w-screen " style={{ backgroundColor: "#272315" }}>
-          <BorrowBTC />
+        <div className="h-screen md:w-full w-screen " style={{ backgroundColor: "black" }}>
+          <BorrowBTCNEW />
         </div>
       </div>
     </div>

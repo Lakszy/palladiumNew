@@ -221,20 +221,20 @@ export const Unstake = () => {
 
   return (
     <>
-      <div className="grid space-y-8 bg-[#272315] items-start md:h-66 gap-2 mx-auto p-7">
+      <div className="grid space-y-8 bg-[black] items-start md:h-66 gap-2 mx-auto p-7">
         <div className="">
           <div
-            className="flex items-center mt-4 mb-2  md:-ml-0 -ml-  border border-yellow-300 "
-            style={{ backgroundColor: "#272315" }}
+            className="flex items-center mt-4 mb-2  md:-ml-0 -ml- rounded-lg  border border-[#88e273] "
+            style={{ backgroundColor: "black" }}
           >
             <div className="flex  items-center h-[3.5rem] ">
               <Image src={img3} alt="home" className="ml-1" width={30} />
               <h3 className="text-white body-text ml-1 hidden md:block">
                 PUSD
               </h3>
-              <h3 className="h-full border border-yellow-300 mx-3 text-yellow-300"></h3>
+              <h3 className="h-full border  border-[#88e273] rounded-lg mx-3 text-[#88e273]"></h3>
               <div className=" justify-between items-center flex gap-x-24">
-                <input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1  text-white" style={{ backgroundColor: "#272315" }} />
+                <input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1  text-white" style={{ backgroundColor: "black" }} />
               </div>
             </div>
           </div>
@@ -266,17 +266,17 @@ export const Unstake = () => {
           </div>
         </div>
         <div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
-          <Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
-          <Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
-          <Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
-          <Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
+          <Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  rounded-lg border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"}  rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
+          <Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  rounded-lg border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"}  rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
+          <Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg rounded-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
+          <Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg rounded-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
         </div>
         {isConnected ? (
           <div className="my-2">
             <button
-              style={{ backgroundColor: "#f5d64e" }}
+              style={{ backgroundColor: "#88e273" }}
               onClick={handleConfirmClick}
-              className={`mt-2 text-black title-text font-semibold w-full border border-black h-10 border-none 
+              className={`mt-2 text-black title-text font-semibold w-full border rounded-lg border-black h-10 border-none 
 					 ${isStateLoading ||
                   Number(userInput) == 0 ||
                   Math.trunc(Number(totalStakedValue) * 100) / 100 === 0 ||
@@ -296,7 +296,7 @@ export const Unstake = () => {
             </button>
           </div>
         ) : (
-          <EVMConnect className="" />
+          <EVMConnect className="w-full" />
         )}
         <Dialog
           visible={isModalVisible}
@@ -308,7 +308,7 @@ export const Unstake = () => {
                 <Image src={rec2} alt="box" width={140} className="" />
               </div>
               <div className="p-5">
-                <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">
+                <div className="waiting-message text-lg title-text2 text-[#88e273] whitespace-nowrap">
                   Transaction is initiated
                 </div>
                 <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">
@@ -359,12 +359,12 @@ export const Unstake = () => {
                 ) : (
                   <Image src={conf} alt="box" width={140} />
                 )}
-                <div className="waiting-message title-text2 text-yellow-300">
+                <div className="waiting-message title-text2 text-[#88e273]">
                   {loadingMessage}
                 </div>
                 {isSuccess && (
                   <button
-                    className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]"
+                    className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]"
                     onClick={handleClose}
                   >
                     Close
@@ -378,7 +378,7 @@ export const Unstake = () => {
                         : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}
                     </p>
                     <Button
-                      className=" mt-1 p-3 rounded-none hover:bg-yellow-400 text-black md:w-[20rem] title-text2 hover:scale-95 bg-[#f5d64e]"
+                      className=" mt-1 p-3 rounded-none hover:bg-yellow-400 text-black md:w-[20rem] title-text2 hover:scale-95 bg-[#88e273]"
                       onClick={handleClose}
                     >
                       TRY aGain

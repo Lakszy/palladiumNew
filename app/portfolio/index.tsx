@@ -19,8 +19,8 @@ import port2 from "../assets/images/port2.svg";
 import { Knob } from "primereact/knob";
 import Progress from "./Progress";
 import Layout from "./layout";
-import floatPUSD from "../assets/images/floatPUSD.png";
-import macPUSD from "../assets/images/macPUSD.png";
+import floatPUSD from "../assets/images/floatPUSD3.png";
+import macPUSD from "../assets/images/floatPUSD3.png";
 import { CustomConnectButton } from "@/components/connectBtn";
 import FullScreenLoader from "@/components/FullScreenLoader";
 import "../App.css";
@@ -306,7 +306,7 @@ const Portfolio = () => {
                       <div className="flex flex-row md:gap-x-0 gap-x-28 items-center justify-between">
                         <div className="text-white flex flex-col mt-05">
                           <div className="flex items-center gap-x-1">
-                            <div className="w-2 rounded-full h-2 bg-yellow-400"></div>
+                            <div className="w-2 rounded-full h-2 bg-[#88e273]"></div>
                             <span className="body-text font-normal">Borrowed</span>
                           </div>
                           <span className="body-text text-right whitespace-nowrap font-medium">{Number(entireDebtAndCollCore.debtCore).toFixed(2)} PUSD</span>
@@ -346,14 +346,14 @@ const Portfolio = () => {
                   <label htmlFor="tab2"><span className="whitespace-nowrap md:body-text body-textsm">Stability Pool</span></label>
 
                   {activeTab === 'tab1' && (
-                    <section id="content1" className="tab-content flex md:flex-row flex-col" style={{ borderTop: "1px solid #fcd34d", backgroundColor: "#272315", display: "flex", gap: "1rem" }}>
+                    <section id="content1" className="tab-content flex md:flex-row flex-col" style={{ borderTop: "1px solid #88e273", backgroundColor: "black", display: "flex", gap: "1rem" }}>
                       {/* Card1 */}
                       {troveStatuscore === "INACTIVE" ? (
                         <div className={`px-3 md:-ml-5 h-full space-y-10 md:space-y-0 gap-x-[3rem] flex flex-col md:flex-row ${troveStatusBTC === "INACTIVE" ? 'w-[100%]' : ''}`}>
-                          <div className="  md:h-[25rem]  md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
-                            <div className="flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
+                          <div className="  md:w-full w-[19rem]  md:h-[25rem]  md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#222222" }}>
+                            <div className="flex flex-row justify-between p-5" style={{ backgroundColor: "#282828" }}>
                               <span className="title-text2 text-white">WCORE TROVE</span>
-                              <button className="h-10 px-8 bg-yellow-300 hover:scale-x-95 text-black font-bold title-text">
+                              <button className="h-10 px-8 bg-[#88e273] hover:scale-x-95 text-black font-bold title-text">
                                 <Link className="title-text text-sm text-black" href="/trove/wcore">OPEN TROVE</Link>
                               </button>
                             </div>
@@ -366,49 +366,53 @@ const Portfolio = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex-1 w-[100%]  h-auto rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
-                          <div className=" flex items-center flex-row justify-between p-5" style={{ backgroundColor: "#2e2a1c" }}>
+                        <div className="flex-1 w-[100%]  h-auto rounded-sm" style={{ backgroundColor: "#222222" }}>
+                          <div className=" flex items-center flex-row justify-between p-5" style={{ backgroundColor: "#282828" }}>
                             <span className="body-text text-white ml-1">WCORE TROVE</span>
                             <Link href="/trove/wcore">
                               <button
-                                className="h-8 px-8 border-yellow-400 text-yellow-400 border title-text2 bg-transparent  title-text font-bold">
+                                className="h-8 px-8 border-[#88e273] text-[#88e273] border title-text2 bg-transparent  title-text font-bold">
                                 Details
                               </button>
                             </Link>
                           </div>
                           <div>
-                            <div className="flex flex-col mb-2  items-center">
-                              <Knob value={Number(newLTV) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
-                              <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
-                                <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
-                                <div className="flex items-center justify-center gap-x-2">
-                                  <span className="text-lg text-white  ml-[0.5rem] body-text">{90}%</span>
+                            <div className="w-fit md:space-x-32 flex items-center justify-between h-full">
+                             
+                              <div className="text-white w-fit space-y-20 mt-5 items-center  mb-6 p-2 flex flex-col  justify-between md:mx-[2.5rem] mx-[1.5rem]">
+                                {" "}
+                                <div className="flex  flex-col">
+                                  <span className="body-text font-semibold text-gray-500">Collateral</span>
+                                  <span className="body-text font-semibold whitespace-nowrap ">{Number(entireDebtAndCollCore.collCore).toFixed(2)} WCORE</span>
+                                  <span className="text-xs font-semibold body-text text-gray-500">${(Number(entireDebtAndCollCore.collCore) * fetchedPrice).toFixed(2)}</span>
+                                </div>
+                                <div className="flex -ml-8 flex-col whitespace-nowrap">
+                                  {" "}
+                                  <span className="body-text font-semibold text-gray-500">Debt</span>
+                                  <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollCore.debtCore).toFixed(2)} PUSD</span>
+                                </div>
+                              </div>
+                              <div className="flex flex-col mb-2  items-center">
+                                <Knob value={Number(newLTV) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
+                                <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
+                                  <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
+                                  <div className="flex items-center justify-center gap-x-2">
+                                    <span className="text-lg text-white  ml-[0.5rem] body-text">{90}%</span>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                            <div className="text-white  -mt-5 mb-6 p-2 flex flex-row justify-between md:mx-[2.5rem] mx-[1.5rem]">
-                              {" "}
-                              <div className="flex -ml-3 flex-col">
-                                <span className="body-text font-semibold text-gray-500">Collateral</span>
-                                <span className="body-text font-semibold ">{Number(entireDebtAndCollCore.collCore).toFixed(2)} WCORE</span>
-                                <span className="text-xs font-semibold body-text text-gray-500">${(Number(entireDebtAndCollCore.collCore) * fetchedPrice).toFixed(2)}</span>
-                              </div>
-                              <div className="flex  flex-col whitespace-nowrap">
-                                {" "}
-                                <span className="body-text font-semibold text-gray-500">Debt</span>
-                                <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollCore.debtCore).toFixed(2)} PUSD</span>
-                              </div>
-                            </div>
+
                           </div>
                         </div>
                       )}
                       {/* Card2 */}
                       {troveStatusBTC === "INACTIVE" ? (
                         <div className={`px-3 md:-ml-5 h-full space-y-10 md:space-y-0 gap-x-[3rem] flex flex-col md:flex-row ${troveStatuscore === "INACTIVE" ? 'w-[100%]' : ''}`}>
-                          <div className="  md:h-[25rem]  md:w-full w-[21rem] -ml-3 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
-                            <div className="flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
+                          <div className="  md:h-[25rem]  md:w-full w-[21rem] -ml-3 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#222222" }}>
+                            <div className="flex flex-row justify-between p-5" style={{ backgroundColor: "#282828" }}>
                               <span className="title-text2 text-white">WBTC TROVE</span>
-                              <button className="h-10 px-8 bg-yellow-300 hover:scale-x-95 text-black font-bold title-text">
+                              <button className="h-10 px-8 bg-[#88e273] hover:scale-x-95 text-black font-bold title-text">
                                 <Link className="title-text text-sm text-black" href="/trove/wbtc">OPEN TROVE</Link>
                               </button>
                             </div>
@@ -421,39 +425,42 @@ const Portfolio = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="flex-1 lg:w-[20rem] h-auto rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
-                          <div className=" flex items-center flex-row justify-between p-5" style={{ backgroundColor: "#2e2a1c" }}>
+                        <div className="flex-1 lg:w-[20rem] h-auto rounded-sm" style={{ backgroundColor: "#222222" }}>
+                          <div className=" flex items-center flex-row justify-between p-5" style={{ backgroundColor: "#282828" }}>
                             <span className="body-text text-white ml-1">WBTC TROVE</span>
                             <Link href="/trove/wbtc">
                               <button
-                                className="h-8 px-8 border-yellow-400 text-yellow-400 border title-text2 bg-transparent  title-text font-bold">
+                                className="h-8 px-8 border-[#88e273] text-[#88e273] border title-text2 bg-transparent  title-text font-bold">
                                 Details
                               </button>
                             </Link>
                           </div>
                           <div>
-                            <div className="flex flex-col mb-2 items-center">
-                              <Knob value={Number(newLTVBTC) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
-                              <div className="flex-col flex items-center space-y-1 -mt-4 w-[4.5rem]">
-                                <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
-                                <div className="flex items-center justify-center gap-x-2">
-                                  <span className="text-lg text-white ml-[0.5rem] body-text">{90}%</span>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="text-white  -mt-5 mb-6 p-2 flex flex-row justify-between md:mx-[2.5rem] mx-[1.5rem]">
-                              {" "}
-                              <div className="flex -ml-3 flex-col">
-                                <span className="body-text font-semibold text-gray-500">Collateral</span>
-                                <span className="body-text font-semibold ">{Number(entireDebtAndCollBTC.collBTC).toFixed(8)} BTC</span>
-                                <span className="text-xs font-semibold body-text text-gray-500">${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(2)}</span>
-                              </div>
-                              <div className="flex  flex-col whitespace-nowrap">
-                                {" "}
-                                <span className="body-text font-semibold text-gray-500">Debt</span>
-                                <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollBTC.debtBTC).toFixed(2)} PUSD</span>
-                              </div>
-                            </div>
+                          <div className="w-fit md:space-x-32 flex items-center justify-between h-full">
+                             
+                             <div className="text-white w-fit space-y-20 mt-5 items-center  mb-6 p-2 flex flex-col  justify-between md:mx-[2.5rem] mx-[1.5rem]">
+                               {" "}
+                               <div className="flex  flex-col">
+                                 <span className="body-text font-semibold text-gray-500">Collateral</span>
+                                 <span className="body-text font-semibold whitespace-nowrap ">{Number(entireDebtAndCollBTC.collBTC).toFixed(2)} WCORE</span>
+                                 <span className="text-xs font-semibold body-text text-gray-500">${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(2)}</span>
+                               </div>
+                               <div className="flex md:-ml-8 flex-col whitespace-nowrap">
+                                 {" "}
+                                 <span className="body-text font-semibold text-gray-500">Debt</span>
+                                 <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollBTC.debtBTC).toFixed(2)} PUSD</span>
+                               </div>
+                             </div>
+                             <div className="flex flex-col mb-2  items-center">
+                               <Knob value={Number(newLTVBTC) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
+                               <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
+                                 <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
+                                 <div className="flex items-center justify-center gap-x-2">
+                                   <span className="text-lg text-white  ml-[0.5rem] body-text">{90}%</span>
+                                 </div>
+                               </div>
+                             </div>
+                           </div>
                           </div>
                         </div>
                       )}
@@ -462,11 +469,11 @@ const Portfolio = () => {
 
                   {activeTab === 'tab2' && (
                     <section id="content2" className="tab-content">
-                      <div className="lg:w-[25rem] h-auto rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
-                        <div className="flex items-center flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
+                      <div className="lg:w-[25rem] h-auto rounded-sm" style={{ backgroundColor: "#222222" }}>
+                        <div className="flex items-center flex-row justify-between p-5 border-b-1" style={{ backgroundColor: "#282828" }}>
                           <span className="text-white title-text2 ml-[10px]">STaBILITY POOL</span>
                           <Link href="/stake">
-                            <button className="h-8 px-6 title-text2 border-yellow-400 border bg-transparent text-yellow-400 font-bold">
+                            <button className="h-8 px-6 title-text2 border-[#88e273] border bg-transparent text-[#88e273] font-bold">
                               {troveStatuscore === 'INACTIVE' && troveStatusBTC === 'INACTIVE' ? 'STaKE PUSD' : 'Details'}
                             </button>
                           </Link>
@@ -513,9 +520,9 @@ const Portfolio = () => {
 
             {!isConnected && (
               <div className="md:p-10 flex flex-col md:flex-row justify-around gap-y-8 md:gap-10">
-                <div className="md:w-[35rem] md:h-[23.6rem] md:mx-0 mx-3 mt-4 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
-                  <div className=" items-center  flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
-                    <span className="text-yellow-300 title-text2 ">TROVE</span>
+                <div className="md:w-[35rem] md:h-[23.6rem] md:mx-0 mx-3 mt-4 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#222222" }}>
+                  <div className=" items-center  flex flex-row justify-between p-5" style={{ backgroundColor: "#222222" }}>
+                    <span className="text-white title-text2 ">TROVE</span>
                     <EVMConnect className="" />
                   </div>
                   <div className="grid  md:my-0 my-5 place-items-center">
@@ -525,9 +532,9 @@ const Portfolio = () => {
                     </p>
                   </div>
                 </div>
-                <div className="md:w-[22rem]  md:h-[23.6rem] mt-[15px] md:ml-[2.5rem] md:mx-0 mx-3 rounded-sm" style={{ backgroundColor: "#2e2a1c" }}>
-                  <div className=" items-center flex flex-row justify-between p-5" style={{ backgroundColor: "#353123" }}>
-                    <span className="text-yellow-300 title-text2">STABILITY POOL</span>
+                <div className="md:w-[22rem]  md:h-[23.6rem] mt-[15px] md:ml-[2.5rem] md:mx-0 mx-3 rounded-sm" style={{ backgroundColor: "#222222" }}>
+                  <div className=" items-center flex flex-row justify-between p-5" style={{ backgroundColor: "#222222" }}>
+                    <span className="text-white title-text2">STABILITY POOL</span>
                     <EVMConnect className="" />
                   </div>
                   <div className="grid md:my-7 my-5 place-items-center mt-[1rem]">

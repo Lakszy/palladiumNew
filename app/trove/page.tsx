@@ -13,7 +13,7 @@ export default function BTCTROVE() {
         <div className="sticky z-50 mainT top-0  overflow-auto">
           <NavBar />
         </div>
-        <div className="h-screen md:w-full w-screen " style={{ backgroundColor: "#272315" }}>
+        <div className="h-screen md:w-full w-screen " style={{ backgroundColor: "black" }}>
           {/* <Borrow /> */}
           <ThreeTroveCard/>
         </div>
