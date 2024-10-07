@@ -2,38 +2,20 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import pusdbtc from "../app/assets/images/PUSD.svg";
 import btc from "../app/assets/images/btclive.svg";
-import info from "../app/assets/images/info.svg";
-import collR from "../app/assets/images/mode.svg";
-import { MdClose } from 'react-icons/md';
-import { CustomConnectButton } from "./connectBtn";
-import "../app/App.css";
-import { EVMConnect } from "./EVMConnect";
-import { useAccount, useWalletClient } from "wagmi";
-import MobileNavFalse from "./MobileNavFalse";
-import MobileNav from "./MobileNav";
 import { Toast } from "primereact/toast";
-import { Dialog } from "primereact/dialog";
+import { useAccount, useWalletClient } from "wagmi";
+import { EVMConnect } from "./EVMConnect";
+import MobileNav from "./MobileNav";
 import "./navbar.css";
-import TooltipContent from "./TooltipContent";
-import WalletConnectButton from "./WalletConnectButton";
-import { Button } from "./ui/button";
-import { TfiClose } from "react-icons/tfi";
-import { useAccounts } from "@particle-network/btc-connectkit";
-import { useWalletAddress } from "./useWalletAddress";
 
 function NavBar() {
-
   const [fetchedPrice, setFetchedPrice] = useState(0);
   const [fetchedPriceBTC, setFetchedPriceBTC] = useState(0);
-  const [systemCollRatio, setSystemCollRatio] = useState(0);
-  const { isConnected } = useAccount();
-  const { accounts } = useAccounts();
-  const [isRecoveryMode, setIsRecoveryMode] = useState(false);
   const { address } = useAccount();
   const [userExists, setUserExists] = useState(false);
   const toast = useRef<Toast>(null);
   const { data: walletClient } = useWalletClient();
-  const [isDialogVisible, setIsDialogVisible] = useState(false);
+
   useEffect(() => {
     fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${address}`)
       .then((response) => response.json())
@@ -50,19 +32,17 @@ function NavBar() {
       try {
         const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
         const data = await response.json();
-        const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
-        const protocolMetricsBTC = data[0].metrics[0]; // Fetch the metrics for WCORE (at index 1)
+        const protocolMetrics = data[0].metrics[1]; // WCORE metrics
+        const protocolMetricsBTC = data[0].metrics[0]; // wBTC metrics
         setFetchedPriceBTC(protocolMetricsBTC.price);
         setFetchedPrice(protocolMetrics.price);
-        setIsRecoveryMode(protocolMetrics.recoveryMode);
-        setSystemCollRatio(protocolMetrics.TCR);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [walletClient, fetchedPrice, fetchedPriceBTC]);
+  }, [walletClient]);
 
   const showSuccess = (message: string) => {
     toast.current?.show({
@@ -73,12 +53,8 @@ function NavBar() {
     });
   };
 
-  const handleAddToken = () => {
+  const handleAddToken = (tokenAddress: string, tokenSymbol: string, tokenDecimals: number) => {
     if (window.ethereum) {
-      const tokenAddress = "0xB7d7027B5dD0c50946dE98c26e5969b37D588c32";
-      const tokenSymbol = "PUSD";
-      const tokenDecimals = 18;
-
       window.ethereum.request({
         method: "wallet_watchAsset",
         params: {
@@ -91,14 +67,13 @@ function NavBar() {
         },
       }).then((success: any) => {
         if (success) {
-          showSuccess("PUSD token added to MetaMask!");
+          showSuccess(`${tokenSymbol} token added to MetaMask!`);
         }
       }).catch((error: any) => {
-        console.error("Error adding token:", error);
+        console.error(`Error adding ${tokenSymbol} token:`, error);
       });
     }
   };
-
 
   return (
     <>
@@ -114,46 +89,43 @@ function NavBar() {
       <div className="md:flex border-2 hidden w-full border-gray-100 border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50" style={{ backgroundColor: "black" }}>
         <div className="flex items-center gap-x-4">
           <div className="w-full ml-[1rem] gap-x-10 hidden md:flex rounded-xl">
-            <div
-              className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
-              onClick={handleAddToken}
-            >
-              <Image src={pusdbtc} alt="logo" width={40} onClick={handleAddToken} />
+            <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
+              onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
+              onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
+              onClick={() => handleAddToken("0xB6FfD3e71358C69e7A17f8FD5a53E2EACB0a0C56", "PUSD", 18)}>
+              <Image src={pusdbtc} alt="PUSD" width={40} />
               <div>
                 <h1 className="text-white title-text2 text-sm">PUSD</h1>
-                <h1 className="text-sm text-gray-400 title-text2 whitespace-nowrap -ml-1">
-                  $ 1.00
-                </h1>
-                <span className="popup body-text text-xs">Click To Import PUSD</span>
+                <h1 className="text-sm text-gray-400 title-text2 whitespace-nowrap -ml-1">$ 1.00</h1>
+                <span className="popup body-text text-xs">Click to import PUSD</span>
               </div>
             </div>
-            <div className="items-center flex gap-x-2">
-              <Image src={btc} alt="btc" width={40} />
+            <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
+              onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
+              onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
+              onClick={() => handleAddToken("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", "WCORE", 18)}>
+              <Image src={btc} alt="WCORE" width={40} />
               <div>
-                <h1 className="text-white title-text2 text-sm ">WCORE</h1>
-                <h1 className="text-gray-400 text-sm title-text2 ">
-                  ${Number(fetchedPrice).toFixed(2)}
-                </h1>
+                <h1 className="text-white title-text2 text-sm">WCORE</h1>
+                <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPrice).toFixed(2)}</h1>
+                <span className="popup body-text text-xs">Click to import WCORE</span>
               </div>
             </div>
-            <div className="items-center flex gap-x-2">
-              <Image src={btc} alt="btc" width={40} />
+            <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
+              onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
+              onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
+              onClick={() => handleAddToken("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", "wBTC", 18)}>
+              <Image src={btc} alt="wBTC" width={40} />
               <div>
-                <h1 className="text-white title-text2 text-sm ">wBTC</h1>
-                <h1 className="text-gray-400 text-sm title-text2 ">
-                  ${Number(fetchedPriceBTC).toFixed(2)}
-                </h1>
+                <h1 className="text-white title-text2 text-sm">wBTC</h1>
+                <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPriceBTC).toFixed(2)}</h1>
+                <span className="popup body-text text-xs">Click to import wBTC</span>
               </div>
             </div>
-            {(address) && userExists && (
-              <>
-              </>
-            )}
           </div>
         </div>
         <EVMConnect className="" />
       </div>
-
     </>
   );
 }

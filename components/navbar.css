@@ -1,6 +1,6 @@
 .custom-toast .p-toast {
   border-radius: 8px;
-  background-color: #272315;
+  background-color: #333;
   padding: 10px;
   color: white;
 }
@@ -8,27 +8,26 @@
 .custom-toast .p-toast-message {
   color: white;
   padding: 10px;
-  background-color: #272315;
+  background-color: #333;
 }
 
 .p-dialog .p-dialog-header-close {
   color: white;
   padding: 10px;
-  background-color: #272315;
+  background-color: #333;
 }
 
 .custom-toast .p-toast-summary {
   font-weight: bold;
   padding: 10px;
-  background-color: #272315;
-  color: #ffdd57;
+  background-color: #333;
+  color: #e0e0e0;
 }
 
 .custom-toast .p-toast-detail {
   color: #ffffff;
   padding: 10px;
-  background-color: #272315;
-
+  background-color: #333;
 }
 
 .pusd-section {
@@ -41,8 +40,8 @@
   top: 10%;
   left: 100%;
   transform: translateX(-50%);
-  background-color: #4d4c4c;
-  color: #fff;
+  background-color: #555;
+  color: #ffffff;
   text-align: center;
   border-radius: 6px;
   padding: 5px;

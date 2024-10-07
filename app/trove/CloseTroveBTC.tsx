@@ -80,6 +80,10 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
     setIsModalVisible(true);
     try {
       // if (!walletClient) return null;
+      if (!walletClient) {
+        return null;
+      }
+    
       const tx = writeContract({
         abi: BorrowerOperationbi,
         address: '0x6117bde97352372eb8041bc631738402DEfA79a4',

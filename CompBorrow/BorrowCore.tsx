@@ -9,11 +9,10 @@ import erc20Abi from "@/app/src/constants/abi/ERC20.sol.json"
 import { getContract } from "@/app/src/utils/getContract";
 import { Label } from "@radix-ui/react-label";
 import Decimal from "decimal.js";
-import { ethers } from "ethers";
-import { useCallback, useEffect, useState } from "react";
+import { ethers, toBigInt } from "ethers";
+import {  useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useBalance, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
-import web3 from "web3";
+import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Button } from "@/components/ui/button";
 import OpenTroveNotConnected from "@/app/trove/openTroveNotConnected";
 import Image from "next/image";
@@ -39,9 +38,8 @@ import FullScreenLoader from "@/components/FullScreenLoader";
 import { Dialog } from "primereact/dialog";
 import { BorrowerOperationbi } from "@/app/src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
-import { useAccounts } from "@particle-network/btc-connectkit";
-import { useWalletAddress } from "@/components/useWalletAddress";
 import Web3 from "web3";
+import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
 
 const BorrowCore = () => {
   const [userInputs, setUserInputs] = useState({
@@ -52,9 +50,7 @@ const BorrowCore = () => {
   const [borrowingFee, setBorrowingFee] = useState(0);
   const [totalDebt, setTotalDebt] = useState(0);
   const [ltv, setLtv] = useState(0);
-  const [price, setPrice] = useState<number>(0);
   const [liquidationPrice, setLiquidationPrice] = useState(0);
-  const [hasPriceFetched, setHasPriceFetched] = useState(false);
   const [hasGotStaticData, setHasGotStaticData] = useState(false);
   const [newDebt, setNewDebt] = useState(0);
   const [totalCollateral, setTotalCollateral] = useState(0);
@@ -62,7 +58,6 @@ const BorrowCore = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   // static
-  const [staticLiquidationPrice, setStaticLiquidationPrice] = useState(0);
   const [staticLtv, setStaticLtv] = useState(0);
   const [newUserColl, setNewUserColl] = useState("0")
 
@@ -85,7 +80,6 @@ const BorrowCore = () => {
   const [showCloseButton, setShowCloseButton] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const [transactionRejected, setTransactionRejected] = useState(false);
-  const { accounts } = useAccounts();
   const [balanceData, setBalanceData] = useState<any>()
   const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
   const [entireDebtAndColl, setEntireDebtAndColl] = useState({
@@ -94,35 +88,28 @@ const BorrowCore = () => {
     pendingLUSDDebtReward: "0",
     pendingETHReward: "0",
   });
-  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
-  const erc20Contract = getContract("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", erc20Abi, provider);
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const { data: walletClient } = useWalletClient();
   const { data: isConnected } = useWalletClient();
   const spenderAddress = walletClient?.account?.address
 
-  const fetchPrice = async () => {
-    const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
-    const collateralValueFormatted = ethers.formatUnits(collateralValue, 18)
-    setBalanceData(collateralValueFormatted)
-  };
-  useEffect(() => {
-    fetchPrice();
-  }, [fetchPrice, walletClient?.account?.address, walletClient]);
-
   const { data: hash, writeContract, error: writeError } = useWriteContract()
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
-  const web3 = new Web3(window.ethereum)
-  const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
-  const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
+  if (walletClient) {
+ 
+    const web3 = new Web3(window.ethereum)
+    const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
+    const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
+    const { toBigInt } = web3.utils;
+  }
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     setLoadingModalVisible(false);
     setUserModal(false);
     setIsModalVisible(false);
     setTransactionRejected(false);
     window.location.reload();
-  }, []);
+  };  
 
   const troveManagerContract = getContract(
     botanixTestnet.addresses.VesselManager,
@@ -135,6 +122,11 @@ const BorrowCore = () => {
     sortedTroveAbi,
     provider
   );
+  const erc20Contract = getContract(
+    "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
+    erc20Abi,
+    provider
+  );
 
   const hintHelpersContract = getContract(
     botanixTestnet.addresses.VesselManagerOperations,
@@ -142,101 +134,103 @@ const BorrowCore = () => {
     provider
   );
 
-  const { toBigInt } = web3.utils;
   const pow20 = Decimal.pow(10, 20);
   const pow18 = Decimal.pow(10, 18);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
-        const data = await response.json();
-        console.log(data, "data");
-        const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
-        setRecoveryMode(protocolMetrics.recoveryMode);
-        setFetchedPrice(protocolMetrics.price);
-        setMCR(protocolMetrics.MCR);
-        setCCR(protocolMetrics.CCR);
-        setLR(protocolMetrics.LR);
-        setBorrowRate(protocolMetrics.borrowRate);
-        setMinDebt(protocolMetrics.minDebt);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchData();
-  }, []);
+    if (typeof window !== "undefined") {
+      const fetchData = async () => {
+        try {
+          const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
+          const data = await response.json();
+          const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
+          setRecoveryMode(protocolMetrics.recoveryMode);
+          setFetchedPrice(protocolMetrics.price);
+          setMCR(protocolMetrics.MCR);
+          setCCR(protocolMetrics.CCR);
+          setLR(protocolMetrics.LR);
+          setBorrowRate(protocolMetrics.borrowRate);
+          setMinDebt(protocolMetrics.minDebt);
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      };
+      const fetchPrice = async () => {
+        if (!walletClient) return null;
+        const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
+        const collateralValueFormatted = ethers.formatUnits(collateralValue, 18)
+        setBalanceData(collateralValueFormatted)
+      };
+      fetchPrice();
+      fetchData();
+    }
+  }, [walletClient?.account?.address, walletClient]);
 
 
   useEffect(() => {
-    const pow = Decimal.pow(10, 18);
-    const _1e18 = toBigInt(pow.toFixed());
-    const fetchedData = async () => {
-      if (!walletClient) return null;
-
-      const {
-        0: debt,
-        1: coll,
-        2: pendingLUSDDebtReward,
-        3: pendingETHReward,
-      } = await troveManagerContract.getEntireDebtAndColl(
-        "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
-        walletClient?.account.address
-      );
-      const collDecimal = new Decimal(coll.toString());
-      const collFormatted = collDecimal.div(_1e18.toString()).toString();
-      setEntireDebtAndColl({
-        debt: (debt / _1e18).toString(),
-        coll: collFormatted,
-        pendingLUSDDebtReward: (pendingLUSDDebtReward / _1e18).toString(),
-        pendingETHReward: (pendingETHReward / _1e18).toString(),
-      });
-
-      if (!hasPriceFetched) {
-        try {
-          const updatedCollFormatted = new Decimal(entireDebtAndColl.coll).mul(fetchedPrice);
-          const updatedPrice = parseFloat(updatedCollFormatted.toString());
-          setPrice(updatedPrice);
-          setHasPriceFetched(true);
-        } catch (error) {
-          console.error(error, "Error fetching price");
-          setHasPriceFetched(true);
-        }
-      }
-    };
-
-    const getTroveStatus = async () => {
-      try {
+    if (typeof window !== "undefined") {
+      
+      const pow = Decimal.pow(10, 18);
+      const _1e18 = toBigInt(pow.toFixed());
+      const fetchedData = async () => {
         if (!walletClient) return null;
-        const troveStatusBigInt = await troveManagerContract.getVesselStatus(
+
+        const {
+          0: debt,
+          1: coll,
+          2: pendingLUSDDebtReward,
+          3: pendingETHReward,
+        } = await troveManagerContract.getEntireDebtAndColl(
           "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
           walletClient?.account.address
         );
-        const troveStatus =
-          troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
-        setTroveStatus(troveStatus)
-      } catch (error) {
-        console.error(error)
+        const collDecimal = new Decimal(coll.toString());
+        const collFormatted = collDecimal.div(_1e18.toString()).toString();
+        setEntireDebtAndColl({
+          debt: (debt / _1e18).toString(),
+          coll: collFormatted,
+          pendingLUSDDebtReward: (pendingLUSDDebtReward / _1e18).toString(),
+          pendingETHReward: (pendingETHReward / _1e18).toString(),
+        });
+
+        // if (!hasPriceFetched) {
+        //   try {
+        //     const updatedCollFormatted = new Decimal(entireDebtAndColl.coll).mul(fetchedPrice);
+        //     const updatedPrice = parseFloat(updatedCollFormatted.toString());
+        //     setPrice(updatedPrice);
+        //     setHasPriceFetched(true);
+        //   } catch (error) {
+        //     console.error(error, "Error fetching price");
+        //     setHasPriceFetched(true);
+        //   }
+        // }
+      };
+
+      const getTroveStatus = async () => {
+        try {
+          if (!walletClient) return null;
+          const troveStatusBigInt = await troveManagerContract.getVesselStatus(
+            "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", walletClient?.account.address
+          );
+          const troveStatus = troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
+          setTroveStatus(troveStatus)
+        } catch (error) {
+          console.error(error)
+        }
       }
+
+      const getStaticData = async () => {
+        if (!walletClient) return null;
+        if (!provider || hasGotStaticData) return null;
+        const ltvValue = (Number(entireDebtAndColl.debt) * 100) / ((Number(entireDebtAndColl.coll) * Number(fetchedPrice)) || 1); // if collTotal is 0/null/undefined then it will be divided by 1
+        setStaticLtv(ltvValue);
+        setHasGotStaticData(true);
+      };
+
+      getTroveStatus();
+      fetchedData();
+      getStaticData();
     }
-
-    const getStaticData = async () => {
-      if (!walletClient) return null;
-      if (!provider || hasGotStaticData) return null;
-
-
-      const ltvValue = (Number(entireDebtAndColl.debt) * 100) / ((Number(entireDebtAndColl.coll) * Number(fetchedPrice)) || 1); // if collTotal is 0/null/undefined then it will be divided by 1
-      setStaticLtv(ltvValue);
-
-      const divideBy = recoveryMode ? cCr : mCR;
-      const liquidationPriceValue = (Number(divideBy) * Number(entireDebtAndColl.debt)) / Number(entireDebtAndColl.coll);
-      setStaticLiquidationPrice(liquidationPriceValue);
-      setHasGotStaticData(true);
-    };
-
-    getTroveStatus();
-    fetchedData();
-    getStaticData();
   }, [walletClient]);
 
   useDebounce(
@@ -248,31 +242,29 @@ const BorrowCore = () => {
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
 
-    if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
-      await handleApproveClick(xCollatoral);
-    }
+    // if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
+    //   await handleApproveClick(xCollatoral);
+    // }
 
-    setIsModalVisible(true)
+    if (!walletClient) { return null; }
     try {
+      setIsModalVisible(true)
+
       const borrowValue = Number(xBorrow);
       const collValue = Number(xCollatoral);
-
-      if (!walletClient) return null;
 
       const newDebtValue = Number(entireDebtAndColl.debt) + borrowValue;
       const newCollValue = Number(entireDebtAndColl.coll) + collValue;
       setNewDebt(newDebtValue);
 
-      const allowance = await tokenContract.methods.allowance("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", spenderAddress).call();
-      setAllwnce(allowance)
+      // const allowance = await tokenContract.methods.allowance("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", spenderAddress).call();
+      // setAllwnce(allowance)
 
       let NICR = newCollValue / newDebtValue;
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
 
       const numTroves = await sortedTrovesContract.getSize("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
-      console.log("Number of Troves:", numTroves);
-
       const numTrials = numTroves * BigInt("15");
 
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
@@ -289,7 +281,6 @@ const BorrowCore = () => {
         approxHint
       );
 
-      const maxFee = "6".concat("0".repeat(16));
       const collDecimal = new Decimal(collValue.toString());
       const collBigint = BigInt(collDecimal.mul(pow18).toFixed());
 
@@ -298,7 +289,7 @@ const BorrowCore = () => {
 
       const borrowOpt = await writeContract({
         abi: BorrowerOperationbi,
-        address: '0xADB2820fCbe5E237843088bA2766daBa199b0d43',
+        address: '0x6117bde97352372eb8041bc631738402DEfA79a4',
         functionName: 'adjustVessel',
         args: [
           "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", //tokenAddress
@@ -317,6 +308,7 @@ const BorrowCore = () => {
   };
 
   const makeCalculations = async (xBorrow: string, xCollatoral: string) => {
+    if (!walletClient) return null;
 
     const borrowValue = Number(xBorrow);
     const collValue = Number(xCollatoral);
@@ -350,6 +342,8 @@ const BorrowCore = () => {
   };
 
   const handlePercentageClick = (percentage: any) => {
+    if (!walletClient) return null;
+
     const percentageDecimal = new Decimal(percentage).div(100);
     const pusdBalanceNumber = parseFloat(totalAvailableBorrow.toString());
     if (!isNaN(pusdBalanceNumber)) {
@@ -363,6 +357,8 @@ const BorrowCore = () => {
   };
 
   const handlePercentageClickBTC = (percentage: any) => {
+    if (!walletClient) return null;
+
     const percentageDecimal = new Decimal(percentage).div(100);
 
     const pusdBalanceNumber = parseFloat(balanceData || '0');
@@ -376,71 +372,6 @@ const BorrowCore = () => {
     }
   };
 
-
-  const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
-    try {
-      const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
-      console.log("Approved amount:", approvedAmount);
-      if (approvedAmount != null) {
-        setAprvAmt(approvedAmount);
-        return approvedAmount;
-      } else {
-        console.error("Approved amount is null or undefined");
-        return null;
-      }
-    } catch (error) {
-      console.error("Error fetching approved amount:", error);
-      return null;
-    }
-  };
-
-  const handleCheckApprovedClick = async () => {
-    const userAddress = walletClient?.account?.address;
-    const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
-    if (approvedAmount) {
-      setAprvAmt(approvedAmount);
-    } else {
-      console.error("Could not retrieve approved amount.");
-    }
-  };
-
-  useEffect(() => {
-    if (walletClient?.account?.address && spenderAddress) {
-      handleCheckApprovedClick();
-    }
-  }, [walletClient?.account?.address, spenderAddress]);
-
-  const handleApproveClick = async (amount: string) => {
-    try {
-      const userAddress = walletClient?.account?.address;
-      const gasPrice = (await web3.eth.getGasPrice()).toString();
-      const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-
-      setIsApproving(true);
-      setApproveMessage("Approval is initiated. Please confirm in Metamask.");
-      setLoadingModalVisible(true);
-
-      const tx = await tokenContract.methods.approve("0xADB2820fCbe5E237843088bA2766daBa199b0d43", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
-
-      if (tx.status) {
-        setApproveMessage("Approval completed successfully!");
-        setIsApproving(false);
-      } else {
-        setApproveMessage("Approval failed. Please try again.");
-        setIsApproving(false);
-      }
-    } catch (error) {
-      const e = error as { code?: number; message?: string };
-      if (e.code === 4001) {
-        setApproveMessage("Transaction rejected by the user.");
-      } else {
-        setApproveMessage("An error occurred during approval. Please try again.");
-      }
-      setIsApproving(false);
-    } finally {
-      setLoadingModalVisible(false);
-    }
-  };
 
   const divideBy = recoveryMode ? cCr : mCR;
   const availableToBorrow = (Number(entireDebtAndColl.coll) * Number(fetchedPrice)) / Number(divideBy) - Number(entireDebtAndColl.debt);
@@ -463,14 +394,17 @@ const BorrowCore = () => {
   };
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
     if (writeError) {
       console.error('Write contract error:', writeError);
       setTransactionRejected(true);
       setUserModal(true);
     }
+  }
   }, [writeError]);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
     if (isLoading) {
       setIsModalVisible(false);
       setLoadingMessage("Waiting for transaction to confirm..");
@@ -482,13 +416,16 @@ const BorrowCore = () => {
       setLoadingMessage("Transaction was rejected");
       setLoadingModalVisible(true);
     }
+  }
   }, [isSuccess, isLoading, transactionRejected]);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
     const timer = setTimeout(() => {
       setShowCloseButton(true);
     }, 200000);
     return () => clearTimeout(timer);
+  }
   }, []);
 
   const marginClass = parseFloat(userInputs.depositCollateral) > 0 ? 'md:-ml-[7rem]' : 'md:-ml-[5rem]';
@@ -588,7 +525,7 @@ const BorrowCore = () => {
                                       <h3 className='h-full border border-[#88e273] ml-1 text-[#88e273]'></h3>
                                     </div>
                                     <div className=" justify-between items-center flex gap-x-24">
-                                      <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e) => {
+                                      <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e: { target: { value: any; }; }) => {
                                         const newCollValue = e.target.value;
                                         setUserInputs({ ...userInputs, depositCollateral: newCollValue });
                                       }}
@@ -609,10 +546,10 @@ const BorrowCore = () => {
                                     </span>
                                     {/* <Button onClick={() => handleApproveClick(userInputs.depositCollateral)}>Approve</Button> */}
                                     <div className="flex w-full py-2 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#3b351b",  }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b",  }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b",  }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b",  }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                                     </div>
                                   </div>
                                 </div>
@@ -656,10 +593,10 @@ const BorrowCore = () => {
                                         )}
                                     </span>
                                     <div className="flex w-full py-3 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3 -mt-4 ">
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#3b351b",  }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b",  }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b",  }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b",  }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClick(100)}>100%</Button>
                                     </div>
                                   </div>
                                   <button
@@ -886,6 +823,7 @@ const BorrowCore = () => {
         </div>
       </Dialog>
     </div>
+
   );
 };
 

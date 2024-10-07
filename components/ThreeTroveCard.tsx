@@ -240,7 +240,7 @@ const ThreeTroveCard = () => {
                             <div className='flex  justify-between'>
                                 <div className="">
                                     <p className="text-gray-500 text-sm body-text">Collateral</p>
-                                    <p className="body-text font-medium ">{entireDebtAndCollCore.collCore} WCORE</p>
+                                    <p className="body-text font-medium ">{Number(entireDebtAndCollCore.collCore).toFixed(2)} WCORE</p>
                                     <p className="text-gray-500 text-xs body-text">${(Number(entireDebtAndCollCore.collCore) * fetchedPrice).toFixed(2)}</p>
                                 </div>
                                 <div className="">

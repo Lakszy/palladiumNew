@@ -121,6 +121,10 @@ const Claim = () => {
 
   const handleConfirmClick = async () => {
     try {
+      if (!walletClient) {
+        return null;
+      }
+
       setIsModalVisible(true);
 
       const inputBigInt = BigInt(0);
@@ -157,7 +161,7 @@ const Claim = () => {
               <React.Fragment key={index}>
                 <div className="py-2 px-1 md:px-2 body-text font-medium flex items-center">
                   <span className=" whitespace-nowrap">
-                    {asset.amount} {asset.name}
+                    {Number(asset.amount).toFixed(2)} {asset.name}
                   </span>
                 </div>
                 <div className="py-2 body-text font-medium ">

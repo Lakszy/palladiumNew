@@ -162,8 +162,12 @@ export const OpenTroveBTC = () => {
 
     const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
         try {
+            if (!walletClient) {
+                return null;
+            }
+
             setIsModalVisible(true);
-            await  handleApproveClick(xCollatoral);
+            await handleApproveClick(xCollatoral);
             // from here we can approve and to txn from a single click in a flow
             const status = await troveManagerContract.getVesselStatus(
                 "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",

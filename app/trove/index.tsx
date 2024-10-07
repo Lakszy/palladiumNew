@@ -233,6 +233,10 @@ const Borrow = () => {
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
     setIsModalVisible(true)
     try {
+      if (!walletClient) {
+        return null;
+      }
+    
       const borrowValue = Number(xBorrow);
       const collValue = Number(xCollatoral);
 

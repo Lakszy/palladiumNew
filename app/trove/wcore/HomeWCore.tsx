@@ -2,9 +2,8 @@
 import React from "react";
 import { TabsDemo } from "@/components/sidebar";
 import NavBar from "@/components/navbar";
-import Borrow from "..";
-
-export default function Home() {
+import BorrowCore from "../../../CompBorrow/BorrowCore";
+export default function HomeWCore() {
   
   return (
     <div className="grid h-screen mainT w-full grid-cols-[max-content_1fr] overflow text-white">
@@ -13,8 +12,8 @@ export default function Home() {
         <div className="sticky z-50 mainT top-0  overflow-auto">
           <NavBar />
         </div>
-        <div className="h-screen md:w-full w-screen " style={{ backgroundColor: "#272315" }}>
-          <Borrow />
+        <div className="h-screen md:w-full w-screen " style={{ backgroundColor: "black" }}>
+          <BorrowCore />
         </div>
       </div>
     </div>

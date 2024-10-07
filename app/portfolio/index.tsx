@@ -15,23 +15,18 @@ import web3 from "web3";
 import Link from "next/link";
 import Image from "next/image";
 import img1 from "../assets/images/Group 771.png";
-import port2 from "../assets/images/port2.svg";
 import { Knob } from "primereact/knob";
 import Progress from "./Progress";
 import Layout from "./layout";
 import floatPUSD from "../assets/images/floatPUSD3.png";
 import macPUSD from "../assets/images/floatPUSD3.png";
-import { CustomConnectButton } from "@/components/connectBtn";
 import FullScreenLoader from "@/components/FullScreenLoader";
 import "../App.css";
-import { useAccounts } from "@particle-network/btc-connectkit";
-import { useWalletAddress } from "@/components/useWalletAddress";
 import "./Portfolio.css"
 
 const Portfolio = () => {
 
   const { isConnected } = useAccount();
-  const [ltv, setLtv] = useState(0);
   const [price, setPrice] = useState<number>(0);
   const [hasPriceFetched, setHasPriceFetched] = useState(false);
   const [hasGotStaticData, setHasGotStaticData] = useState(false);
@@ -43,8 +38,6 @@ const Portfolio = () => {
   const [staticTotalDebt, setStaticTotalDebt] = useState(0);
   const [staticCollAmount, setStaticCollAmount] = useState(0);
   const [isLoading, setIsLoading] = useState(false)
-  let totalSupply = 50;
-  let suppliedAmount = 40;
 
   const [systemLTV, setSystemLTV] = useState("0");
 
@@ -81,7 +74,6 @@ const Portfolio = () => {
   const [activeTab, setActiveTab] = useState('tab1');
 
   const [totalStakedValue, setTotalStakedValue] = useState("0");
-  const { accounts } = useAccounts();
   const { toBigInt } = web3.utils;
   const [lr, setLR] = useState(0)
   const [minDebt, setMinDebt] = useState(0)
@@ -111,6 +103,7 @@ const Portfolio = () => {
 
   const [pusdMintedCore, setPusdMintedCore] = useState(0)
   const [pusdMintedBTC, setPusdMintedBTC] = useState(0)
+  const [totalStabilityPool, setTotalStabilityPool] = useState("0");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -169,6 +162,13 @@ const Portfolio = () => {
         console.error(error)
       }
     }
+    const totalStabilityPool = async () => {
+      const fetchedTotalStakedValue =
+        await stabilityPoolContractReadOnly.getTotalDebtTokenDeposits();
+      const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
+      setTotalStabilityPool(fixedtotal);
+    };
+    totalStabilityPool();
     getTroveStatus();
     fetchData();
   }, [walletClient]);
@@ -180,6 +180,11 @@ const Portfolio = () => {
     const _1e16 = toBigInt(pow16.toFixed());
 
     const fetchedData = async () => {
+
+      if (!walletClient) {
+        return null;
+      }
+    
       const {
         0: debtCore,
         1: collCore,
@@ -233,24 +238,6 @@ const Portfolio = () => {
       }
     };
 
-    const getSystemLTV = async () => {
-      const systemLTV = await troveManagerContract.getTCR(price);
-      const systemLTVDecimal = new Decimal(systemLTV.toString());
-      const systemLTVFormatted = systemLTVDecimal
-        .div(_1e16.toString())
-        .toString();
-      setSystemLTV(systemLTVFormatted);
-    };
-
-    const getStakedValue = async () => {
-      if (!walletClient) return null;
-      const fetchedTotalStakedValue =
-        await stabilityPoolContractReadOnly.getCompoundedLUSDDeposit(
-          walletClient?.account.address
-        );
-      const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
-      setTotalStakedValue(fixedtotal);
-    };
 
     const getStaticData = async () => {
       if (!walletClient) return null;
@@ -259,8 +246,6 @@ const Portfolio = () => {
       const totalColl = Number(entireDebtAndCollCore.collCore) * price;
       setStaticTotalCollateral(totalColl);
       setStaticTotalDebt(Number(entireDebtAndCollCore.collCore));
-      totalSupply = 100;
-      suppliedAmount = Number(entireDebtAndCollCore.debtCore);
 
       const ltvValue = (Number(entireDebtAndCollCore.collCore) * 100) / (totalColl || 1);
       setStaticLtv(ltvValue);
@@ -269,10 +254,9 @@ const Portfolio = () => {
       setStaticLiquidationPrice(liquidationPriceValue);
       setHasGotStaticData(true);
     };
+
     getStaticData();
     fetchedData();
-    getSystemLTV();
-    getStakedValue();
   }, [walletClient,]);
 
   const divideBy = recoveryMode ? cCr : mCR;
@@ -280,8 +264,16 @@ const Portfolio = () => {
   const newLTV = ((Number(entireDebtAndCollCore.debtCore) * 100) / ((Number(entireDebtAndCollCore.collCore) * Number(fetchedPrice)))).toFixed(2)
   const newLTVBTC = ((Number(entireDebtAndCollBTC.debtBTC) * 100) / ((Number(entireDebtAndCollBTC.collBTC) * Number(fetchedPriceBTC)))).toFixed(2)
 
-  const portfolioValue = ((Number(entireDebtAndCollCore.collCore) * fetchedPriceBTC) + (Number(entireDebtAndCollBTC.collBTC) * fetchedPrice)).toFixed(2);
+  const portfolioValue = ((Number(entireDebtAndCollCore.collCore) * fetchedPrice) + (Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC) - Number(entireDebtAndCollCore.debtCore) - Number(entireDebtAndCollBTC.debtBTC)).toFixed(2);
+  const totalSupply = (
+    Number(entireDebtAndCollCore.collCore) * fetchedPrice +
+    Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC
+  ).toFixed(2);
 
+  const suppliedAmount = (
+    Number(entireDebtAndCollCore.debtCore) +
+    Number(entireDebtAndCollBTC.debtBTC)
+  ).toFixed(2)
   return (
     <div>
       {isLoading ? (
@@ -301,25 +293,38 @@ const Portfolio = () => {
                     </span>
                   </div>
                   <div className="w-5/12 h-2 -ml-[12rem] md:ml-0 md:mr-10 mt-10 pb-12">
-                    <Progress total={totalSupply} supplied={suppliedAmount} />
-                    <h1 className="text-white text-sm ">
-                      <div className="flex flex-row md:gap-x-0 gap-x-28 items-center justify-between">
-                        <div className="text-white flex flex-col mt-05">
-                          <div className="flex items-center gap-x-1">
-                            <div className="w-2 rounded-full h-2 bg-[#88e273]"></div>
-                            <span className="body-text font-normal">Borrowed</span>
-                          </div>
-                          <span className="body-text text-right whitespace-nowrap font-medium">{Number(entireDebtAndCollCore.debtCore).toFixed(2)} PUSD</span>
+                    <Progress total={Number(totalSupply)} supplied={Number(suppliedAmount)} />
+                    <div className="flex flex-row md:gap-x-0 gap-x-28 items-center justify-between">
+
+                      {/* Borrowed Section */}
+                      <div className="text-white flex flex-col mt-05">
+                        <div className="flex items-center gap-x-1">
+                          <div className="w-2 rounded-full h-2 bg-[#88e273]"></div>
+                          <span className="body-text font-normal">Borrowed</span>
                         </div>
-                        <div className="text-white flex flex-col mt-05">
-                          <div className="flex items-center gap-x-1">
-                            <div className="w-2 rounded-full h-2  bg-green-400"></div>
-                            <span className="body-text font-normal">Supplied</span>
-                          </div>
-                          <span className="body-text text-right whitespace-nowrap font-medium">{Number(entireDebtAndCollCore.collCore).toFixed(8)} BTC</span>
-                        </div>
+                        <span className="body-text text-right whitespace-nowrap font-medium">
+                          {(
+                            Number(entireDebtAndCollCore.debtCore) +
+                            Number(entireDebtAndCollBTC.debtBTC)
+                          ).toFixed(2)} PUSD
+                        </span>
                       </div>
-                    </h1>
+
+                      {/* Supplied Section */}
+                      <div className="text-white flex flex-col mt-05">
+                        <div className="flex items-center gap-x-1">
+                          <div className="w-2 rounded-full h-2 bg-green-400"></div>
+                          <span className="body-text font-normal">Supplied</span>
+                        </div>
+                        <span className="body-text text-right whitespace-nowrap font-medium">
+                          {(
+                            Number(entireDebtAndCollCore.collCore) * fetchedPrice +
+                            Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC
+                          ).toFixed(2)}
+                        </span>
+                      </div>
+
+                    </div>
                   </div>
 
                 </div>
@@ -436,31 +441,31 @@ const Portfolio = () => {
                             </Link>
                           </div>
                           <div>
-                          <div className="w-fit md:space-x-32 flex items-center justify-between h-full">
-                             
-                             <div className="text-white w-fit space-y-20 mt-5 items-center  mb-6 p-2 flex flex-col  justify-between md:mx-[2.5rem] mx-[1.5rem]">
-                               {" "}
-                               <div className="flex  flex-col">
-                                 <span className="body-text font-semibold text-gray-500">Collateral</span>
-                                 <span className="body-text font-semibold whitespace-nowrap ">{Number(entireDebtAndCollBTC.collBTC).toFixed(2)} WCORE</span>
-                                 <span className="text-xs font-semibold body-text text-gray-500">${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(2)}</span>
-                               </div>
-                               <div className="flex md:-ml-8 flex-col whitespace-nowrap">
-                                 {" "}
-                                 <span className="body-text font-semibold text-gray-500">Debt</span>
-                                 <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollBTC.debtBTC).toFixed(2)} PUSD</span>
-                               </div>
-                             </div>
-                             <div className="flex flex-col mb-2  items-center">
-                               <Knob value={Number(newLTVBTC) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
-                               <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
-                                 <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
-                                 <div className="flex items-center justify-center gap-x-2">
-                                   <span className="text-lg text-white  ml-[0.5rem] body-text">{90}%</span>
-                                 </div>
-                               </div>
-                             </div>
-                           </div>
+                            <div className="w-fit md:space-x-32 flex items-center justify-between h-full">
+
+                              <div className="text-white w-fit space-y-20 mt-5 items-center  mb-6 p-2 flex flex-col  justify-between md:mx-[2.5rem] mx-[1.5rem]">
+                                {" "}
+                                <div className="flex  flex-col">
+                                  <span className="body-text font-semibold text-gray-500">Collateral</span>
+                                  <span className="body-text font-semibold whitespace-nowrap ">{Number(entireDebtAndCollBTC.collBTC).toFixed(2)} WBTC</span>
+                                  <span className="text-xs font-semibold body-text text-gray-500">${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(2)}</span>
+                                </div>
+                                <div className="flex md:ml-5 flex-col whitespace-nowrap">
+                                  {" "}
+                                  <span className="body-text font-semibold text-gray-500">Debt</span>
+                                  <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollBTC.debtBTC).toFixed(2)} PUSD</span>
+                                </div>
+                              </div>
+                              <div className="flex flex-col mb-2  items-center">
+                                <Knob value={Number(newLTVBTC) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
+                                <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
+                                  <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
+                                  <div className="flex items-center justify-center gap-x-2">
+                                    <span className="text-lg text-white  ml-[0.5rem] body-text">{90}%</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -483,7 +488,7 @@ const Portfolio = () => {
                           <div className="text-white ml-5 p-3">
                             <div className="mb-[2rem] mt-2 whitespace-nowrap">
                               <p className="body-text text-sm text-[#565348]">Deposited</p>
-                              <p className="body-text font-medium whitespace-nowrap">{Number(totalStakedValue).toFixed(2)} PUSD</p>
+                              <p className="body-text font-medium whitespace-nowrap">{Number(totalStabilityPool).toFixed(2)} PUSD</p>
                             </div>
                             <div className="flex flex-row gap-10">
                               <div className="flex-col gap-y-5 flex">

@@ -13,7 +13,8 @@ import Decimal from "decimal.js";
 import "./unstake.css";
 import { ethers } from "ethers";
 import { useEffect, useState, useCallback } from "react";
-import {useAccount,
+import {
+  useAccount,
   useWaitForTransactionReceipt,
   useWalletClient,
   useWriteContract,
@@ -154,6 +155,9 @@ export const Unstake = () => {
 
   const handleConfirmClick = async () => {
     try {
+      if (!walletClient) {
+        return null;
+      }
       setIsModalVisible(true);
 
       const pow = Decimal.pow(10, 18);
@@ -243,7 +247,7 @@ export const Unstake = () => {
               className={
                 "font-medium balance body-text " +
                 (Number(userInput) >
-                Math.trunc(Number(totalStakedValue) * 100) / 100
+                  Math.trunc(Number(totalStakedValue) * 100) / 100
                   ? "text-red-500"
                   : "text-gray-400")
               }

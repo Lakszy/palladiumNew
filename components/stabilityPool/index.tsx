@@ -51,6 +51,7 @@ export const StabilityPool = () => {
     erc20Abi,
     provider
   );
+  
   const { data: hash, writeContract, error: writeError } = useWriteContract();
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
 
@@ -105,9 +106,12 @@ export const StabilityPool = () => {
   };
 
   const fetchPrice = async () => {
-    const pusdBalanceValue = await erc20Contract.balanceOf(
-      walletClient?.account?.address
-    );
+
+    if (!walletClient) {
+      return null;
+    }
+  
+    const pusdBalanceValue = await erc20Contract.balanceOf(address);
     console.log("PUSD Balance: ", pusdBalanceValue);
     const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
     setPusdBalance(pusdBalanceFormatted);
@@ -128,6 +132,9 @@ export const StabilityPool = () => {
 
   const handleConfirmClick = async () => {
     try {
+      if (!walletClient) {
+        return null;
+      }    
       setIsModalVisible(true);
       const pow = Decimal.pow(10, 18);
       const inputBeforeConv = new Decimal(userInput);

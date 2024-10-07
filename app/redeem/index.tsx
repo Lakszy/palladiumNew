@@ -48,12 +48,16 @@ export default function Redeem() {
     const [transactionRejected, setTransactionRejected] = useState(false);
     const [selectedButton, setSelectedButton] = useState("WCORE")
     const [fetchedPrice, setFetchedPrice] = useState(0)
+    const [fetchedPriceBTC, setFetchedPriceBTC] = useState(0)
 
     const [collTokenAddress, setCollTokenAddress] = useState<string>("")
 
     const handleButtonClick = (buttonId: any) => {
         setSelectedButton(buttonId);
-
+        if (!walletClient) {
+            return null;
+          }
+        
         let address = '';
         if (buttonId === 'WCORE') {
             address = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d";
@@ -113,9 +117,12 @@ export default function Redeem() {
                     "https://api.palladiumlabs.org/core/protocol/metrics"
                 );
                 const data = await response.json();
-                const protocolMetrics = data[0].metrics[1]
+                const protocolMetrics = data[0].metrics[1] // WCORE
+                const protocolMetricsBTC = data[0].metrics[0] // WBTC
+
                 setIsRecoveryMode(protocolMetrics.recoveryMode);
                 setFetchedPrice(protocolMetrics.price);
+                setFetchedPriceBTC(protocolMetricsBTC.price);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -145,27 +152,29 @@ export default function Redeem() {
     const handleConfirmClick = async () => {
         setIsModalVisible(true);
         try {
+            if (!walletClient) {
+                return null;
+              }
+            
             const pow = Decimal.pow(10, 18);
             const inputBeforeConv = new Decimal(userInput);
 
             const inputValue = inputBeforeConv.mul(pow).toFixed();
-            const priceAsBigInt = BigInt(Math.floor(fetchedPrice * 10 ** 18));
+            const priceAsBigInt = BigInt(Math.floor(selectedButton === "WBTC" ? fetchedPriceBTC * 10 ** 18 : fetchedPrice * 10 ** 18))    
+            console.log(priceAsBigInt,"Price")
+            const redemptionhint = await hintHelpersContract.getRedemptionHints(collTokenAddress, BigInt(inputValue), priceAsBigInt, 50);
 
-            const redemptionhint = await hintHelpersContract.getRedemptionHints("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", BigInt(inputValue), priceAsBigInt, 50);
             const { 0: firstRedemptionHint, 1: partialRedemptionNewICR, 2: truncatedLUSDAmount } = redemptionhint;
-            const numTroves = await sortedTrovesContract.getSize("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
+            const numTroves = await sortedTrovesContract.getSize(collTokenAddress);
             const numTrials = numTroves * toBigInt("15");
-            const { hintAddress: approxPartialRedemptionHint } = await hintHelpersContract.getApproxHint("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", partialRedemptionNewICR, numTrials, 42);
-            const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
-            // const maxFee = (5 * 10**16).toString(); // Represents 6% in wei
+            const { hintAddress: approxPartialRedemptionHint } = await hintHelpersContract.getApproxHint(collTokenAddress, partialRedemptionNewICR, numTrials, 42);
+            const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition(collTokenAddress, partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
+            
             const maxFee = BigInt(5e16);
-            console.log('Max Fee:', maxFee);
-            console.log(collTokenAddress, "collTokenAddress")
 
-            console.log("starting")
             const result = await writeContract({
                 address: "0x21F46c75F3c12FE2cA6714e6085B65FACA61102f",
-                abi: hintHelpersAbi, // Replace with your contract's ABI
+                abi: hintHelpersAbi,
                 functionName: 'redeemCollateral',
                 args: [
                     collTokenAddress,

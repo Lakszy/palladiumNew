@@ -79,6 +79,10 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   const handleConfirmClick = async () => {
     setIsModalVisible(true);
     try {
+      if (!walletClient) {
+        return null;
+      }
+    
       // if (!walletClient) return null;
       const tx = writeContract({
         abi: BorrowerOperationbi,
