@@ -13,7 +13,7 @@ import Decimal from "decimal.js";
 import { ethers, toBigInt } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import {  useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Button } from "@/components/ui/button";
 import OpenTroveNotConnected from "@/app/trove/openTroveNotConnected";
 import Image from "next/image";
@@ -97,6 +97,7 @@ const BorrowBTCNEW = () => {
   const spenderAddress = walletClient?.account?.address
 
   const fetchPrice = async () => {
+    if(!walletClient) return null;
     const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
     const collateralValueFormatted = ethers.formatUnits(collateralValue, 18)
     setBalanceData(collateralValueFormatted)
@@ -104,11 +105,7 @@ const BorrowBTCNEW = () => {
 
   const { data: hash, writeContract, error: writeError } = useWriteContract()
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
-  if (walletClient) {
-    const web3 = new Web3(window.ethereum)
-    const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
-    const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
-  }
+
 
   const handleClose = useCallback(() => {
     setLoadingModalVisible(false);
@@ -241,9 +238,9 @@ const BorrowBTCNEW = () => {
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
 
-    // if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
-    //   await handleApproveClick(xCollatoral);
-    // }
+    if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
+      await handleApproveClick(xCollatoral);
+    }
 
     try {
       setIsModalVisible(true)
@@ -370,15 +367,20 @@ const BorrowBTCNEW = () => {
 
   const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
     try {
-      const approvedAmount = 1n
-      //  await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
-      console.log("Approved amount:", approvedAmount);
-      if (approvedAmount != null) {
-        setAprvAmt(approvedAmount);
-        return approvedAmount;
-      } else {
-        console.error("Approved amount is null or undefined");
-        return null;
+      if (walletClient) {
+        const web3 = new Web3(window.ethereum)
+        const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+        const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
+
+        const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
+        console.log("Approved amount:", approvedAmount);
+        if (approvedAmount != null) {
+          setAprvAmt(approvedAmount);
+          return approvedAmount;
+        } else {
+          console.error("Approved amount is null or undefined");
+          return null;
+        }
       }
     } catch (error) {
       console.error("Error fetching approved amount:", error);
@@ -404,16 +406,21 @@ const BorrowBTCNEW = () => {
 
   const handleApproveClick = async (amount: string) => {
     try {
-      const userAddress = walletClient?.account?.address;
-      // const gasPrice = (await web3.eth.getGasPrice()).toString();
-      // const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-      const tx = 1n
-      // await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+      if (walletClient) {
+        const web3 = new Web3(window.ethereum)
+        const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+        const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
-      if (tx) {
-        alert("Transaction successful!");
-      } else {
-        alert("Transaction failed. Please try again.");
+        const userAddress = walletClient?.account?.address;
+        const gasPrice = (await web3.eth.getGasPrice()).toString();
+        const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
+        const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+
+        if (tx) {
+          alert("Transaction successful!");
+        } else {
+          alert("Transaction failed. Please try again.");
+        }
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };

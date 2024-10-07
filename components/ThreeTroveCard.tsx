@@ -220,7 +220,7 @@ const ThreeTroveCard = () => {
                 )}
 
             <div className='flex md:flex-row flex-col md:pl-5 pt-5 pb-5 w-full justify-between items-center'>
-                <div className={`bg-[#222222] rounded-lg text-white md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-16"}`}>
+                <div className={`bg-[#222222] rounded-lg text-white  w-full md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-16"}`}>
                     <div className="flex  md:w-full  px-2 justify-between items-center mb-6">
                         <div className='flex items-center gap-x-1'>
                             <Image src={trove1} alt="btc" />
@@ -298,7 +298,7 @@ const ThreeTroveCard = () => {
                 </div>
 
                 {/* Card 2 */}
-                <div className={`bg-[#222222]  rounded-lg text-white md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-16"}`}>
+                <div className={`bg-[#222222]  rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-16"}`}>
                     <div className="flex  gap-x-2 justify-between items-center mb-6">
                         <div className='flex  items-center gap-x-1'>
                             <Image src={trove1} alt="btc" />

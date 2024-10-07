@@ -242,9 +242,9 @@ const BorrowCore = () => {
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
 
-    // if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
-    //   await handleApproveClick(xCollatoral);
-    // }
+    if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
+      await handleApproveClick(xCollatoral);
+    }
 
     if (!walletClient) { return null; }
     try {
@@ -372,6 +372,75 @@ const BorrowCore = () => {
     }
   };
 
+
+  const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
+    try {
+      if (walletClient) {
+        const web3 = new Web3(window.ethereum)
+        const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
+        const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
+
+        const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
+        console.log("Approved amount:", approvedAmount);
+        if (approvedAmount != null) {
+          setAprvAmt(approvedAmount);
+          return approvedAmount;
+        } else {
+          console.error("Approved amount is null or undefined");
+          return null;
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching approved amount:", error);
+      return null;
+    }
+  };
+
+  const handleCheckApprovedClick = async () => {
+    const userAddress = walletClient?.account?.address;
+    const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
+    if (approvedAmount) {
+      setAprvAmt(approvedAmount);
+    } else {
+      console.error("Could not retrieve approved amount.");
+    }
+  };
+
+  useEffect(() => {
+    if (walletClient?.account?.address && spenderAddress) {
+      handleCheckApprovedClick();
+    }
+  }, [walletClient?.account?.address, spenderAddress]);
+
+  const handleApproveClick = async (amount: string) => {
+    try {
+      if (walletClient) {
+        const web3 = new Web3(window.ethereum)
+        const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
+        const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
+
+        const userAddress = walletClient?.account?.address;
+        const gasPrice = (await web3.eth.getGasPrice()).toString();
+        const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
+        const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+
+        if (tx) {
+          alert("Transaction successful!");
+        } else {
+          alert("Transaction failed. Please try again.");
+        }
+      }
+    } catch (error) {
+      const e = error as { code?: number; message?: string };
+      if (e.code === 4001) {
+        console.error("User rejected the transaction:", e.message);
+        alert("Transaction rejected by the user.");
+      } else {
+        console.error("Error during token approval:", e.message);
+        alert("An error occurred during token approval. Please try again.");
+      }
+    }
+  };
 
   const divideBy = recoveryMode ? cCr : mCR;
   const availableToBorrow = (Number(entireDebtAndColl.coll) * Number(fetchedPrice)) / Number(divideBy) - Number(entireDebtAndColl.debt);

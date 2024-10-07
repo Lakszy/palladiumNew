@@ -363,7 +363,7 @@ const Portfolio = () => {
                               </button>
                             </div>
                             <div className="grid place-items-center mb-[0.5rem] p-3">
-                              <Image src={floatPUSD} alt="home" width={220} className="-mt-10" />
+                              <Image src={floatPUSD} alt="home" width={220} className="" />
                               <p className="text-gray-400 mt-10 mx-1 title-text2 text-center font-semibold text-lg pt-5">
                                 You don't have an WCORE Active Trove
                               </p>
@@ -422,7 +422,7 @@ const Portfolio = () => {
                               </button>
                             </div>
                             <div className="grid place-items-center mb-[0.5rem] p-3">
-                              <Image src={floatPUSD} alt="home" width={220} className="-mt-10" />
+                              <Image src={floatPUSD} alt="home" width={220} className="" />
                               <p className="text-gray-400 title-text2 text-center font-semibold text-lg pt-5 mt-10 mx-1">
                                 You don't have an WBTC Active Trove
                               </p>
