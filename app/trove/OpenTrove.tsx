@@ -29,6 +29,7 @@ import { Dialog } from "primereact/dialog";
 import { Tooltip } from "primereact/tooltip";
 import { useAccounts } from "@particle-network/btc-connectkit";
 import Web3 from "web3";
+import { Console } from "console";
 
 export const OpenTrove = () => {
   const [userInputs, setUserInputs] = useState({
@@ -175,7 +176,7 @@ export const OpenTrove = () => {
         walletClient?.account.address
       );
 
-      const allowance = await tokenContract.methods.allowance("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", spenderAddress).call();
+      // const allowance = await tokenContract.methods.allowance("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", spenderAddress).call();
       const collValue = Number(xCollatoral);
       const borrowValue = Number(xBorrow);
       const expectedFeeFormatted = (borrowRate * borrowValue) / 100;
@@ -264,10 +265,12 @@ export const OpenTrove = () => {
   };
 
   const fetchPrice = async () => {
+    if (!walletClient) return null;
     const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
     const collateralValueFormatted = ethers.formatUnits(collateralValue, 18)
     setBalanceData(collateralValueFormatted)
   };
+
   useEffect(() => {
     fetchPrice();
   }, [fetchPrice, walletClient?.account?.address, walletClient, writeContract, hash]);
@@ -277,6 +280,7 @@ export const OpenTrove = () => {
     setUserModal(false);
     window.location.reload()
   };
+
   const handlePercentageClick = (percentage: any) => {
     const percentageDecimal = new Decimal(percentage).div(100);
     const pusdBalanceNumber = parseFloat(maxBorrow.toString());
@@ -307,8 +311,7 @@ export const OpenTrove = () => {
 
   const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
     try {
-      const approvedAmount = 1n
-      // await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
+      const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
       console.log("Approved amount:", approvedAmount);
       if (approvedAmount != null) {
         setAprvAmt(approvedAmount);
@@ -348,18 +351,18 @@ export const OpenTrove = () => {
       const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
       if (tx.status) {
-        alert("Transaction successful!");
+        console.log("Transaction successful!");
       } else {
-        alert("Transaction failed. Please try again.");
+        console.log("Transaction failed. Please try again.");
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };
       if (e.code === 4001) {
         console.error("User rejected the transaction:", e.message);
-        alert("Transaction rejected by the user.");
+        console.log("Transaction rejected by the user.");
       } else {
         console.error("Error during token approval:", e.message);
-        alert("An error occurred during token approval. Please try again.");
+        console.log("An error occurred during token approval. Please try again.");
       }
     }
   };
@@ -640,12 +643,12 @@ export const OpenTrove = () => {
               )}
               <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>
                   <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                  <Button className=" mt-1 p-3 hover:bg-yellow-400 rounded-none md:w-[20rem] text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
+                  <Button className=" mt-1 p-3  rounded-none md:w-[20rem] text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
                 </>
               )}
             </div>

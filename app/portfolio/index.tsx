@@ -162,13 +162,17 @@ const Portfolio = () => {
         console.error(error)
       }
     }
-    const totalStabilityPool = async () => {
+    const getStakedValue = async () => {
+      if (!walletClient) return null;
       const fetchedTotalStakedValue =
-        await stabilityPoolContractReadOnly.getTotalDebtTokenDeposits();
+        await stabilityPoolContractReadOnly.getCompoundedDebtTokenDeposits(
+          walletClient?.account.address
+        );
       const fixedtotal = ethers.formatUnits(fetchedTotalStakedValue, 18);
-      setTotalStabilityPool(fixedtotal);
+      setTotalStakedValue(fixedtotal);
+      setIsLoading(false);
     };
-    totalStabilityPool();
+    getStakedValue();
     getTroveStatus();
     fetchData();
   }, [walletClient]);
@@ -184,7 +188,7 @@ const Portfolio = () => {
       if (!walletClient) {
         return null;
       }
-    
+
       const {
         0: debtCore,
         1: collCore,
@@ -274,6 +278,10 @@ const Portfolio = () => {
     Number(entireDebtAndCollCore.debtCore) +
     Number(entireDebtAndCollBTC.debtBTC)
   ).toFixed(2)
+
+
+  const suppliedAmountProgress = ((Number(entireDebtAndCollCore.debtCore) + Number(entireDebtAndCollBTC.debtBTC)) * 0.9).toFixed(2)
+
   return (
     <div>
       {isLoading ? (
@@ -293,7 +301,7 @@ const Portfolio = () => {
                     </span>
                   </div>
                   <div className="w-5/12 h-2 -ml-[12rem] md:ml-0 md:mr-10 mt-10 pb-12">
-                    <Progress total={Number(totalSupply)} supplied={Number(suppliedAmount)} />
+                    <Progress total={Number(totalSupply)} supplied={Number(suppliedAmountProgress)} />
                     <div className="flex flex-row md:gap-x-0 gap-x-28 items-center justify-between">
 
                       {/* Borrowed Section */}
@@ -383,7 +391,7 @@ const Portfolio = () => {
                           </div>
                           <div>
                             <div className="w-fit md:space-x-32 flex items-center justify-between h-full">
-                             
+
                               <div className="text-white w-fit space-y-20 mt-5 items-center  mb-6 p-2 flex flex-col  justify-between md:mx-[2.5rem] mx-[1.5rem]">
                                 {" "}
                                 <div className="flex  flex-col">
@@ -441,16 +449,16 @@ const Portfolio = () => {
                             </Link>
                           </div>
                           <div>
-                            <div className="w-fit md:space-x-32 flex items-center justify-between h-full">
+                            <div className="w-fit md:space-x-32  flex items-center justify-between h-full">
 
-                              <div className="text-white w-fit space-y-20 mt-5 items-center  mb-6 p-2 flex flex-col  justify-between md:mx-[2.5rem] mx-[1.5rem]">
+                              <div className="text-white w-fit  space-y-20 mt-5 items-center  mb-6 p-2 flex flex-col  justify-between md:mx-[2.5rem] mx-[1.5rem]">
                                 {" "}
                                 <div className="flex  flex-col">
                                   <span className="body-text font-semibold text-gray-500">Collateral</span>
                                   <span className="body-text font-semibold whitespace-nowrap ">{Number(entireDebtAndCollBTC.collBTC).toFixed(2)} WBTC</span>
                                   <span className="text-xs font-semibold body-text text-gray-500">${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(2)}</span>
                                 </div>
-                                <div className="flex md:ml-5 flex-col whitespace-nowrap">
+                                <div className="flex  flex-col whitespace-nowrap">
                                   {" "}
                                   <span className="body-text font-semibold text-gray-500">Debt</span>
                                   <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollBTC.debtBTC).toFixed(2)} PUSD</span>
@@ -488,20 +496,20 @@ const Portfolio = () => {
                           <div className="text-white ml-5 p-3">
                             <div className="mb-[2rem] mt-2 whitespace-nowrap">
                               <p className="body-text text-sm text-[#565348]">Deposited</p>
-                              <p className="body-text font-medium whitespace-nowrap">{Number(totalStabilityPool).toFixed(2)} PUSD</p>
+                              <p className="body-text font-medium whitespace-nowrap">{Number(totalStakedValue).toFixed(2)} PUSD</p>
                             </div>
                             <div className="flex flex-row gap-10">
                               <div className="flex-col gap-y-5 flex">
                                 <div className="flex flex-col whitespace-nowrap">
                                   <span className="body-text text-sm text-[#565348]">WCORE Gains</span>
                                   <span className="body-text font-medium whitespace-nowrap">
-                                    {troveStatuscore === 'ACTIVE' ? (lr).toFixed(2) + ' PUSD' : 'Trove not active'}
+                                    {troveStatuscore === 'ACTIVE' ? (0).toFixed(2) + ' PUSD' : 'Trove not active'}
                                   </span>
                                 </div>
                                 <div className="flex flex-col whitespace-nowrap">
                                   <span className="body-text text-sm text-[#565348]">WBTC Gains</span>
                                   <span className="body-text font-medium whitespace-nowrap">
-                                    {troveStatusBTC === 'ACTIVE' ? (lr).toFixed(2) + ' PUSD' : 'Trove not active'}
+                                    {troveStatusBTC === 'ACTIVE' ? (0).toFixed(2) + ' PUSD' : 'Trove not active'}
                                   </span>
                                 </div>
                               </div>

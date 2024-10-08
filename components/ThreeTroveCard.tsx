@@ -220,11 +220,11 @@ const ThreeTroveCard = () => {
                 )}
 
             <div className='flex md:flex-row flex-col md:pl-5 pt-5 pb-5 w-full justify-between items-center'>
-                <div className={`bg-[#222222] rounded-lg text-white  w-full md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-16"}`}>
-                    <div className="flex  md:w-full  px-2 justify-between items-center mb-6">
+                <div className={`bg-[#222222] rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-16"}`}>
+                    <div className="flex  gap-x-2 justify-between items-center mb-6">
                         <div className='flex items-center gap-x-1'>
                             <Image src={trove1} alt="btc" />
-                            <h2 className="ml-4 md:text-xl text-lg rounded-xl font-medium  body-text">WCORE Trove</h2>
+                            <h2 className="ml-4 text-xl font-medium  body-text">WCORE Trove</h2>
                         </div>
                         {troveStatuscore === "ACTIVE" && (
                             <Image src={ACTIVE} alt="status-icon" width={120} height={100} />
@@ -241,7 +241,7 @@ const ThreeTroveCard = () => {
                                 <div className="">
                                     <p className="text-gray-500 text-sm body-text">Collateral</p>
                                     <p className="body-text font-medium ">{Number(entireDebtAndCollCore.collCore).toFixed(2)} WCORE</p>
-                                    <p className="text-gray-500 text-xs body-text">${(Number(entireDebtAndCollCore.collCore) * fetchedPrice).toFixed(2)}</p>
+                                    <p className="text-sm body-text text-gray-500">${(Number(entireDebtAndCollCore.collCore) * fetchedPrice).toFixed(2)}</p>
                                 </div>
                                 <div className="">
                                     <p className="text-gray-500 text-sm body-text">Debt</p>
@@ -277,6 +277,30 @@ const ThreeTroveCard = () => {
                     )
                     }
                     <div>
+                        {troveStatuscore === "ACTIVE" ? (
+                            <div className="flex flex-wrap gap-2 mt-6 mb-6">
+                                <div className="flex  border-2 gap-x-2 items-center border-green-500 rounded-2xl px-2 py-2">
+                                    <p className="body-text font-medium text-xs text-gray-400">MAX LTV</p>
+                                    <p className="body-text font-medium  text-xs">{(100 / mCR).toFixed(2)}%</p>
+                                </div>
+                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
+                                    <p className="body-text font-medium text-xs text-gray-400">One-time Fee</p>
+                                    <p className="body-text font-medium  text-xs">{(borrowRate * 100).toFixed(2)}%</p>
+                                </div>
+                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
+                                    <p className="body-text font-medium text-xs text-gray-400">Min Debt</p>
+                                    <p className="body-text font-medium text-xs">{minDebt} PUSD</p>
+                                </div>
+                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
+                                    <p className="body-text font-medium text-xs text-gray-400">PUSD Minted</p>
+                                    <p className="body-text font-medium text-xs">{formatLargeNumber(pusdMintedCore)} / 2.5M</p>
+                                </div>
+                            </div>
+                        ) :
+                            (
+                                <></>
+                            )}
+
                         {isConnected ? (<>
                             <Link href="/trove/wcore" passHref>
                                 {troveStatuscore === "ACTIVE" ? (
@@ -355,6 +379,30 @@ const ThreeTroveCard = () => {
                     )
                     }
                     <div>
+                        {troveStatusBTC === "ACTIVE" ? (
+                            <div className="flex flex-wrap gap-2 mt-6 mb-6">
+                                <div className="flex  border-2 gap-x-2 items-center border-green-500 rounded-2xl px-2 py-2">
+                                    <p className="body-text font-medium text-xs text-gray-400">MAX LTV</p>
+                                    <p className="body-text font-medium  text-xs">{(100 / mCRBTC).toFixed(2)}%</p>
+                                </div>
+                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
+                                    <p className="body-text font-medium text-xs text-gray-400">One-time Fee</p>
+                                    <p className="body-text font-medium  text-xs">{(borrowRateBTC * 100).toFixed(2)}%</p>
+                                </div>
+                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
+                                    <p className="body-text font-medium text-xs text-gray-400">Min Debt</p>
+                                    <p className="body-text font-medium text-xs">{minDebtBTC} PUSD</p>
+                                </div>
+                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
+                                    <p className="body-text font-medium text-xs text-gray-400">PUSD Minted</p>
+                                    <p className="body-text font-medium text-xs">{formatLargeNumber(pusdMintedBTC)} / 2.5M</p>
+                                </div>
+                            </div>
+                        ) :
+                            (
+                                <></>
+                            )}
+
                         {isConnected ? (<>
                             <Link href="/trove/wbtc" passHref>
                                 {troveStatusBTC === "ACTIVE" ? (

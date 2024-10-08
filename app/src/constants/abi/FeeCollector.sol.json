@@ -1,0 +1,883 @@
+[
+   {
+     "inputs": [],
+     "name": "FeeCollector__ArrayMismatch",
+     "type": "error"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "sender",
+         "type": "address"
+       },
+       {
+         "internalType": "address",
+         "name": "expected",
+         "type": "address"
+       }
+     ],
+     "name": "FeeCollector__BorrowerOperationsOnly",
+     "type": "error"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "sender",
+         "type": "address"
+       },
+       {
+         "internalType": "address",
+         "name": "expected1",
+         "type": "address"
+       },
+       {
+         "internalType": "address",
+         "name": "expected2",
+         "type": "address"
+       }
+     ],
+     "name": "FeeCollector__BorrowerOperationsOrVesselManagerOnly",
+     "type": "error"
+   },
+   {
+     "inputs": [],
+     "name": "FeeCollector__InvalidGRVTStakingAddress",
+     "type": "error"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "sender",
+         "type": "address"
+       },
+       {
+         "internalType": "address",
+         "name": "expected",
+         "type": "address"
+       }
+     ],
+     "name": "FeeCollector__VesselManagerOnly",
+     "type": "error"
+   },
+   {
+     "anonymous": false,
+     "inputs": [
+       {
+         "indexed": false,
+         "internalType": "address",
+         "name": "previousAdmin",
+         "type": "address"
+       },
+       {
+         "indexed": false,
+         "internalType": "address",
+         "name": "newAdmin",
+         "type": "address"
+       }
+     ],
+     "name": "AdminChanged",
+     "type": "event"
+   },
+   {
+     "anonymous": false,
+     "inputs": [
+       {
+         "indexed": true,
+         "internalType": "address",
+         "name": "beacon",
+         "type": "address"
+       }
+     ],
+     "name": "BeaconUpgraded",
+     "type": "event"
+   },
+   {
+     "anonymous": false,
+     "inputs": [
+       {
+         "indexed": false,
+         "internalType": "address",
+         "name": "borrower",
+         "type": "address"
+       },
+       {
+         "indexed": false,
+         "internalType": "address",
+         "name": "asset",
+         "type": "address"
+       },
+       {
+         "indexed": false,
+         "internalType": "address",
+         "name": "collector",
+         "type": "address"
+       },
+       {
+         "indexed": false,
+         "internalType": "uint256",
+         "name": "amount",
+         "type": "uint256"
+       }
+     ],
+     "name": "FeeCollected",
+     "type": "event"
+   },
+   {
+     "anonymous": false,
+     "inputs": [
+       {
+         "indexed": false,
+         "internalType": "address",
+         "name": "borrower",
+         "type": "address"
+       },
+       {
+         "indexed": false,
+         "internalType": "address",
+         "name": "asset",
+         "type": "address"
+       },
+       {
+         "indexed": false,
+         "internalType": "uint256",
+         "name": "from",
+         "type": "uint256"
+       },
+       {
+         "indexed": false,
+         "internalType": "uint256",
+         "name": "to",
+         "type": "uint256"
+       },
+       {
+         "indexed": false,
+         "internalType": "uint256",
+         "name": "amount",
+         "type": "uint256"
+       }
+     ],
+     "name": "FeeRecordUpdated",
+     "type": "event"
+   },
+   {
+     "anonymous": false,
+     "inputs": [
+       {
+         "indexed": false,
+         "internalType": "address",
+         "name": "borrower",
+         "type": "address"
+       },
+       {
+         "indexed": false,
+         "internalType": "address",
+         "name": "asset",
+         "type": "address"
+       },
+       {
+         "indexed": false,
+         "internalType": "uint256",
+         "name": "amount",
+         "type": "uint256"
+       }
+     ],
+     "name": "FeeRefunded",
+     "type": "event"
+   },
+   {
+     "anonymous": false,
+     "inputs": [
+       {
+         "indexed": false,
+         "internalType": "uint8",
+         "name": "version",
+         "type": "uint8"
+       }
+     ],
+     "name": "Initialized",
+     "type": "event"
+   },
+   {
+     "anonymous": false,
+     "inputs": [
+       {
+         "indexed": true,
+         "internalType": "address",
+         "name": "previousOwner",
+         "type": "address"
+       },
+       {
+         "indexed": true,
+         "internalType": "address",
+         "name": "newOwner",
+         "type": "address"
+       }
+     ],
+     "name": "OwnershipTransferred",
+     "type": "event"
+   },
+   {
+     "anonymous": false,
+     "inputs": [
+       {
+         "indexed": false,
+         "internalType": "address",
+         "name": "asset",
+         "type": "address"
+       },
+       {
+         "indexed": false,
+         "internalType": "uint256",
+         "name": "amount",
+         "type": "uint256"
+       }
+     ],
+     "name": "RedemptionFeeCollected",
+     "type": "event"
+   },
+   {
+     "anonymous": false,
+     "inputs": [
+       {
+         "indexed": true,
+         "internalType": "address",
+         "name": "implementation",
+         "type": "address"
+       }
+     ],
+     "name": "Upgraded",
+     "type": "event"
+   },
+   {
+     "inputs": [],
+     "name": "FEE_EXPIRATION_SECONDS",
+     "outputs": [
+       {
+         "internalType": "uint256",
+         "name": "",
+         "type": "uint256"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "MIN_FEE_DAYS",
+     "outputs": [
+       {
+         "internalType": "uint256",
+         "name": "",
+         "type": "uint256"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "MIN_FEE_FRACTION",
+     "outputs": [
+       {
+         "internalType": "uint256",
+         "name": "",
+         "type": "uint256"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "NAME",
+     "outputs": [
+       {
+         "internalType": "string",
+         "name": "",
+         "type": "string"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "activePool",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "adminContract",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "newImplementation",
+         "type": "address"
+       }
+     ],
+     "name": "authorizeUpgrade",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "borrowerOperations",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "_borrower",
+         "type": "address"
+       },
+       {
+         "internalType": "address",
+         "name": "_asset",
+         "type": "address"
+       }
+     ],
+     "name": "closeDebt",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "collSurplusPool",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address[]",
+         "name": "_borrowers",
+         "type": "address[]"
+       },
+       {
+         "internalType": "address[]",
+         "name": "_assets",
+         "type": "address[]"
+       }
+     ],
+     "name": "collectFees",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "communityIssuance",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "debtToken",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "_borrower",
+         "type": "address"
+       },
+       {
+         "internalType": "address",
+         "name": "_asset",
+         "type": "address"
+       },
+       {
+         "internalType": "uint256",
+         "name": "_paybackFraction",
+         "type": "uint256"
+       }
+     ],
+     "name": "decreaseDebt",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "defaultPool",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "feeCollector",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       },
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "name": "feeRecords",
+     "outputs": [
+       {
+         "internalType": "uint256",
+         "name": "from",
+         "type": "uint256"
+       },
+       {
+         "internalType": "uint256",
+         "name": "to",
+         "type": "uint256"
+       },
+       {
+         "internalType": "uint256",
+         "name": "amount",
+         "type": "uint256"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "gasPoolAddress",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "getProtocolRevenueDestination",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "grvtStaking",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "_asset",
+         "type": "address"
+       },
+       {
+         "internalType": "uint256",
+         "name": "_amount",
+         "type": "uint256"
+       }
+     ],
+     "name": "handleRedemptionFee",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "_borrower",
+         "type": "address"
+       },
+       {
+         "internalType": "address",
+         "name": "_asset",
+         "type": "address"
+       },
+       {
+         "internalType": "uint256",
+         "name": "_feeAmount",
+         "type": "uint256"
+       }
+     ],
+     "name": "increaseDebt",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "initialize",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "isAddressSetupInitialized",
+     "outputs": [
+       {
+         "internalType": "bool",
+         "name": "",
+         "type": "bool"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "_borrower",
+         "type": "address"
+       },
+       {
+         "internalType": "address",
+         "name": "_asset",
+         "type": "address"
+       }
+     ],
+     "name": "liquidateDebt",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "owner",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "priceFeed",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "proxiableUUID",
+     "outputs": [
+       {
+         "internalType": "bytes32",
+         "name": "",
+         "type": "bytes32"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "renounceOwnership",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "routeToGRVTStaking",
+     "outputs": [
+       {
+         "internalType": "bool",
+         "name": "",
+         "type": "bool"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address[]",
+         "name": "_addresses",
+         "type": "address[]"
+       }
+     ],
+     "name": "setAddresses",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "_communityIssuance",
+         "type": "address"
+       }
+     ],
+     "name": "setCommunityIssuance",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "_grvtStaking",
+         "type": "address"
+       }
+     ],
+     "name": "setGRVTStaking",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "_borrower",
+         "type": "address"
+       },
+       {
+         "internalType": "address",
+         "name": "_asset",
+         "type": "address"
+       },
+       {
+         "internalType": "uint256",
+         "name": "_paybackFraction",
+         "type": "uint256"
+       }
+     ],
+     "name": "simulateRefund",
+     "outputs": [
+       {
+         "internalType": "uint256",
+         "name": "",
+         "type": "uint256"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "sortedVessels",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "stabilityPool",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "timelockAddress",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "newOwner",
+         "type": "address"
+       }
+     ],
+     "name": "transferOwnership",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "treasuryAddress",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "newImplementation",
+         "type": "address"
+       }
+     ],
+     "name": "upgradeTo",
+     "outputs": [],
+     "stateMutability": "nonpayable",
+     "type": "function"
+   },
+   {
+     "inputs": [
+       {
+         "internalType": "address",
+         "name": "newImplementation",
+         "type": "address"
+       },
+       {
+         "internalType": "bytes",
+         "name": "data",
+         "type": "bytes"
+       }
+     ],
+     "name": "upgradeToAndCall",
+     "outputs": [],
+     "stateMutability": "payable",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "vesselManager",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   },
+   {
+     "inputs": [],
+     "name": "vesselManagerOperations",
+     "outputs": [
+       {
+         "internalType": "address",
+         "name": "",
+         "type": "address"
+       }
+     ],
+     "stateMutability": "view",
+     "type": "function"
+   }
+ ]

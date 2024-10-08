@@ -289,18 +289,18 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
       if (tx.status) {
-        alert("Transaction successful!");
+        console.log("Transaction successful!");
       } else {
-        alert("Transaction failed. Please try again.");
+        console.log("Transaction failed. Please try again.");
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };
       if (e.code === 4001) {
         console.error("User rejected the transaction:", e.message);
-        alert("Transaction rejected by the user.");
+        console.log("Transaction rejected by the user.");
       } else {
         console.error("Error during token approval:", e.message);
-        alert("An error occurred during token approval. Please try again.");
+        console.log("An error occurred during token approval. Please try again.");
       }
     }
   };

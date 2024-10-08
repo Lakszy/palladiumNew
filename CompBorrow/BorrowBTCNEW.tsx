@@ -7,6 +7,7 @@ import troveManagerAbi from "@/app/src/constants/abi/TroveManager.sol.json";
 import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
 import botanixTestnet from "@/app/src/constants/botanixTestnet.json";
 import erc20Abi from "@/app/src/constants/abi/ERC20.sol.json"
+import feeCollector from "@/app/src/constants/abi/FeeCollector.sol.json";
 import { getContract } from "@/app/src/utils/getContract";
 import { Label } from "@radix-ui/react-label";
 import Decimal from "decimal.js";
@@ -65,6 +66,7 @@ const BorrowBTCNEW = () => {
   const [staticLtv, setStaticLtv] = useState(0);
   const [newUserColl, setNewUserColl] = useState("0")
 
+
   const [userInputColl, setUserInputColl] = useState(0)
   const [userInputDebt, setUserInputDebt] = useState(0)
   const [allwnce, setAllwnce] = useState<any>(BigInt(0));
@@ -90,6 +92,8 @@ const BorrowBTCNEW = () => {
     pendingLUSDDebtReward: "0",
     pendingETHReward: "0",
   });
+  const [calculatedFee, setCalculatedFee] = useState("0");
+
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const erc20Contract = getContract("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", erc20Abi, provider);
   const { data: walletClient } = useWalletClient();
@@ -97,7 +101,7 @@ const BorrowBTCNEW = () => {
   const spenderAddress = walletClient?.account?.address
 
   const fetchPrice = async () => {
-    if(!walletClient) return null;
+    if (!walletClient) return null;
     const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
     const collateralValueFormatted = ethers.formatUnits(collateralValue, 18)
     setBalanceData(collateralValueFormatted)
@@ -124,6 +128,12 @@ const BorrowBTCNEW = () => {
   const sortedTrovesContract = getContract(
     botanixTestnet.addresses.SortedVessels,
     sortedTroveAbi,
+    provider
+  );
+
+  const feeCollectorContract = getContract(
+    botanixTestnet.addresses.FeeCollector,
+    feeCollector,
     provider
   );
 
@@ -193,6 +203,11 @@ const BorrowBTCNEW = () => {
           setHasPriceFetched(true);
         }
       }
+
+      const Refundfee = await feeCollectorContract.simulateRefund(walletClient?.account?.address, "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", 1000000000000000000n);
+      const RefundfeeDecimal = new Decimal(Refundfee.toString());
+      const RefundfeeFormatted = RefundfeeDecimal.div(_1e18.toString()).toString();
+      setCalculatedFee(RefundfeeFormatted)
     };
 
     const getTroveStatus = async () => {
@@ -227,7 +242,7 @@ const BorrowBTCNEW = () => {
     getTroveStatus();
     fetchedData();
     getStaticData();
-  }, [walletClient]);
+  }, [walletClient, calculatedFee]);
 
   useDebounce(
     () => {
@@ -417,19 +432,19 @@ const BorrowBTCNEW = () => {
         const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
         if (tx) {
-          alert("Transaction successful!");
+          console.log("Transaction successful!");
         } else {
-          alert("Transaction failed. Please try again.");
+          console.log("Transaction failed. Please try again.");
         }
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };
       if (e.code === 4001) {
         console.error("User rejected the transaction:", e.message);
-        alert("Transaction rejected by the user.");
+        console.log("Transaction rejected by the user.");
       } else {
         console.error("Error during token approval:", e.message);
-        alert("An error occurred during token approval. Please try again.");
+        console.log("An error occurred during token approval. Please try again.");
       }
     }
   };
@@ -532,7 +547,7 @@ const BorrowBTCNEW = () => {
                   </div>
                 </div>
                 {/* <div className="md:w-[25rem] h-[15rem] p-5 md:p-0 md:h-[13rem] mt-3 px-8 md:py-4 mr-5"*/}
-                <div className="md:w-[25rem] w-full h-[15rem] md:h-[13rem] rounded-2xl  mt-3 pt-5 px-8 md:py-4 mr-5" style={{ backgroundColor: "#282828" }}>
+                <div className="md:w-[25rem] w-full h-[18rem] md:h-[13rem] rounded-2xl  mt-3 pt-5 px-8 md:py-4 mr-5" style={{ backgroundColor: "#282828" }}>
                   <div className="flex justify-between text-white">
                     <div className="flex flex-col gap-y-16 ">
                       <div className="flex  p-1 flex-col">
@@ -540,9 +555,13 @@ const BorrowBTCNEW = () => {
                         <span className="body-text body-text">${liquidation.toFixed(2)} PUSD</span>
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
                       </div>
-                      <div className="flex md:hidden -mt-6 flex-col">
-                        <span className="text-gray-500 body-text">Trove Status</span>
+                      <div className="flex md:hidden -mt-12 md:-mt-6 flex-col">
+                        <span className="text-gray-500 text-xs body-text">Trove Status</span>
                         {troveStatus === "ACTIVE" ? <Image className="" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
+                      </div>
+                      <div className="flex  fee -mt-6 flex-col">
+                        <span className=" body-text text-xs text-gray-500 body-text">Refundable Fee</span>
+                        <p className="body-text text-sm ">{calculatedFee} PUSD</p>
                       </div>
                     </div>
 
@@ -849,12 +868,12 @@ const BorrowBTCNEW = () => {
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>
                   <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                  <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2 hover:bg-[#88e273] hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
+                  <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2 hover:bg-[#88e273] hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
                 </>
               )}
             </div>

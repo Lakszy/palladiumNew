@@ -3193,13 +3193,13 @@ sd1 {
 }
 
 .custom-dialog .p-dialog-content {
-  background-color: var(--body_background);
+  background-color: black;
 }
 
 .p-dialog-draggable .p-dialog-header {
   cursor: all-scroll;
   display: none;
-  background-color: var(--body_background);
+  background-color: black;
   color: var(--text);
 }
 

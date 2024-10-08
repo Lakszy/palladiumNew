@@ -60,7 +60,8 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
   }, []);
 
   const fetchPrice = useCallback(async () => {
-    if (!address) return;
+    // if (!address) return;
+    if (!walletClient) return null;
     const pusdBalanceValue = await erc20Contract.balanceOf(
       walletClient?.account?.address
     );
@@ -79,11 +80,8 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
   const handleConfirmClick = async () => {
     setIsModalVisible(true);
     try {
-      // if (!walletClient) return null;
-      if (!walletClient) {
-        return null;
-      }
-    
+      if (!walletClient) return null;
+
       const tx = writeContract({
         abi: BorrowerOperationbi,
         address: '0x6117bde97352372eb8041bc631738402DEfA79a4',

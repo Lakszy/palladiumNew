@@ -1,10 +1,9 @@
 /* eslint-disable */
-
-
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
+import apiThreeFeed from "../src/constants/abi/ApiThree.sol.json";
 import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
@@ -47,17 +46,14 @@ export default function Redeem() {
     const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
     const [transactionRejected, setTransactionRejected] = useState(false);
     const [selectedButton, setSelectedButton] = useState("WCORE")
-    const [fetchedPrice, setFetchedPrice] = useState(0)
-    const [fetchedPriceBTC, setFetchedPriceBTC] = useState(0)
+    const [newBTCPrice, setNewBTCPrice] = useState(0n);
+    const [newWCOREPrice, setNewWCOREPrice] = useState(0n);
 
-    const [collTokenAddress, setCollTokenAddress] = useState<string>("")
+    const [collTokenAddress, setCollTokenAddress] = useState<string>("0x5FB4E66C918f155a42d4551e871AD3b70c52275d")
 
     const handleButtonClick = (buttonId: any) => {
         setSelectedButton(buttonId);
-        if (!walletClient) {
-            return null;
-          }
-        
+        if (!walletClient) return null;
         let address = '';
         if (buttonId === 'WCORE') {
             address = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d";
@@ -65,9 +61,6 @@ export default function Redeem() {
             address = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f";
         }
         setCollTokenAddress(address);
-        setTimeout(() => {
-            console.log("Selected button:", buttonId, "Collateral Token Address:", address);
-        }, 0);
     };
 
 
@@ -98,12 +91,24 @@ export default function Redeem() {
         provider
     );
 
+    const ApiFeedBTC = getContract(
+        "0x81A64473D102b38eDcf35A7675654768D11d7e24",
+        apiThreeFeed,
+        provider
+    );
+
+    const ApiFeedCore = getContract(
+        "0xdd68eE1b8b48e63909e29379dBe427f47CFf6BD0",
+        apiThreeFeed,
+        provider
+    );
+
     useEffect(() => {
         const fetchPrice = async () => {
+            if (!walletClient) return null;
             const pusdBalanceValue = await erc20Contract.balanceOf(
                 walletClient?.account?.address
             );
-            console.log("PUSD Balance: ", pusdBalanceValue);
             const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
             setPusdBalance(pusdBalanceFormatted);
         };
@@ -121,15 +126,24 @@ export default function Redeem() {
                 const protocolMetricsBTC = data[0].metrics[0] // WBTC
 
                 setIsRecoveryMode(protocolMetrics.recoveryMode);
-                setFetchedPrice(protocolMetrics.price);
-                setFetchedPriceBTC(protocolMetricsBTC.price);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
-
+        const getPrice = async () => {
+            const oracleBTCPrice = await ApiFeedBTC.read()
+            const oracleWCOREPrice = await ApiFeedCore.read()
+            const btcPrice = oracleBTCPrice[0];
+            const wcorePrice = oracleWCOREPrice[0];
+            const btcpriceAsBigint = BigInt(btcPrice)
+            const wcorepriceAsBigint = BigInt(wcorePrice)
+            setNewBTCPrice(btcpriceAsBigint)
+            setNewWCOREPrice(wcorepriceAsBigint)
+        }
+        console.log(selectedButton, "selectedButton", collTokenAddress)
+        getPrice()
         fetchData();
-    }, []);
+    }, [walletClient, collTokenAddress, selectedButton, newBTCPrice, newWCOREPrice]);
     const sortedTrovesContract = getContract(
         botanixTestnet.addresses.SortedVessels,
         sortedTroveAbi,
@@ -160,8 +174,8 @@ export default function Redeem() {
             const inputBeforeConv = new Decimal(userInput);
 
             const inputValue = inputBeforeConv.mul(pow).toFixed();
-            const priceAsBigInt = BigInt(Math.floor(selectedButton === "WBTC" ? fetchedPriceBTC * 10 ** 18 : fetchedPrice * 10 ** 18))    
-            console.log(priceAsBigInt,"Price")
+            const priceAsBigInt = selectedButton === "WBTC" ? newBTCPrice : newWCOREPrice
+            console.log(selectedButton, "selectedButton", collTokenAddress)
             const redemptionhint = await hintHelpersContract.getRedemptionHints(collTokenAddress, BigInt(inputValue), priceAsBigInt, 50);
 
             const { 0: firstRedemptionHint, 1: partialRedemptionNewICR, 2: truncatedLUSDAmount } = redemptionhint;
@@ -331,7 +345,7 @@ export default function Redeem() {
                         {(transactionRejected || (!isSuccess && showCloseButton)) && (
                             <>
                                 <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                                <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
+                                <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2  hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
                             </>
                         )}
                     </div>

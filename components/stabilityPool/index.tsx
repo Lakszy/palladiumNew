@@ -106,10 +106,7 @@ export const StabilityPool = () => {
   };
 
   const fetchPrice = async () => {
-
-    if (!walletClient) {
-      return null;
-    }
+    if (!walletClient) return null;
   
     const pusdBalanceValue = await erc20Contract.balanceOf(address);
     console.log("PUSD Balance: ", pusdBalanceValue);
@@ -342,7 +339,7 @@ export const StabilityPool = () => {
               <div className="pb-5">
                 {isSuccess && (
                   <button
-                    className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]"
+                    className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]"
                     onClick={handleClose}
                   >
                     Go Back to the Stake Page
@@ -356,7 +353,7 @@ export const StabilityPool = () => {
                         : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}
                     </p>
                     <Button
-                      className=" mt-1 p-3 text-black rounded-none w-[20rem] hover:bg-yellow-400 title-text2 hover:scale-95 bg-[#f5d64e]"
+                      className=" mt-1 p-3 text-black rounded-none w-[20rem]  title-text2 hover:scale-95 bg-[#88e273]"
                       onClick={handleClose}
                     >
                       Try again

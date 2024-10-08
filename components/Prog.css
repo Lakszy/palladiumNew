@@ -28,15 +28,15 @@
   }
   
 .p-carousel-prev {
-background-color: #f5d64e;
+background-color: #88e273;
 }
 .p-carousel-next {
-  background-color: #f5d64e;
+  background-color: #88e273;
   }
 
 
   .error-message {
-    color: #f5d64e;
+    color: #88e273;
     font-size: 20px;
     font-weight: bold;
     margin: 10px 0;

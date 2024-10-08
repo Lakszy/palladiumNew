@@ -382,7 +382,7 @@ export const Unstake = () => {
                         : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}
                     </p>
                     <Button
-                      className=" mt-1 p-3 rounded-none hover:bg-yellow-400 text-black md:w-[20rem] title-text2 hover:scale-95 bg-[#88e273]"
+                      className=" mt-1 p-3 rounded-none  text-black md:w-[20rem] title-text2 hover:scale-95 bg-[#88e273]"
                       onClick={handleClose}
                     >
                       TRY aGain

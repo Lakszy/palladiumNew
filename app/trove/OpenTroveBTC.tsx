@@ -97,13 +97,6 @@ export const OpenTroveBTC = () => {
         return new ethers.Contract(address, abi, provider);
     };
 
-
-    const web3 = new Web3(window.ethereum)
-    const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
-    const spenderAddress = walletClient?.account?.address
-    const amount = web3.utils.toWei("100", "ether");
-    const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
-
     const contract = getEtherContract(
         "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
         erc20Abi,
@@ -174,7 +167,7 @@ export const OpenTroveBTC = () => {
                 walletClient?.account.address
             );
 
-            const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
+            // const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
             const collValue = Number(xCollatoral);
             const borrowValue = Number(xBorrow);
             const expectedFeeFormatted = (borrowRate * borrowValue) / 100;
@@ -263,6 +256,8 @@ export const OpenTroveBTC = () => {
     };
 
     const fetchPrice = async () => {
+        if (!walletClient) return null;
+
         const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
         const collateralValueFormatted = ethers.formatUnits(collateralValue, 18)
         setBalanceData(collateralValueFormatted)
@@ -306,14 +301,22 @@ export const OpenTroveBTC = () => {
 
     const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
         try {
-            const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
-            console.log("Approved amount:", approvedAmount);
-            if (approvedAmount != null) {
-                setAprvAmt(approvedAmount);
-                return approvedAmount;
-            } else {
-                console.error("Approved amount is null or undefined");
-                return null;
+            if (walletClient) {
+                const web3 = new Web3(window.ethereum)
+                const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+                const spenderAddress = walletClient?.account?.address
+                const amount = web3.utils.toWei("100", "ether");
+                const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
+
+                const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
+                console.log("Approved amount:", approvedAmount);
+                if (approvedAmount != null) {
+                    setAprvAmt(approvedAmount);
+                    return approvedAmount;
+                } else {
+                    console.error("Approved amount is null or undefined");
+                    return null;
+                }
             }
         } catch (error) {
             console.error("Error fetching approved amount:", error);
@@ -322,6 +325,7 @@ export const OpenTroveBTC = () => {
     };
 
     const handleCheckApprovedClick = async () => {
+        const spenderAddress = walletClient?.account?.address
         const userAddress = walletClient?.account?.address;
         const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
         if (approvedAmount) {
@@ -332,32 +336,41 @@ export const OpenTroveBTC = () => {
     };
 
     useEffect(() => {
+        const spenderAddress = walletClient?.account?.address
         if (walletClient?.account?.address && spenderAddress) {
             handleCheckApprovedClick();
         }
-    }, [walletClient?.account?.address, spenderAddress]);
+    }, [walletClient?.account?.address]);
 
     const handleApproveClick = async (amount: string) => {
         try {
-            const userAddress = walletClient?.account?.address;
-            const gasPrice = (await web3.eth.getGasPrice()).toString();
-            // const amountInWei = (parseFloat(amount) * 1000000).toString();
-            const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-            const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
-            if (tx.status) {
-                alert("Transaction successful!");
-            } else {
-                alert("Transaction failed. Please try again.");
+            if (walletClient) {
+                const web3 = new Web3(window.ethereum)
+                const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+                const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
+
+                const userAddress = walletClient?.account?.address;
+                const gasPrice = (await web3.eth.getGasPrice()).toString();
+                // const amountInWei = (parseFloat(amount) * 1000000).toString();
+                const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
+                const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+
+                if (tx.status) {
+                    console.log("Transaction successful!");
+                } else {
+                    console.log("Transaction failed. Please try again.");
+                }
             }
+
         } catch (error) {
             const e = error as { code?: number; message?: string };
             if (e.code === 4001) {
                 console.error("User rejected the transaction:", e.message);
-                alert("Transaction rejected by the user.");
+                console.log("Transaction rejected by the user.");
             } else {
                 console.error("Error during token approval:", e.message);
-                alert("An error occurred during token approval. Please try again.");
+                console.log("An error occurred during token approval. Please try again.");
             }
         }
     };
@@ -638,12 +651,12 @@ export const OpenTroveBTC = () => {
                             )}
                             <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
                             {isSuccess && (
-                                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
+                                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
                             )}
                             {(transactionRejected || (!isSuccess && showCloseButton)) && (
                                 <>
                                     <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                                    <Button className=" mt-1 p-3 hover:bg-yellow-400 rounded-none md:w-[20rem] text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
+                                    <Button className=" mt-1 p-3  rounded-none md:w-[20rem] text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
                                 </>
                             )}
                         </div>

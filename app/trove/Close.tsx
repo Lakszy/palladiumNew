@@ -60,7 +60,8 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   }, []);
 
   const fetchPrice = useCallback(async () => {
-    if (!address) return;
+    if (!walletClient) return null;
+
     const pusdBalanceValue = await erc20Contract.balanceOf(
       walletClient?.account?.address
     );
@@ -232,12 +233,12 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>
                   <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                  <Button className=" mt-1 p-3 rounded-none md:w-[20rem] text-black title-text2 hover:bg-[#88e273] hover:scale-95 bg-[#f5d64e]" onClick={handleClose}>Try again</Button>
+                  <Button className=" mt-1 p-3 rounded-none md:w-[20rem] text-black title-text2 hover:bg-[#88e273] hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
                 </>
               )}
             </div>
