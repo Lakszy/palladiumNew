@@ -405,7 +405,7 @@ const Portfolio = () => {
                                   <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollCore.debtCore).toFixed(2)} PUSD</span>
                                 </div>
                               </div>
-                              <div className="flex flex-col mb-2  items-center">
+                              <div className="flex -ml-10 md:-ml-0 flex-col mb-2  items-center">
                                 <Knob value={Number(newLTV) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
                                 <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
                                   <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
@@ -464,7 +464,7 @@ const Portfolio = () => {
                                   <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollBTC.debtBTC).toFixed(2)} PUSD</span>
                                 </div>
                               </div>
-                              <div className="flex flex-col mb-2  items-center">
+                              <div className="flex flex-col mb-2 -ml-10 md:-ml-0  items-center">
                                 <Knob value={Number(newLTVBTC) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
                                 <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
                                   <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
