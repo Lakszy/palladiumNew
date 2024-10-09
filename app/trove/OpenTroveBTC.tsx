@@ -77,6 +77,8 @@ export const OpenTroveBTC = () => {
         expectedDebt: 0,
         collateralRatio: 0,
     });
+    const [newApprovedAmount, setNewApprovedAmount] = useState<any>(null);
+    const [modiff, setModiff] = useState<any>(null);
 
     const { data: isConnected } = useWalletClient();
     const { data: walletClient } = useWalletClient();
@@ -160,12 +162,9 @@ export const OpenTroveBTC = () => {
             }
 
             setIsModalVisible(true);
-            await handleApproveClick(xCollatoral);
-            // from here we can approve and to txn from a single click in a flow
-            const status = await troveManagerContract.getVesselStatus(
-                "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
-                walletClient?.account.address
-            );
+            const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
+            const amountToApprove = aprvAmntInDecimals === 0 ? xCollatoral : (newApprovedAmount !== null ? newApprovedAmount.toString() : null);
+            if (amountToApprove) { await handleApproveClick(amountToApprove); }
 
             // const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
             const collValue = Number(xCollatoral);
@@ -304,12 +303,10 @@ export const OpenTroveBTC = () => {
             if (walletClient) {
                 const web3 = new Web3(window.ethereum)
                 const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
-                const spenderAddress = walletClient?.account?.address
-                const amount = web3.utils.toWei("100", "ether");
+                // Owner ->user // Spender ->Contract ka address borrowroperation , stability pool or any other
                 const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
                 const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
-                console.log("Approved amount:", approvedAmount);
                 if (approvedAmount != null) {
                     setAprvAmt(approvedAmount);
                     return approvedAmount;
@@ -325,7 +322,7 @@ export const OpenTroveBTC = () => {
     };
 
     const handleCheckApprovedClick = async () => {
-        const spenderAddress = walletClient?.account?.address
+        const spenderAddress = "0x6117bde97352372eb8041bc631738402DEfA79a4"
         const userAddress = walletClient?.account?.address;
         const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
         if (approvedAmount) {
@@ -395,6 +392,23 @@ export const OpenTroveBTC = () => {
         return () => clearTimeout(timer);
     }, []);
 
+    getApprovedAmount(walletClient?.account?.address, "0x6117bde97352372eb8041bc631738402DEfA79a4")
+    useEffect(() => {
+        const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
+        const modDifference = Number(userInputs.collatoral) - aprvAmntInDecimals;
+        setModiff(modDifference)
+    }, [userInputs.collatoral, aprvAmnt]);
+
+    useEffect(() => {
+        if (Number(modiff) > 0) {
+            setNewApprovedAmount(modiff);
+        } else {
+            setNewApprovedAmount(null);
+        }
+    }, [newApprovedAmount, modiff, aprvAmnt, userInputs.collatoral]);
+
+    const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
+    const amountToApprove = aprvAmntInDecimals === 0 ? userInputs.collatoral : (newApprovedAmount !== null ? newApprovedAmount.toString() : null)
 
     return (
         <>
@@ -445,7 +459,7 @@ export const OpenTroveBTC = () => {
                                     <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1'>PUSD</h3>
                                     <h3 className='h-full border border-[#88e273] text-yellow-300 mx-4'></h3>
                                 </div>
-                                <input id="quantity" placeholder="" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-gray-400 body-text font-medium" style={{ backgroundColor: "black" }} />
+                                <input id="quantity" placeholder="" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-gray-400 body-text font-medium border-[#88e273]" style={{ backgroundColor: "black", border: "" }} />
                             </div>
                             <div className="pt-2 w-[90%] flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
                                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
@@ -484,7 +498,7 @@ export const OpenTroveBTC = () => {
                                     parseFloat(userInputs.borrow) <= minDebt)
                                     ? 0.5 : 1
                             }}>
-                            {isModalVisible ? "Opening Trove..." : "Open Trove"}
+                            {isModalVisible ? "Opening Trove..." : amountToApprove ? "Approve" : "Open Trove"}
                         </button>
                     </div>
                     {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData) ? (

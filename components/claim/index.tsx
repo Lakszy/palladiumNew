@@ -49,7 +49,9 @@ const Claim = () => {
   const [wbtcBalance, setWbtcBalance] = useState(0.0)
 
   const [depositorAssets, setDepositorAssets] = useState([]);
-  const [depositorGains, setDepositorGains] = useState([]);
+  const [depositorGains, setDepositorGains] = useState<{
+    [key: string]: string;
+  }>({});
 
 
   const handleClose = useCallback(() => {
@@ -59,6 +61,20 @@ const Claim = () => {
     setTransactionRejected(false);
     window.location.reload();
   }, []);
+
+  const collateralTokens = [
+    {
+      name: "WCORE",
+      address: "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
+      oracle: "0xdd68eE1b8b48e63909e29379dBe427f47CFf6BD0",
+    },
+    {
+      name: "WBTC",
+      address: "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+      oracle: "0x81A64473D102b38eDcf35A7675654768D11d7e24",
+    },
+
+  ];
 
 
   useEffect(() => {
@@ -76,23 +92,40 @@ const Claim = () => {
     };
 
     fetchData();
-  }, [walletClient, hash, fetchedPrice, fetchedPriceBTC]);
+  }, [walletClient, hash]);
 
+  const fetchDepositorGains = useCallback(async () => {
+    if (!walletClient) return;
 
-  const assets = [
-    { name: "wCore", amount: 0, marketPrice: fetchedPrice, decimals: 2 },
-    { name: "wBTC", amount: 0, marketPrice: fetchedPriceBTC, decimals: 2 },
-  ];
+    try {
+      const sortedAssets = [...collateralTokens].sort((a, b) =>
+        a.address.toLowerCase().localeCompare(b.address.toLowerCase())
+      );
 
+      const assets = sortedAssets.map((token) => token.address);
+      const [returnedAssets, gains] =
+        await stabilityPoolContractReadOnly.getDepositorGains(
+          walletClient.account.address,
+          assets
+        );
 
-  const calculateTotalClaimValue = () => {
-    return assets.reduce((total, asset) => {
-      const claimValue = asset.amount * asset.marketPrice;
-      return total + claimValue;
-    }, 0);
-  };
-
-  const totalClaimValue = calculateTotalClaimValue().toFixed(2);
+      const gainsObject: { [key: string]: string } = {};
+      returnedAssets.forEach((asset: string, index: number) => {
+        const gain = gains[index];
+        if (gain > BigInt(0)) {
+          const token = sortedAssets.find(
+            (t) => t.address.toLowerCase() === asset.toLowerCase()
+          );
+          if (token) {
+            gainsObject[token.name] = ethers.formatUnits(gain, 18);
+          }
+        }
+      });
+      setDepositorGains(gainsObject);
+    } catch (error) {
+      console.error("Error fetching depositor gains:", error);
+    }
+  }, [walletClient, stabilityPoolContractReadOnly, collateralTokens]);
 
 
   useEffect(() => {
@@ -158,7 +191,7 @@ const Claim = () => {
       setLoadingMessage("Waiting for transaction to confirm..");
       setLoadingModalVisible(true);
     } else if (isSuccess) {
-      setLoadingMessage("Close Transaction completed successfully");
+      setLoadingMessage("Claim completed successfully");
       setLoadingModalVisible(true);
     } else if (transactionRejected) {
       setLoadingMessage("Transaction was rejected");
@@ -173,6 +206,11 @@ const Claim = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    fetchDepositorGains();
+  }, []);
+
+
   const renderHeader = () => {
     return (
       <div className="flex justify-content-between align-items-center">
@@ -182,7 +220,23 @@ const Claim = () => {
       </div>
     );
   };
-  const isButtonEnabled = !(wbtcBalance > 0 || wcoreBalance > 0);
+
+  const allTokenGains = collateralTokens.reduce((acc, token) => {
+    acc[token.name] = depositorGains[token.name] || "0";
+    return acc;
+  }, {} as { [key: string]: string });
+
+  const wcoreGains = Number(allTokenGains["WCORE"]);
+  const wbtcGains = Number(allTokenGains["WBTC"]);
+
+  const totalClaimValue = Number((wcoreGains * fetchedPrice) + (wbtcGains * fetchedPriceBTC)).toFixed(2);
+
+  const isButtonEnabled = Number(totalClaimValue) > 0;
+
+  const assets = [
+    { name: "wCore", amount: wcoreGains, marketPrice: fetchedPrice, decimals: 2 },
+    { name: "wBTC", amount: wbtcGains, marketPrice: fetchedPriceBTC, decimals: 2 },
+  ];
 
   return (
     <div className="p-4 md:p-8 w-full md:h-[25.6rem] border-[#88e273] bg-black text-white border rounded-none">
@@ -221,22 +275,32 @@ const Claim = () => {
                   {totalClaimValue} USD
                 </span>
               </div>
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-400 body-text font-medium ">WCORE</span>
-                <span className="body-text font-medium ">
-                  {wcoreBalance.toFixed(2)} WCORE
-                </span>
-              </div>
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-400 body-text font-medium ">wBTC</span>
-                <span className="body-text font-medium ">
-                  {wbtcBalance.toFixed(2)} wBTC
-                </span>
-              </div>
+              {Object.entries(allTokenGains).map(([token, amount]) => {
+                let formattedAmount;
 
+                if (token === "WCORE") {
+                  formattedAmount = parseFloat(amount).toFixed(2);
+                } else if (token === "WBTC") {
+                  formattedAmount = parseFloat(amount).toFixed(8);
+                } else {
+                  formattedAmount = parseFloat(amount).toFixed(6);
+                }
+                return (
+                  <div key={token} className="flex justify-between py-2">
+                    <div className="flex">
+                      <span className="text-[#827f77] text-sm font-medium body-text">
+                        {token} Gains
+                      </span>
+                    </div>
+                    <span className="text-white font-medium text-sm body-text">
+                      {formattedAmount} {token}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
-           <button className={`w-full py-3 rounded title-text2 transition-colors mt-4 font-medium bg-[#88e273] text-black
+          <button className={`w-full py-3 rounded title-text2 transition-colors mt-4 font-medium bg-[#88e273] text-black
   ${isButtonEnabled ? 'bg-[#88e273] text-black' : 'cursor-not-allowed opacity-50'}`} onClick={isButtonEnabled ?
               handleConfirmClick : undefined} disabled={!isButtonEnabled}>
             CLAIM
@@ -275,7 +339,7 @@ const Claim = () => {
                   <Image src={conf} alt="rectangle" width={150} />
                   <div className="my-5 ml-[6rem] mb-5"></div>
                 </>
-              ) : loadingMessage === 'Close Transaction completed successfully' ? (
+              ) : loadingMessage === 'Claim completed successfully' ? (
                 <Image src={tick} alt="tick" width={200} />
               ) : transactionRejected ? (
                 <Image src={rej} alt="rejected" width={140} />

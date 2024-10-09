@@ -78,6 +78,8 @@ export const OpenTrove = () => {
     expectedDebt: 0,
     collateralRatio: 0,
   });
+  const [newApprovedAmount, setNewApprovedAmount] = useState<any>(null);
+  const [modiff, setModiff] = useState<any>(null);
 
   const { data: isConnected } = useWalletClient();
   const { data: walletClient } = useWalletClient();
@@ -163,18 +165,14 @@ export const OpenTrove = () => {
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
     try {
-      if (!walletClient) {
-        return null;
-      }
+      if (!walletClient) return null;
 
       setIsModalVisible(true);
 
-      await handleApproveClick(xCollatoral);
-      // from here we can approve and to txn from a single click in a flow
-      const status = await troveManagerContract.getVesselStatus(
-        "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
-        walletClient?.account.address
-      );
+      const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
+      const amountToApprove = aprvAmntInDecimals === 0 ? xCollatoral : (newApprovedAmount !== null ? newApprovedAmount.toString() : null);
+      if (amountToApprove) { await handleApproveClick(amountToApprove); }
+
 
       // const allowance = await tokenContract.methods.allowance("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", spenderAddress).call();
       const collValue = Number(xCollatoral);
@@ -311,24 +309,30 @@ export const OpenTrove = () => {
 
   const getApprovedAmount = async (ownerAddress: string | undefined, spenderAddress: string | undefined) => {
     try {
-      const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
-      console.log("Approved amount:", approvedAmount);
-      if (approvedAmount != null) {
-        setAprvAmt(approvedAmount);
-        return approvedAmount;
-      } else {
-        console.error("Approved amount is null or undefined");
-        return null;
-      }
+        if (walletClient) {
+            const web3 = new Web3(window.ethereum)
+            const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
+            // Owner ->user // Spender ->Contract ka address borrowroperation , stability pool or any other
+            const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
+
+            const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
+            if (approvedAmount != null) {
+                setAprvAmt(approvedAmount);
+                return approvedAmount;
+            } else {
+                console.error("Approved amount is null or undefined");
+                return null;
+            }
+        }
     } catch (error) {
-      console.error("Error fetching approved amount:", error);
-      return null;
+        console.error("Error fetching approved amount:", error);
+        return null;
     }
-  };
+};
 
   const handleCheckApprovedClick = async () => {
     const userAddress = walletClient?.account?.address;
-    const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
+    const approvedAmount = await getApprovedAmount(userAddress, "0x6117bde97352372eb8041bc631738402DEfA79a4");
     if (approvedAmount) {
       setAprvAmt(approvedAmount);
     } else {
@@ -387,6 +391,23 @@ export const OpenTrove = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  getApprovedAmount(walletClient?.account?.address, "0x6117bde97352372eb8041bc631738402DEfA79a4")
+  useEffect(() => {
+      const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
+      const modDifference = Number(userInputs.collatoral) - aprvAmntInDecimals;
+      setModiff(modDifference)
+  }, [userInputs.collatoral, aprvAmnt]);
+
+  useEffect(() => {
+      if (Number(modiff) > 0) {
+          setNewApprovedAmount(modiff);
+      } else {
+          setNewApprovedAmount(null);
+      }
+  }, [newApprovedAmount, modiff, aprvAmnt, userInputs.collatoral]);
+
+  const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
+  const amountToApprove = aprvAmntInDecimals === 0 ? userInputs.collatoral : (newApprovedAmount !== null ? newApprovedAmount.toString() : null)
 
   return (
     <>
@@ -476,7 +497,7 @@ export const OpenTrove = () => {
                   parseFloat(userInputs.borrow) <= minDebt)
                   ? 0.5 : 1
               }}>
-              {isModalVisible ? "Opening Trove..." : "Open Trove"}
+              {isModalVisible ? "Opening Trove..." : amountToApprove ? "Approve" : "Open Trove"}
             </button>
           </div>
           {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData) ? (

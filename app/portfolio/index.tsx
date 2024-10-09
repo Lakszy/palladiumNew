@@ -9,7 +9,7 @@ import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { EVMConnect } from "@/components/EVMConnect";
 import { ethers } from "ethers";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
 import web3 from "web3";
 import Link from "next/link";
@@ -104,6 +104,23 @@ const Portfolio = () => {
   const [pusdMintedCore, setPusdMintedCore] = useState(0)
   const [pusdMintedBTC, setPusdMintedBTC] = useState(0)
   const [totalStabilityPool, setTotalStabilityPool] = useState("0");
+  const [depositorGains, setDepositorGains] = useState<{
+    [key: string]: string;
+  }>({});
+  
+  const collateralTokens = [
+    {
+      name: "WCORE",
+      address: "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
+      oracle: "0xdd68eE1b8b48e63909e29379dBe427f47CFf6BD0",
+    },
+    {
+      name: "WBTC",
+      address: "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+      oracle: "0x81A64473D102b38eDcf35A7675654768D11d7e24",
+    },
+
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -176,6 +193,41 @@ const Portfolio = () => {
     getTroveStatus();
     fetchData();
   }, [walletClient]);
+
+  const fetchDepositorGains = useCallback(async () => {
+    if (!walletClient) return;
+
+    try {
+      const sortedAssets = [...collateralTokens].sort((a, b) =>
+        a.address.toLowerCase().localeCompare(b.address.toLowerCase())
+      );
+
+      const assets = sortedAssets.map((token) => token.address);
+      const [returnedAssets, gains] =
+        await stabilityPoolContractReadOnly.getDepositorGains(
+          walletClient.account.address,
+          assets
+        );
+
+      const gainsObject: { [key: string]: string } = {};
+      returnedAssets.forEach((asset: string, index: number) => {
+        const gain = gains[index];
+        if (gain > BigInt(0)) {
+          const token = sortedAssets.find(
+            (t) => t.address.toLowerCase() === asset.toLowerCase()
+          );
+          if (token) {
+            gainsObject[token.name] = ethers.formatUnits(gain, 18);
+          }
+        }
+      });
+      setDepositorGains(gainsObject);
+    } catch (error) {
+      console.error("Error fetching depositor gains:", error);
+    }
+  }, [walletClient, stabilityPoolContractReadOnly, collateralTokens]);
+
+
 
   useEffect(() => {
     const pow = Decimal.pow(10, 18);
@@ -281,6 +333,18 @@ const Portfolio = () => {
 
 
   const suppliedAmountProgress = ((Number(entireDebtAndCollCore.debtCore) + Number(entireDebtAndCollBTC.debtBTC)) * 0.9).toFixed(2)
+
+  useEffect(() => {
+    fetchDepositorGains();
+  }, []);
+
+  const allTokenGains = collateralTokens.reduce((acc, token) => {
+    acc[token.name] = depositorGains[token.name] || "0";
+    return acc;
+  }, {} as { [key: string]: string });
+
+  const wcoreGains = Number(allTokenGains["WCORE"]);
+  const wbtcGains = Number(allTokenGains["WBTC"]);
 
   return (
     <div>
@@ -503,13 +567,13 @@ const Portfolio = () => {
                                 <div className="flex flex-col whitespace-nowrap">
                                   <span className="body-text text-sm text-[#565348]">WCORE Gains</span>
                                   <span className="body-text font-medium whitespace-nowrap">
-                                    {troveStatuscore === 'ACTIVE' ? (0).toFixed(2) + ' PUSD' : 'Trove not active'}
+                                    {Number(wcoreGains).toFixed(2)}
                                   </span>
                                 </div>
                                 <div className="flex flex-col whitespace-nowrap">
                                   <span className="body-text text-sm text-[#565348]">WBTC Gains</span>
                                   <span className="body-text font-medium whitespace-nowrap">
-                                    {troveStatusBTC === 'ACTIVE' ? (0).toFixed(2) + ' PUSD' : 'Trove not active'}
+                                  {Number(wbtcGains).toFixed(8)}
                                   </span>
                                 </div>
                               </div>

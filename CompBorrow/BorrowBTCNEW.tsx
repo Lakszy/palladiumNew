@@ -93,6 +93,8 @@ const BorrowBTCNEW = () => {
     pendingETHReward: "0",
   });
   const [calculatedFee, setCalculatedFee] = useState("0");
+  const [newApprovedAmount, setNewApprovedAmount] = useState<any>(null);
+  const [modiff, setModiff] = useState<any>(null);
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const erc20Contract = getContract("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", erc20Abi, provider);
@@ -253,10 +255,20 @@ const BorrowBTCNEW = () => {
 
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
 
-    if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
+    if (!walletClient) return null;
+
+    const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
+    let amountToApprove = null;
+    if (aprvAmntInDecimals === 0) {
+      amountToApprove = xCollatoral;
+    } else {
+      amountToApprove = newApprovedAmount !== null ? newApprovedAmount.toString() : null;
+    }
+    if (amountToApprove) {
+      await handleApproveClick(amountToApprove);
+    } else if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
       await handleApproveClick(xCollatoral);
     }
-
     try {
       setIsModalVisible(true)
       const borrowValue = Number(xBorrow);
@@ -388,7 +400,6 @@ const BorrowBTCNEW = () => {
         const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
         const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
-        console.log("Approved amount:", approvedAmount);
         if (approvedAmount != null) {
           setAprvAmt(approvedAmount);
           return approvedAmount;
@@ -405,6 +416,7 @@ const BorrowBTCNEW = () => {
 
   const handleCheckApprovedClick = async () => {
     const userAddress = walletClient?.account?.address;
+    const spenderAddress = "0x6117bde97352372eb8041bc631738402DEfA79a4"
     const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
     if (approvedAmount) {
       setAprvAmt(approvedAmount);
@@ -499,6 +511,25 @@ const BorrowBTCNEW = () => {
   }, []);
 
   const marginClass = parseFloat(userInputs.depositCollateral) > 0 ? 'md:-ml-[7rem]' : 'md:-ml-[5rem]';
+
+  getApprovedAmount(walletClient?.account?.address, "0x6117bde97352372eb8041bc631738402DEfA79a4")
+  useEffect(() => {
+    const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
+    const modDifference = Number(userInputs.depositCollateral) - aprvAmntInDecimals;
+    setModiff(modDifference)
+  }, [userInputs.depositCollateral, aprvAmnt]);
+
+  useEffect(() => {
+    if (Number(modiff) > 0) {
+      setNewApprovedAmount(modiff);
+    } else {
+      setNewApprovedAmount(null);
+    }
+  }, [newApprovedAmount, modiff, aprvAmnt, userInputs.depositCollateral]);
+
+  const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
+  const amountToApprove = aprvAmntInDecimals === 0 ? userInputs.depositCollateral : (newApprovedAmount !== null ? newApprovedAmount.toString() : null)
+
   return (
     <div>
       {isLoading ? (
@@ -676,7 +707,7 @@ const BorrowBTCNEW = () => {
                                    ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
                                         ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-[#88e273]  text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
-                                    UPDATE TROVE
+                                    {isModalVisible ? "Updating Trove..." : amountToApprove ? "Approve" : "Update Trove"}
                                   </button>
                                 </div>
                               </div>

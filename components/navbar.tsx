@@ -117,9 +117,9 @@ function NavBar() {
               onClick={() => handleAddToken("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", "wBTC", 18)}>
               <Image src={btc} alt="wBTC" width={40} />
               <div>
-                <h1 className="text-white title-text2 text-sm">wBTC</h1>
+                <h1 className="text-white title-text2 text-sm">WBTC</h1>
                 <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPriceBTC).toFixed(2)}</h1>
-                <span className="popup body-text text-xs">Click to import wBTC</span>
+                <span className="popup body-text text-xs">Click to import WBTC</span>
               </div>
             </div>
           </div>
