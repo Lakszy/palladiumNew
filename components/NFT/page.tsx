@@ -94,15 +94,15 @@ export default function Redeem() {
     return (
         <>
 
-            <div className="w-full -ml-1.5 md:-ml-0 upper mr-10 border-yellow-300  p-6 border items-center justify-center" style={{ backgroundColor: '#272315' }}>
+            <div className="w-full -ml-1.5 md:-ml-0 upper mr-10 border-[#88e273]  p-6 border items-center justify-center" style={{ backgroundColor: '#272315' }}>
                 <div className="flex flex-col md:flex-row justify-between  ">
                     <div className="box-1 w-[20rem] space-y-3 pb-24">
                         <Image src={CB} alt="circuit breaker" />
-                        <h1 className="text-yellow-300 text-5xl font-extrabold title-text">Genesis NFT</h1>
+                        <h1 className="text-[#88e273] text-5xl font-extrabold title-text">Genesis NFT</h1>
                         <h3 className="text-gray-300 body-text">Collect the very first Circuit Breaker NFT and join the elite OGs of Palladium.</h3>
                         <div className="pt-10">
                             <h3 className="text-gray-300 title-text text-xl font-semibold">Available till</h3>
-                            <h3 className="text-yellow-300 text-2xl font-semibold">21 April 2024 12PM GMT</h3>
+                            <h3 className="text-[#88e273] text-2xl font-semibold">21 April 2024 12PM GMT</h3>
                         </div>
                     </div>
                     <div>

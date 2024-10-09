@@ -1,18 +1,36 @@
 @font-face {
   font-family: "Montech";
-  src: local("Montech"), url(./src/config/fonts/Montech/MONTECHV01-Bold.otf);
+  src: local("Montech"), url(./src/config/fonts/SubjectivityFont/Subjectivity-Bold.otf);
 }
 
 @font-face {
   font-family: "MontechMedium";
   src: local("MontechMedium"),
-    url(./src/config/fonts/Montech/MONTECHV01-Medium.otf);
+    url(./src/config/fonts/SubjectivityFont/Subjectivity-Medium.otf);
 }
 
 @font-face {
   font-family: "Montserrat";
   src: local("Montserrat"),
     url(./src/config/fonts/Montserrat-VariableFont_wght.ttf);
+}
+
+@font-face {
+  font-family: "Subjectivity";
+  src: local("Subjectivity"), url(./src/config/fonts/SubjectivityFont/Subjectivity-Medium.otf);
+}
+
+@font-face {
+  font-family: "SubjectivityBold";
+  src: local("SubjectivityBold"), url(./src/config/fonts/SubjectivityFont/Subjectivity-Bold.otf);
+}
+
+.titleTextSub {
+  font-family: "SubjectivityBold";
+}
+
+.popins_fnt {
+  font-family: "Poppins";
 }
 
 .title-text {
@@ -1203,7 +1221,7 @@ thead {
 .p-tabview-title {
   /* margin-left: 20%; */
   min-width: 100px;
-  /* background: #3b351b; */
+  /* background: #; */
   color: black;
 }
 
@@ -3433,16 +3451,17 @@ sd1 {
 }
 
 .p-tooltip-text  {
-  background-color: #3A3522;
+  background-color: #a3a3a3;
   font-family: "Montserrat";
   font-size: 12px;
+  font-weight:400;
   max-width: 9rem;
   padding: 10px;
   min-height: fit-content !important;
 }
 
 .p-tabview-selected {
-  background-color: #88e273 !important; /* bg-yellow-400 corresponds to this color */
+  background-color: #88e273 !important; /* bg-[#88e273] corresponds to this color */
 }
 .p-tabview-header {
   background-color: transparent; /* transparent for unselected tabs */

@@ -14,7 +14,7 @@ import { useAccount, useWalletClient } from "wagmi";
 import web3 from "web3";
 import Link from "next/link";
 import Image from "next/image";
-import img1 from "../assets/images/Group 771.png";
+import img1 from "../assets/images/portfolioCoin.png";
 import { Knob } from "primereact/knob";
 import Progress from "./Progress";
 import Layout from "./layout";
@@ -361,7 +361,7 @@ const Portfolio = () => {
                       Portfolio Value
                     </h6>
                     <span className="text-white body-text text-2xl font-bold whitespace-nowrap flex text-left">
-                      ${portfolioValue} PUSD
+                      {portfolioValue} ORE
                     </span>
                   </div>
                   <div className="w-5/12 h-2 -ml-[12rem] md:ml-0 md:mr-10 mt-10 pb-12">
@@ -378,7 +378,7 @@ const Portfolio = () => {
                           {(
                             Number(entireDebtAndCollCore.debtCore) +
                             Number(entireDebtAndCollBTC.debtBTC)
-                          ).toFixed(2)} PUSD
+                          ).toFixed(2)} ORE
                         </span>
                       </div>
 
@@ -392,7 +392,7 @@ const Portfolio = () => {
                           {(
                             Number(entireDebtAndCollCore.collCore) * fetchedPrice +
                             Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC
-                          ).toFixed(2)}
+                          ).toFixed(2)} ORE
                         </span>
                       </div>
 
@@ -420,7 +420,7 @@ const Portfolio = () => {
                     onChange={() => setActiveTab('tab2')}
                     style={{ backgroundColor: "#272315" }}
                   />
-                  <label htmlFor="tab2"><span className="whitespace-nowrap md:body-text body-textsm">Stability Pool</span></label>
+                  <label htmlFor="tab2"><span className="whitespace-nowrap md:body-text body-textsm">STABILITY POOL</span></label>
 
                   {activeTab === 'tab1' && (
                     <section id="content1" className="tab-content flex md:flex-row flex-col" style={{ borderTop: "1px solid #88e273", backgroundColor: "black", display: "flex", gap: "1rem" }}>
@@ -466,11 +466,11 @@ const Portfolio = () => {
                                 <div className="flex -ml-8 flex-col whitespace-nowrap">
                                   {" "}
                                   <span className="body-text font-semibold text-gray-500">Debt</span>
-                                  <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollCore.debtCore).toFixed(2)} PUSD</span>
+                                  <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollCore.debtCore).toFixed(2)} ORE</span>
                                 </div>
                               </div>
                               <div className="flex -ml-10 md:-ml-0 flex-col mb-2  items-center">
-                                <Knob value={Number(newLTV) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
+                                <Knob value={Number(newLTV) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-[#88e273]" />
                                 <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
                                   <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
                                   <div className="flex items-center justify-center gap-x-2">
@@ -525,11 +525,11 @@ const Portfolio = () => {
                                 <div className="flex  flex-col whitespace-nowrap">
                                   {" "}
                                   <span className="body-text font-semibold text-gray-500">Debt</span>
-                                  <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollBTC.debtBTC).toFixed(2)} PUSD</span>
+                                  <span className="body-text font-semibold whitespace-nowrap">{Number(entireDebtAndCollBTC.debtBTC).toFixed(2)} ORE</span>
                                 </div>
                               </div>
                               <div className="flex flex-col mb-2 -ml-10 md:-ml-0  items-center">
-                                <Knob value={Number(newLTVBTC) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
+                                <Knob value={Number(newLTVBTC) || 0} showValue={true} size={175} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-[#88e273]" />
                                 <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
                                   <span className="text-sm whitespace-nowrap text-[#565348] body-text ">YOUR LTV</span>
                                   <div className="flex items-center justify-center gap-x-2">
@@ -548,10 +548,10 @@ const Portfolio = () => {
                     <section id="content2" className="tab-content">
                       <div className="lg:w-[25rem] h-auto rounded-sm" style={{ backgroundColor: "#222222" }}>
                         <div className="flex items-center flex-row justify-between p-5 border-b-1" style={{ backgroundColor: "#282828" }}>
-                          <span className="text-white title-text2 ml-[10px]">STaBILITY POOL</span>
+                          <span className="text-white title-text2 ml-[10px]">STABILITY POOL</span>
                           <Link href="/stake">
                             <button className="h-8 px-6 title-text2 border-[#88e273] border bg-transparent text-[#88e273] font-bold">
-                              {troveStatuscore === 'INACTIVE' && troveStatusBTC === 'INACTIVE' ? 'STaKE PUSD' : 'Details'}
+                              {troveStatuscore === 'INACTIVE' && troveStatusBTC === 'INACTIVE' ? 'STAKE ORE' : 'Details'}
                             </button>
                           </Link>
                         </div>
@@ -560,24 +560,24 @@ const Portfolio = () => {
                           <div className="text-white ml-5 p-3">
                             <div className="mb-[2rem] mt-2 whitespace-nowrap">
                               <p className="body-text text-sm text-[#565348]">Deposited</p>
-                              <p className="body-text font-medium whitespace-nowrap">{Number(totalStakedValue).toFixed(2)} PUSD</p>
+                              <p className="body-text font-medium whitespace-nowrap">{Number(totalStakedValue).toFixed(2)} ORE</p>
                             </div>
                             <div className="flex flex-row gap-10">
                               <div className="flex-col gap-y-5 flex">
                                 <div className="flex flex-col whitespace-nowrap">
                                   <span className="body-text text-sm text-[#565348]">WCORE Gains</span>
                                   <span className="body-text font-medium whitespace-nowrap">
-                                    {Number(wcoreGains).toFixed(2)}
+                                    {Number(wcoreGains).toFixed(2)} WCORE
                                   </span>
                                 </div>
                                 <div className="flex flex-col whitespace-nowrap">
                                   <span className="body-text text-sm text-[#565348]">WBTC Gains</span>
                                   <span className="body-text font-medium whitespace-nowrap">
-                                  {Number(wbtcGains).toFixed(8)}
+                                  {Number(wbtcGains).toFixed(8)} WBTC
                                   </span>
                                 </div>
                               </div>
-                              <Image className="-ml-16 md:-ml-0" src={macPUSD} alt="home" width={200} />
+                              <Image className="-ml-16 md:-ml-4" src={macPUSD} alt="home" width={200} />
                             </div>
                           </div>
                         ) : (
@@ -598,7 +598,7 @@ const Portfolio = () => {
             {!isConnected && (
               <div className="md:p-10 flex flex-col md:flex-row justify-around gap-y-8 md:gap-10">
                 <div className="md:w-[35rem] md:h-[23.6rem] md:mx-0 mx-3 mt-4 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#222222" }}>
-                  <div className=" items-center  flex flex-row justify-between p-5" style={{ backgroundColor: "#222222" }}>
+                  <div className=" items-center  flex flex-row justify-between p-5" style={{ backgroundColor: "" }}>
                     <span className="text-white title-text2 ">TROVE</span>
                     <EVMConnect className="" />
                   </div>

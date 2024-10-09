@@ -11,7 +11,7 @@ import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers, JsonRpcSigner } from "ethers";
 import info from "../assets/images/info.svg";
-import btc from "../assets/images/btclive.svg";
+import btc from "../assets/images/wbtc.svg";
 import rej from "../assets/images/TxnError.gif";
 import conf from "../assets/images/conf.gif"
 import rec2 from "../assets/images/rec2.gif"
@@ -22,12 +22,11 @@ import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from 
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
 import img4 from "../assets/images/Group 666.svg";
-import trove1 from "../assets/images/TROVE3.svg";
+import trove1 from "../assets/images/wbtc.svg";
 import { Button } from "@/components/ui/button";
 import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
 import { Tooltip } from "primereact/tooltip";
-import { useAccounts } from "@particle-network/btc-connectkit";
 import Web3 from "web3";
 
 export const OpenTroveBTC = () => {
@@ -86,7 +85,6 @@ export const OpenTroveBTC = () => {
 
     const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
     const erc20Contract = getContract("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", erc20Abi, provider);
-    const providerTwo = new ethers.JsonRpcSigner(provider, walletClient?.account?.address as string)
     // const signer = provider.getSigner(walletClient?.account?.address);
     const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)
     const signerToken = new JsonRpcSigner(provider, "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f")
@@ -157,15 +155,9 @@ export const OpenTroveBTC = () => {
 
     const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
         try {
-            if (!walletClient) {
-                return null;
-            }
-
+            if (!walletClient) return null;
             setIsModalVisible(true);
-            const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
-            const amountToApprove = aprvAmntInDecimals === 0 ? xCollatoral : (newApprovedAmount !== null ? newApprovedAmount.toString() : null);
-            if (amountToApprove) { await handleApproveClick(amountToApprove); }
-
+            if (modiff >= 0) { await handleApproveClick(xCollatoral); }
             // const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
             const collValue = Number(xCollatoral);
             const borrowValue = Number(xBorrow);
@@ -279,7 +271,7 @@ export const OpenTroveBTC = () => {
             setUserInputs({ collatoral: userInputs.collatoral, borrow: stakeFixed });
 
         } else {
-            console.error("Invalid PUSD balance:");
+            console.error("Invalid ORE balance:");
         }
     };
 
@@ -294,7 +286,7 @@ export const OpenTroveBTC = () => {
 
             setUserInputs({ collatoral: stakeFixed, borrow: userInputs.borrow });
         } else {
-            console.error("Invalid PUSD balance:", balanceData);
+            console.error("Invalid ORE balance:", balanceData);
         }
     };
 
@@ -303,7 +295,7 @@ export const OpenTroveBTC = () => {
             if (walletClient) {
                 const web3 = new Web3(window.ethereum)
                 const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
-                // Owner ->user // Spender ->Contract ka address borrowroperation , stability pool or any other
+                // Owner ->user // Spender ->Contract ka address borrowroperation , STABILITY POOL or any other
                 const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
                 const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
@@ -433,7 +425,7 @@ export const OpenTroveBTC = () => {
                                 <div className='flex items-center  h-[3.5rem] '>
                                     <Image src={btc} alt="home" className='ml-1' />
                                     <h3 className='text-gray-400 body-text font-medium ml-1 mr-3 hidden md:block'>BTC</h3>
-                                    <h3 className='h-full border border-[#88e273] text-yellow-300 mx-3'></h3>
+                                    <h3 className='h-full border border-[#88e273] text-[#88e273] mx-3'></h3>
                                 </div>
                                 <input id="items" placeholder="" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[20.75rem] body-text font-medium h-[4rem] pl-3 text-gray-400" style={{ backgroundColor: "black" }} />
                                 <span className="md:max-w-[fit]  md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text h-full">${totalCollateral.toFixed(2)}</span>
@@ -444,20 +436,20 @@ export const OpenTroveBTC = () => {
                                 </span>
                                 {/* <Button onClick={() => handleApproveClick(userInputs.collatoral)}>Approve</Button> */}
                                 <div className="flex gap-x-4 md:gap-x-2 w-full   mt-2">
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                                 </div>
                             </div>
                         </div>
                         <div className="w-full">
-                            <Label className="text-[#827f77] md:-ml-0 -ml-2   body-text text-lg" htmlFor="quantity">Borrow PUSD</Label>
+                            <Label className="text-[#827f77] md:-ml-0 -ml-2   body-text text-lg" htmlFor="quantity">Borrow ORE</Label>
                             <div className="flex  md:w-[90%] rounded-3xl items-center md:space-x-2 mt-[10px] -ml-3 md:-ml-0 border border-[#88e273]">
                                 <div className='flex items-center h-[3.5rem] '>
                                     <Image src={img4} alt="home" className='ml-1' />
-                                    <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1'>PUSD</h3>
-                                    <h3 className='h-full border border-[#88e273] text-yellow-300 mx-4'></h3>
+                                    <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1'>ORE</h3>
+                                    <h3 className='h-full border border-[#88e273] text-[#88e273] mx-4'></h3>
                                 </div>
                                 <input id="quantity" placeholder="" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-gray-400 body-text font-medium border-[#88e273]" style={{ backgroundColor: "black", border: "" }} />
                             </div>
@@ -466,10 +458,10 @@ export const OpenTroveBTC = () => {
                                     <span className="body-text text-gray-400 font-medium ">Available</span> {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
                                 </span>
                                 <div className="flex gap-x-4 md:gap-x-2 w-full -mr-2  mt-2">
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
                                 </div>
                             </div>
                             {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (
@@ -498,11 +490,11 @@ export const OpenTroveBTC = () => {
                                     parseFloat(userInputs.borrow) <= minDebt)
                                     ? 0.5 : 1
                             }}>
-                            {isModalVisible ? "Opening Trove..." : amountToApprove ? "Approve" : "Open Trove"}
+                            {isModalVisible ? "Opening Trove..." : modiff >= 0 ? "Approve" : "Open Trove"}
                         </button>
                     </div>
                     {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData) ? (
-                        <div className="md:w-4/5 w-full mt-[55px] p-5 border-yellow-200 h-fit space-y-10  text-white"
+                        <div className="md:w-4/5 w-full mt-[55px] p-5 border-[#88e273] h-fit space-y-10  text-white"
                             style={{ backgroundColor: "#222222" }}>
                             <div className="flex whitespace-nowrap justify-between">
                                 <div className="flex items-center">
@@ -538,12 +530,12 @@ export const OpenTroveBTC = () => {
                                         className="custom-tooltip title-text2"
                                         target=".toolTipHolding7"
                                         mouseTrack
-                                        content="The amount of PUSD set aside as a buffer to cover potential liquidation. This reserve helps ensure that there are sufficient funds to handle any shortfalls or losses that may occur."
+                                        content="The amount of ORE set aside as a buffer to cover potential liquidation. This reserve helps ensure that there are sufficient funds to handle any shortfalls or losses that may occur."
                                         mouseTrackLeft={10}
                                     />
                                 </div>
                                 <span className="body-text text-sm body-text font-medium">
-                                    {lr} PUSD
+                                    {lr} ORE
                                 </span>
                             </div>
                             <div className="flex justify-between">
@@ -559,12 +551,12 @@ export const OpenTroveBTC = () => {
                                     <Tooltip
                                         className="custom-tooltip title-text2"
                                         target=".toolTipHolding15"
-                                        content="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
+                                        content="The ORE value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
                                         mouseTrack
                                         mouseTrackLeft={10}
                                     />
                                 </div>
-                                <span className=" text-sm body-text font-medium">{liquidationPrice.toFixed(2)} PUSD</span>
+                                <span className=" text-sm body-text font-medium">{liquidationPrice.toFixed(2)} ORE</span>
                             </div>
                             <div className="flex justify-between">
                                 <div className="flex items-center">
@@ -580,12 +572,12 @@ export const OpenTroveBTC = () => {
                                         className="custom-tooltip title-text2"
                                         target=".toolTipHolding12"
                                         mouseTrack
-                                        content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt."
+                                        content="The ratio of the ORE value of the entire system collateral divided by the entire system debt."
                                         mouseTrackLeft={10}
                                     />
                                 </div>
                                 <span className="text-sm body-text font-medium">
-                                    {calculatedValues.expectedFee.toFixed(2)} PUSD
+                                    {calculatedValues.expectedFee.toFixed(2)} ORE
                                 </span>
                             </div>
                             <div className="flex justify-between">
@@ -601,12 +593,12 @@ export const OpenTroveBTC = () => {
                                     <Tooltip
                                         className="custom-tooltip title-text2"
                                         target=".toolTipHolding16"
-                                        content="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance."
+                                        content="Total amount of ORE borrowed + liquidation reserve (200 ORE) + borrowing fee at time of loan issuance."
                                         mouseTrack
                                         mouseTrackLeft={10}
                                     />
                                 </div>
-                                {Number((calculatedValues.expectedDebt)) > lr ? <span className=" text-sm body-text font-medium">{(calculatedValues.expectedDebt).toFixed(2)} {" "} PUSD</span> : "---"}
+                                {Number((calculatedValues.expectedDebt)) > lr ? <span className=" text-sm body-text font-medium">{(calculatedValues.expectedDebt).toFixed(2)} {" "} ORE</span> : "---"}
                             </div>
                             <div className="flex justify-between">
                                 <div className="flex items-center ">
@@ -626,7 +618,7 @@ export const OpenTroveBTC = () => {
                                         mouseTrackLeft={10}
                                     />
                                 </div>
-                                <span className=" text-sm body-text font-medium">{(totalCollateral).toFixed(2)} {" "} PUSD</span>
+                                <span className=" text-sm body-text font-medium">{(totalCollateral).toFixed(2)} {" "} ORE</span>
                             </div>
                         </div>
                     ) : (
@@ -641,7 +633,7 @@ export const OpenTroveBTC = () => {
                             <Image src={rec2} alt="box" width={140} className="" />
                         </div>
                         <div className="p-5">
-                            <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+                            <div className="waiting-message text-lg title-text2 text-[#88e273] whitespace-nowrap">Transaction is initiated</div>
                             <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
                         </div>
                     </div>
@@ -663,7 +655,7 @@ export const OpenTroveBTC = () => {
                             ) : (
                                 <Image src={conf} alt="box" width={140} />
                             )}
-                            <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
+                            <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
                             {isSuccess && (
                                 <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
                             )}

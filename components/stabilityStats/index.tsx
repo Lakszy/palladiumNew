@@ -121,7 +121,7 @@ export const StabilityStats = () => {
       <div>
         <div className="flex justify-center">
           <h2 className="font-bold text-sm my-3 text-[#88e273] title-text">
-            Stability Pool
+            STABILITY POOL
           </h2>
         </div>
 
@@ -137,7 +137,7 @@ export const StabilityStats = () => {
                 <div className="hex2-loader"></div>
               </div>
             ) : (
-              <>{Number(totalStakedValue).toFixed(2).toString()} PUSD</>
+              <>{Number(totalStakedValue).toFixed(2).toString()} ORE</>
             )}
           </span>
         </div>
@@ -168,7 +168,7 @@ export const StabilityStats = () => {
                 <div className="hex2-loader"></div>
               </div>
             ) : (
-              <>{Number(totalStabilityPool).toFixed(2).toString()} PUSD</>
+              <>{Number(totalStabilityPool).toFixed(2).toString()} ORE</>
             )}
           </span>
         </div>

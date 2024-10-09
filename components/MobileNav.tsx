@@ -38,9 +38,9 @@ export default function MobileNav() {
   const menuItems: MenuItem[] = [
     { id: "Dashboard", icon: LayoutGrid, title: "Dashboard", link: "/" },
     { id: "portfolio", icon: RiCoinsLine, title: "Portfolio", link: "portfolio", },
-    { id: "trove", icon: GrTransaction, title: "Mint PUSD", link: "trove" },
-    { id: "stake", icon: GiUnbalanced, title: "Stake PUSD", link: "stake" },
-    { id: "redeem", icon: LiaHandHoldingUsdSolid, title: "Redeem PUSD", link: "redeem" },
+    { id: "trove", icon: GrTransaction, title: "Mint ORE", link: "trove" },
+    { id: "stake", icon: GiUnbalanced, title: "Stake ORE", link: "stake" },
+    { id: "redeem", icon: LiaHandHoldingUsdSolid, title: "Redeem ORE", link: "redeem" },
   ];
 
   return (
@@ -78,8 +78,8 @@ export default function MobileNav() {
               </Link>
             </div>
             <div className="flex items-center w-full  justify-around text-white gap-x-4 text-[19px] -mt-10">
-              <Link target="_blank" href="https://twitter.com/PalladiumLabs">  <Image src={tweet} alt="twitter" /></Link>
-              <Link target="_blank" href="https://discord.com/invite/9MMEyJ4JDz">  <Image src={discord} alt="twitter" /></Link>
+              <Link target="_blank" href="https://x.com/EarthDeFi">  <Image src={tweet} alt="twitter" /></Link>
+              <Link target="_blank" href="https://discord.com/invite/PbXud77YPd">  <Image src={discord} alt="twitter" /></Link>
               <Link target="_blank" href="https://medium.com/palladium-labs">  <Image src={medium} alt="twitter" /></Link>
             </div>
           </div>

@@ -16,6 +16,7 @@ import { useAccount } from "wagmi";
 import { Dialog } from "primereact/dialog";
 import "./stake.css";
 import img3 from "../../app/assets/images/Group 663.svg";
+import pusdbtc from "../../app/assets/images/Core.svg";
 import conf from "../../app/assets/images/conf.gif";
 import rec2 from "../../app/assets/images/rec2.gif";
 import tick from "../../app/assets/images/tick.gif";
@@ -101,7 +102,7 @@ export const StabilityPool = () => {
       const roundedStakeFixed = Number(stakeFixed.toFixed(2));
       setUserInput(String(roundedStakeFixed));
     } else {
-      console.error("Invalid PUSD balance:", pusdBalance);
+      console.error("Invalid ORE balance:", pusdBalance);
     }
   };
 
@@ -109,7 +110,6 @@ export const StabilityPool = () => {
     if (!walletClient) return null;
   
     const pusdBalanceValue = await erc20Contract.balanceOf(address);
-    console.log("PUSD Balance: ", pusdBalanceValue);
     const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
     setPusdBalance(pusdBalanceFormatted);
     // setAfterload(false);
@@ -209,8 +209,8 @@ export const StabilityPool = () => {
           style={{ backgroundColor: "black" }}
         >
           <div className="flex items-center h-[3.5rem]">
-            <Image src={img3} alt="home" className="ml-1" width={30} />
-            <h3 className="text-white body-text ml-1 hidden md:block">PUSD</h3>
+            <Image src={pusdbtc} alt="home" className="ml-1" width={30} />
+            <h3 className="text-white body-text ml-1 hidden md:block">ORE</h3>
             <h3 className="h-full border rounded-lg border-[#88e273] mx-3 text-[#88e273]"></h3>
             <div className="justify-between items-center flex gap-x-24">
               <input id="items" placeholder="Enter Collateral Amount" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1 text-white" style={{ backgroundColor: "black" }} />
@@ -235,17 +235,17 @@ export const StabilityPool = () => {
             ) : (
               <span className="whitespace-nowrap body-text">
                 <span className="text-gray-400 body-text">Wallet: </span>
-                {Math.trunc(Number(pusdBalance) * 100) / 100} PUSD
+                {Math.trunc(Number(pusdBalance) * 100) / 100} ORE
               </span>
             )}
           </span>
         </div>
       </div>
       <div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
       </div>
       {isConnected ? (
         <div className=" my-2">

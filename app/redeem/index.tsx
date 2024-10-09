@@ -18,8 +18,8 @@ import { useCallback, useEffect, useState } from "react";
 import web3 from "web3";
 import { Dialog } from 'primereact/dialog';
 import trove3 from "../../app/assets/images/TROVE3.svg"
-import trove2 from "../../app/assets/images/TROVE1.svg"
-import trove1 from "../../app/assets/images/TROVE2.svg"
+import trove2 from "../../app/assets/images/wbtc.svg"
+import trove1 from "../../app/assets/images/wcore.png"
 import rej from "../../app/assets/images/TxnError.gif";
 import conf from "../../app/assets/images/conf.gif"
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
@@ -162,7 +162,7 @@ export default function Redeem() {
             const roundedStakeFixed = Number(stakeFixed.toFixed(2))
             setUserInput(String(roundedStakeFixed));
         } else {
-            console.error("Invalid PUSD balance:", pusdBalance);
+            console.error("Invalid ORE balance:", pusdBalance);
         }
     };
     const handleConfirmClick = async () => {
@@ -264,7 +264,7 @@ export default function Redeem() {
                     </div>
                     <div className='my-4'>
                         <div className="flex mb-2 items-center">
-                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#3b351b] rounded-lg body-text w-[20rem] md:w-full text-lg h-14 border border-[#88e273] text-white " />
+                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#] rounded-lg body-text w-[20rem] md:w-full text-lg h-14 border border-[#88e273] text-white " />
                         </div>
                         <span className=" ml-[56%] md:ml-[66%] body-text  font-medium balance ">
                             {isLoading ?
@@ -274,17 +274,17 @@ export default function Redeem() {
                                 ) : (
                                     <span className="whitespace-nowrap -ml-2 text-white body-text">Wallet: {" "}
                                         <span className="body-text text-sm">
-                                            {Number(pusdBalance).toFixed(2) || ".."} PUSD
+                                            {Number(pusdBalance).toFixed(2) || ".."} ORE
                                         </span>
                                     </span>
                                 )}
                         </span>
                     </div>
                     <div className="flex w-full justify-between">
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                        <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0.5rem" }} onClick={() => handlePercentageClick(100)}>100% </Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                        <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#", borderRadius: "0.5rem" }} onClick={() => handlePercentageClick(100)}>100% </Button>
                     </div>
 
                     {isConnected ? (

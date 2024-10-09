@@ -2,6 +2,8 @@
 
 import stabilityPoolAbi from "../../app/src/constants/abi/StabilityPool.sol.json";
 import { BOTANIX_RPC_URL } from "../../app/src/constants/botanixRpcUrl";
+import pusdbtc from "../../app/assets/images/Core.svg";
+
 import botanixTestnet from "../../app/src/constants/botanixTestnet.json";
 import { getContract } from "../../app/src/utils/getContract";
 import img3 from "../../app/assets/images/Group 663.svg";
@@ -149,7 +151,7 @@ export const Unstake = () => {
       const roundedStakeFixed = Number(stakeFixed.toFixed(2));
       setUserInput(String(roundedStakeFixed));
     } else {
-      console.error("Invalid PUSD balance:", pusdBalance);
+      console.error("Invalid ORE balance:", pusdBalance);
     }
   };
 
@@ -232,9 +234,9 @@ export const Unstake = () => {
             style={{ backgroundColor: "black" }}
           >
             <div className="flex  items-center h-[3.5rem] ">
-              <Image src={img3} alt="home" className="ml-1" width={30} />
+              <Image src={pusdbtc} alt="home" className="ml-1" width={30} />
               <h3 className="text-white body-text ml-1 hidden md:block">
-                PUSD
+                ORE
               </h3>
               <h3 className="h-full border  border-[#88e273] rounded-lg mx-3 text-[#88e273]"></h3>
               <div className=" justify-between items-center flex gap-x-24">
@@ -262,7 +264,7 @@ export const Unstake = () => {
                 <span className="whitespace-nowrap">
                   <span className="text-gray-400 body-text"> Your Stake: </span>
                   <span className="body-text">
-                    {Math.trunc(Number(totalStakedValue) * 100) / 100} PUSD
+                    {Math.trunc(Number(totalStakedValue) * 100) / 100} ORE
                   </span>
                 </span>
               )}
@@ -270,10 +272,10 @@ export const Unstake = () => {
           </div>
         </div>
         <div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
-          <Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  rounded-lg border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"}  rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
-          <Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  rounded-lg border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"}  rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
-          <Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg rounded-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
-          <Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg rounded-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
+          <Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  rounded-lg border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"}  rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
+          <Button disabled={!isConnected || isStateLoading} className={`text-xs md:text-lg  rounded-lg border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"}  rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
+          <Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg rounded-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
+          <Button disabled={!isConnected || isStateLoading} className={` text-xs md:text-lg rounded-lg  border-2 ${isStateLoading ? "cursor-not-allowed" : "cursor-pointer"} rounded-lg border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
         </div>
         {isConnected ? (
           <div className="my-2">

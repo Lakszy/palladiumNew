@@ -337,7 +337,7 @@ const Borrow = () => {
       setUserInputs({ depositCollateral: userInputs.depositCollateral, borrow: String(stakeFixed) });
 
     } else {
-      console.error("Invalid PUSD balance:", availableToBorrow);
+      console.error("Invalid ORE balance:", availableToBorrow);
     }
   };
 
@@ -351,7 +351,7 @@ const Borrow = () => {
       const stakeFixed = maxStake.toFixed(8);
       setUserInputs({ depositCollateral: stakeFixed, borrow: userInputs.borrow });
     } else {
-      console.error("Invalid PUSD balance:", balanceData?.formatted);
+      console.error("Invalid ORE balance:", balanceData?.formatted);
     }
   };
 
@@ -429,12 +429,12 @@ const Borrow = () => {
                   <div className="flex -ml-5 flex-row justify-between mt-3 md:mt-5 md:gap-4">
                     <div className="flex flex-col text-white  h-28 p-5" style={{ backgroundColor: "" }}>
                       <span className="body-text font-medium  text-gray-500">Collateral</span>
-                      <span className="body-text font-medium text-xl">{Number(entireDebtAndColl.coll).toFixed(8)} wCORE</span>
+                      <span className="body-text font-medium text-xl">{Number(entireDebtAndColl.coll).toFixed(8)} WCORE</span>
                       <span className="body-text font-medium text-xs  p-1 text-gray-500">${(Number(fetchedPrice) * Number(entireDebtAndColl.coll)).toFixed(2)}</span>
                     </div>
                     <div className="flex flex-col text-white w-[9rem]  h-28 p-5" style={{ backgroundColor: "" }} >
                       <span className="body-text font-medium text-gray-500 ">Debt</span>
-                      <span className="body-text font-medium text-xl whitespace-nowrap">{Number(entireDebtAndColl.debt).toFixed(2)} PUSD</span>
+                      <span className="body-text font-medium text-xl whitespace-nowrap">{Number(entireDebtAndColl.debt).toFixed(2)} ORE</span>
                       <span className="body-text font-medium text-gray-500 text-xs">${Number(entireDebtAndColl.debt).toFixed(2)}</span>
                     </div>{" "}
                   </div>
@@ -455,7 +455,7 @@ const Borrow = () => {
                     <div className="flex flex-col gap-y-16 ">
                       <div className="flex  p-1 flex-col">
                         <span className="text-xs text-gray-500 body-text">Liquidation</span>
-                        <span className="body-text body-text">${liquidation.toFixed(2)} PUSD</span>
+                        <span className="body-text body-text">${liquidation.toFixed(2)} ORE</span>
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
                       </div>
                       <div className="flex md:hidden -mt-6 flex-col">
@@ -466,7 +466,7 @@ const Borrow = () => {
 
                     <div className="flex flex-col items-center">
                       <span className=" text-gray-500 body-text ml-[0.5rem] text-sm -mt-3">loan to value</span>
-                      <Knob value={Number(newLTV) || 0} showValue={true} size={135} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
+                      <Knob value={Number(newLTV) || 0} showValue={true} size={135} rangeColor="#78887f" valueColor="#3dde84" strokeWidth={7} readOnly className="text-[#88e273]" />
                       <div className="flex-col flex items-center space-y-1 -mt-4  w-[4.5rem]">
                         <span className="text-base  ml-[0.5rem] body-text">{Number(newLTV).toFixed(2) || 0}%</span>
                         <span className="text-xs text-gray-500 body-text ">YOUR LTV</span>
@@ -477,9 +477,9 @@ const Borrow = () => {
               </div>
               <div className=" md:mt-5" style={{ backgroundColor: "#272315" }}>
                 <div className="md:p-5 pt-20 flex-col flex gap-x-36">
-                  <div className=" border-yellow-800">
+                  <div className=" border-[#88e273]">
                     <TabView className="md:-ml-0  -ml-2">
-                      <TabPanel className="p-[2px] bg-yellow-400 text-sm title-text " header="Borrow">
+                      <TabPanel className="p-[2px] bg-[#88e273] text-sm title-text " header="Borrow">
                         <div className="p-5"
                           style={{ backgroundColor: "#272315" }}>
                           <div className="flex-col mx-2  flex md:flex-row justify-between gap-10">
@@ -489,11 +489,11 @@ const Borrow = () => {
                                   <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-11 ">
                                     Deposit Collateral 
                                   </Label>
-                                  <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
+                                  <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 border border-[#88e273] " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] '>
                                       <Image src={img3} alt="home" className='ml-1' width={41} />
-                                      <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>wCORE</h6>
-                                      <h3 className='h-full border border-yellow-300 mx-4 text-yellow-300'></h3>
+                                      <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>WCORE</h6>
+                                      <h3 className='h-full border border-[#88e273] mx-4 text-[#88e273]'></h3>
                                     </div>
                                     <div className=" justify-between items-center flex gap-x-24">
                                       <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e) => {
@@ -516,10 +516,10 @@ const Borrow = () => {
                                       </span>
                                     </span>
                                     <div className="flex w-full py-2 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273]  body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                                     </div>
                                   </div>
                                 </div>
@@ -529,11 +529,11 @@ const Borrow = () => {
                                       Borrow
                                     </Label>
                                   </div>
-                                  <div className="flex  items-center  md:mt-0 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  border border-yellow-300 " style={{ backgroundColor: "#272315" }}>
+                                  <div className="flex  items-center  md:mt-0 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  border border-[#88e273] " style={{ backgroundColor: "#272315" }}>
                                     <div className='flex items-center h-[3.5rem] mx-1'>
                                       <Image src={img4} alt="home" className='ml-1' />
-                                      <h3 className='text-white body-text ml-1 font-medium hidden md:block '>PUSD</h3>
-                                      <h3 className='h-full border  border-yellow-300 mx-2  text-yellow-300'></h3>
+                                      <h3 className='text-white body-text ml-1 font-medium hidden md:block '>ORE</h3>
+                                      <h3 className='h-full border  border-[#88e273] mx-2  text-[#88e273]'></h3>
                                     </div>
                                     <input id="items" placeholder='Enter Collateral Amount'
                                       disabled={!(isConnected)} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
@@ -563,16 +563,16 @@ const Borrow = () => {
                                         )}
                                     </span>
                                     <div className="flex w-full py-3 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3 -mt-4 ">
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300  body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-yellow-300 body-text`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273]  body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
                                     </div>
                                   </div>
                                   <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
                                     className={`mt-9 md:-ml-0 -ml-10 w-[19rem] md:w-full title-text h-[3rem]
                                    ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
-                                        ? 'bg-yellow-300 text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-yellow-300  text-black'}`}
+                                        ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-[#88e273]  text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
                                     UPDATE TROVE
                                   </button>
@@ -603,7 +603,7 @@ const Borrow = () => {
                                         {Number(newLTV).toFixed(2)} %
                                       </span>
                                       {userInputColl + userInputDebt >= 1 && ((<>
-                                        <span className="text-yellow-300 text-lg">
+                                        <span className="text-[#88e273] text-lg">
                                           <FaArrowRightLong />
                                         </span>
                                         <span className={`overflow-x-clip text-sm body-text font-medium w-28 p-1 ${ltv > (100 / Number(divideBy)) ?
@@ -626,7 +626,7 @@ const Borrow = () => {
                                     <Tooltip
                                       className="custom-tooltip title-text2"
                                       target=".toolTipHolding10"
-                                      content="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
+                                      content="The ORE value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price."
                                       mouseTrack
                                       mouseTrackLeft={10}
                                     />
@@ -634,14 +634,14 @@ const Borrow = () => {
                                   <span className="body-text  my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2.5">
                                       <span className=" w-28 -ml-[5px] body-text font-medium p-1">
-                                        {Number(liquidation).toFixed(2)} PUSD
+                                        {Number(liquidation).toFixed(2)} ORE
                                       </span>
                                       {userInputColl + userInputDebt >= 1 && (
                                         <>
-                                          <span className="text-yellow-300 text-lg">
+                                          <span className="text-[#88e273] text-lg">
                                             <FaArrowRightLong />
                                           </span>
-                                          <span className="body-text text-xs whitespace-nowrap w-28  p-1 font-medium">{" "}{Number(liquidationPrice).toFixed(2)} PUSD</span>
+                                          <span className="body-text text-xs whitespace-nowrap w-28  p-1 font-medium">{" "}{Number(liquidationPrice).toFixed(2)} ORE</span>
                                         </>
                                       )}
                                     </div>
@@ -661,21 +661,21 @@ const Borrow = () => {
                                       className="custom-tooltip title-text2"
                                       target=".toolTipHolding11"
                                       mouseTrack
-                                      content="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance."
+                                      content="Total amount of ORE borrowed + liquidation reserve (200 ORE) + borrowing fee at time of loan issuance."
                                       mouseTrackLeft={10}
                                     />
                                   </div>
                                   <span className="body-text  my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
                                       <span className="w-28 -ml-[5px] p-1 body-text font-medium">
-                                        {Number(entireDebtAndColl.debt).toFixed(2)} PUSD
+                                        {Number(entireDebtAndColl.debt).toFixed(2)} ORE
                                       </span>
                                       {userInputColl == 1 && (
                                         <>
-                                          <span className="text-yellow-300 text-lg">
+                                          <span className="text-[#88e273] text-lg">
                                             <FaArrowRightLong />
                                           </span>
-                                          <span className="ml-05 w-28 p-1 body-text font-medium">{" "}{Number(totalDebt).toFixed(2)} PUSD</span>
+                                          <span className="ml-05 w-28 p-1 body-text font-medium">{" "}{Number(totalDebt).toFixed(2)} ORE</span>
                                         </>
                                       )}
                                     </div>
@@ -695,21 +695,21 @@ const Borrow = () => {
                                       className="custom-tooltip title-text2"
                                       target=".toolTipHolding12"
                                       mouseTrack
-                                      content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt."
+                                      content="The ratio of the ORE value of the entire system collateral divided by the entire system debt."
                                       mouseTrackLeft={10}
                                     />
                                   </div>
                                   <span className="body-text my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
                                       <span className="p-1 w-28 -ml-[5px] body-text  font-medium">
-                                        {Number(entireDebtAndColl.coll).toFixed(8)} wCORE
+                                        {Number(entireDebtAndColl.coll).toFixed(8)} WCORE
                                       </span>
                                       {userInputColl == 1 && (
                                         <>
-                                          <span className="text-yellow-300 text-lg">
+                                          <span className="text-[#88e273] text-lg">
                                             <FaArrowRightLong />
                                           </span>
-                                          <span className="md:ml-05 p-1 w-28 body-text font-medium">{" "}{Number(newUserColl).toFixed(8)} wCORE</span>
+                                          <span className="md:ml-05 p-1 w-28 body-text font-medium">{" "}{Number(newUserColl).toFixed(8)} WCORE</span>
                                         </>
                                       )}
                                     </div>
@@ -731,18 +731,18 @@ const Borrow = () => {
                                       className="custom-tooltip title-text2"
                                       target=".toolTipHolding12"
                                       mouseTrack
-                                      content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt."
+                                      content="The ratio of the ORE value of the entire system collateral divided by the entire system debt."
                                       mouseTrackLeft={10}
                                     />
                                   </div>
                                   <span className="body-text my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
                                       <span className="p-1 w-28 body-text pl-2 font-medium">
-                                        {Number(borrowingFee).toFixed(2)} PUSD
+                                        {Number(borrowingFee).toFixed(2)} ORE
                                       </span>
                                       {userInputColl == 1 && (
                                         <>
-                                          <span className="text-yellow-300  w-6 text-lg">
+                                          <span className="text-[#88e273]  w-6 text-lg">
                                           </span>
                                           <span className="md:ml-05 p-1  w-28 body-text font-medium">{" "}</span>
                                         </>
@@ -755,12 +755,12 @@ const Borrow = () => {
                           </div>
                         </div>
                       </TabPanel>
-                      <TabPanel className="p-[2px] bg-yellow-400 text-sm body-text " header="Repay">
-                        <div className="w-full h-full border p-5 border-yellow-400" style={{ backgroundColor: "#272315" }}>
+                      <TabPanel className="p-[2px] bg-[#88e273] text-sm body-text " header="Repay">
+                        <div className="w-full h-full border p-5 border-[#88e273]" style={{ backgroundColor: "#272315" }}>
                           <Repay coll={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} lr={lr} fetchedPrice={Number(fetchedPrice)} borrowRate={borrowRate} minDebt={minDebt} recoveryMode={recoveryMode} cCR={cCr} mCR={mCR} troveStatus={troveStatus} />
                         </div>
                       </TabPanel>
-                      <TabPanel className="p-[2px] bg-yellow-400 text-sm title-text" header="Close">
+                      <TabPanel className="p-[2px] bg-[#88e273] text-sm title-text" header="Close">
                         <div className="w-full h-full" style={{ backgroundColor: "#272315" }}  >
                           <CloseTrove entireDebtAndColl={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} liquidationReserve={lr} />
                         </div>
@@ -789,7 +789,7 @@ const Borrow = () => {
               <Image src={rec2} alt="box" width={140} className="" />
             </div>
             <div className="p-5">
-              <div className="waiting-message text-lg title-text2 text-yellow-300 whitespace-nowrap">Transaction is initiated</div>
+              <div className="waiting-message text-lg title-text2 text-[#88e273] whitespace-nowrap">Transaction is initiated</div>
               <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
             </div>
           </div>
@@ -821,7 +821,7 @@ const Borrow = () => {
               ) : (
                 <Image src={conf} alt="box" width={140} />
               )}
-              <div className="waiting-message title-text2 text-yellow-300">{loadingMessage}</div>
+              <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
                 <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
               )}

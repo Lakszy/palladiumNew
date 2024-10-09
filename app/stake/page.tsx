@@ -29,7 +29,7 @@ export default function Home() {
 
         <div className="h-screen w-screen  md:w-full" style={{ backgroundColor: 'black' }}>
           <div className="text-center">
-            <h1 className="text-2xl pt-10 font-semibold w-[23rem] ml-[5%] md:ml-0 text-center md:w-full text-white title-text">Earn By Supplying PUSD to Stability Pool</h1>
+            <h1 className="text-2xl pt-10 font-semibold w-[23rem] ml-[5%] md:ml-0 text-center md:w-full text-white title-text">Earn By Supplying ORE to STABILITY POOL</h1>
           </div>
           <div className='md:p-10  pt-12 md:flex md:gap-x-36' style={{ backgroundColor: 'black' }}>
             <div className="second_section w-[100%] md:w-1/2 outer_section_detail pos_sticky">

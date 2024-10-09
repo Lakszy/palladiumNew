@@ -1,9 +1,10 @@
 "use client";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json";
+import feeCollector from "../src/constants/abi/FeeCollector.sol.json";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
-import { ethers } from "ethers";
+import { ethers, toBigInt } from "ethers";
 import React, { useState, useEffect, useCallback } from "react";
 import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Dialog } from 'primereact/dialog';
@@ -19,7 +20,7 @@ import "../../components/stabilityPool/Modal.css"
 import { Button } from "@/components/ui/button";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
-import { useWalletAddress } from "@/components/useWalletAddress";
+import Decimal from "decimal.js";
 
 interface Props {
   entireDebtAndColl: number;
@@ -43,6 +44,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   const { data: hash, writeContract, error: writeError } = useWriteContract();
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
+  const [calculatedFee, setCalculatedFee] = useState("0");
 
   const erc20Contract = getContract(
     botanixTestnet.addresses.DebtToken,
@@ -50,6 +52,11 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
     provider
   );
 
+  const feeCollectorContract = getContract(
+    botanixTestnet.addresses.FeeCollector,
+    feeCollector,
+    provider
+  );
 
   const handleClose = useCallback(() => {
     setLoadingModalVisible(false);
@@ -74,8 +81,17 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
   }, [address, debt, liquidationReserve, erc20Contract]);
 
   useEffect(() => {
+    const fetchRefundfee = async () => {
+      const pow = Decimal.pow(10, 18);
+      const _1e18 = toBigInt(pow.toFixed());
+      const Refundfee = await feeCollectorContract.simulateRefund(walletClient?.account?.address, "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", 1000000000000000000n);
+      const RefundfeeDecimal = new Decimal(Refundfee.toString());
+      const RefundfeeFormatted = RefundfeeDecimal.div(_1e18.toString()).toString();
+      setCalculatedFee(RefundfeeFormatted)
+    }
+    fetchRefundfee();
     fetchPrice();
-  }, [fetchPrice, walletClient, writeContract, hash, ]);
+  }, [fetchPrice, walletClient, writeContract, hash,calculatedFee]);
 
   const handleConfirmClick = async () => {
     setIsModalVisible(true);
@@ -83,7 +99,6 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
       if (!walletClient) {
         return null;
       }
-    
       // if (!walletClient) return null;
       const tx = writeContract({
         abi: BorrowerOperationbi,
@@ -135,6 +150,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
       </div>
     );
   };
+  const updatedDebt = Number(debt - Number(calculatedFee)).toFixed(2)
 
   return (
     <div className="md:w-[60rem] flex md:-ml-0 w-[2rem] bg-black">
@@ -144,31 +160,31 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
             <span className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Collateral</span>
               <Image width={15} className="toolTipHolding5 ml_5 -mt-[3px]" src={info} data-pr-tooltip="" alt="info" />
-              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding5" mouseTrack content="The BTC you’ve staked to receive PUSD. This Bitcoin acts as security for the loan or transaction." mouseTrackLeft={10} />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding5" mouseTrack content="The BTC you’ve staked to receive ORE. This Bitcoin acts as security for the loan or transaction." mouseTrackLeft={10} />
             </span>
-            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(2)} wCore</span>}
+            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(2)} WCORE</span>}
           </div>
           <div className="flex justify-between">
             <div className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Debt</span>
               <Image width={15} className="toolTipHolding6 ml_5 -mt-[5px]" src={info} data-pr-tooltip="" alt="info" />
-              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding6" mouseTrack content="The amount of PUSD you owe. This is the value you need to repay, with your BTC collateral backing it." mouseTrackLeft={10} />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding6" mouseTrack content="The amount of ORE you owe. This is the value you need to repay, with your BTC collateral backing it." mouseTrackLeft={10} />
             </div>
-            {Number(debt) <= 0 ? "---" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(debt).toFixed(2)} PUSD</span>}
+            {Number(updatedDebt) <= 0 ? "---" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(updatedDebt).toFixed(2)} ORE</span>}
           </div>
           <div className="flex justify-between">
             <div className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text font-medium text-[#84827a]">Liquidation Reserve</span>
               <Image width={15} className="toolTipHolding7 ml_5 -mt-[px]" src={info} data-pr-tooltip="" alt="info" />
-              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding7" mouseTrack content="The amount of PUSD set aside as a buffer to cover potential liquidation. This reserve helps ensure that there are sufficient funds to handle any shortfalls or losses that may occur." mouseTrackLeft={10} />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding7" mouseTrack content="The amount of ORE set aside as a buffer to cover potential liquidation. This reserve helps ensure that there are sufficient funds to handle any shortfalls or losses that may occur." mouseTrackLeft={10} />
             </div>
-            {Number(liquidationReserve) <= 0 ? "--" : <span className="body-text md:mr-0 mr-4 font-medium text-sm">{Number(liquidationReserve).toFixed(2)} PUSD</span>}
+            {Number(liquidationReserve) <= 0 ? "--" : <span className="body-text md:mr-0 mr-4 font-medium text-sm">{Number(liquidationReserve).toFixed(2)} ORE</span>}
           </div>
           <div className="flex justify-between">
             <div className="flex">
               <span className="body-text font-medium text-[#84827a] text-sm ml-1 md:ml-0">Wallet Balance</span>
               <Image width={15} className="toolTipHolding8 ml_5 " src={info} data-pr-tooltip="" alt="info" />
-              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding8" mouseTrack content="The amount of PUSD currently available in your wallet for transactions or withdrawals" mouseTrackLeft={10} />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding8" mouseTrack content="The amount of ORE currently available in your wallet for transactions or withdrawals" mouseTrackLeft={10} />
             </div>
             <span className="body-text font-medium text-sm mr-4 md:mr-0">
               {afterLoad ? (
@@ -176,7 +192,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
                   <div className="hex-loader"></div>
                 </div>
               ) : (
-                `${Math.trunc(Number(pusdBalance) * 100) / 100} PUSD`
+                `${Math.trunc(Number(pusdBalance) * 100) / 100} ORE`
               )}
             </span>
           </div>

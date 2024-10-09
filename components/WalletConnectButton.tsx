@@ -107,10 +107,10 @@ const WalletConnectButton = () => {
                             <h3 className='text-white body-text font-medium'>{isLoading ? 'Loading...' : truncatedAddress}</h3>
                             <p className="text-lg font-bold text-white title-text2">{isLoading ? 'Loading...' : balance ? `${balance} ETH` : 'Loading...'}</p>
                             <div className="flex justify-between w-[110%] mt-[3rem]">
-                                <button onClick={() => navigator.clipboard.writeText(address || '')} className="p-button border hover:scale-95 p-2 p-button-outlined border-yellow-300 text-white font-medium body-text">
+                                <button onClick={() => navigator.clipboard.writeText(address || '')} className="p-button border hover:scale-95 p-2 p-button-outlined border-[#88e273] text-white font-medium body-text">
                                     Copy Address
                                 </button>
-                                <button onClick={handleDisconnect} className="p-button body-text text-white font-medium p-button-danger hover:scale-95 ml-1 whitespace-nowrap border border-yellow-300 p-2">
+                                <button onClick={handleDisconnect} className="p-button body-text text-white font-medium p-button-danger hover:scale-95 ml-1 whitespace-nowrap border border-[#88e273] p-2">
                                     Disconnect
                                 </button>
                             </div>

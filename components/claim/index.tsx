@@ -161,7 +161,7 @@ const Claim = () => {
 
       await writeContract({
         abi: StabilityPoolbi,
-        address: "0x7779C10ae22632955846fa8c8EfA4cBd241f1659", // stability pool contract address
+        address: "0x7779C10ae22632955846fa8c8EfA4cBd241f1659", // STABILITY POOL contract address
         functionName: "withdrawFromSP",
         args: [
           inputBigInt,

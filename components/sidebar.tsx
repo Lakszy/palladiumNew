@@ -54,7 +54,7 @@ export const TabsDemo = () => {
             <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/trove") ? "text-black" : " text-white"}`}>
               {React.createElement(GrTransaction, { size: 18 })}
             </div>
-            <span className="font-medium text-lg body-text">Mint PUSD</span>
+            <span className="font-medium text-lg body-text">Mint ORE</span>
           </div>
         </Link>
         <Link href="/stake">
@@ -62,7 +62,7 @@ export const TabsDemo = () => {
             <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/stake") ? "text-black" : " text-white"}`}>
               {React.createElement(GiUnbalanced, { size: 18 })}
             </div>
-            <span className="font-medium text-lg body-text">Stake PUSD</span>
+            <span className="font-medium text-lg body-text">Stake ORE</span>
           </div>
         </Link>
         <Link href="/redeem">
@@ -70,7 +70,7 @@ export const TabsDemo = () => {
             <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/redeem") ? "text-black" : " text-white"}`}>
               {React.createElement(LiaHandHoldingUsdSolid, { size: 18 })}
             </div>
-            <span className="font-medium text-lg body-text">Redeem PUSD</span>
+            <span className="font-medium text-lg body-text">Redeem ORE</span>
           </div>
         </Link>
       </nav>
@@ -81,8 +81,8 @@ export const TabsDemo = () => {
           </Link>
         </div>
         <div className="flex items-center justify-center text-white gap-x-5  text-[19px] ">
-          <Link target="_blank" href="https://twitter.com/PalladiumLabs">  <Image className="hover:scale-105"  src={tweet} alt="twitter" /></Link>
-          <Link target="_blank" href="https://discord.com/invite/9MMEyJ4JDz">  <Image className="hover:scale-105"  src={discord} alt="twitter" /></Link>
+          <Link target="_blank" href="https://x.com/EarthDeFi">  <Image className="hover:scale-105"  src={tweet} alt="twitter" /></Link>
+          <Link target="_blank" href="https://discord.com/invite/PbXud77YPd">  <Image className="hover:scale-105"  src={discord} alt="twitter" /></Link>
           <Link target="_blank" href="https://medium.com/palladium-labs">  <Image  className="hover:scale-105" src={medium} alt="twitter" /></Link>
         </div>
       </div>

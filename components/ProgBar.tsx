@@ -102,7 +102,7 @@ const ProgBar: React.FC = () => {
       <div className='w-full '>
         <button aria-label="Like button" onClick={handleClick} disabled={task.status === 'locked' || task.status === 'claimed'}>
           <div className="task-info gap-x-10  flex flex-col items-center">
-            <p className=' body-text  font-semibold text-sm text-yellow-300  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
+            <p className=' body-text  font-semibold text-sm text-[#88e273]  text-clip break-words'>{task.name.replace(/_/g, ' ')}</p>
             <div className="md:w-[7rem] md:-ml-0 md:pb-0 pb-10">
               {isLoading === task.name ? (
                 <div className="flex justify-center items-center w-full h-full">
@@ -186,10 +186,10 @@ const ProgBar: React.FC = () => {
               <Image width={100} src={currentTask.rewardType === 'badge' ? badge : points} alt="Reward" className="w-32 h-32" />
             </div>
             <div className="flex items-center justify-center gap-x-2 whitespace-nowrap mb-6">
-              <div className="text-xl body-text text-yellow-300 capitalize">
+              <div className="text-xl body-text text-[#88e273] capitalize">
                 {currentTask.rewardValue}
               </div>
-              <div className="text-lg body-text text-yellow-300 capitalize">
+              <div className="text-lg body-text text-[#88e273] capitalize">
                 {currentTask.rewardType}
               </div>
             </div>

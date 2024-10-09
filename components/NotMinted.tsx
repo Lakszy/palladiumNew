@@ -20,7 +20,7 @@ const NotMinted = () => {
             Stay tuned on our Discord for next phase of whitelisting
           </p>
           <span>
-            <a className="w-full md:w-[10rem] title-text bg-lightyellow text-black text-lg   mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border border-lightyellow items-center justify-center place-items-center gap-x-2" href="https://discord.com/invite/9MMEyJ4JDz" target="_blank"            >
+            <a className="w-full md:w-[10rem] title-text bg-lightyellow text-black text-lg   mt-4 md:mt-[2rem] px-4 py-2 text-center flex flex-row border border-lightyellow items-center justify-center place-items-center gap-x-2" href="https://discord.com/invite/PbXud77YPd" target="_blank"            >
               {" "}
               <Image src={discord} alt="discord" width={30} height={30} />
               <b className="title-text font-thin">DISCORD </b>

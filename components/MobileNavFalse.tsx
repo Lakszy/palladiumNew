@@ -39,9 +39,9 @@ export default function MobileNavFalse() {
   const menuItems: MenuItem[] = [
     { id: "Dashboard", icon: LayoutGrid, title: "Dashboard", link: "/" },
     {  id: "Portfolio",  icon: RiCoinsLine,  title: "Portfolio",  link: "portfolio",},
-    { id: "Borrow", icon: GrTransaction, title: "Mint PUSD", link: "Borrow" },
-    { id: "Stake-pusd", icon: GiUnbalanced, title: "Stake PUSD", link: "Stake" },
-    { id: "Redeem", icon: LiaHandHoldingUsdSolid, title: "Redeem PUSD", link: "Redeem" },
+    { id: "Borrow", icon: GrTransaction, title: "Mint ORE", link: "Borrow" },
+    { id: "Stake-pusd", icon: GiUnbalanced, title: "Stake ORE", link: "Stake" },
+    { id: "Redeem", icon: LiaHandHoldingUsdSolid, title: "Redeem ORE", link: "Redeem" },
   ];
   return (
     <div className="w-12 h-12 title-text  flex">
@@ -76,10 +76,10 @@ export default function MobileNavFalse() {
               </Link>
             </div>
             <div className="flex items-center w-full  justify-around text-white gap-x-7 text-[19px] -mt-10">
-              <Link href="https://twitter.com/PalladiumLabs">
+              <Link href="https://x.com/EarthDeFi">
                 <Image src={tweet} alt="twitter" />
               </Link>
-              <Link href="https://discord.com/invite/9MMEyJ4JDz">
+              <Link href="https://discord.com/invite/PbXud77YPd">
                 <Image src={discord} alt="twitter" />
               </Link>
               <Link href="https://medium.com/palladium-labs">

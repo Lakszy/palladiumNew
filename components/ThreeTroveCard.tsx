@@ -4,8 +4,8 @@ import Image from 'next/image'
 import floatPUSD from "../app/assets/images/floatPUSD2.png";
 import trove3 from "../app/assets/images/TROVE2.svg"
 import botanixTestnet from "../app/src/constants/botanixTestnet.json";
-import trove2 from "../app/assets/images/TROVE1.svg"
-import trove1 from "../app/assets/images/TROVE3.svg"
+import trove2 from "../app/assets/images/btcc.svg"
+import trove1 from "../app/assets/images/wbtc.svg"
 import troveManagerAbi from "../app/src/constants/abi/TroveManager.sol.json"
 import ACTIVE from "../app/assets/images/ACTIVE.svg";
 import INACTIVE from "../app/assets/images/INACTIVE.svg";
@@ -186,7 +186,7 @@ const ThreeTroveCard = () => {
 
     return (
         <div className='p-5 h-scree w-full' style={{ backgroundColor: "black" }}>
-            {troveStatusBTC && troveStatuscore === "INACTIVE" ? (<>
+            {troveStatusBTC  === "INACTIVE" && troveStatuscore === "INACTIVE" ? (<>
 
                 <div className="p-5">
                     <div className="md:ml-2 -ml-7 rounded-lg h-[10rem] p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#222222" }}>
@@ -223,7 +223,7 @@ const ThreeTroveCard = () => {
                 <div className={`bg-[#222222] rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-24"}`}>
                     <div className="flex  gap-x-2 justify-between items-center mb-6">
                         <div className='flex items-center gap-x-1'>
-                            <Image src={trove1} alt="btc" />
+                            <Image src={trove1} alt="btc" width={50} height={10} />
                             <h2 className="ml-4 text-xl font-medium  body-text">WCORE Trove</h2>
                         </div>
                         {troveStatuscore === "ACTIVE" && (
@@ -234,7 +234,7 @@ const ThreeTroveCard = () => {
                     {troveStatuscore === "ACTIVE" ? (
                         <>
                             <div className="flex justify-center items-center">
-                                <Knob value={Number(newLTV) || 0} min={0} max={90} showValue={true} size={135} valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
+                                <Knob value={Number(newLTV) || 0} min={0} max={90} showValue={true} size={135} valueColor="#3dde84" strokeWidth={7} readOnly className="text-[#88e273]" />
                             </div>
 
                             <div className='flex  justify-between'>
@@ -245,7 +245,7 @@ const ThreeTroveCard = () => {
                                 </div>
                                 <div className="">
                                     <p className="text-gray-500 text-sm body-text">Debt</p>
-                                    <p className="body-text font-medium">{entireDebtAndCollCore.debtCore} PUSD</p>
+                                    <p className="body-text font-medium">{entireDebtAndCollCore.debtCore} ORE</p>
                                 </div>
                             </div>
                         </>
@@ -265,10 +265,10 @@ const ThreeTroveCard = () => {
                                 <div className="flex justify-between mb-4">
                                     <div>
                                         <p className="body-text font-medium text-gray-400">Min Debt</p>
-                                        <p className="body-text font-medium">{minDebt} PUSD</p>
+                                        <p className="body-text font-medium">{minDebt} ORE</p>
                                     </div>
                                     <div>
-                                        <p className="body-text font-medium text-gray-400">PUSD Minted</p>
+                                        <p className="body-text font-medium text-gray-400">ORE Minted</p>
                                         <p className="body-text font-medium">{formatLargeNumber(pusdMintedCore)} / 2.5M</p>
                                     </div>
                                 </div>
@@ -289,10 +289,10 @@ const ThreeTroveCard = () => {
                                 </div>
                                 <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
                                     <p className="body-text font-medium text-xs text-gray-400">Min Debt</p>
-                                    <p className="body-text font-medium text-xs">{minDebt} PUSD</p>
+                                    <p className="body-text font-medium text-xs">{minDebt} ORE</p>
                                 </div>
                                 <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
-                                    <p className="body-text font-medium text-xs text-gray-400">PUSD Minted</p>
+                                    <p className="body-text font-medium text-xs text-gray-400">ORE Minted</p>
                                     <p className="body-text font-medium text-xs">{formatLargeNumber(pusdMintedCore)} / 2.5M</p>
                                 </div>
                             </div>
@@ -325,7 +325,7 @@ const ThreeTroveCard = () => {
                 <div className={`bg-[#222222]  rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-24"}`}>
                     <div className="flex  gap-x-2 justify-between items-center mb-6">
                         <div className='flex  items-center gap-x-1'>
-                            <Image src={trove1} alt="btc" />
+                            <Image src={trove2} alt="btc" />
                             <h2 className="ml-4  text-xl font-medium body-text">WBTC Trove</h2>
                         </div>
                         {troveStatusBTC === "ACTIVE" && (
@@ -336,7 +336,7 @@ const ThreeTroveCard = () => {
                     {troveStatusBTC === "ACTIVE" ? (
                         <>
                             <div className="flex justify-center items-center">
-                                <Knob value={Number(newLTVBTC) || 0} min={0} max={90} showValue={true} size={135} valueColor="#3dde84" strokeWidth={7} readOnly className="text-yellow-300" />
+                                <Knob value={Number(newLTVBTC) || 0} min={0} max={90} showValue={true} size={135} valueColor="#3dde84" strokeWidth={7} readOnly className="text-[#88e273]" />
                             </div>
 
                             <div className='flex  justify-between'>
@@ -347,7 +347,7 @@ const ThreeTroveCard = () => {
                                 </div>
                                 <div className="">
                                     <p className="text-gray-500 text-sm body-text">Debt</p>
-                                    <p className=" body-text font-medium">{entireDebtAndCollBTC.debtBTC} PUSD</p>
+                                    <p className=" body-text font-medium">{entireDebtAndCollBTC.debtBTC} ORE</p>
                                 </div>
                             </div>
                         </>
@@ -367,10 +367,10 @@ const ThreeTroveCard = () => {
                                 <div className="flex justify-between mb-4">
                                     <div>
                                         <p className="body-text font-medium text-gray-400">Min Debt</p>
-                                        <p className="body-text font-medium">{minDebtBTC} PUSD</p>
+                                        <p className="body-text font-medium">{minDebtBTC} ORE</p>
                                     </div>
                                     <div>
-                                        <p className="body-text font-medium text-gray-400">PUSD Minted</p>
+                                        <p className="body-text font-medium text-gray-400">ORE Minted</p>
                                         <p className="body-text font-medium">{formatLargeNumber(pusdMintedBTC)} / 2.5M</p>
                                     </div>
                                 </div>
@@ -391,10 +391,10 @@ const ThreeTroveCard = () => {
                                 </div>
                                 <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
                                     <p className="body-text font-medium text-xs text-gray-400">Min Debt</p>
-                                    <p className="body-text font-medium text-xs">{minDebtBTC} PUSD</p>
+                                    <p className="body-text font-medium text-xs">{minDebtBTC} ORE</p>
                                 </div>
                                 <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
-                                    <p className="body-text font-medium text-xs text-gray-400">PUSD Minted</p>
+                                    <p className="body-text font-medium text-xs text-gray-400">ORE Minted</p>
                                     <p className="body-text font-medium text-xs">{formatLargeNumber(pusdMintedBTC)} / 2.5M</p>
                                 </div>
                             </div>

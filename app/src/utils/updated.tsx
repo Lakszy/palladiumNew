@@ -173,7 +173,7 @@ export const OpenTrove = () => {
 				<div className="flex items-center space-x-2">
 					<Input
 						id="quantity"
-						placeholder="0.00 PUSD"
+						placeholder="0.00 ORE"
 						value={userInputs.borrow}
 						onChange={(e) => {
 							handleValueChange({ ...userInputs, borrow: e.target.value });
@@ -189,15 +189,15 @@ export const OpenTrove = () => {
 				<div className="flex flex-col gap-2 mt-4">
 					<div className="flex flex-col">
 						<span>Liquidation Reserve</span>
-						<span>{liquidationReserve} PUSD</span>
+						<span>{liquidationReserve} ORE</span>
 					</div>
 					<div className="flex flex-col">
 						<span>Borrowing Fee</span>
-						<span>{expectedFee} PUSD</span>
+						<span>{expectedFee} ORE</span>
 					</div>
 					<div className="flex flex-col">
 						<span>Total Debt</span>
-						<span>{expectedDebt} PUSD</span>
+						<span>{expectedDebt} ORE</span>
 					</div>
 					<div className="flex flex-col">
 						<span>Collateral Ratio</span>

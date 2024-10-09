@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import pusdbtc from "../app/assets/images/PUSD.svg";
-import btc from "../app/assets/images/btclive.svg";
+import pusdbtc from "../app/assets/images/Core.svg";
+import btc from "../app/assets/images/btcc.svg";
+import core from "../app/assets/images/wbtc.svg";
+
 import { Toast } from "primereact/toast";
 import { useAccount, useWalletClient } from "wagmi";
 import { EVMConnect } from "./EVMConnect";
@@ -11,6 +13,7 @@ import "./navbar.css";
 function NavBar() {
   const [fetchedPrice, setFetchedPrice] = useState(0);
   const [fetchedPriceBTC, setFetchedPriceBTC] = useState(0);
+  const [fetchedPriceORE, setFetchedPriceORE] = useState(0);
   const { address } = useAccount();
   const [userExists, setUserExists] = useState(false);
   const toast = useRef<Toast>(null);
@@ -34,8 +37,10 @@ function NavBar() {
         const data = await response.json();
         const protocolMetrics = data[0].metrics[1]; // WCORE metrics
         const protocolMetricsBTC = data[0].metrics[0]; // wBTC metrics
+        const priceORE = data[0].pricePUSD
         setFetchedPriceBTC(protocolMetricsBTC.price);
         setFetchedPrice(protocolMetrics.price);
+        setFetchedPriceORE(priceORE);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -92,19 +97,8 @@ function NavBar() {
             <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
               onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
               onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
-              onClick={() => handleAddToken("0xB6FfD3e71358C69e7A17f8FD5a53E2EACB0a0C56", "PUSD", 18)}>
-              <Image src={pusdbtc} alt="PUSD" width={40} />
-              <div>
-                <h1 className="text-white title-text2 text-sm">PUSD</h1>
-                <h1 className="text-sm text-gray-400 title-text2 whitespace-nowrap -ml-1">$ 1.00</h1>
-                <span className="popup body-text text-xs">Click to import PUSD</span>
-              </div>
-            </div>
-            <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
-              onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
-              onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
               onClick={() => handleAddToken("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", "WCORE", 18)}>
-              <Image src={btc} alt="WCORE" width={40} />
+              <Image src={core} alt="WCORE" width={40} />
               <div>
                 <h1 className="text-white title-text2 text-sm">WCORE</h1>
                 <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPrice).toFixed(2)}</h1>
@@ -120,6 +114,17 @@ function NavBar() {
                 <h1 className="text-white title-text2 text-sm">WBTC</h1>
                 <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPriceBTC).toFixed(2)}</h1>
                 <span className="popup body-text text-xs">Click to import WBTC</span>
+              </div>
+            </div>
+            <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
+              onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
+              onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
+              onClick={() => handleAddToken("0xB6FfD3e71358C69e7A17f8FD5a53E2EACB0a0C56", "ORE", 18)}>
+              <Image src={pusdbtc} alt="ORE" width={40} />
+              <div>
+                <h1 className="text-white title-text2 text-sm">ORE</h1>
+                <h1 className="text-sm text-gray-400 title-text2 whitespace-nowrap -ml-1">${Number(fetchedPriceORE).toFixed(2)}</h1>
+                <span className="popup body-text text-xs">Click to import ORE</span>
               </div>
             </div>
           </div>

@@ -21,7 +21,7 @@ import Image from "next/image";
 import INACTIVE from "@/app/assets/images/INACTIVE.svg";
 import ACTIVE from "@/app/assets/images/ACTIVE.svg";
 import img2 from "@/app/assets/images/Group 663.svg";
-import img3 from "@/app/assets/images/Group 661.svg";
+import img3 from "@/app/assets/images/wbtc.svg";
 import img4 from "@/app/assets/images/Group 666.svg";
 import rej from "@/app/assets/images/TxnError.gif";
 import conf from "@/app/assets/images/conf.gif"
@@ -256,19 +256,10 @@ const BorrowBTCNEW = () => {
   const handleConfirmClick = async (xBorrow: string, xCollatoral: string) => {
 
     if (!walletClient) return null;
-
-    const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
-    let amountToApprove = null;
-    if (aprvAmntInDecimals === 0) {
-      amountToApprove = xCollatoral;
-    } else {
-      amountToApprove = newApprovedAmount !== null ? newApprovedAmount.toString() : null;
-    }
-    if (amountToApprove) {
-      await handleApproveClick(amountToApprove);
-    } else if (xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
+    if (modiff >= 0 && xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
       await handleApproveClick(xCollatoral);
     }
+    
     try {
       setIsModalVisible(true)
       const borrowValue = Number(xBorrow);
@@ -373,7 +364,7 @@ const BorrowBTCNEW = () => {
       setUserInputs({ depositCollateral: userInputs.depositCollateral, borrow: String(stakeFixed) });
 
     } else {
-      console.error("Invalid PUSD balance:", availableToBorrow);
+      console.error("Invalid ORE balance:", availableToBorrow);
     }
   };
 
@@ -387,7 +378,7 @@ const BorrowBTCNEW = () => {
       const stakeFixed = maxStake.toFixed(8);
       setUserInputs({ depositCollateral: stakeFixed, borrow: userInputs.borrow });
     } else {
-      console.error("Invalid PUSD balance:", balanceData);
+      console.error("Invalid ORE balance:", balanceData);
     }
   };
 
@@ -562,7 +553,7 @@ const BorrowBTCNEW = () => {
                     </div>
                     <div className="flex flex-col text-white w-[9rem]  h-28 p-5" style={{ backgroundColor: "" }} >
                       <span className="body-text font-medium text-gray-500 ">Debt</span>
-                      <span className="body-text font-medium text-xl whitespace-nowrap">{Number(entireDebtAndColl.debt).toFixed(2)} PUSD</span>
+                      <span className="body-text font-medium text-xl whitespace-nowrap">{Number(entireDebtAndColl.debt).toFixed(2)} ORE</span>
                       <span className="body-text font-medium text-gray-500 text-xs">${Number(entireDebtAndColl.debt).toFixed(2)}</span>
                     </div>{" "}
                   </div>
@@ -583,7 +574,7 @@ const BorrowBTCNEW = () => {
                     <div className="flex flex-col gap-y-16 ">
                       <div className="flex  p-1 flex-col">
                         <span className="text-xs text-gray-500 body-text">Liquidation</span>
-                        <span className="body-text body-text">${liquidation.toFixed(2)} PUSD</span>
+                        <span className="body-text body-text">${liquidation.toFixed(2)} ORE</span>
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
                       </div>
                       <div className="flex md:hidden -mt-12 md:-mt-6 flex-col">
@@ -592,7 +583,7 @@ const BorrowBTCNEW = () => {
                       </div>
                       <div className="flex  fee -mt-6 flex-col">
                         <span className=" body-text text-xs text-gray-500 body-text">Refundable Fee</span>
-                        <p className="body-text text-sm ">{calculatedFee} PUSD</p>
+                        <p className="body-text text-sm ">{Number(calculatedFee).toFixed(2)} ORE</p>
                       </div>
                     </div>
 
@@ -609,7 +600,7 @@ const BorrowBTCNEW = () => {
               </div>
               <div className=" md:mt-5" style={{ backgroundColor: "black" }}>
                 <div className="md:p-5 pt-20 flex-col flex gap-x-36">
-                  <div className=" border-yellow-800">
+                  <div className=" border-[#88e273]">
                     <TabView className="md:-ml-0  -ml-2">
                       <TabPanel className="p-[2px] bg-[#88e273] text-sm title-text " header="Borrow">
                         <div className="p-5"
@@ -649,10 +640,10 @@ const BorrowBTCNEW = () => {
                                     </span>
                                     {/* <Button onClick={() => handleApproveClick(userInputs.depositCollateral)}>Approve</Button> */}
                                     <div className="flex w-full py-2 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                                     </div>
                                   </div>
                                 </div>
@@ -665,7 +656,7 @@ const BorrowBTCNEW = () => {
                                   <div className="flex  items-center  md:mt-0 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl  border border-[#88e273] " style={{ backgroundColor: "black" }}>
                                     <div className='flex items-center h-[3.5rem] mx-1'>
                                       <Image src={img4} alt="home" className='ml-1' />
-                                      <h3 className='text-white body-text ml-1 font-medium hidden md:block '>PUSD</h3>
+                                      <h3 className='text-white body-text ml-1 font-medium hidden md:block '>ORE</h3>
                                       <h3 className='h-full border  border-[#88e273] mx-2  text-[#88e273]'></h3>
                                     </div>
                                     <input id="items" placeholder='Enter Collateral Amount'
@@ -696,10 +687,10 @@ const BorrowBTCNEW = () => {
                                         )}
                                     </span>
                                     <div className="flex w-full py-3 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3 -mt-4 ">
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#3b351b", }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                                      <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(100)}>100%</Button>
                                     </div>
                                   </div>
                                   <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
@@ -707,7 +698,7 @@ const BorrowBTCNEW = () => {
                                    ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
                                         ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-[#88e273]  text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
-                                    {isModalVisible ? "Updating Trove..." : amountToApprove ? "Approve" : "Update Trove"}
+                                    {isModalVisible ? "Updating Trove..." : modiff > -0 ? "Approve" : "Update Trove"}
                                   </button>
                                 </div>
                               </div>
@@ -741,19 +732,19 @@ const BorrowBTCNEW = () => {
                                   <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium">Liquidation Price</span>
                                     <Image width={15} className="toolTipHolding10 ml_5 " src={info} data-pr-tooltip="" alt="info" />
-                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding10" content="The PUSD value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price." mouseTrack mouseTrackLeft={10} />
+                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding10" content="The ORE value at which your Vault will drop below 110% Collateral Ratio and be at risk of liquidation. You should manage your position to avoid liquidation by monitoring normal mode liquidation price." mouseTrack mouseTrackLeft={10} />
                                   </div>
                                   <span className="body-text  my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2.5">
                                       <span className=" w-28 -ml-[5px] body-text font-medium p-1">
-                                        {Number(liquidation).toFixed(2)} PUSD
+                                        {Number(liquidation).toFixed(2)} ORE
                                       </span>
                                       {userInputColl + userInputDebt >= 1 && (
                                         <>
                                           <span className="text-[#88e273] text-lg">
                                             <FaArrowRightLong />
                                           </span>
-                                          <span className="body-text text-xs whitespace-nowrap w-28  p-1 font-medium">{" "}{Number(liquidationPrice).toFixed(2)} PUSD</span>
+                                          <span className="body-text text-xs whitespace-nowrap w-28  p-1 font-medium">{" "}{Number(liquidationPrice).toFixed(2)} ORE</span>
                                         </>
                                       )}
                                     </div>
@@ -763,19 +754,19 @@ const BorrowBTCNEW = () => {
                                   <div className="flex w-full">
                                     <span className="body-text text-xs whitespace-nowrap text-[#84827a] font-medium  md:flex-row flex-col">Total Debt</span>
                                     <Image width={15} className="toolTipHolding11 ml_5" src={info} data-pr-tooltip="" alt="info" />
-                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding11" mouseTrack content="Total amount of PUSD borrowed + liquidation reserve (200 PUSD) + borrowing fee at time of loan issuance." mouseTrackLeft={10} />
+                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding11" mouseTrack content="Total amount of ORE borrowed + liquidation reserve (200 ORE) + borrowing fee at time of loan issuance." mouseTrackLeft={10} />
                                   </div>
                                   <span className="body-text  my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
                                       <span className="w-28 -ml-[5px] p-1 body-text font-medium">
-                                        {Number(entireDebtAndColl.debt).toFixed(2)} PUSD
+                                        {Number(entireDebtAndColl.debt).toFixed(2)} ORE
                                       </span>
                                       {userInputColl == 1 && (
                                         <>
                                           <span className="text-[#88e273] text-lg">
                                             <FaArrowRightLong />
                                           </span>
-                                          <span className="ml-05 w-28 p-1 body-text font-medium">{" "}{Number(totalDebt).toFixed(2)} PUSD</span>
+                                          <span className="ml-05 w-28 p-1 body-text font-medium">{" "}{Number(totalDebt).toFixed(2)} ORE</span>
                                         </>
                                       )}
                                     </div>
@@ -785,7 +776,7 @@ const BorrowBTCNEW = () => {
                                   <div className="flex w-full">
                                     <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Total Collateral</span>
                                     <Image width={15} className="toolTipHolding12 ml_5" src={info} data-pr-tooltip="" alt="info" />
-                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding12" mouseTrack content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt." mouseTrackLeft={10} />
+                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding12" mouseTrack content="The ratio of the ORE value of the entire system collateral divided by the entire system debt." mouseTrackLeft={10} />
                                   </div>
                                   <span className="body-text my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
@@ -809,12 +800,12 @@ const BorrowBTCNEW = () => {
                                   <div className="flex w-full">
                                     <span className="text-xs whitespace-nowrap body-text text-[#84827a] font-medium ">Borrowing Fee</span>
                                     <Image width={15} className="toolTipHolding12 ml_5" src={info} data-pr-tooltip="" alt="info" />
-                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding12" mouseTrack content="The ratio of the PUSD value of the entire system collateral divided by the entire system debt." mouseTrackLeft={10} />
+                                    <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding12" mouseTrack content="The ratio of the ORE value of the entire system collateral divided by the entire system debt." mouseTrackLeft={10} />
                                   </div>
                                   <span className="body-text my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-2">
                                       <span className="p-1 w-28 body-text pl-2 font-medium">
-                                        {Number(borrowingFee).toFixed(2)} PUSD
+                                        {Number(borrowingFee).toFixed(2)} ORE
                                       </span>
                                       {userInputColl == 1 && (
                                         <>
