@@ -292,7 +292,7 @@ const BorrowCore = () => {
 
       const borrowOpt = await writeContract({
         abi: BorrowerOperationbi,
-        address: '0x6117bde97352372eb8041bc631738402DEfA79a4',
+        address: '0xFe59041c88c20aB6ed87A0452601007a94FBf83C',
         functionName: 'adjustVessel',
         args: [
           "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", //tokenAddress
@@ -400,7 +400,7 @@ const BorrowCore = () => {
 
   const handleCheckApprovedClick = async () => {
     const userAddress = walletClient?.account?.address;
-    const spenderAddress = "0x6117bde97352372eb8041bc631738402DEfA79a4"
+    const spenderAddress = "0xFe59041c88c20aB6ed87A0452601007a94FBf83C"
     const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
     if (approvedAmount) {
       setAprvAmt(approvedAmount);
@@ -425,7 +425,7 @@ const BorrowCore = () => {
         const userAddress = walletClient?.account?.address;
         const gasPrice = (await web3.eth.getGasPrice()).toString();
         const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-        const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+        const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
         if (tx) {
           console.log("Transaction successful!");
@@ -501,7 +501,7 @@ const BorrowCore = () => {
   }, []);
 
 
-  getApprovedAmount(walletClient?.account?.address, "0x6117bde97352372eb8041bc631738402DEfA79a4")
+  getApprovedAmount(walletClient?.account?.address, "0xFe59041c88c20aB6ed87A0452601007a94FBf83C")
   useEffect(() => {
     const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
     const modDifference = Number(userInputs.depositCollateral) - aprvAmntInDecimals;
@@ -565,7 +565,7 @@ const BorrowCore = () => {
                     <span></span>
                     <span></span>
                     <div className="flex flex-col">
-                      <span className="text-gray-500 -mt-[7px]  body-text font-medium">Trove Status</span>
+                      <span className="text-gray-500 -mt-[7px]  body-text font-medium">Vessel Status</span>
                       {troveStatus === "ACTIVE" ? <Image className="mt-[5px]" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                     </div>
                   </div>
@@ -580,7 +580,7 @@ const BorrowCore = () => {
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
                       </div>
                       <div className="flex  md:hidden -mt-12 md:-mt-6 flex-col">
-                        <span className="text-xs text-gray-500 body-text body-text">Trove Status</span>
+                        <span className="text-xs text-gray-500 body-text body-text">Vessel Status</span>
                         {troveStatus === "ACTIVE" ? <Image className="" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                       </div>
                       <div className="flex  fee -mt-6 flex-col">
@@ -702,7 +702,7 @@ const BorrowCore = () => {
                                         ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed'
                                         : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
-                                    {(userInputColl !== undefined && !isNaN(Number(userInputColl)) && Number(userInputColl) > 0 && modiff >= 0) ? 'APPROVE' : 'UPDATE TROVE'}
+                                    {(userInputColl !== undefined && !isNaN(Number(userInputColl)) && Number(userInputColl) > 0 && modiff >= 0) ? 'APPROVE' : 'UPDATE VESSEL'}
                                   </button>
 
                                 </div>

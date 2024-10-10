@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import pusdbtc from "../app/assets/images/Core.svg";
-import btc from "../app/assets/images/btcc.svg";
+import btc from "../app/assets/images/Group 666.svg";
 import core from "../app/assets/images/wbtc.svg";
 
 import { Toast } from "primereact/toast";
@@ -36,7 +36,7 @@ function NavBar() {
         const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
         const data = await response.json();
         const protocolMetrics = data[0].metrics[1]; // WCORE metrics
-        const protocolMetricsBTC = data[0].metrics[0]; // wBTC metrics
+        const protocolMetricsBTC = data[0].metrics[0]; // WBTC metrics
         const priceORE = data[0].pricePUSD
         setFetchedPriceBTC(protocolMetricsBTC.price);
         setFetchedPrice(protocolMetrics.price);
@@ -108,8 +108,8 @@ function NavBar() {
             <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
               onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
               onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
-              onClick={() => handleAddToken("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", "wBTC", 18)}>
-              <Image src={btc} alt="wBTC" width={40} />
+              onClick={() => handleAddToken("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", "WBTC", 18)}>
+              <Image src={btc} alt="WBTC" width={40} />
               <div>
                 <h1 className="text-white title-text2 text-sm">WBTC</h1>
                 <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPriceBTC).toFixed(2)}</h1>
@@ -119,11 +119,11 @@ function NavBar() {
             <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
               onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
               onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
-              onClick={() => handleAddToken("0xB6FfD3e71358C69e7A17f8FD5a53E2EACB0a0C56", "ORE", 18)}>
-              <Image src={pusdbtc} alt="ORE" width={40} />
+              onClick={() => handleAddToken("0x559c43480aEd5369f7dc0f96dC680838D977B59F", "ORE", 18)}>
+              <Image src={pusdbtc} alt="ORE" className="mr-1" width={40} />
               <div>
                 <h1 className="text-white title-text2 text-sm">ORE</h1>
-                <h1 className="text-sm text-gray-400 title-text2 whitespace-nowrap -ml-1">${Number(fetchedPriceORE).toFixed(2)}</h1>
+                <h1 className="text-sm text-gray-400 title-text2 whitespace-nowrap -ml-[0px]">${Number(fetchedPriceORE).toFixed(2)}</h1>
                 <span className="popup body-text text-xs">Click to import ORE</span>
               </div>
             </div>

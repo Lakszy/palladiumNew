@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import apiThreeFeed from "../src/constants/abi/ApiThree.sol.json";
+// import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
+// import adminConAbi from "../src/constants/abi/AdminContract.sol.json"
+
 import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
@@ -35,6 +38,7 @@ import { GiConsoleController } from "react-icons/gi";
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
     const [isRecoveryMode, setIsRecoveryMode] = useState<boolean>(false);
+    const [isRecoveryModeBTC, setIsRecoveryModeBTC] = useState<boolean>(false);
     const [pusdBalance, setPusdBalance] = useState("0");
     const { address, isConnected } = useAccount();
     const { data: walletClient } = useWalletClient();
@@ -93,6 +97,12 @@ export default function Redeem() {
         provider
     );
 
+    // const VesselManager = getContract(
+    //     "0x9c645140fb8D9207ec3B83e8832A476F9D604E8e",
+    //     adminConAbi,
+    //     provider
+    // );
+
     const ApiFeedBTC = getContract(
         "0x81A64473D102b38eDcf35A7675654768D11d7e24",
         apiThreeFeed,
@@ -113,6 +123,8 @@ export default function Redeem() {
             );
             const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
             setPusdBalance(pusdBalanceFormatted);
+            // const CCR = await VesselManager.getCcr("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
+            // console.log(CCR, "CCCR")
         };
         fetchPrice();
     }, [erc20Contract, address]);
@@ -128,6 +140,8 @@ export default function Redeem() {
                 const protocolMetricsBTC = data[0].metrics[0] // WBTC
 
                 setIsRecoveryMode(protocolMetrics.recoveryMode);
+                setIsRecoveryModeBTC(protocolMetricsBTC.recoveryMode);
+
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
@@ -170,7 +184,7 @@ export default function Redeem() {
         try {
             if (!walletClient) {
                 return null;
-              }
+            }
             
             const pow = Decimal.pow(10, 18);
             const inputBeforeConv = new Decimal(userInput);
@@ -189,7 +203,7 @@ export default function Redeem() {
             const maxFee = BigInt(5e16);
 
             const result = await writeContract({
-                address: "0x21F46c75F3c12FE2cA6714e6085B65FACA61102f",
+                address: "0x295C88543F6C54088f9D9E454e17482967d8AE90",
                 abi: hintHelpersAbi,
                 functionName: 'redeemCollateral',
                 args: [
@@ -264,7 +278,7 @@ export default function Redeem() {
                     </div>
                     <div className='my-4'>
                         <div className="flex mb-2 items-center">
-                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#] rounded-lg body-text w-[20rem] md:w-full text-lg h-14 border border-[#88e273] text-white " />
+                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className=" rounded-lg body-text w-[20rem] md:w-full bg-transparent text-white text-lg h-14 border border-[#88e273]  " />
                         </div>
                         <span className=" ml-[56%] md:ml-[66%] body-text  font-medium balance ">
                             {isLoading ?
@@ -289,11 +303,14 @@ export default function Redeem() {
 
                     {isConnected ? (
                         <div className="space-y-2">
-                            <button style={{ backgroundColor: "#88e273" }} onClick={handleConfirmClick} className={`mt-5  text-black title-text font-semibold w-[20rem] md:w-full rounded-lg border border-black h-10 ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
+                            <button style={{ backgroundColor: "#88e273" }} onClick={handleConfirmClick} className={`mt-5  text-black title-text font-semibold w-[20rem] md:w-full rounded-lg border border-black h-10 
+                                ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} 
+                                disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
                                 {isLoading ? 'LOADING...' : 'REDEEM'}
                             </button>
                             <div>
-                                {isRecoveryMode && <span className="body-text pt-2 text-gray-300 text-xl w-2">System Is In Recovery Mode !</span>}
+                                {isRecoveryMode && selectedButton === "WCORE" && <span className="body-text pt-2 text- text-red-500 w-2">System is in Recovery Mode for WCORE!</span>}
+                                {isRecoveryModeBTC && selectedButton === "WBTC" && <span className="body-text pt-2 text- text-red-500 w-2">System is in Recovery Mode for WBTC !</span>}
                             </div>
                         </div>
                     ) : (

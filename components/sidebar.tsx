@@ -75,15 +75,15 @@ export const TabsDemo = () => {
         </Link>
       </nav>
       <div className="space-y-1 h-16">
-        <div className="ml-6 w-fit h-fit">
-          <Link href="https://zealy.io/cw/palladiumlabs/questboard">
+        {/* <div className="ml-6 w-fit h-fit">
+          <Link href="https://zealy.io/c/earthprotocol">
             <Image src={zeally} alt="zeally" className="w-[227px] h-[100px]" />
           </Link>
-        </div>
+        </div> */}
         <div className="flex items-center justify-center text-white gap-x-5  text-[19px] ">
           <Link target="_blank" href="https://x.com/EarthDeFi">  <Image className="hover:scale-105"  src={tweet} alt="twitter" /></Link>
           <Link target="_blank" href="https://discord.com/invite/PbXud77YPd">  <Image className="hover:scale-105"  src={discord} alt="twitter" /></Link>
-          <Link target="_blank" href="https://medium.com/palladium-labs">  <Image  className="hover:scale-105" src={medium} alt="twitter" /></Link>
+          <Link target="_blank" href="https://medium.com/earth-protocol">  <Image  className="hover:scale-105" src={medium} alt="twitter" /></Link>
         </div>
       </div>
     </div>

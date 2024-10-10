@@ -71,7 +71,7 @@ export default function MobileNavFalse() {
           </nav>
           <div className="space-y-1 pt-16">
             <div className=" w-full h-full">
-              <Link href="https://zealy.io/cw/palladiumlabs/questboard">
+              <Link href="https://zealy.io/c/earthprotocol">
                 <Image src={zeally} alt="zeally" className="w-[297px] h-[100px]" />
               </Link>
             </div>
@@ -82,7 +82,7 @@ export default function MobileNavFalse() {
               <Link href="https://discord.com/invite/PbXud77YPd">
                 <Image src={discord} alt="twitter" />
               </Link>
-              <Link href="https://medium.com/palladium-labs">
+              <Link href="https://medium.com/earth-protocol">
                 <Image src={medium} alt="twitter" />
               </Link>
             </div>

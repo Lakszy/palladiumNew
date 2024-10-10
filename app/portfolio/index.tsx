@@ -429,15 +429,15 @@ const Portfolio = () => {
                         <div className={`px-3 md:-ml-5 h-full space-y-10 md:space-y-0 gap-x-[3rem] flex flex-col md:flex-row ${troveStatusBTC === "INACTIVE" ? 'w-[100%]' : ''}`}>
                           <div className="  md:w-full w-[19rem]  md:h-[25rem]  md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#222222" }}>
                             <div className="flex flex-row justify-between p-5" style={{ backgroundColor: "#282828" }}>
-                              <span className="title-text2 text-white">WCORE TROVE</span>
+                              <span className="title-text2 text-white">WCORE VESSEL</span>
                               <button className="h-10 px-8 bg-[#88e273] hover:scale-x-95 text-black font-bold title-text">
-                                <Link className="title-text text-sm text-black" href="/trove/wcore">OPEN TROVE</Link>
+                                <Link className="title-text text-sm text-black" href="/trove/wcore">OPEN VESSEL</Link>
                               </button>
                             </div>
                             <div className="grid place-items-center mb-[0.5rem] p-3">
                               <Image src={floatPUSD} alt="home" width={220} className="" />
                               <p className="text-gray-400 mt-10 mx-1 title-text2 text-center font-semibold text-lg pt-5">
-                                You don't have an WCORE Active Trove
+                                You don't have an active WCORE vessel
                               </p>
                             </div>
                           </div>
@@ -445,7 +445,7 @@ const Portfolio = () => {
                       ) : (
                         <div className="flex-1 w-[100%]  h-auto rounded-sm" style={{ backgroundColor: "#222222" }}>
                           <div className=" flex items-center flex-row justify-between p-5" style={{ backgroundColor: "#282828" }}>
-                            <span className="body-text text-white ml-1">WCORE TROVE</span>
+                            <span className="body-text text-white ml-1">WCORE VESSEL</span>
                             <Link href="/trove/wcore">
                               <button
                                 className="h-8 px-8 border-[#88e273] text-[#88e273] border title-text2 bg-transparent  title-text font-bold">
@@ -488,15 +488,15 @@ const Portfolio = () => {
                         <div className={`px-3 md:-ml-5 h-full space-y-10 md:space-y-0 gap-x-[3rem] flex flex-col md:flex-row ${troveStatuscore === "INACTIVE" ? 'w-[100%]' : ''}`}>
                           <div className="  md:h-[25rem]  md:w-full w-[21rem] -ml-3 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#222222" }}>
                             <div className="flex flex-row justify-between p-5" style={{ backgroundColor: "#282828" }}>
-                              <span className="title-text2 text-white">WBTC TROVE</span>
+                              <span className="title-text2 text-white">WBTC VESSEL</span>
                               <button className="h-10 px-8 bg-[#88e273] hover:scale-x-95 text-black font-bold title-text">
-                                <Link className="title-text text-sm text-black" href="/trove/wbtc">OPEN TROVE</Link>
+                                <Link className="title-text text-sm text-black" href="/trove/wbtc">OPEN VESSEL</Link>
                               </button>
                             </div>
                             <div className="grid place-items-center mb-[0.5rem] p-3">
                               <Image src={floatPUSD} alt="home" width={220} className="" />
                               <p className="text-gray-400 title-text2 text-center font-semibold text-lg pt-5 mt-10 mx-1">
-                                You don't have an WBTC Active Trove
+                                You don't have an active WBTC vessel
                               </p>
                             </div>
                           </div>
@@ -504,7 +504,7 @@ const Portfolio = () => {
                       ) : (
                         <div className="flex-1 lg:w-[20rem] h-auto rounded-sm" style={{ backgroundColor: "#222222" }}>
                           <div className=" flex items-center flex-row justify-between p-5" style={{ backgroundColor: "#282828" }}>
-                            <span className="body-text text-white ml-1">WBTC TROVE</span>
+                            <span className="body-text text-white ml-1">WBTC VESSEL</span>
                             <Link href="/trove/wbtc">
                               <button
                                 className="h-8 px-8 border-[#88e273] text-[#88e273] border title-text2 bg-transparent  title-text font-bold">
@@ -599,13 +599,13 @@ const Portfolio = () => {
               <div className="md:p-10 flex flex-col md:flex-row justify-around gap-y-8 md:gap-10">
                 <div className="md:w-[35rem] md:h-[23.6rem] md:mx-0 mx-3 mt-4 md:ml-[2.5rem] rounded-sm" style={{ backgroundColor: "#222222" }}>
                   <div className=" items-center  flex flex-row justify-between p-5" style={{ backgroundColor: "" }}>
-                    <span className="text-white title-text2 ">TROVE</span>
+                    <span className="text-white title-text2 ">VESSEL</span>
                     <EVMConnect className="" />
                   </div>
                   <div className="grid  md:my-0 my-5 place-items-center">
                     <Image src={img1} alt="home" width={200} />
                     <p className="mt-4 font-medium text-gray-400 title-text2 text-center pt-5">
-                      You don't have an Active Trove
+                      You don't have an active Vessel
                     </p>
                   </div>
                 </div>

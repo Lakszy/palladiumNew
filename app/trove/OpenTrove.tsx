@@ -11,7 +11,7 @@ import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers, JsonRpcSigner } from "ethers";
 import info from "../assets/images/info.svg";
-import btc from "../assets/images/wcore.png";
+import btc from "../assets/images/wbtc.svg";
 import rej from "../assets/images/TxnError.gif";
 import conf from "../assets/images/conf.gif"
 import rec2 from "../assets/images/rec2.gif"
@@ -21,8 +21,8 @@ import { useDebounce } from "react-use";
 import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
-import img4 from "../assets/images/Group 666.svg";
-import trove1 from "../assets/images/wcore.png";
+import img4 from "../assets/images/Core.svg";
+import trove1 from "../assets/images/wbtc.svg";
 import { Button } from "@/components/ui/button";
 import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
@@ -63,7 +63,7 @@ export const OpenTrove = () => {
       setLoadingMessage("Waiting for transaction to confirm..");
       setLoadingModalVisible(true);
     } else if (isSuccess) {
-      setLoadingMessage("Open Trove Transaction completed successfully");
+      setLoadingMessage("Open vessel Transaction completed successfully");
       setLoadingModalVisible(true);
     } else if (transactionRejected) {
       setLoadingMessage("Transaction was rejected");
@@ -190,7 +190,7 @@ export const OpenTrove = () => {
 
       await writeContract({
         abi: BorrowerOperationbi,
-        address: "0x6117bde97352372eb8041bc631738402DEfA79a4",
+        address: "0xFe59041c88c20aB6ed87A0452601007a94FBf83C",
         functionName: "openVessel",
         args: ["0x5FB4E66C918f155a42d4551e871AD3b70c52275d", collBigint, borrowBigint, upperHint, lowerHint],
       });
@@ -313,7 +313,7 @@ export const OpenTrove = () => {
 
   const handleCheckApprovedClick = async () => {
     const userAddress = walletClient?.account?.address;
-    const approvedAmount = await getApprovedAmount(userAddress, "0x6117bde97352372eb8041bc631738402DEfA79a4");
+    const approvedAmount = await getApprovedAmount(userAddress, "0xFe59041c88c20aB6ed87A0452601007a94FBf83C");
     if (approvedAmount) {
       setAprvAmt(approvedAmount);
     } else {
@@ -333,7 +333,7 @@ export const OpenTrove = () => {
       const gasPrice = (await web3.eth.getGasPrice()).toString();
       // const amountInWei = (parseFloat(amount) * 1000000).toString();
       const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-      const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+      const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
       if (tx.status) {
         console.log("Transaction successful!");
@@ -373,7 +373,7 @@ export const OpenTrove = () => {
   }, []);
 
   useEffect(() => {
-    getApprovedAmount(walletClient?.account?.address, "0x6117bde97352372eb8041bc631738402DEfA79a4")
+    getApprovedAmount(walletClient?.account?.address, "0xFe59041c88c20aB6ed87A0452601007a94FBf83C")
     const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
     const modDifference = Number(userInputs.collatoral) - aprvAmntInDecimals;
     setModiff(modDifference)
@@ -399,7 +399,7 @@ export const OpenTrove = () => {
               </svg>
             </button>
             <Image src={trove1} alt="btc" width={50} />
-            <p className="body-text text-2xl font-semibold text-white">WCORE Trove</p>
+            <p className="body-text text-2xl font-semibold text-white">WCORE Vessel</p>
           </div>
         </div>
 
@@ -437,7 +437,7 @@ export const OpenTrove = () => {
                   <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1'>ORE</h3>
                   <h3 className='h-full border rounded-3xl border-[#88e273] text-[#88e273] mx-4'></h3>
                 </div>
-                <input id="quantity" placeholder="" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-gray-400 body-text font-medium" style={{ backgroundColor: "black" }} />
+                <input id="quantity" placeholder="" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className=" h-[4rem] border-2 rounded-2xl border-none  text-gray-400 body-text font-medium" style={{ backgroundColor: "black" }} />
               </div>
               <div className="pt-2 w-[90%] flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
@@ -476,7 +476,7 @@ export const OpenTrove = () => {
                   parseFloat(userInputs.borrow) <= minDebt)
                   ? 0.5 : 1
               }}>
-              {isModalVisible ? "Opening Trove..." : modiff >= 0 ? "Approve" : "Open Trove"}
+              {isModalVisible ? "Opening Vessel..." : modiff >= 0 ? "Approve" : "Open Vessel"}
             </button>
           </div>
           {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData) ? (
@@ -634,7 +634,7 @@ export const OpenTrove = () => {
                   <Image src={conf} alt="rectangle" width={150} />
                   <div className="my-5 ml-[6rem] mb-5"></div>
                 </>
-              ) : loadingMessage === 'Open Trove Transaction completed successfully' ? (
+              ) : loadingMessage === 'Open vessel Transaction completed successfully' ? (
                 <Image src={tick} alt="tick" width={200} />
               ) : transactionRejected ? (
                 <Image src={rej} alt="rejected" width={140} />

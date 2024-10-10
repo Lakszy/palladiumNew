@@ -101,7 +101,7 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
 
       const tx = writeContract({
         abi: BorrowerOperationbi,
-        address: '0x6117bde97352372eb8041bc631738402DEfA79a4',
+        address: '0xFe59041c88c20aB6ed87A0452601007a94FBf83C',
         functionName: 'closeVessel',
         args: ["0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"],
       });
@@ -202,7 +202,7 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
           disabled={isLowBalance || afterLoad}
           className={`mt-20 md:w-full md:ml-0 ml-1 w-[18.2rem] h-[3rem] rounded-3xl bg-[#88e273] text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer'}`}
         >
-          Close Trove
+          Close Vessel
         </button>
         <div className="text-red-500 text-sm font-medium body-text w-full ml-1">
           {isLowBalance ? "Low balance: unable to close trove" : null}

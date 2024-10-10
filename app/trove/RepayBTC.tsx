@@ -16,8 +16,8 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { useDebounce } from "react-use";
 import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import Image from "next/image";
-import img3 from "../assets/images/wbtc.svg";
-import img4 from "../assets/images/Group 666.svg";
+import img3 from "../assets/images/Group 666.svg";
+import img4 from "../assets/images/Core.svg";
 import info from "../assets/images/info.svg";
 import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
@@ -172,7 +172,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
 
       const borrowOpt = await writeContract({
         abi: BorrowerOperationbi,
-        address: '0x6117bde97352372eb8041bc631738402DEfA79a4',
+        address: '0xFe59041c88c20aB6ed87A0452601007a94FBf83C',
         functionName: 'adjustVessel',
         args: [
           "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", //tokenAddress
@@ -286,7 +286,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
       const userAddress = walletClient?.account?.address;
       const gasPrice = (await web3.eth.getGasPrice()).toString();
       const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-      const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+      const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
       if (tx.status) {
         console.log("Transaction successful!");
@@ -407,7 +407,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img3} alt="home" className='ml-1' width={41} />
                 <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>WBTC</h6>
-                <h3 className='h-full border border-[#88e273] mx-4 text-[#88e273]'></h3>
+                <h3 className='h-full border border-[#88e273] mx-6 text-[#88e273]'></h3>
               </div>
               <div className=" justify-between items-center flex gap-x-24">
                 <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.coll} onChange={(e) => {
@@ -446,7 +446,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
              ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
                 ? 'bg-[#88e273] text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
             disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
-            UPDATE TROVE
+            UPDATE VESSEL
           </button>
         </div>
       </div>

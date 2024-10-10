@@ -60,15 +60,15 @@ ${isMenuSelected(menuItem.id) ? "bg-[#88e273] text-black" : "text-gray-500"}`} o
         ))}
       </nav>
       <div className="space-y-1 -mt-7">
-        <div className="ml-6 w-fit h-fit">
-          <Link href="https://zealy.io/cw/palladiumlabs/questboard">
+        {/* <div className="ml-6 w-fit h-fit">
+          <Link href="https://zealy.io/c/earthprotocol">
             <Image src={zeally} alt="zeally" className="w-[227px] h-[100px]" />
           </Link>
-        </div>
+        </div> */}
         <div className="flex items-center justify-center text-white gap-x-7 text-[19px]">
           <Link href="https://x.com/EarthDeFi">  <Image src={tweet} alt="twitter" />  </Link>
           <Link href="https://discord.com/invite/PbXud77YPd"><Image src={discord} alt="twitter" />  </Link>
-          <Link href="https://medium.com/palladium-labs">   <Image src={medium} alt="twitter" /> </Link>
+          <Link href="https://medium.com/earth-protocol">   <Image src={medium} alt="twitter" /> </Link>
         </div>
       </div>
     </div>

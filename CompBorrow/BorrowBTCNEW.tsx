@@ -20,9 +20,9 @@ import OpenTroveNotConnected from "@/app/trove/openTroveNotConnected";
 import Image from "next/image";
 import INACTIVE from "@/app/assets/images/INACTIVE.svg";
 import ACTIVE from "@/app/assets/images/ACTIVE.svg";
-import img2 from "@/app/assets/images/Group 663.svg";
-import img3 from "@/app/assets/images/wbtc.svg";
-import img4 from "@/app/assets/images/Group 666.svg";
+import img2 from "@/app/assets/images/Core.svg";
+import img3 from "@/app/assets/images/Group 666.svg";
+import img4 from "@/app/assets/images/Core.svg";
 import rej from "@/app/assets/images/TxnError.gif";
 import conf from "@/app/assets/images/conf.gif"
 import rec2 from "@/app/assets/images/rec2.gif"
@@ -303,7 +303,7 @@ const BorrowBTCNEW = () => {
 
       const borrowOpt = await writeContract({
         abi: BorrowerOperationbi,
-        address: '0x6117bde97352372eb8041bc631738402DEfA79a4',
+        address: '0xFe59041c88c20aB6ed87A0452601007a94FBf83C',
         functionName: 'adjustVessel',
         args: [
           "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", //tokenAddress
@@ -407,7 +407,7 @@ const BorrowBTCNEW = () => {
 
   const handleCheckApprovedClick = async () => {
     const userAddress = walletClient?.account?.address;
-    const spenderAddress = "0x6117bde97352372eb8041bc631738402DEfA79a4"
+    const spenderAddress = "0xFe59041c88c20aB6ed87A0452601007a94FBf83C"
     const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
     if (approvedAmount) {
       setAprvAmt(approvedAmount);
@@ -432,7 +432,7 @@ const BorrowBTCNEW = () => {
         const userAddress = walletClient?.account?.address;
         const gasPrice = (await web3.eth.getGasPrice()).toString();
         const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-        const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+        const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
         if (tx) {
           console.log("Transaction successful!");
@@ -503,7 +503,7 @@ const BorrowBTCNEW = () => {
 
   const marginClass = parseFloat(userInputs.depositCollateral) > 0 ? 'md:-ml-[7rem]' : 'md:-ml-[5rem]';
 
-  getApprovedAmount(walletClient?.account?.address, "0x6117bde97352372eb8041bc631738402DEfA79a4")
+  getApprovedAmount(walletClient?.account?.address, "0xFe59041c88c20aB6ed87A0452601007a94FBf83C")
   useEffect(() => {
     const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
     const modDifference = Number(userInputs.depositCollateral) - aprvAmntInDecimals;
@@ -563,7 +563,7 @@ const BorrowBTCNEW = () => {
                     <span></span>
                     <span></span>
                     <div className="flex flex-col">
-                      <span className="text-gray-500 -mt-[7px]  body-text font-medium">Trove Status</span>
+                      <span className="text-gray-500 -mt-[7px]  body-text font-medium">Vessel Status</span>
                       {troveStatus === "ACTIVE" ? <Image className="mt-[5px]" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                     </div>
                   </div>
@@ -578,7 +578,7 @@ const BorrowBTCNEW = () => {
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
                       </div>
                       <div className="flex md:hidden -mt-12 md:-mt-6 flex-col">
-                        <span className="text-gray-500 text-xs body-text">Trove Status</span>
+                        <span className="text-gray-500 text-xs body-text">Vessel Status</span>
                         {troveStatus === "ACTIVE" ? <Image className="" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                       </div>
                       <div className="flex  fee -mt-6 flex-col">
@@ -616,7 +616,7 @@ const BorrowBTCNEW = () => {
                                     <div className='flex items-center h-[3.5rem] '>
                                       <Image src={img3} alt="home" className='ml-1' width={41} />
                                       <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>WBTC</h6>
-                                      <h3 className='h-full border border-[#88e273] mx-4 text-[#88e273]'></h3>
+                                      <h3 className='h-full border border-[#88e273] mx-6 text-[#88e273]'></h3>
                                     </div>
                                     <div className=" justify-between items-center flex gap-x-24">
                                       <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e) => {
@@ -698,7 +698,7 @@ const BorrowBTCNEW = () => {
                                    ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
                                         ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-[#88e273]  text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
-                                    {isModalVisible ? "Updating Trove..." : modiff > -0 ? "Approve" : "Update Trove"}
+                                    {isModalVisible ? "Updating Vessel..." : modiff > -0 ? "Approve" : "Update Vessel"}
                                   </button>
                                 </div>
                               </div>

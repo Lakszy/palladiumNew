@@ -172,7 +172,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
 
       const borrowOpt = await writeContract({
         abi: BorrowerOperationbi,
-        address: '0x6117bde97352372eb8041bc631738402DEfA79a4',
+        address: '0xFe59041c88c20aB6ed87A0452601007a94FBf83C',
         functionName: 'adjustVessel',
         args: [
           "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", //tokenAddress
@@ -286,7 +286,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       const userAddress = walletClient?.account?.address;
       const gasPrice = (await web3.eth.getGasPrice()).toString();
       const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-      const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+      const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
       if (tx.status) {
         console.log("Transaction successful!");
@@ -446,7 +446,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
              ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
                 ? 'bg-[#88e273] text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
             disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
-            UPDATE TROVE
+            UPDATE VESSEL
           </button>
         </div>
       </div>

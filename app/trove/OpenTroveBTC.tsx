@@ -11,7 +11,7 @@ import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers, JsonRpcSigner } from "ethers";
 import info from "../assets/images/info.svg";
-import btc from "../assets/images/wbtc.svg";
+import btc from "../assets/images/Group 666.svg";
 import rej from "../assets/images/TxnError.gif";
 import conf from "../assets/images/conf.gif"
 import rec2 from "../assets/images/rec2.gif"
@@ -21,8 +21,8 @@ import { useDebounce } from "react-use";
 import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
-import img4 from "../assets/images/Group 666.svg";
-import trove1 from "../assets/images/wbtc.svg";
+import img4 from "../assets/images/Core.svg";
+import trove1 from "../assets/images/Group 666.svg";
 import { Button } from "@/components/ui/button";
 import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
@@ -61,7 +61,7 @@ export const OpenTroveBTC = () => {
             setLoadingMessage("Waiting for transaction to confirm..");
             setLoadingModalVisible(true);
         } else if (isSuccess) {
-            setLoadingMessage("Open Trove Transaction completed successfully");
+            setLoadingMessage("Open vessel Transaction completed successfully");
             setLoadingModalVisible(true);
         } else if (transactionRejected) {
             setLoadingMessage("Transaction was rejected");
@@ -193,7 +193,7 @@ export const OpenTroveBTC = () => {
 
             await writeContract({
                 abi: BorrowerOperationbi,
-                address: "0x6117bde97352372eb8041bc631738402DEfA79a4",
+                address: "0xFe59041c88c20aB6ed87A0452601007a94FBf83C",
                 functionName: "openVessel",
                 args: ["0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", collBigint, borrowBigint, upperHint, lowerHint],
             });
@@ -314,7 +314,7 @@ export const OpenTroveBTC = () => {
     };
 
     const handleCheckApprovedClick = async () => {
-        const spenderAddress = "0x6117bde97352372eb8041bc631738402DEfA79a4"
+        const spenderAddress = "0xFe59041c88c20aB6ed87A0452601007a94FBf83C"
         const userAddress = walletClient?.account?.address;
         const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
         if (approvedAmount) {
@@ -343,7 +343,7 @@ export const OpenTroveBTC = () => {
                 const gasPrice = (await web3.eth.getGasPrice()).toString();
                 // const amountInWei = (parseFloat(amount) * 1000000).toString();
                 const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-                const tx = await tokenContract.methods.approve("0x6117bde97352372eb8041bc631738402DEfA79a4", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+                const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
                 if (tx.status) {
                     console.log("Transaction successful!");
@@ -384,7 +384,7 @@ export const OpenTroveBTC = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    getApprovedAmount(walletClient?.account?.address, "0x6117bde97352372eb8041bc631738402DEfA79a4")
+    getApprovedAmount(walletClient?.account?.address, "0xFe59041c88c20aB6ed87A0452601007a94FBf83C")
     useEffect(() => {
         const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
         const modDifference = Number(userInputs.collatoral) - aprvAmntInDecimals;
@@ -413,7 +413,7 @@ export const OpenTroveBTC = () => {
                             </svg>
                         </button>
                         <Image src={trove1} alt="btc" width={50} />
-                        <p className="body-text text-2xl font-semibold text-white">WBTC Trove</p>
+                        <p className="body-text text-2xl font-semibold text-white">WBTC Vessel</p>
                     </div>
                 </div>
 
@@ -490,7 +490,7 @@ export const OpenTroveBTC = () => {
                                     parseFloat(userInputs.borrow) <= minDebt)
                                     ? 0.5 : 1
                             }}>
-                            {isModalVisible ? "Opening Trove..." : modiff >= 0 ? "Approve" : "Open Trove"}
+                            {isModalVisible ? "Opening Vessel..." : modiff >= 0 ? "Approve" : "Open Vessel"}
                         </button>
                     </div>
                     {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData) ? (
@@ -648,7 +648,7 @@ export const OpenTroveBTC = () => {
                                     <Image src={conf} alt="rectangle" width={150} />
                                     <div className="my-5 ml-[6rem] mb-5"></div>
                                 </>
-                            ) : loadingMessage === 'Open Trove Transaction completed successfully' ? (
+                            ) : loadingMessage === 'Open vessel Transaction completed successfully' ? (
                                 <Image src={tick} alt="tick" width={200} />
                             ) : transactionRejected ? (
                                 <Image src={rej} alt="rejected" width={140} />

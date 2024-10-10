@@ -444,7 +444,7 @@ const Borrow = () => {
                     <span></span>
                     <span></span>
                     <div className="flex flex-col">
-                      <span className="text-gray-500 -mt-[7px]  body-text font-medium">Trove Status</span>
+                      <span className="text-gray-500 -mt-[7px]  body-text font-medium">Vessel Status</span>
                       {troveStatus === "ACTIVE" ? <Image className="mt-[5px]" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                     </div>
                   </div>
@@ -459,7 +459,7 @@ const Borrow = () => {
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
                       </div>
                       <div className="flex md:hidden -mt-6 flex-col">
-                        <span className="text-gray-500 body-text">Trove Status</span>
+                        <span className="text-gray-500 body-text">Vessel Status</span>
                         {troveStatus === "ACTIVE" ? <Image className="" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                       </div>
                     </div>
@@ -574,7 +574,7 @@ const Borrow = () => {
                                    ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
                                         ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-[#88e273]  text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
-                                    UPDATE TROVE
+                                    UPDATE VESSEL
                                   </button>
                                 </div>
                               </div>

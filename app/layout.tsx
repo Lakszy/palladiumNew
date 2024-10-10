@@ -5,14 +5,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "../lib/utils";
 import { ContextProvider } from "@/components/ContentProvider";
-import Banner from "@/components/Banner";
 
 const inter = Inter({ subsets: ["latin"] });
 
 const metadata: Metadata = {
-  title: "Palladium Circuit Breaker",
+  title: "EarthFi Testnet",
   description:
-    "Join the Palladium incentivised testnet to earn Joule points and exclusive rewards.",
+    "Join the EarthFi incentivised testnet to earn exclusive rewards.",
 };
 
 export default function RootLayout({
