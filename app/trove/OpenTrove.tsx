@@ -453,7 +453,7 @@ export const OpenTrove = () => {
             </div>
             <button
               onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
-              className={`mt-5 md:-ml-0 -ml-4 w-[90%] h-[3rem] bg-[#88e273] rounded-3xl title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-[#88e273]'}`}
+              className={`mt-5 h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] md:-ml-0 -ml-4 w-[90%] bg-[#88e273] rounded-3xl title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-[#88e273]'}`}
               disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
                 || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData)
                 || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}

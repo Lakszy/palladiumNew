@@ -239,17 +239,17 @@ export const StabilityPool = () => {
         </div>
       </div>
       <div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#"}} onClick={() => handlePercentageClick(25)}>  25%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#"}} onClick={() => handlePercentageClick(50)}>  50%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#"}} onClick={() => handlePercentageClick(75)}>  75%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#"}} onClick={() => handlePercentageClick(100)}>  100%</Button>
       </div>
       {isConnected ? (
         <div className=" my-2">
           <button
             style={{ backgroundColor: "#88e273" }}
             onClick={handleConfirmClick}
-            className={`mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-10 title-text border-none 
+            className={`mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none 
                             ${isDataLoading ||
                 Number(userInput) <= 0 ||
                 Number(userInput) >

@@ -4,9 +4,9 @@ import Image from 'next/image'
 import floatPUSD from "../app/assets/images/floatPUSD2.png";
 import botanixTestnet from "../app/src/constants/botanixTestnet.json";
 import trove2 from "../app/assets/images/Group 666.svg";
-import trove1 from "../app/assets/images/wbtc.svg"
 import troveManagerAbi from "../app/src/constants/abi/TroveManager.sol.json"
 import ACTIVE from "../app/assets/images/AACTIVE.svg";
+import trove1 from "../app/assets/images/wbtc.svg"
 import collR from "../app/assets/images/mode.svg";
 import { Button } from './ui/button';
 import Link from 'next/link';
@@ -455,6 +455,8 @@ const ThreeTroveCard = () => {
                     </>
                     </div>
                 </div>
+
+                
             </div>
         </div >
     )

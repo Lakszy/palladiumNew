@@ -280,15 +280,15 @@ export default function Redeem() {
                         </span>
                     </div>
                     <div className="flex w-full justify-between">
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                        <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#", borderRadius: "0.5rem" }} onClick={() => handlePercentageClick(100)}>100% </Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                        <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(100)}>100% </Button>
                     </div>
 
                     {isConnected ? (
                         <div className="space-y-2">
-                            <button style={{ backgroundColor: "#88e273" }} onClick={handleConfirmClick} className={`mt-5  text-black title-text font-semibold w-[20rem] md:w-full rounded-lg border border-black h-10 
+                            <button style={{ backgroundColor: "#88e273" }} onClick={handleConfirmClick} className={`mt-5 h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]  text-black title-text font-semibold w-[20rem] md:w-full rounded-lg border border-black 
                                 ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} 
                                 disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
                                 {isLoading ? 'LOADING...' : 'REDEEM'}

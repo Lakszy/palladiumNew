@@ -570,8 +570,7 @@ const Borrow = () => {
                                     </div>
                                   </div>
                                   <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
-                                    className={`mt-9 md:-ml-0 -ml-10 w-[19rem] md:w-full title-text h-[3rem]
-                                   ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
+                                    className={`mt-9 md:-ml-0 h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] -ml-10 w-[19rem] md:w-full title-text ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
                                         ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-[#88e273]  text-black'}`}
                                     disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
                                     UPDATE VESSEL

@@ -300,7 +300,7 @@ const Claim = () => {
               })}
             </div>
           </div>
-          <button className={`w-full py-3 rounded title-text2 transition-colors mt-4 font-medium bg-[#88e273] text-black
+          <button className={`w-full py-3 h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] rounded title-text2 transition-colors mt-4 font-medium bg-[#88e273] text-black
   ${isButtonEnabled ? 'bg-[#88e273] text-black' : 'cursor-not-allowed opacity-50'}`} onClick={isButtonEnabled ?
               handleConfirmClick : undefined} disabled={!isButtonEnabled}>
             CLAIM
