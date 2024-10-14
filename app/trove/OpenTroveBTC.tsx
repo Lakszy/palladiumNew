@@ -28,6 +28,7 @@ import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
 import { Tooltip } from "primereact/tooltip";
 import Web3 from "web3";
+import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 
 export const OpenTroveBTC = () => {
     const [userInputs, setUserInputs] = useState({
@@ -81,9 +82,7 @@ export const OpenTroveBTC = () => {
 
     const { data: isConnected } = useWalletClient();
     const { data: walletClient } = useWalletClient();
-    const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
-
-    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
     const erc20Contract = getContract("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", erc20Abi, provider);
     // const signer = provider.getSigner(walletClient?.account?.address);
     const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)

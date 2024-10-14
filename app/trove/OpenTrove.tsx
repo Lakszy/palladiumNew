@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
-import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import adminConAbi from "../src/constants/abi/AdminContract.sol.json"
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
@@ -27,9 +26,8 @@ import { Button } from "@/components/ui/button";
 import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
 import { Tooltip } from "primereact/tooltip";
-import { useAccounts } from "@particle-network/btc-connectkit";
 import Web3 from "web3";
-import { Console } from "console";
+import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 
 export const OpenTrove = () => {
   const [userInputs, setUserInputs] = useState({
@@ -83,9 +81,8 @@ export const OpenTrove = () => {
 
   const { data: isConnected } = useWalletClient();
   const { data: walletClient } = useWalletClient();
-  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
 
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const erc20Contract = getContract("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", erc20Abi, provider);
   // const signer = provider.getSigner(walletClient?.account?.address);
   const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)

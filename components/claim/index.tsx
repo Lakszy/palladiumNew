@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 import "../../app/App.css";
 import Image from "next/image";
 import rej from "../../app/assets/images/TxnError.gif";
-// import info from "../assets/images/info.svg";
 import conf from "../../app/assets/images/conf.gif"
 import rec2 from "../../app/assets/images/rec2.gif"
 import tick from "../../app/assets/images/tick.gif"
@@ -21,10 +20,11 @@ import "../../components/stabilityPool/Modal.css";
 import { StabilityPoolbi } from "@/app/src/constants/abi/StabilityPoolbi";
 import { Button } from "../ui/button";
 import { Dialog } from "primereact/dialog";
+import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
+
 
 const Claim = () => {
-  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 
   const stabilityPoolContractReadOnly = getContract(
     botanixTestnet.addresses.StabilityPool,
@@ -161,7 +161,7 @@ const Claim = () => {
 
       await writeContract({
         abi: StabilityPoolbi,
-        address: "0x7779C10ae22632955846fa8c8EfA4cBd241f1659", // STABILITY POOL contract address
+        address: "0x12B1c7fC9C02fe522Eb53F5654F31155FAa855b4", // STABILITY POOL contract address
         functionName: "withdrawFromSP",
         args: [
           inputBigInt,
@@ -234,8 +234,8 @@ const Claim = () => {
   const isButtonEnabled = Number(totalClaimValue) > 0;
 
   const assets = [
-    { name: "wCore", amount: wcoreGains, marketPrice: fetchedPrice, decimals: 2 },
-    { name: "wBTC", amount: wbtcGains, marketPrice: fetchedPriceBTC, decimals: 2 },
+    { name: "WCORE", amount: wcoreGains, marketPrice: fetchedPrice, decimals: 2 },
+    { name: "WBTC", amount: wbtcGains, marketPrice: fetchedPriceBTC, decimals: 2 },
   ];
 
   return (

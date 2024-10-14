@@ -6,9 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import apiThreeFeed from "../src/constants/abi/ApiThree.sol.json";
-// import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
-// import adminConAbi from "../src/constants/abi/AdminContract.sol.json"
-
 import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
@@ -20,7 +17,6 @@ import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import web3 from "web3";
 import { Dialog } from 'primereact/dialog';
-import trove3 from "../../app/assets/images/TROVE3.svg"
 import trove2 from "../../app/assets/images/wbtc.svg"
 import trove1 from "../../app/assets/images/wcore.png"
 import rej from "../../app/assets/images/TxnError.gif";
@@ -33,7 +29,7 @@ import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import '../App.css';
 import "./redeem.css"
-import { GiConsoleController } from "react-icons/gi";
+import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
@@ -70,8 +66,7 @@ export default function Redeem() {
     };
 
 
-    const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
-    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
     const erc20Contract = getContract(
         botanixTestnet.addresses.DebtToken,
         erc20Abi,
@@ -96,13 +91,6 @@ export default function Redeem() {
         hintHelpersAbi,
         provider
     );
-
-    // const VesselManager = getContract(
-    //     "0x9c645140fb8D9207ec3B83e8832A476F9D604E8e",
-    //     adminConAbi,
-    //     provider
-    // );
-
     const ApiFeedBTC = getContract(
         "0x81A64473D102b38eDcf35A7675654768D11d7e24",
         apiThreeFeed,
@@ -123,8 +111,6 @@ export default function Redeem() {
             );
             const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
             setPusdBalance(pusdBalanceFormatted);
-            // const CCR = await VesselManager.getCcr("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
-            // console.log(CCR, "CCCR")
         };
         fetchPrice();
     }, [erc20Contract, address]);
@@ -141,7 +127,6 @@ export default function Redeem() {
 
                 setIsRecoveryMode(protocolMetrics.recoveryMode);
                 setIsRecoveryModeBTC(protocolMetricsBTC.recoveryMode);
-
             } catch (error) {
                 console.error("Error fetching data:", error);
             }

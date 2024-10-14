@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react'
 import "../app/App.css"
 import Image from 'next/image'
 import floatPUSD from "../app/assets/images/floatPUSD2.png";
-import trove3 from "../app/assets/images/TROVE2.svg"
 import botanixTestnet from "../app/src/constants/botanixTestnet.json";
-import trove2 from "../app/assets/images/btcc.svg"
+import trove2 from "../app/assets/images/Group 666.svg";
 import trove1 from "../app/assets/images/wbtc.svg"
 import troveManagerAbi from "../app/src/constants/abi/TroveManager.sol.json"
-import ACTIVE from "../app/assets/images/ACTIVE.svg";
-import INACTIVE from "../app/assets/images/INACTIVE.svg";
+import ACTIVE from "../app/assets/images/AACTIVE.svg";
+import collR from "../app/assets/images/mode.svg";
 import { Button } from './ui/button';
 import Link from 'next/link';
 import { useAccount, useWalletClient } from 'wagmi';
@@ -18,15 +17,15 @@ import { getContract } from '@/app/src/utils/getContract';
 import { Knob } from 'primereact/knob';
 import { EVMConnect } from './EVMConnect';
 import formatLargeNumber from './getActualDecimal';
+import { BOTANIX_RPC_URL } from '@/app/src/constants/botanixRpcUrl';
 
 const ThreeTroveCard = () => {
     const [minDebt, setMinDebt] = useState(0)
     const [borrowRate, setBorrowRate] = useState(0)
     const [borrowRateBTC, setBorrowRateBTC] = useState(0)
     const [minDebtBTC, setMinDebtBTC] = useState(0)
-    const { address, isConnected } = useAccount();
-    const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
-    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+    const { isConnected } = useAccount();
+    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
     const [lr, setLR] = useState(0)
     const [systemCollRatio, setSystemCollRatio] = useState(0);
     const [systemCollRatioBTC, setSystemCollRatioBTC] = useState(0);
@@ -37,7 +36,6 @@ const ThreeTroveCard = () => {
 
     const [fetchedPrice, setFetchedPrice] = useState(0)
     const [fetchedPriceBTC, setFetchedPriceBTC] = useState(0)
-    const [recoveryMode, setRecoveryMode] = useState<boolean>()
     const [troveStatusBTC, setTroveStatusBTC] = useState("");
     const [troveStatuscore, setTroveStatuscore] = useState("");
 
@@ -75,8 +73,6 @@ const ThreeTroveCard = () => {
                 const data = await response.json();
                 const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
                 const protocolMetricsBTC = data[0].metrics[0]; // Fetch the metrics for WBTC (at index 0)
-
-                setRecoveryMode(protocolMetrics.recoveryMode);
 
                 setFetchedPrice(protocolMetrics.price);
                 setFetchedPriceBTC(protocolMetricsBTC.price)
@@ -186,7 +182,7 @@ const ThreeTroveCard = () => {
 
     return (
         <div className='p-5 h-scree w-full' style={{ backgroundColor: "black" }}>
-            {troveStatusBTC  === "INACTIVE" && troveStatuscore === "INACTIVE" ? (<>
+            {troveStatusBTC === "INACTIVE" && troveStatuscore === "INACTIVE" ? (<>
 
                 <div className="p-5">
                     <div className="md:ml-2 -ml-7 rounded-lg h-[10rem] p-2 md:w-full w-[22.5rem]" style={{ backgroundColor: "#222222" }}>
@@ -205,7 +201,7 @@ const ThreeTroveCard = () => {
                                         Open a Zero-Interest trove
                                     </p>
                                     <p className="text-[#827f77] text-sm  font-medium body-text text-left">
-                                        Borrow against BTCs interest free
+                                        Borrow against collaterals interest free
                                     </p>
                                 </div>
                             </div>
@@ -220,32 +216,72 @@ const ThreeTroveCard = () => {
                 )}
 
             <div className='flex md:flex-row flex-col md:pl-5 pt-5 pb-5 w-full justify-between items-center'>
-                <div className={`bg-[#222222] rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-24"}`}>
-                    <div className="flex  gap-x-2 justify-between items-center mb-6">
-                        <div className='flex items-center gap-x-1'>
-                            <Image src={trove1} alt="btc" width={50} height={10} />
-                            <h2 className="ml-4 text-xl font-medium  body-text">WCORE Trove</h2>
+                {/* CARD1 */}
+                <div className={`bg-[#222222]  rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3 md:h-[38rem]  flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-28"}`}>
+                    <div className="flex  gap-x-2  justify-between items-center">
+                        <div className='flex  items-center gap-x-1'>
+                        <Image src={trove1} alt="btc" width={50} height={10} />
+                            <h2 className="ml-4  text-xl font-medium body-text">WCORE Trove</h2>
                         </div>
-                        {troveStatuscore === "ACTIVE" && (
-                            <Image src={ACTIVE} alt="status-icon" width={120} height={100} />
-                        )}
+                        <div className="items-center flex gap-x-2">
+                            <Image src={collR} alt="btc" width={40} />
+                            <div>
+                                <div className="gap-1 flex">
+                                    <h1 className="text-white title-text2 text-xs">SCR</h1>
+                                    <h1 className="text-gray-400 body-text -mt-[4px] text-[10px]">(Normal Mode)</h1>
+                                </div>
+                                <div className="relative">
+                                    <div className="flex">
+                                        <h1 className="text-gray-400 text-sm title-text2">
+                                            {(systemCollRatio * 100).toFixed(2)} %
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {troveStatuscore === "ACTIVE" ? (
                         <>
-                            <div className="flex justify-center items-center">
-                                <Knob value={Number(newLTV) || 0} min={0} max={90} showValue={true} size={135} valueColor="#3dde84" strokeWidth={7} readOnly className="text-[#88e273]" />
-                            </div>
-
-                            <div className='flex  justify-between'>
-                                <div className="">
-                                    <p className="text-gray-500 text-sm body-text">Collateral</p>
-                                    <p className="body-text font-medium ">{Number(entireDebtAndCollCore.collCore).toFixed(2)} WCORE</p>
-                                    <p className="text-sm body-text text-gray-500">${(Number(entireDebtAndCollCore.collCore) * fetchedPrice).toFixed(2)}</p>
+                            <div className="flex justify-around items-center">
+                                <div className=' w-1/2 h-full space-y-1 md:-mt-10'>
+                                    <p className="text-gray-500 text-sm body-text">Trove Status</p>
+                                    {troveStatuscore === "ACTIVE" && (
+                                        <Image src={ACTIVE} alt="status-icon" className='-ml-1' width={120} height={100} />
+                                    )}
                                 </div>
-                                <div className="">
+                                <div className='flex items-center flex-col'>
+                                    <Knob value={Number(newLTV) || 0} min={0} max={90} showValue={true} size={135} valueColor="#3dde84" strokeWidth={7} readOnly className="text-[#88e273]" />
+                                    <p className="text-gray-500 body-text">Your LTV</p>
+                                </div>
+                            </div>
+                            <div className='p-3 grid grid-cols-3 space-y-8 items-center justify-around'>
+                                <div className="text-left mt-1">
+                                    <p className="text-gray-500 text-sm body-text">Collateral</p>
+                                    <p className="body-text font-medium">{Number(entireDebtAndCollCore.collCore).toFixed(2)} WCORE</p>
+                                    <p className="text-sm body-text text-gray-500">
+                                        ${(Number(entireDebtAndCollCore.collCore) * fetchedPrice).toFixed(2)}
+                                    </p>
+                                </div>
+                                <div className="text-center">
                                     <p className="text-gray-500 text-sm body-text">Debt</p>
                                     <p className="body-text font-medium">{entireDebtAndCollCore.debtCore} ORE</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-gray-500 text-sm body-text">Max LTV</p>
+                                    <p className="body-text font-medium ">{(100 / mCR).toFixed(2)}%</p>
+                                </div>
+                                <div className="text-left">
+                                    <p className="text-gray-500 text-sm body-text">One-time Fee</p>
+                                    <p className="body-text font-medium">{borrowRate * 100}%</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-gray-500 text-sm body-text">Min Debt</p>
+                                    <p className="body-text font-medium">{minDebt} ORE</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-gray-500 text-sm body-text">ORE Minted</p>
+                                    <p className="body-text font-medium">{formatLargeNumber(pusdMintedCore)} / 2.5M</p>
                                 </div>
                             </div>
                         </>
@@ -259,7 +295,7 @@ const ThreeTroveCard = () => {
                                     </div>
                                     <div className='whitespace-nowrap'>
                                         <p className="body-text text-gray-400 body-text font-medium">One-time Fee</p>
-                                        <p className="body-text font-medium">{borrowRate * 100}%</p>
+                                        <p className="body-text text-right font-medium">{borrowRate * 100}%</p>
                                     </div>
                                 </div>
                                 <div className="flex justify-between mb-4">
@@ -276,84 +312,102 @@ const ThreeTroveCard = () => {
                         </>
                     )
                     }
-                    <div>
-                        {troveStatuscore === "ACTIVE" ? (
-                            <div className="flex flex-wrap gap-2 mt-6 mb-6">
-                                <div className="flex  border-2 gap-x-2 items-center border-green-500 rounded-2xl px-2 py-2">
-                                    <p className="body-text font-medium text-xs text-gray-400">MAX LTV</p>
-                                    <p className="body-text font-medium  text-xs">{(100 / mCR).toFixed(2)}%</p>
-                                </div>
-                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
-                                    <p className="body-text font-medium text-xs text-gray-400">One-time Fee</p>
-                                    <p className="body-text font-medium  text-xs">{(borrowRate * 100).toFixed(2)}%</p>
-                                </div>
-                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
-                                    <p className="body-text font-medium text-xs text-gray-400">Min Debt</p>
-                                    <p className="body-text font-medium text-xs">{minDebt} ORE</p>
-                                </div>
-                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
-                                    <p className="body-text font-medium text-xs text-gray-400">ORE Minted</p>
-                                    <p className="body-text font-medium text-xs">{formatLargeNumber(pusdMintedCore)} / 2.5M</p>
-                                </div>
-                            </div>
-                        ) :
-                            (
-                                <></>
-                            )}
-
+                    <div className={`${troveStatusBTC === "ACTIVE" ? "py-10" : "py-5"}`}>
+                        <>
+                            <div className="border-t border-gray-400 mb-6 md:-ml-[1.5rem] md:w-[108.5%]"></div>
                         {isConnected ? (<>
-                            <Link href="/trove/wcore" passHref>
+                            <Link href="/trove/wcore/" passHref>
                                 {troveStatuscore === "ACTIVE" ? (
-                                    <Button className="border-[#88e273] border bg-transparent rounded-3xl font-semibold w-full title-text text-[#88e273] hover:scale-95 hover:bg-transparent transition">
+                                    <Button className="border-[#88e273] h-12 border bg-transparent rounded-3xl font-semibold w-full title-text text-[#88e273] hover:scale-95 hover:bg-transparent transition">
                                         See Details
                                     </Button>
                                 ) : (
-                                    <Button className="bg-[#88e273] rounded-3xl text-black font-semibold w-full title-text transition">
-                                        OPEN TROVE
+                                    <Button className=" h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] rounded-3xl text-black font-semibold w-full title-text transition">
+                                        Open Trove
                                     </Button>
                                 )}
                             </Link>
                         </>) : (
                             <>
-                                <EVMConnect className="w-full" />
+                                <EVMConnect className='w-full' />
                             </>
                         )}
+                    </>
                     </div>
                 </div>
 
                 {/* Card 2 */}
-                <div className={`bg-[#222222]  rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-24"}`}>
-                    <div className="flex  gap-x-2 justify-between items-center mb-6">
+                <div className={`bg-[#222222]  rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  md:h-[38rem] flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-24"}`}>
+                    <div className="flex  gap-x-2 justify-between items-center ">
                         <div className='flex  items-center gap-x-1'>
                             <Image src={trove2} alt="btc" />
                             <h2 className="ml-4  text-xl font-medium body-text">WBTC Trove</h2>
                         </div>
-                        {troveStatusBTC === "ACTIVE" && (
-                            <Image src={ACTIVE} alt="status-icon" width={120} height={100} />
-                        )}
+                        <div className="items-center  flex gap-x-2">
+                            <Image src={collR} alt="btc" width={40} />
+                            <div>
+                                <div className="gap-1 flex">
+                                    <h1 className="text-white title-text2 text-xs">SCR</h1>
+                                    <h1 className="text-gray-400 body-text -mt-[4px] text-[10px]">(Normal Mode)</h1>
+                                </div>
+                                <div className="relative">
+                                    <div className="flex">
+                                        <h1 className="text-gray-400 text-sm title-text2">
+                                            {(systemCollRatioBTC * 100).toFixed(2)} %
+                                        </h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     {troveStatusBTC === "ACTIVE" ? (
                         <>
-                            <div className="flex justify-center items-center">
-                                <Knob value={Number(newLTVBTC) || 0} min={0} max={90} showValue={true} size={135} valueColor="#3dde84" strokeWidth={7} readOnly className="text-[#88e273]" />
-                            </div>
-
-                            <div className='flex  justify-between'>
-                                <div className="">
-                                    <p className="text-gray-500 text-sm body-text">Collateral</p>
-                                    <p className="body-text font-medium ">{entireDebtAndCollBTC.collBTC} BTC</p>
-                                    <p className="text-sm body-text  text-gray-500">${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(8)}</p>
+                            <div className="flex justify-around items-center">
+                                <div className=' w-1/2 h-full space-y-1 md:-mt-10'>
+                                    <p className="text-gray-500 text-sm body-text">Trove Status</p>
+                                    {troveStatusBTC === "ACTIVE" && (
+                                        <Image src={ACTIVE} alt="status-icon" className='-ml-1' width={120} height={100} />
+                                    )}
                                 </div>
-                                <div className="">
+                                <div className=' flex items-center flex-col'>
+                                    <Knob value={Number(newLTVBTC) || 0} min={0} max={90} showValue={true} size={135} valueColor="#3dde84" strokeWidth={7} readOnly className="text-[#88e273]" />
+                                    <p className="text-gray-500 body-text">Your LTV</p>
+                                </div>
+                            </div>
+                            <div className='p-3 grid grid-cols-3 space-y-8  items-center justify-around'>
+                                <div className="text-left mt-1">
+                                    <p className="text-gray-500  text-sm body-text">Collateral</p>
+                                    <p className="body-text font-medium mt-">{Number(entireDebtAndCollBTC.collBTC).toFixed(8)} BTC</p>
+                                    <p className="text-sm body-text text-gray-500">
+                                        ${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(8)}
+                                    </p>
+                                </div>
+                                <div className="text-center">
                                     <p className="text-gray-500 text-sm body-text">Debt</p>
-                                    <p className=" body-text font-medium">{entireDebtAndCollBTC.debtBTC} ORE</p>
+                                    <p className="body-text font-medium">{entireDebtAndCollBTC.debtBTC} ORE</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-gray-500 text-sm body-text">Max LTV</p>
+                                    <p className="body-text font-medium ">{(100 / mCRBTC).toFixed(2)}%</p>
+                                </div>
+                                <div className="text-left">
+                                    <p className="text-gray-500 text-sm body-text">One-time Fee</p>
+                                    <p className="body-text font-medium">{borrowRateBTC * 100}%</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-gray-500 text-sm body-text">Min Debt</p>
+                                    <p className="body-text font-medium">{minDebtBTC} ORE</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-gray-500 text-sm body-text">ORE Minted</p>
+                                    <p className="body-text font-medium">{formatLargeNumber(pusdMintedBTC)} / 2.5M</p>
                                 </div>
                             </div>
                         </>
                     ) : (
                         <>
-                            <div className='space-y-20'>
+                            <div className='space-y-10'>
                                 <div className="flex justify-between mb-4">
                                     <div className='whitespace-nowrap'>
                                         <p className="body-text font-medium text-gray-400">MAX LTV</p>
@@ -376,42 +430,19 @@ const ThreeTroveCard = () => {
                                 </div>
                             </div>
                         </>
-                    )
-                    }
-                    <div>
-                        {troveStatusBTC === "ACTIVE" ? (
-                            <div className="flex flex-wrap gap-2 mt-6 mb-6">
-                                <div className="flex  border-2 gap-x-2 items-center border-green-500 rounded-2xl px-2 py-2">
-                                    <p className="body-text font-medium text-xs text-gray-400">MAX LTV</p>
-                                    <p className="body-text font-medium  text-xs">{(100 / mCRBTC).toFixed(2)}%</p>
-                                </div>
-                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
-                                    <p className="body-text font-medium text-xs text-gray-400">One-time Fee</p>
-                                    <p className="body-text font-medium  text-xs">{(borrowRateBTC * 100).toFixed(2)}%</p>
-                                </div>
-                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
-                                    <p className="body-text font-medium text-xs text-gray-400">Min Debt</p>
-                                    <p className="body-text font-medium text-xs">{minDebtBTC} ORE</p>
-                                </div>
-                                <div className="flex items-center gap-x-2 border-2 border-green-500 rounded-2xl px-2 py-2">
-                                    <p className="body-text font-medium text-xs text-gray-400">ORE Minted</p>
-                                    <p className="body-text font-medium text-xs">{formatLargeNumber(pusdMintedBTC)} / 2.5M</p>
-                                </div>
-                            </div>
-                        ) :
-                            (
-                                <></>
-                            )}
-
+                    )}
+                   <div className={`${troveStatuscore === "ACTIVE" ? "py-10" : "py-5"}`}>
+                        <>
+                            <div className="border-t border-gray-400 mb-6 md:-ml-[1.5rem] md:w-[108.5%]"></div>
                         {isConnected ? (<>
-                            <Link href="/trove/wbtc" passHref>
+                            <Link href="/trove/wbtc/" passHref>
                                 {troveStatusBTC === "ACTIVE" ? (
-                                    <Button className="border-[#88e273] border bg-transparent rounded-3xl font-semibold w-full title-text text-[#88e273] hover:scale-95 hover:bg-transparent transition">
+                                    <Button className="border-[#88e273] h-12 border bg-transparent rounded-3xl font-semibold w-full title-text text-[#88e273] hover:scale-95 hover:bg-transparent transition">
                                         See Details
                                     </Button>
                                 ) : (
-                                    <Button className="bg-[#88e273] rounded-3xl text-black font-semibold w-full title-text transition">
-                                        OPEN TROVE
+                                    <Button className=" h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] rounded-3xl text-black font-semibold w-full title-text transition">
+                                        Open Trove
                                     </Button>
                                 )}
                             </Link>
@@ -421,6 +452,7 @@ const ThreeTroveCard = () => {
                                 <EVMConnect className='w-full' />
                             </>
                         )}
+                    </>
                     </div>
                 </div>
             </div>

@@ -32,6 +32,7 @@ export const TabsDemo = () => {
           <Image src={logo} alt="Logo" className="mr-12 top-5 fixed absolute left-10 w-40" />
         </Link>
       </div>
+    <div className="mt-24">
       <nav className="flex flex-col gap-y-2 px-4">
         <Link href="/">
           <div className={` hover:scale-95 cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
@@ -74,16 +75,12 @@ export const TabsDemo = () => {
           </div>
         </Link>
       </nav>
-      <div className="space-y-1 h-16">
-        {/* <div className="ml-6 w-fit h-fit">
-          <Link href="https://zealy.io/c/earthprotocol">
-            <Image src={zeally} alt="zeally" className="w-[227px] h-[100px]" />
-          </Link>
-        </div> */}
+    </div>
+      <div className="space-y-1 h-16 mt-[90%]">
         <div className="flex items-center justify-center text-white gap-x-5  text-[19px] ">
-          <Link target="_blank" href="https://x.com/EarthDeFi">  <Image className="hover:scale-105"  src={tweet} alt="twitter" /></Link>
-          <Link target="_blank" href="https://discord.com/invite/PbXud77YPd">  <Image className="hover:scale-105"  src={discord} alt="twitter" /></Link>
-          <Link target="_blank" href="https://medium.com/earth-protocol">  <Image  className="hover:scale-105" src={medium} alt="twitter" /></Link>
+          <Link target="_blank" href="https://x.com/EarthDeFi">  <Image className="hover:scale-105" src={tweet} alt="twitter" /></Link>
+          <Link target="_blank" href="https://discord.com/invite/PbXud77YPd">  <Image className="hover:scale-105" src={discord} alt="twitter" /></Link>
+          <Link target="_blank" href="https://medium.com/earth-protocol">  <Image className="hover:scale-105" src={medium} alt="twitter" /></Link>
         </div>
       </div>
     </div>

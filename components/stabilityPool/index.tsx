@@ -10,12 +10,10 @@ import { ethers } from "ethers";
 import rej from "../../app/assets/images/TxnError.gif";
 import { useCallback, useEffect, useState } from "react";
 import { useWalletClient, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { CustomConnectButton } from "../connectBtn";
 import { Button } from "../ui/button";
 import { useAccount } from "wagmi";
 import { Dialog } from "primereact/dialog";
 import "./stake.css";
-import img3 from "../../app/assets/images/Group 663.svg";
 import pusdbtc from "../../app/assets/images/Core.svg";
 import conf from "../../app/assets/images/conf.gif";
 import rec2 from "../../app/assets/images/rec2.gif";
@@ -41,8 +39,7 @@ export const StabilityPool = () => {
   const [showCloseButton, setShowCloseButton] = useState(false);
   const { data: walletClient } = useWalletClient();
   const [transactionRejected, setTransactionRejected] = useState(false);
-  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const [collateralToken, setCollateralToken] = useState<`0x${string}`>(
     "0x0000000000000000000000000000000000000000"
   );
@@ -146,7 +143,7 @@ export const StabilityPool = () => {
       console.log("Assets: ", assets);
       writeContract({
         abi: StabilityPoolbi,
-        address: "0x7779C10ae22632955846fa8c8EfA4cBd241f1659",
+        address: "0x12B1c7fC9C02fe522Eb53F5654F31155FAa855b4",
         functionName: "provideToSP",
         args: [
           inputBigInt,

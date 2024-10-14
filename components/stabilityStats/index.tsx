@@ -14,9 +14,9 @@ import { useAccount, useWalletClient } from "wagmi";
 import "../../app/App.css";
 import { Tooltip } from "primereact/tooltip";
 import { useAccounts } from "@particle-network/btc-connectkit";
-import { useWalletAddress } from "../useWalletAddress";
-const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
-const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+
+
+const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 export const StabilityStats = () => {
   const [loanRewards, setLoanRewards] = useState("0");
   const [liquidGains, setLiquidGains] = useState("0");

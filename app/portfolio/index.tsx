@@ -56,8 +56,7 @@ const Portfolio = () => {
   });
 
   const { data: walletClient } = useWalletClient();
-  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 
   const troveManagerContract = getContract(
     botanixTestnet.addresses.VesselManager,

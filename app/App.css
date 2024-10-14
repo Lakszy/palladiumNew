@@ -2247,10 +2247,9 @@ nav ul {
 }
 
 .separator-line {
-  margin-top: -40px;
-  border-top: 1px solid var(--border_color);
-  /* Adjust the style and color as needed */
-  width: 100%;
+  margin-left: -10px;
+  border-top: 1px solid rgb(156 163 175 / var(--tw-text-opacity));
+  width: 104%;
 }
 
 .table-separator {

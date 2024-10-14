@@ -25,8 +25,8 @@ import { Button } from "@/components/ui/button";
 import { Dialog } from "primereact/dialog";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
-import { useAccounts } from "@particle-network/btc-connectkit";
 import Web3 from "web3";
+import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 
 interface Props {
   coll: number;
@@ -64,12 +64,10 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   const [newAvailColl, setNewAvailColl] = useState(0)
   const [staticLtv, setStaticLtv] = useState(0);
   const { data: walletClient } = useWalletClient();
-  const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
-  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+  const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const { data: hash, writeContract, error: writeError } = useWriteContract()
   const [transactionRejected, setTransactionRejected] = useState(false);
-  const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
-  const { accounts } = useAccounts();
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
   const web3 = new Web3(window.ethereum)
   const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
