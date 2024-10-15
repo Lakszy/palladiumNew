@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import apiThreeFeed from "../src/constants/abi/ApiThree.sol.json";
+import apiThreeFeed from "../src/constants/abi/ApiThree.sol.json";
 import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
@@ -17,8 +18,9 @@ import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import web3 from "web3";
 import { Dialog } from 'primereact/dialog';
-import trove2 from "../../app/assets/images/wbtc.svg"
-import trove1 from "../../app/assets/images/wcore.png"
+import trove3 from "../../app/assets/images/TROVE3.svg"
+import trove2 from "../../app/assets/images/TROVE1.svg"
+import trove1 from "../../app/assets/images/TROVE2.svg"
 import rej from "../../app/assets/images/TxnError.gif";
 import conf from "../../app/assets/images/conf.gif"
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
@@ -29,12 +31,11 @@ import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import '../App.css';
 import "./redeem.css"
-import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
+import { GiConsoleController } from "react-icons/gi";
 
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
     const [isRecoveryMode, setIsRecoveryMode] = useState<boolean>(false);
-    const [isRecoveryModeBTC, setIsRecoveryModeBTC] = useState<boolean>(false);
     const [pusdBalance, setPusdBalance] = useState("0");
     const { address, isConnected } = useAccount();
     const { data: walletClient } = useWalletClient();
@@ -48,14 +49,16 @@ export default function Redeem() {
     const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
     const [transactionRejected, setTransactionRejected] = useState(false);
     const [selectedButton, setSelectedButton] = useState("WCORE")
-    const [newBTCPrice, setNewBTCPrice] = useState(0n);
-    const [newWCOREPrice, setNewWCOREPrice] = useState(0n);
+    const [fetchedPrice, setFetchedPrice] = useState(0)
 
-    const [collTokenAddress, setCollTokenAddress] = useState<string>("0x5FB4E66C918f155a42d4551e871AD3b70c52275d")
+    const [collTokenAddress, setCollTokenAddress] = useState<string>("")
 
     const handleButtonClick = (buttonId: any) => {
         setSelectedButton(buttonId);
-        if (!walletClient) return null;
+        if (!walletClient) {
+            return null;
+          }
+        
         let address = '';
         if (buttonId === 'WCORE') {
             address = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d";
@@ -63,10 +66,14 @@ export default function Redeem() {
             address = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f";
         }
         setCollTokenAddress(address);
+        setTimeout(() => {
+            console.log("Selected button:", buttonId, "Collateral Token Address:", address);
+        }, 0);
     };
 
 
-    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
+    const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
+    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
     const erc20Contract = getContract(
         botanixTestnet.addresses.DebtToken,
         erc20Abi,
@@ -91,24 +98,13 @@ export default function Redeem() {
         hintHelpersAbi,
         provider
     );
-    const ApiFeedBTC = getContract(
-        "0x81A64473D102b38eDcf35A7675654768D11d7e24",
-        apiThreeFeed,
-        provider
-    );
-
-    const ApiFeedCore = getContract(
-        "0xdd68eE1b8b48e63909e29379dBe427f47CFf6BD0",
-        apiThreeFeed,
-        provider
-    );
 
     useEffect(() => {
         const fetchPrice = async () => {
-            if (!walletClient) return null;
             const pusdBalanceValue = await erc20Contract.balanceOf(
                 walletClient?.account?.address
             );
+            console.log("PUSD Balance: ", pusdBalanceValue);
             const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
             setPusdBalance(pusdBalanceFormatted);
         };
@@ -122,29 +118,16 @@ export default function Redeem() {
                     "https://api.palladiumlabs.org/core/protocol/metrics"
                 );
                 const data = await response.json();
-                const protocolMetrics = data[0].metrics[1] // WCORE
-                const protocolMetricsBTC = data[0].metrics[0] // WBTC
-
+                const protocolMetrics = data[0].metrics[1]
                 setIsRecoveryMode(protocolMetrics.recoveryMode);
-                setIsRecoveryModeBTC(protocolMetricsBTC.recoveryMode);
+                setFetchedPrice(protocolMetrics.price);
             } catch (error) {
                 console.error("Error fetching data:", error);
             }
         };
-        const getPrice = async () => {
-            const oracleBTCPrice = await ApiFeedBTC.read()
-            const oracleWCOREPrice = await ApiFeedCore.read()
-            const btcPrice = oracleBTCPrice[0];
-            const wcorePrice = oracleWCOREPrice[0];
-            const btcpriceAsBigint = BigInt(btcPrice)
-            const wcorepriceAsBigint = BigInt(wcorePrice)
-            setNewBTCPrice(btcpriceAsBigint)
-            setNewWCOREPrice(wcorepriceAsBigint)
-        }
-        console.log(selectedButton, "selectedButton", collTokenAddress)
-        getPrice()
+
         fetchData();
-    }, [walletClient, collTokenAddress, selectedButton, newBTCPrice, newWCOREPrice]);
+    }, []);
     const sortedTrovesContract = getContract(
         botanixTestnet.addresses.SortedVessels,
         sortedTroveAbi,
@@ -161,7 +144,7 @@ export default function Redeem() {
             const roundedStakeFixed = Number(stakeFixed.toFixed(2))
             setUserInput(String(roundedStakeFixed));
         } else {
-            console.error("Invalid ORE balance:", pusdBalance);
+            console.error("Invalid PUSD balance:", pusdBalance);
         }
     };
     const handleConfirmClick = async () => {
@@ -169,27 +152,29 @@ export default function Redeem() {
         try {
             if (!walletClient) {
                 return null;
-            }
+              }
             
             const pow = Decimal.pow(10, 18);
             const inputBeforeConv = new Decimal(userInput);
 
             const inputValue = inputBeforeConv.mul(pow).toFixed();
-            const priceAsBigInt = selectedButton === "WBTC" ? newBTCPrice : newWCOREPrice
-            console.log(selectedButton, "selectedButton", collTokenAddress)
-            const redemptionhint = await hintHelpersContract.getRedemptionHints(collTokenAddress, BigInt(inputValue), priceAsBigInt, 50);
+            const priceAsBigInt = BigInt(Math.floor(fetchedPrice * 10 ** 18));
 
+            const redemptionhint = await hintHelpersContract.getRedemptionHints("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", BigInt(inputValue), priceAsBigInt, 50);
             const { 0: firstRedemptionHint, 1: partialRedemptionNewICR, 2: truncatedLUSDAmount } = redemptionhint;
-            const numTroves = await sortedTrovesContract.getSize(collTokenAddress);
+            const numTroves = await sortedTrovesContract.getSize("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
             const numTrials = numTroves * toBigInt("15");
-            const { hintAddress: approxPartialRedemptionHint } = await hintHelpersContract.getApproxHint(collTokenAddress, partialRedemptionNewICR, numTrials, 42);
-            const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition(collTokenAddress, partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
-            
+            const { hintAddress: approxPartialRedemptionHint } = await hintHelpersContract.getApproxHint("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", partialRedemptionNewICR, numTrials, 42);
+            const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
+            // const maxFee = (5 * 10**16).toString(); // Represents 6% in wei
             const maxFee = BigInt(5e16);
+            console.log('Max Fee:', maxFee);
+            console.log(collTokenAddress, "collTokenAddress")
 
+            console.log("starting")
             const result = await writeContract({
-                address: "0x295C88543F6C54088f9D9E454e17482967d8AE90",
-                abi: hintHelpersAbi,
+                address: "0x21F46c75F3c12FE2cA6714e6085B65FACA61102f",
+                abi: hintHelpersAbi, // Replace with your contract's ABI
                 functionName: 'redeemCollateral',
                 args: [
                     collTokenAddress,
@@ -263,7 +248,7 @@ export default function Redeem() {
                     </div>
                     <div className='my-4'>
                         <div className="flex mb-2 items-center">
-                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className=" rounded-lg body-text w-[20rem] md:w-full bg-transparent text-white text-lg h-14 border border-[#88e273]  " />
+                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#3b351b] rounded-lg body-text w-[20rem] md:w-full text-lg h-14 border border-[#88e273] text-white " />
                         </div>
                         <span className=" ml-[56%] md:ml-[66%] body-text  font-medium balance ">
                             {isLoading ?
@@ -273,29 +258,26 @@ export default function Redeem() {
                                 ) : (
                                     <span className="whitespace-nowrap -ml-2 text-white body-text">Wallet: {" "}
                                         <span className="body-text text-sm">
-                                            {Number(pusdBalance).toFixed(2) || ".."} ORE
+                                            {Number(pusdBalance).toFixed(2) || ".."} PUSD
                                         </span>
                                     </span>
                                 )}
                         </span>
                     </div>
                     <div className="flex w-full justify-between">
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                        <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(100)}>100% </Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
+                        <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0.5rem" }} onClick={() => handlePercentageClick(100)}>100% </Button>
                     </div>
 
                     {isConnected ? (
                         <div className="space-y-2">
-                            <button style={{ backgroundColor: "#88e273" }} onClick={handleConfirmClick} className={`mt-5 h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]  text-black title-text font-semibold w-[20rem] md:w-full rounded-lg border border-black 
-                                ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} 
-                                disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
+                            <button style={{ backgroundColor: "#88e273" }} onClick={handleConfirmClick} className={`mt-5  text-black title-text font-semibold w-[20rem] md:w-full rounded-lg border border-black h-10 ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
                                 {isLoading ? 'LOADING...' : 'REDEEM'}
                             </button>
                             <div>
-                                {isRecoveryMode && selectedButton === "WCORE" && <span className="body-text pt-2 text- text-red-500 w-2">System is in Recovery Mode for WCORE!</span>}
-                                {isRecoveryModeBTC && selectedButton === "WBTC" && <span className="body-text pt-2 text- text-red-500 w-2">System is in Recovery Mode for WBTC !</span>}
+                                {isRecoveryMode && <span className="body-text pt-2 text-gray-300 text-xl w-2">System Is In Recovery Mode !</span>}
                             </div>
                         </div>
                     ) : (
@@ -349,7 +331,7 @@ export default function Redeem() {
                         {(transactionRejected || (!isSuccess && showCloseButton)) && (
                             <>
                                 <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                                <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2  hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
+                                <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
                             </>
                         )}
                     </div>
