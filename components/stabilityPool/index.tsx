@@ -25,9 +25,12 @@ import wcore from "../../app/assets/images/btcc.svg";
 import wbtc from "../../app/assets/images/btccc.svg";
 import susdt from "../../app/assets/images/bbn.svg";
 import { EVMConnect } from "../EVMConnect";
+import { coreTestNetChain, useEthereumChainId } from "../NetworkChecker";
+import { useSwitchChain } from 'wagmi'
 
 export const StabilityPool = () => {
   const [userInput, setUserInput] = useState("0");
+  const { switchChain } = useSwitchChain()
   const [pusdBalance, setPusdBalance] = useState("0");
   const { address, isConnected } = useAccount();
   const [isDataLoading, setIsDataLoading] = useState(true);
@@ -49,9 +52,11 @@ export const StabilityPool = () => {
     erc20Abi,
     provider
   );
-  
+
   const { data: hash, writeContract, error: writeError } = useWriteContract();
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const [chainId, setChainId] = useState(1115);
+  useEthereumChainId(setChainId)
 
   const collateralTokens = [
     {
@@ -105,11 +110,9 @@ export const StabilityPool = () => {
 
   const fetchPrice = async () => {
     if (!walletClient) return null;
-  
     const pusdBalanceValue = await erc20Contract.balanceOf(address);
     const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
     setPusdBalance(pusdBalanceFormatted);
-    // setAfterload(false);
     setIsDataLoading(false);
   };
   useEffect(() => {
@@ -121,14 +124,15 @@ export const StabilityPool = () => {
     setUserModal(false);
     setIsModalVisible(false);
     setTransactionRejected(false);
-    window.location.reload();
-  }, []);
+    fetchPrice()
+  }, [fetchPrice])
+
 
   const handleConfirmClick = async () => {
     try {
       if (!walletClient) {
         return null;
-      }    
+      }
       setIsModalVisible(true);
       const pow = Decimal.pow(10, 18);
       const inputBeforeConv = new Decimal(userInput);
@@ -140,7 +144,6 @@ export const StabilityPool = () => {
       );
 
       const assets = sortedAssets.map((token) => token.address);
-      console.log("Assets: ", assets);
       writeContract({
         abi: StabilityPoolbi,
         address: "0x12B1c7fC9C02fe522Eb53F5654F31155FAa855b4",
@@ -154,7 +157,6 @@ export const StabilityPool = () => {
           ],
         ],
       });
-      console.log(writeContract);
     } catch (error) {
       console.error("Error sending transaction:", error);
       setTransactionRejected(true);
@@ -194,10 +196,12 @@ export const StabilityPool = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleCollateralTokenClick = (address: `0x${string}`) => {
-    setCollateralToken(address);
-    console.log("Collateral Token Address: ", address);
-  };
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose()
+    }
+  }, [isSuccess, handleClose])
+
   return (
     <div className="grid bg-[black] -mt-10 items-start h-72 space-y-8  gap-2 mx-auto rounded-lg  border-[#88e273] p-7">
       <div className=" mt-10 md:mt-0">
@@ -239,35 +243,44 @@ export const StabilityPool = () => {
         </div>
       </div>
       <div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#"}} onClick={() => handlePercentageClick(25)}>  25%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#"}} onClick={() => handlePercentageClick(50)}>  50%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#"}} onClick={() => handlePercentageClick(75)}>  75%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#"}} onClick={() => handlePercentageClick(100)}>  100%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
       </div>
       {isConnected ? (
         <div className=" my-2">
-          <button
-            style={{ backgroundColor: "#88e273" }}
-            onClick={handleConfirmClick}
-            className={`mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none 
-                            ${isDataLoading ||
+          {chainId !== coreTestNetChain.id ? (
+            <button
+              onClick={() => switchChain({ chainId: coreTestNetChain.id })}
+              className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+            >
+              Switch to Core
+            </button>
+          ) : (
+            <button
+              style={{ backgroundColor: "#88e273" }}
+              onClick={handleConfirmClick}
+              className={`mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none 
+              ${isDataLoading ||
+                  Number(userInput) <= 0 ||
+                  Number(userInput) >
+                  Number(
+                    Math.trunc(Number(pusdBalance) * 100) / 100
+                  )
+                  ? "cursor-not-allowed opacity-50"
+                  : "hover:scale-95 "
+                }`}
+              disabled={
+                isDataLoading ||
                 Number(userInput) <= 0 ||
                 Number(userInput) >
-                Number(
-                  Math.trunc(Number(pusdBalance) * 100) / 100
-                )
-                ? "cursor-not-allowed opacity-50"
-                : "hover:scale-95 "
-              }`}
-            disabled={
-              isDataLoading ||
-              Number(userInput) <= 0 ||
-              Number(userInput) >
-              Number(Math.trunc(Number(pusdBalance) * 100) / 100)
-            }
-          >
-            {isDataLoading ? "LOADING..." : "STAKE"}
-          </button>
+                Number(Math.trunc(Number(pusdBalance) * 100) / 100)
+              }
+            >
+              {isDataLoading ? "LOADING..." : "STAKE"}
+            </button>
+          )}
         </div>
       ) : (
         <EVMConnect className="w-full" />

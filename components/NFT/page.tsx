@@ -68,7 +68,6 @@ export default function Redeem() {
             });
 
             router.refresh();
-            console.log("refreshed");
         } catch (error) {
             console.error("An error occurred", error);
         }

@@ -17,7 +17,7 @@ import rec2 from "../assets/images/rec2.gif"
 import tick from "../assets/images/tick.gif"
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
 import img4 from "../assets/images/Core.svg";
@@ -26,8 +26,10 @@ import { Button } from "@/components/ui/button";
 import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
 import { Tooltip } from "primereact/tooltip";
+
 import Web3 from "web3";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
+import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 export const OpenTrove = () => {
   const [userInputs, setUserInputs] = useState({
@@ -40,6 +42,7 @@ export const OpenTrove = () => {
   const [minDebt, setMinDebt] = useState(0)
   const [borrowRate, setBorrowRate] = useState(0)
   const [lr, setLR] = useState(0)
+  const { switchChain } = useSwitchChain()
   const [cCr, setCCR] = useState(0)
   const [mCR, setMCR] = useState(0)
   const [fetchedPrice, setFetchedPrice] = useState(0)
@@ -54,6 +57,8 @@ export const OpenTrove = () => {
   const [transactionRejected, setTransactionRejected] = useState(false);
   const [balanceData, setBalanceData] = useState<any>()
   const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
+  const [chainId, setChainId] = useState(1115);
+  useEthereumChainId(setChainId)
 
   useEffect(() => {
     if (isLoading) {
@@ -333,18 +338,14 @@ export const OpenTrove = () => {
       const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
       if (tx.status) {
-        console.log("Transaction successful!");
       } else {
-        console.log("Transaction failed. Please try again.");
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };
       if (e.code === 4001) {
         console.error("User rejected the transaction:", e.message);
-        console.log("Transaction rejected by the user.");
       } else {
         console.error("Error during token approval:", e.message);
-        console.log("An error occurred during token approval. Please try again.");
       }
     }
   };
@@ -451,30 +452,40 @@ export const OpenTrove = () => {
                 <span className="text-red-500 body-text">Borrow amount should be greater than {minDebt} </span>
               )}
             </div>
-            <button
-              onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
-              className={`mt-5 h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] md:-ml-0 -ml-4 w-[90%] bg-[#88e273] rounded-3xl title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-[#88e273]'}`}
-              disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
-                || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData)
-                || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}
-              style={{
-                cursor: (!userInputs.borrow || isModalVisible ||
-                  !userInputs.collatoral ||
-                  loanToValue > (100 / Number(divideBy)) ||
-                  parseFloat(userInputs.borrow) > maxBorrow ||
-                  parseFloat(userInputs.collatoral) > Number(balanceData) ||
-                  parseFloat(userInputs.borrow) <= minDebt)
-                  ? 'not-allowed' : 'pointer',
-                opacity: (!userInputs.borrow || isModalVisible ||
-                  !userInputs.collatoral ||
-                  loanToValue > (100 / Number(divideBy)) ||
-                  parseFloat(userInputs.borrow) > maxBorrow ||
-                  parseFloat(userInputs.collatoral) > Number(balanceData) ||
-                  parseFloat(userInputs.borrow) <= minDebt)
-                  ? 0.5 : 1
-              }}>
-              {isModalVisible ? "Opening Vessel..." : modiff >= 0 ? "Approve" : "Open Vessel"}
-            </button>
+            {chainId !== coreTestNetChain.id ? (
+              <button
+                onClick={() => switchChain({ chainId: coreTestNetChain.id })}
+                className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+              >
+                Switch to Core
+              </button>
+            ) : (
+              <button
+                onClick={() => handleConfirmClick(userInputs.borrow, userInputs.collatoral)}
+                className={`mt-5 h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] md:-ml-0 -ml-4 w-[90%] bg-[#88e273] rounded-3xl title-text text-black font-bold ${(!userInputs.borrow || !userInputs.collatoral) ? ' cursor-not-allowed opacity-50' : 'hover:scale-95 bg-[#88e273]'}`}
+                disabled={!userInputs.borrow || !userInputs.collatoral || loanToValue > (100 / Number(divideBy))
+                  || parseFloat(userInputs.borrow) > maxBorrow || parseFloat(userInputs.collatoral) > Number(balanceData)
+                  || parseFloat(userInputs.borrow) <= minDebt || isModalVisible}
+                style={{
+                  cursor: (!userInputs.borrow || isModalVisible ||
+                    !userInputs.collatoral ||
+                    loanToValue > (100 / Number(divideBy)) ||
+                    parseFloat(userInputs.borrow) > maxBorrow ||
+                    parseFloat(userInputs.collatoral) > Number(balanceData) ||
+                    parseFloat(userInputs.borrow) <= minDebt)
+                    ? 'not-allowed' : 'pointer',
+                  opacity: (!userInputs.borrow || isModalVisible ||
+                    !userInputs.collatoral ||
+                    loanToValue > (100 / Number(divideBy)) ||
+                    parseFloat(userInputs.borrow) > maxBorrow ||
+                    parseFloat(userInputs.collatoral) > Number(balanceData) ||
+                    parseFloat(userInputs.borrow) <= minDebt)
+                    ? 0.5 : 1
+                }}>
+                {isModalVisible ? "Opening Vessel..." : modiff >= 0 ? "Approve" : "Open Vessel"}
+              </button>
+            )}
+
           </div>
           {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData) ? (
             <div className="md:w-4/5 w-full mt-[55px] p-5 border-[#88e273] h-fit space-y-10  text-white"
@@ -640,7 +651,7 @@ export const OpenTrove = () => {
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Okay</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>

@@ -63,8 +63,6 @@ export const StabilityStats = () => {
           walletClient.account.address,
           assets
         );
-      console.log("Returned Assets:", returnedAssets);
-      console.log("Gains:", gains);
 
       const gainsObject: { [key: string]: string } = {};
       returnedAssets.forEach((asset: string, index: number) => {

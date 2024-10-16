@@ -36,8 +36,8 @@
     "react-use": "^17.5.0",
     "tailwind-merge": "^2.0.0",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "^2.21.15",
-    "wagmi": "^2.12.16",
+    "viem": "^2.21.27",
+    "wagmi": "^2.12.18",
     "web3": "^4.7.0"
   },
   "devDependencies": {

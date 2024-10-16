@@ -6,7 +6,7 @@ import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import { ethers, toBigInt } from "ethers";
 import React, { useState, useEffect, useCallback } from "react";
-import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useAccount, useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Dialog } from 'primereact/dialog';
 import Image from "next/image";
 import rej from "../assets/images/TxnError.gif";
@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
 import Decimal from "decimal.js";
+import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 
 interface Props {
@@ -32,6 +33,7 @@ interface Props {
 export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquidationReserve }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLowBalance, setIsLowBalance] = useState(false);
+  const { switchChain } = useSwitchChain()
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const { data: walletClient } = useWalletClient();
@@ -45,7 +47,8 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
   const [calculatedFee, setCalculatedFee] = useState("0");
-
+  const [chainId, setChainId] = useState(1115);
+  useEthereumChainId(setChainId)
   const erc20Contract = getContract(
     botanixTestnet.addresses.DebtToken,
     erc20Abi,
@@ -91,7 +94,7 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
     }
     fetchRefundfee();
     fetchPrice();
-  }, [fetchPrice, walletClient, writeContract, hash,calculatedFee]);
+  }, [fetchPrice, walletClient, writeContract, hash, calculatedFee]);
 
   const handleConfirmClick = async () => {
     setIsModalVisible(true);
@@ -159,15 +162,15 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
             <span className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Collateral</span>
               <Image width={15} className="toolTipHolding5 ml_5 -mt-[3px]" src={info} data-pr-tooltip="" alt="info" />
-              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding5" mouseTrack content="The BTC you’ve staked to receive ORE. This Bitcoin acts as security for the loan or transaction." mouseTrackLeft={10} />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding5" mouseTrack content="The WBTC you’ve staked to receive ORE. This Bitcoin acts as security for the loan or transaction." mouseTrackLeft={10} />
             </span>
-            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(8)} BTC</span>}
+            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(8)} WBTC</span>}
           </div>
           <div className="flex justify-between">
             <div className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Debt</span>
               <Image width={15} className="toolTipHolding6 ml_5 -mt-[5px]" src={info} data-pr-tooltip="" alt="info" />
-              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding6" mouseTrack content="The amount of ORE you owe. This is the value you need to repay, with your BTC collateral backing it." mouseTrackLeft={10} />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding6" mouseTrack content="The amount of ORE you owe. This is the value you need to repay, with your WBTC collateral backing it." mouseTrackLeft={10} />
             </div>
             {Number(updatedDebt) <= 0 ? "---" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(updatedDebt).toFixed(2)} ORE</span>}
           </div>
@@ -196,13 +199,23 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
             </span>
           </div>
         </div>
-        <button
-          onClick={handleConfirmClick}
-          disabled={isLowBalance || afterLoad}
-          className={`mt-20 md:w-full md:ml-0 ml-1 w-[18.2rem] h-[3rem] rounded-3xl bg-[#88e273] text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer'}`}
-        >
-          Close Vessel
-        </button>
+        {chainId !== coreTestNetChain.id ? (
+          <button
+            onClick={() => switchChain({ chainId: coreTestNetChain.id })}
+            className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+          >
+            Switch to Core
+          </button>
+        ) : (
+          <button
+            onClick={handleConfirmClick}
+            disabled={isLowBalance || afterLoad}
+            className={`mt-20 md:w-full md:ml-0 ml-1 w-[18.2rem] h-[3rem] rounded-3xl bg-[#88e273] text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer'}`}
+          >
+            Close Vessel
+          </button>
+        )}
+
         <div className="text-red-500 text-sm font-medium body-text w-full ml-1">
           {isLowBalance ? "Low balance: unable to close trove" : null}
         </div>
@@ -248,7 +261,7 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Okay</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>

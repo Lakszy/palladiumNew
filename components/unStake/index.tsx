@@ -3,7 +3,6 @@
 import stabilityPoolAbi from "../../app/src/constants/abi/StabilityPool.sol.json";
 import { BOTANIX_RPC_URL } from "../../app/src/constants/botanixRpcUrl";
 import pusdbtc from "../../app/assets/images/Core.svg";
-
 import botanixTestnet from "../../app/src/constants/botanixTestnet.json";
 import { getContract } from "../../app/src/utils/getContract";
 import conf from "../../app/assets/images/conf.gif";
@@ -30,11 +29,14 @@ import { EVMConnect } from "../EVMConnect";
 import wcore from "../../app/assets/images/btcc.svg";
 import wbtc from "../../app/assets/images/btccc.svg";
 import susdt from "../../app/assets/images/bbn.svg";
+import { coreTestNetChain, useEthereumChainId } from "../NetworkChecker";
+import { useSwitchChain } from 'wagmi'
 
 export const Unstake = () => {
   const [userInput, setUserInput] = useState("0");
   const [stakedValue, setStakedValue] = useState(0);
   const [pusdBalance, setPusdBalance] = useState(0);
+  const { switchChain } = useSwitchChain()
   const { isConnected } = useAccount();
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
@@ -51,6 +53,8 @@ export const Unstake = () => {
   const [collateralToken, setCollateralToken] = useState<`0x${string}`>(
     "0x0000000000000000000000000000000000000000"
   );
+  const [chainId, setChainId] = useState(1115);
+  useEthereumChainId(setChainId)
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const stabilityPoolContractReadOnly = getContract(
@@ -107,7 +111,6 @@ export const Unstake = () => {
         await stabilityPoolContractReadOnly.getCompoundedDebtTokenDeposits(
           walletClient?.account.address
         );
-      console.log("fetchedPUSD", fetchedPUSD);
       setStakedValue(fetchedPUSD);
     } catch (error) {
       console.error("Error fetching staked value:", error);
@@ -119,12 +122,12 @@ export const Unstake = () => {
   }, [fetchStakedValue, writeContract, hash]);
 
   const handleClose = useCallback(() => {
-    setLoadingModalVisible(false);
-    setUserModal(false);
-    setIsModalVisible(false);
-    setTransactionRejected(false);
-    window.location.reload();
-  }, []);
+    setLoadingModalVisible(false)
+    setUserModal(false)
+    setIsModalVisible(false)
+    setTransactionRejected(false)
+    fetchStakedValue()
+  }, [fetchStakedValue])
 
   useEffect(() => {
     const getStakedValue = async () => {
@@ -218,10 +221,12 @@ export const Unstake = () => {
     }, 180000);
     return () => clearTimeout(timer);
   }, []);
-  const handleCollateralTokenClick = (address: `0x${string}`) => {
-    setCollateralToken(address);
-    console.log("Collateral Token Address: ", address);
-  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      handleClose(); // This will now refetch the staked value
+    }
+  }, [isSuccess, handleClose]);
 
   return (
     <>
@@ -238,7 +243,7 @@ export const Unstake = () => {
               </h3>
               <h3 className="h-full border  border-[#88e273] rounded-lg mx-3 text-[#88e273]"></h3>
               <div className=" justify-between items-center flex gap-x-24">
-                <input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1  text-white" style={{ backgroundColor: "black" }} />
+                <input id="items" placeholder="0.000 WBTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1  text-white" style={{ backgroundColor: "black" }} />
               </div>
             </div>
           </div>
@@ -277,6 +282,14 @@ export const Unstake = () => {
         </div>
         {isConnected ? (
           <div className="my-2">
+            {chainId !== coreTestNetChain.id ? (
+              <button
+                onClick={() => switchChain({ chainId: coreTestNetChain.id })}
+                className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+              >
+                Switch to Core
+              </button>
+            ) : (
             <button
               style={{ backgroundColor: "#88e273" }}
               onClick={handleConfirmClick}
@@ -298,6 +311,7 @@ export const Unstake = () => {
             >
               {isStateLoading ? "LOADING..." : "UNSTAKE"}
             </button>
+          )}
           </div>
         ) : (
           <EVMConnect className="w-full" />
@@ -371,7 +385,7 @@ export const Unstake = () => {
                     className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]"
                     onClick={handleClose}
                   >
-                    Close
+                    Okay
                   </button>
                 )}
                 {(transactionRejected || (!isSuccess && showCloseButton)) && (

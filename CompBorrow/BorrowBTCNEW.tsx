@@ -14,7 +14,7 @@ import Decimal from "decimal.js";
 import { ethers, toBigInt } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Button } from "@/components/ui/button";
 import OpenTroveNotConnected from "@/app/trove/openTroveNotConnected";
 import Image from "next/image";
@@ -37,11 +37,11 @@ import FullScreenLoader from "@/components/FullScreenLoader";
 import { Dialog } from "primereact/dialog";
 import { BorrowerOperationbi } from "@/app/src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
-import { useAccounts } from "@particle-network/btc-connectkit";
 import Web3 from "web3";
 import { RepayBTC } from "@/app/trove/RepayBTC";
 import { CloseTroveBTC } from "@/app/trove/CloseTroveBTC";
 import { OpenTroveBTC } from "@/app/trove/OpenTroveBTC";
+import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 const BorrowBTCNEW = () => {
   const [userInputs, setUserInputs] = useState({
@@ -69,9 +69,6 @@ const BorrowBTCNEW = () => {
 
   const [userInputColl, setUserInputColl] = useState(0)
   const [userInputDebt, setUserInputDebt] = useState(0)
-  const [allwnce, setAllwnce] = useState<any>(BigInt(0));
-
-  // API
   const [minDebt, setMinDebt] = useState(0)
   const [borrowRate, setBorrowRate] = useState(0)
   const [lr, setLR] = useState(0)
@@ -101,6 +98,10 @@ const BorrowBTCNEW = () => {
   const { data: walletClient } = useWalletClient();
   const { data: isConnected } = useWalletClient();
   const spenderAddress = walletClient?.account?.address
+
+  const { switchChain } = useSwitchChain()
+  const [chainId, setChainId] = useState(1115);
+  useEthereumChainId(setChainId)
 
   const fetchPrice = async () => {
     if (!walletClient) return null;
@@ -259,7 +260,7 @@ const BorrowBTCNEW = () => {
     if (modiff >= 0 && xCollatoral !== undefined && !isNaN(Number(xCollatoral)) && Number(xCollatoral) > 0) {
       await handleApproveClick(xCollatoral);
     }
-    
+
     try {
       setIsModalVisible(true)
       const borrowValue = Number(xBorrow);
@@ -270,9 +271,6 @@ const BorrowBTCNEW = () => {
       const newDebtValue = Number(entireDebtAndColl.debt) + borrowValue;
       const newCollValue = Number(entireDebtAndColl.coll) + collValue;
       setNewDebt(newDebtValue);
-
-      // const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
-      // setAllwnce(allowance)
 
       let NICR = newCollValue / newDebtValue;
       const NICRDecimal = new Decimal(NICR.toString());
@@ -433,21 +431,14 @@ const BorrowBTCNEW = () => {
         const gasPrice = (await web3.eth.getGasPrice()).toString();
         const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
         const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
-
-        if (tx) {
-          console.log("Transaction successful!");
-        } else {
-          console.log("Transaction failed. Please try again.");
-        }
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };
       if (e.code === 4001) {
         console.error("User rejected the transaction:", e.message);
-        console.log("Transaction rejected by the user.");
+
       } else {
         console.error("Error during token approval:", e.message);
-        console.log("An error occurred during token approval. Please try again.");
       }
     }
   };
@@ -517,9 +508,6 @@ const BorrowBTCNEW = () => {
       setNewApprovedAmount(null);
     }
   }, [newApprovedAmount, modiff, aprvAmnt, userInputs.depositCollateral]);
-
-  const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
-  const amountToApprove = aprvAmntInDecimals === 0 ? userInputs.depositCollateral : (newApprovedAmount !== null ? newApprovedAmount.toString() : null)
 
   return (
     <div>
@@ -667,7 +655,6 @@ const BorrowBTCNEW = () => {
                                       }}
                                       className="body-text text-sm whitespace-nowrap h-[4rem] text-gray-400 " style={{ backgroundColor: "black" }}
                                     />
-
                                   </div>
                                   <div className="flex flex-col mt-[15px] gap-x-5 justify-between">
                                     <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
@@ -693,13 +680,24 @@ const BorrowBTCNEW = () => {
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(100)}>100%</Button>
                                     </div>
                                   </div>
-                                  <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
-                                    className={`mt-9 md:-ml-0 rounded-3xl -ml-10 w-[19rem] md:w-full title-text h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]
-                                   ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
-                                        ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-[#88e273]  text-black'}`}
-                                    disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
-                                    {isModalVisible ? "Updating Vessel..." : modiff > -0 ? "Approve" : "Update Vessel"}
-                                  </button>
+                                  {
+                                    chainId !== coreTestNetChain.id ? (
+                                      <button
+                                        onClick={() => switchChain({ chainId: coreTestNetChain.id })
+                                        }
+                                        className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+                                      >
+                                        Switch to Core
+                                      </button>
+                                    ) : (
+                                      <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
+                                        className={`mt-9 md:-ml-0 rounded-3xl -ml-10 w-[19rem] md:w-full title-text h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]
+                                     ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
+                                            ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed' : ' hover:scale-95  cursor-pointer bg-[#88e273]  text-black'}`}
+                                        disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
+                                        {isModalVisible ? "Updating Vessel..." : modiff > -0 ? "Approve" : "Update Vessel"}
+                                      </button>
+                                    )}
                                 </div>
                               </div>
                             </div>
@@ -890,7 +888,7 @@ const BorrowBTCNEW = () => {
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Okay</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>

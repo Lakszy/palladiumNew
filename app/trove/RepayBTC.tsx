@@ -14,7 +14,7 @@ import { ethers, toBigInt } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useDebounce } from "react-use";
-import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useAccount, useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import Image from "next/image";
 import img3 from "../assets/images/Group 666.svg";
 import img4 from "../assets/images/Core.svg";
@@ -27,6 +27,7 @@ import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
 import Web3 from "web3";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
+import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 interface Props {
   coll: number;
@@ -72,6 +73,10 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
   const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
   const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
   const spenderAddress = walletClient?.account?.address
+
+  const { switchChain } = useSwitchChain()
+  const [chainId, setChainId] = useState(1115);
+  useEthereumChainId(setChainId)
 
   const handleClose = useCallback(() => {
     setLoadingModalVisible(false);
@@ -285,18 +290,16 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
       const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
       if (tx.status) {
-        console.log("Transaction successful!");
       } else {
-        console.log("Transaction failed. Please try again.");
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };
       if (e.code === 4001) {
         console.error("User rejected the transaction:", e.message);
-        console.log("Transaction rejected by the user.");
+
       } else {
         console.error("Error during token approval:", e.message);
-        console.log("An error occurred during token approval. Please try again.");
+
       }
     }
   };
@@ -386,10 +389,10 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
               </span>
             </div>
             <div className="flex w-full py-3 -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-2">
-              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#",  }} onClick={() => handlePercentageClick(25)}>25%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#",  }} onClick={() => handlePercentageClick(50)}>50%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#",  }} onClick={() => handlePercentageClick(75)}>75%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#",  }} onClick={() => handlePercentageClick(100)}>100%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(25)}>25%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(50)}>50%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(75)}>75%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(100)}>100%</Button>
             </div>
 
           </div>
@@ -431,19 +434,31 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
               </span>
             </div>
             <div className="flex w-full py-3  -ml-12 gap-x-2 md:-ml-0 md:gap-x-3 mt-[5px]">
-              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#",  }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#",  }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#",  }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#",  }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+              <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
             </div>
           </div>
-          <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}
-            className={`mt-5 md:-ml-0 rounded-2xl -ml-11 w-[19.5rem] md:w-full title-text h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]
+          {
+            chainId !== coreTestNetChain.id ? (
+              <button
+                onClick={() => switchChain({ chainId: coreTestNetChain.id })
+                }
+                className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+              >
+                Switch to Core
+              </button>
+            ) : (
+              <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}
+                className={`mt-5 md:-ml-0 rounded-2xl -ml-11 w-[19.5rem] md:w-full title-text h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]
              ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
-                ? 'bg-[#88e273] text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
-            disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
-            UPDATE VESSEL
-          </button>
+                    ? 'bg-[#88e273] text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
+                disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
+                UPDATE VESSEL
+              </button>
+            )}
+
         </div>
       </div>
       <div className={`px-1  w-[18rem] rounded-2xl -ml-4 md:px-9 md:w-full  pt-9 h-[18rem] pl-5 md:h-[20rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
@@ -580,7 +595,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Okay</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>

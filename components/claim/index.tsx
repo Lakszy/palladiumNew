@@ -11,6 +11,7 @@ import { getContract } from "../../app/src/utils/getContract";
 import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import {
+  useAccount,
   useWaitForTransactionReceipt,
   useWalletClient,
   useWriteContract,
@@ -21,6 +22,9 @@ import { StabilityPoolbi } from "@/app/src/constants/abi/StabilityPoolbi";
 import { Button } from "../ui/button";
 import { Dialog } from "primereact/dialog";
 import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
+import { coreTestNetChain, useEthereumChainId } from "../NetworkChecker";
+import { useSwitchChain } from 'wagmi'
+import { EVMConnect } from "../EVMConnect";
 
 
 const Claim = () => {
@@ -37,14 +41,14 @@ const Claim = () => {
   const [fetchedPrice, setFetchedPrice] = useState(0);
   const [fetchedPriceBTC, setFetchedPriceBTC] = useState(0);
   const [userModal, setUserModal] = useState(false);
+  const { isConnected } = useAccount();
   const [loadingMessage, setLoadingMessage] = useState("");
   const [showCloseButton, setShowCloseButton] = useState(false);
   const { data: walletClient } = useWalletClient();
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
-
-
+  const { switchChain } = useSwitchChain()
   const [wcoreBalance, setWcoreBalance] = useState(0.0)
   const [wbtcBalance, setWbtcBalance] = useState(0.0)
 
@@ -52,7 +56,8 @@ const Claim = () => {
   const [depositorGains, setDepositorGains] = useState<{
     [key: string]: string;
   }>({});
-
+  const [chainId, setChainId] = useState(1115);
+  useEthereumChainId(setChainId)
 
   const handleClose = useCallback(() => {
     setLoadingModalVisible(false);
@@ -300,11 +305,28 @@ const Claim = () => {
               })}
             </div>
           </div>
-          <button className={`w-full py-3 h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] rounded title-text2 transition-colors mt-4 font-medium bg-[#88e273] text-black
-  ${isButtonEnabled ? 'bg-[#88e273] text-black' : 'cursor-not-allowed opacity-50'}`} onClick={isButtonEnabled ?
-              handleConfirmClick : undefined} disabled={!isButtonEnabled}>
-            CLAIM
-          </button>
+          {isConnected ? (
+            chainId !== coreTestNetChain.id ? (
+              <button
+                onClick={() => switchChain({ chainId: coreTestNetChain.id })}
+                className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+              >
+                Switch to Core
+              </button>
+            ) : (
+              <button
+                className={`w-full py-3 h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] rounded title-text2 transition-colors mt-4 font-medium bg-[#88e273] text-black
+      ${isButtonEnabled ? 'bg-[#88e273] text-black' : 'cursor-not-allowed opacity-50'}`}
+                onClick={isButtonEnabled ? handleConfirmClick : undefined}
+                disabled={!isButtonEnabled}
+              >
+                CLAIM
+              </button>
+            )
+          ) : (
+            <EVMConnect className={""} />
+          )}
+
         </div>
       </div>
       <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
@@ -348,7 +370,7 @@ const Claim = () => {
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Okay</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>

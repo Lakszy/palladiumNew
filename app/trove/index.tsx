@@ -199,7 +199,7 @@ const Borrow = () => {
           troveStatusBigInt.toString() === "1" ? "ACTIVE" : "INACTIVE";
         setTroveStatus(troveStatus)
       } catch (error) {
-        console.log(error)
+        console.error(error)
       }
     }
 
@@ -822,7 +822,7 @@ const Borrow = () => {
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Okay</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>

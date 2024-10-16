@@ -14,10 +14,10 @@ import { ethers, toBigInt } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useDebounce } from "react-use";
-import { useAccount, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useAccount, useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import Image from "next/image";
-import img3 from "../assets/images/wcore.png";
-import img4 from "../assets/images/Group 666.svg";
+import img3 from "../assets/images/wbtc.svg";
+import img4 from "../assets/images/Core.svg";
 import info from "../assets/images/info.svg";
 import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
@@ -27,6 +27,7 @@ import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
 import Web3 from "web3";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
+import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 interface Props {
   coll: number;
@@ -73,6 +74,10 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
   const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
   const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
   const spenderAddress = walletClient?.account?.address
+
+  const { switchChain } = useSwitchChain()
+  const [chainId, setChainId] = useState(1115);
+  useEthereumChainId(setChainId)
 
   const handleClose = useCallback(() => {
     setLoadingModalVisible(false);
@@ -287,18 +292,14 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
       const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
       if (tx.status) {
-        console.log("Transaction successful!");
       } else {
-        console.log("Transaction failed. Please try again.");
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };
       if (e.code === 4001) {
         console.error("User rejected the transaction:", e.message);
-        console.log("Transaction rejected by the user.");
       } else {
         console.error("Error during token approval:", e.message);
-        console.log("An error occurred during token approval. Please try again.");
       }
     }
   };
@@ -439,13 +440,24 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
             </div>
           </div>
-          <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}
-            className={`mt-5 md:-ml-0 -ml-11 w-[19.5rem] rounded-3xl md:w-full title-text h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]
+          {
+            chainId !== coreTestNetChain.id ? (
+              <button
+                onClick={() => switchChain({ chainId: coreTestNetChain.id })
+                }
+                className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+              >
+                Switch to Core
+              </button>
+            ) : (
+              <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}
+                className={`mt-5 md:-ml-0 -ml-11 w-[19.5rem] rounded-3xl md:w-full title-text h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]
              ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
-                ? 'bg-[#88e273] text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
-            disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
-            UPDATE VESSEL
-          </button>
+                    ? 'bg-[#88e273] text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
+                disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
+                UPDATE VESSEL
+              </button>
+            )}
         </div>
       </div>
       <div className={`px-1  w-[18rem] -ml-4 md:px-9 md:w-full rounded-2xl pt-9 h-[18rem] pl-5 md:h-[20rem] ${condition ? 'p-4' : ' p-16'} md:pt-12 md:mx-4 md:mt-10 text-sm`}
@@ -582,7 +594,7 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Okay</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>

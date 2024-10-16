@@ -591,7 +591,7 @@ const Portfolio = () => {
                             <div className='p-3 grid grid-cols-3 space-y-8  items-center justify-around'>
                               <div className="text-left mt-1">
                                 <p className="text-gray-500  text-sm body-text">Collateral</p>
-                                <p className="body-text font-medium mt-">{Number(entireDebtAndCollBTC.collBTC).toFixed(8)} BTC</p>
+                                <p className="body-text font-medium mt-">{Number(entireDebtAndCollBTC.collBTC).toFixed(8)} WBTC</p>
                                 <p className="text-sm body-text text-gray-500">
                                   ${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(8)}
                                 </p>

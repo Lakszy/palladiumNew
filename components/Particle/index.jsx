@@ -23,7 +23,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         appId: "sdqWhsFIW0vuRDC9Ekf5rXzYRSrDxiB5VncE845x",
         aaOptions: {
           accountContracts: {
-            BTC: [
+            WBTC: [
               {
                 chainIds: [MerlinTestnet.id, Merlin.id, LumiBitTestnet.id, PolygonMumbai.id, BEVMTestnet.id, BEVM.id, MAPProtocolTestnet.id, MAPProtocol.id, SatoshiVMTestnet.id],
                 version: '1.0.0',

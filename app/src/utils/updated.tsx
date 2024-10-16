@@ -154,7 +154,7 @@ export const OpenTrove = () => {
 				<div className="flex items-center space-x-2">
 					<Input
 						id="items"
-						placeholder="0.000 BTC"
+						placeholder="0.000 WBTC"
 						value={userInputs.collatoral}
 						onChange={(e) => {
 							handleValueChange({

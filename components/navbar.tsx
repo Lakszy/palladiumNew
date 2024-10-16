@@ -3,9 +3,8 @@ import Image from "next/image";
 import pusdbtc from "../app/assets/images/Core.svg";
 import btc from "../app/assets/images/Group 666.svg";
 import core from "../app/assets/images/wbtc.svg";
-
 import { Toast } from "primereact/toast";
-import { useAccount, useWalletClient } from "wagmi";
+import { useWalletClient } from "wagmi";
 import { EVMConnect } from "./EVMConnect";
 import MobileNav from "./MobileNav";
 import "./navbar.css";
@@ -14,21 +13,9 @@ function NavBar() {
   const [fetchedPrice, setFetchedPrice] = useState(0);
   const [fetchedPriceBTC, setFetchedPriceBTC] = useState(0);
   const [fetchedPriceORE, setFetchedPriceORE] = useState(0);
-  const { address } = useAccount();
-  const [userExists, setUserExists] = useState(false);
   const toast = useRef<Toast>(null);
   const { data: walletClient } = useWalletClient();
 
-  useEffect(() => {
-    fetch(`https://api.palladiumlabs.org/sepolia/users/testnetWhitelist/${address}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setUserExists(data.userExists);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, [address]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -79,6 +66,8 @@ function NavBar() {
       });
     }
   };
+
+
 
   return (
     <>

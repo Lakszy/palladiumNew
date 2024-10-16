@@ -30,10 +30,8 @@ const WalletConnectButton = () => {
                 const balanceBigInt = await publicClient?.getBalance({ address: walletAddress });
                 const balance = balanceBigInt ? Number(balanceBigInt) : 0;
                 if (balanceBigInt && balanceBigInt > BigInt(Number.MAX_SAFE_INTEGER)) {
-                    console.log("Balance exceeds Number.MAX_SAFE_INTEGER and may lose precision.");
                 }
                 setBalance(balance.toString());
-                console.log(balance, "alala");
             } catch (error) {
                 console.error("Error fetching balance:", error);
                 setBalance(null);
@@ -41,16 +39,8 @@ const WalletConnectButton = () => {
                 setIsLoading(false);
             }
         } else {
-            console.log("No account connected");
         }
     }, [publicClient]);
-
-    // useEffect(() => {
-    //     setIsConnected(  > 0);
-    //     if (  > 0) {
-    //         fetchBalance(accounts[0])
-    //     }
-    // }, [accounts, fetchBalance]);
 
     const handleDisconnect = useCallback(() => {
         if (disconnect) {

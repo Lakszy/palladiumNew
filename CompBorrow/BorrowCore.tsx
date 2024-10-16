@@ -14,15 +14,15 @@ import Decimal from "decimal.js";
 import { ethers, toBigInt } from "ethers";
 import { useEffect, useState } from "react";
 import { useDebounce } from "react-use";
-import { useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
+import { useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Button } from "@/components/ui/button";
 import OpenTroveNotConnected from "@/app/trove/openTroveNotConnected";
 import Image from "next/image";
 import INACTIVE from "@/app/assets/images/INACTIVE.svg";
 import ACTIVE from "@/app/assets/images/ACTIVE.svg";
-import img2 from "@/app/assets/images/Group 663.svg";
-import img3 from "@/app/assets/images/wcore.png";
-import img4 from "@/app/assets/images/Group 666.svg";
+import img2 from "@/app/assets/images/Core.svg";
+import img3 from "@/app/assets/images/wbtc.svg";
+import img4 from "@/app/assets/images/Core.svg";
 import rej from "@/app/assets/images/TxnError.gif";
 import conf from "@/app/assets/images/conf.gif"
 import rec2 from "@/app/assets/images/rec2.gif"
@@ -42,6 +42,7 @@ import { BorrowerOperationbi } from "@/app/src/constants/abi/borrowerOperationAb
 import { Tooltip } from "primereact/tooltip";
 import Web3 from "web3";
 import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
+import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 const BorrowCore = () => {
   const [userInputs, setUserInputs] = useState({
@@ -107,6 +108,10 @@ const BorrowCore = () => {
     const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
     const { toBigInt } = web3.utils;
   }
+
+  const { switchChain } = useSwitchChain()
+  const [chainId, setChainId] = useState(1115);
+  useEthereumChainId(setChainId)
 
   const handleClose = () => {
     setLoadingModalVisible(false);
@@ -180,7 +185,6 @@ const BorrowCore = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-
       const pow = Decimal.pow(10, 18);
       const _1e18 = toBigInt(pow.toFixed());
       const fetchedData = async () => {
@@ -259,9 +263,6 @@ const BorrowCore = () => {
       const newDebtValue = Number(entireDebtAndColl.debt) + borrowValue;
       const newCollValue = Number(entireDebtAndColl.coll) + collValue;
       setNewDebt(newDebtValue);
-
-      // const allowance = await tokenContract.methods.allowance("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", spenderAddress).call();
-      // setAllwnce(allowance)
 
       let NICR = newCollValue / newDebtValue;
       const NICRDecimal = new Decimal(NICR.toString());
@@ -424,23 +425,15 @@ const BorrowCore = () => {
 
         const userAddress = walletClient?.account?.address;
         const gasPrice = (await web3.eth.getGasPrice()).toString();
-        const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
+        const amountInWei = web3.utils.toWei(amount, 'ether')
         const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
-
-        if (tx) {
-          console.log("Transaction successful!");
-        } else {
-          console.log("Transaction failed. Please try again.");
-        }
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };
       if (e.code === 4001) {
         console.error("User rejected the transaction:", e.message);
-        console.log("Transaction rejected by the user.");
       } else {
         console.error("Error during token approval:", e.message);
-        console.log("An error occurred during token approval. Please try again.");
       }
     }
   };
@@ -476,18 +469,16 @@ const BorrowCore = () => {
   }, [writeError]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      if (isLoading) {
-        setIsModalVisible(false);
-        setLoadingMessage("Waiting for transaction to confirm..");
-        setLoadingModalVisible(true);
-      } else if (isSuccess) {
-        setLoadingMessage("Borrow Transaction completed successfully");
-        setLoadingModalVisible(true);
-      } else if (transactionRejected) {
-        setLoadingMessage("Transaction was rejected");
-        setLoadingModalVisible(true);
-      }
+    if (isLoading) {
+      setIsModalVisible(false);
+      setLoadingMessage("Waiting for transaction to confirm..");
+      setLoadingModalVisible(true);
+    } else if (isSuccess) {
+      setLoadingMessage("Borrow Transaction completed successfully");
+      setLoadingModalVisible(true);
+    } else if (transactionRejected) {
+      setLoadingMessage("Transaction was rejected");
+      setLoadingModalVisible(true);
     }
   }, [isSuccess, isLoading, transactionRejected]);
 
@@ -516,10 +507,6 @@ const BorrowCore = () => {
     }
   }, [newApprovedAmount, modiff, aprvAmnt, userInputs.depositCollateral]);
 
-  const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
-  const amountToApprove = aprvAmntInDecimals === 0 ? userInputs.depositCollateral : (newApprovedAmount !== null ? newApprovedAmount.toString() : null)
-
-
   const marginClass = parseFloat(userInputs.depositCollateral) > 0 ? 'md:-ml-[7rem]' : 'md:-ml-[5rem]';
   return (
     <div>
@@ -529,9 +516,7 @@ const BorrowCore = () => {
         <Layout>
           {troveStatus === "ACTIVE" && (
             <div style={{ backgroundColor: "black" }} className="p-7">
-
               <div className="w-[103%] -ml-2 h-[35rem] rounded-2xl md:h-fit md:w-[97%] md:ml-4 p-3 justify-between flex flex-col md:flex-row" style={{ backgroundColor: "#222222" }}>
-
                 <div className="p-2 px-4 ">
                   <p className=" title-text2 text-2xl text-white mb-4">
                     WCORE Vessel
@@ -570,7 +555,6 @@ const BorrowCore = () => {
                     </div>
                   </div>
                 </div>
-                {/* <div className="md:w-[25rem] h-[15rem] p-5 md:p-0 md:h-[13rem] mt-3 px-8 md:py-4 mr-5"*/}
                 <div className="md:w-[25rem] w-full h-[18rem] md:h-[13rem] rounded-2xl  mt-3 pt-5 px-8 md:py-4 mr-5" style={{ backgroundColor: "#282828" }}>
                   <div className="flex justify-between text-white">
                     <div className="flex flex-col gap-y-16 ">
@@ -640,7 +624,6 @@ const BorrowCore = () => {
                                         {Number(balanceData).toFixed(2)}{" "}
                                       </span>
                                     </span>
-                                    {/* <Button onClick={() => handleApproveClick(userInputs.depositCollateral)}>Approve</Button> */}
                                     <div className="flex w-full py-2 -ml-11 gap-x-3 md:-ml-0 md:gap-x-3 mt-2">
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
@@ -695,16 +678,26 @@ const BorrowCore = () => {
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(100)}>100%</Button>
                                     </div>
                                   </div>
-                                  <button
-                                    onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
-                                    className={`mt-9 md:-ml-0 -ml-10 w-[19rem] rounded-3xl md:w-full title-text h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]
-        ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
-                                        ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed'
-                                        : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
-                                    disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
-                                    {(userInputColl !== undefined && !isNaN(Number(userInputColl)) && Number(userInputColl) > 0 && modiff >= 0) ? 'APPROVE' : 'UPDATE VESSEL'}
-                                  </button>
-
+                                  {
+                                    chainId !== coreTestNetChain.id ? (
+                                      <button
+                                        onClick={() => switchChain({ chainId: coreTestNetChain.id })
+                                        }
+                                        className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+                                      >
+                                        Switch to Core
+                                      </button>
+                                    ) : (
+                                      <button
+                                        onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
+                                        className={`mt-9 md:-ml-0 -ml-10 w-[19rem] rounded-3xl md:w-full title-text h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]
+          ${isDebtInValid || ltv > (100 / Number(divideBy)) || isCollInValid || (userInputColl + userInputDebt == 0)
+                                            ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed'
+                                            : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
+                                        disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
+                                        {(userInputColl !== undefined && !isNaN(Number(userInputColl)) && Number(userInputColl) > 0 && modiff >= 0) ? 'APPROVE' : 'UPDATE VESSEL'}
+                                      </button>
+                                    )}
                                 </div>
                               </div>
                             </div>
@@ -853,7 +846,6 @@ const BorrowCore = () => {
           )}
         </Layout>
       )}
-
       <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)}>
         <div className="dialog-overlay">
           <div className="dialog-content">
@@ -895,7 +887,7 @@ const BorrowCore = () => {
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
-                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Close</button>
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Okay</button>
               )}
               {(transactionRejected || (!isSuccess && showCloseButton)) && (
                 <>
@@ -907,19 +899,7 @@ const BorrowCore = () => {
           </div>
         </div>
       </Dialog>
-      <Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)}>
-        <div className="dialog-overlay">
-          <div className="dialog-content">
-            <div className="p-5">
-              <div className="waiting-message text-lg title-text2 text-[#88e273] whitespace-nowrap">
-                {approveMessage}
-              </div>
-            </div>
-          </div>
-        </div>
-      </Dialog>
     </div>
-
   );
 };
 
