@@ -20,7 +20,7 @@ const OpenTroveNotConnected = () => {
           </div>
           <div className=" h-fit mb-3 md:mb-1 mt-[10px] space-y-20">
             <div>  <h6 className="text-white  text-center text-2xl title-text2  ">
-              You dont have an existing vessel  </h6>
+              You dont have an existing Trove  </h6>
             </div>
             <div className=' md:ml-0 ml-[1.2rem]'>
               <h6 className="text-[#88e273] text-left title-text2 text-xl mb-2">

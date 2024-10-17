@@ -315,7 +315,8 @@ const ThreeTroveCard = () => {
                     <div className={`${troveStatusBTC === "ACTIVE" ? "py-10" : "py-5"}`}>
                         <>
                             <div className="border-t border-gray-400 mb-6 md:-ml-[1.5rem] md:w-[108.5%]"></div>
-                        {isConnected ? (<>
+                        {isConnected ? (
+                            <>
                             <Link href="/trove/wcore/" passHref>
                                 {troveStatuscore === "ACTIVE" ? (
                                     <Button className="border-[#88e273] h-12 border bg-transparent rounded-3xl font-semibold w-full title-text text-[#88e273] hover:scale-95 hover:bg-transparent transition">
@@ -327,7 +328,8 @@ const ThreeTroveCard = () => {
                                     </Button>
                                 )}
                             </Link>
-                        </>) : (
+                        </>
+                        ) : (
                             <>
                                 <EVMConnect className='w-full' />
                             </>
@@ -407,7 +409,7 @@ const ThreeTroveCard = () => {
                         </>
                     ) : (
                         <>
-                            <div className='space-y-10'>
+                            <div className='space-y-24'>
                                 <div className="flex justify-between mb-4">
                                     <div className='whitespace-nowrap'>
                                         <p className="body-text font-medium text-gray-400">MAX LTV</p>
@@ -455,8 +457,6 @@ const ThreeTroveCard = () => {
                     </>
                     </div>
                 </div>
-
-                
             </div>
         </div >
     )

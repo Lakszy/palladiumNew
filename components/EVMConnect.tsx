@@ -44,7 +44,7 @@ export const EVMConnect: React.FC<Props>  = ({ className }) => {
 							if (!connected) {
 								return (
 									<Button className={className} onClick={openConnectModal}
-										style={{ display: "flex", alignItems: "center", backgroundColor: "#222222", height: 50, borderRadius: 3, border: "1px solid gray", borderWidth: "2px" }}>
+										style={{ display: "flex", color:"white", alignItems: "center", backgroundColor: "#222222", height: 50, borderRadius: 3, border: "1px solid gray", borderWidth: "2px" }}>
 										<h2 className="title-text">
 											Connect Wallet
 										</h2>
@@ -68,7 +68,7 @@ export const EVMConnect: React.FC<Props>  = ({ className }) => {
 								<div style={{ display: "flex", gap: 12 }}>
 									<Button
 										onClick={openChainModal}
-										style={{ display: "flex", alignItems: "center", backgroundColor: "#222222", height: 50, border: "1px solid gray", borderWidth: "1px" }}>
+										style={{ display: "flex", color:"white",alignItems: "center", backgroundColor: "#222222", height: 50, border: "1px solid gray", borderWidth: "1px" }}>
 
 										{chain.hasIcon && (
 											<div
@@ -77,6 +77,7 @@ export const EVMConnect: React.FC<Props>  = ({ className }) => {
 													height: 28,
 													borderRadius: 0,
 													marginRight: 4,
+													color:"white",
 												}}
 											>
 												{chain.iconUrl && (
@@ -95,7 +96,7 @@ export const EVMConnect: React.FC<Props>  = ({ className }) => {
 									</Button>
 									<Button onClick={openAccountModal}
 
-										style={{ display: "flex", alignItems: "center", backgroundColor: "#222222", height: 50, border: "1px solid gray", borderWidth: "1px" }}>
+										style={{ display: "flex", color:"white",alignItems: "center", backgroundColor: "#222222", height: 50, border: "1px solid gray", borderWidth: "1px" }}>
 										<h2 className="body-text">
 
 											{account.displayName}

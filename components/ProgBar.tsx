@@ -60,7 +60,7 @@ const ProgBar: React.FC = () => {
       setTasks(taskArray);
     } catch (error) {
       console.error('Error fetching data:', error);
-      setError("You have no activity. Open your first vessel and start collecting points.🫡");
+      setError("You have no activity. Open your first Trove and start collecting points.🫡");
     }
   };
 

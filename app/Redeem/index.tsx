@@ -5,20 +5,17 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
-import apiThreeFeed from "../src/constants/abi/ApiThree.sol.json";
-import apiThreeFeed from "../src/constants/abi/ApiThree.sol.json";
 import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { EVMConnect } from '@/components/EVMConnect';
-import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt } from "wagmi";
+import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt, useSwitchChain } from "wagmi";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
 import web3 from "web3";
 import { Dialog } from 'primereact/dialog';
-import trove3 from "../../app/assets/images/TROVE3.svg"
 import trove2 from "../../app/assets/images/TROVE1.svg"
 import trove1 from "../../app/assets/images/TROVE2.svg"
 import rej from "../../app/assets/images/TxnError.gif";
@@ -31,7 +28,7 @@ import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import '../App.css';
 import "./redeem.css"
-import { GiConsoleController } from "react-icons/gi";
+import { coreTestNetChain, switchNetwork, useEthereumChainId } from "@/components/NetworkChecker";
 
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
@@ -44,6 +41,7 @@ export default function Redeem() {
     const [loadingModalVisible, setLoadingModalVisible] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
     const [userModal, setUserModal] = useState(false);
+    const { switchChain } = useSwitchChain()
     const [showCloseButton, setShowCloseButton] = useState(false);
     const { data: hash, writeContract, error: writeError } = useWriteContract();
     const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
@@ -52,13 +50,14 @@ export default function Redeem() {
     const [fetchedPrice, setFetchedPrice] = useState(0)
 
     const [collTokenAddress, setCollTokenAddress] = useState<string>("")
-
+    const [chainId, setChainId] = useState(1115);
+    useEthereumChainId(setChainId)
     const handleButtonClick = (buttonId: any) => {
         setSelectedButton(buttonId);
         if (!walletClient) {
             return null;
-          }
-        
+        }
+
         let address = '';
         if (buttonId === 'WCORE') {
             address = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d";
@@ -67,7 +66,6 @@ export default function Redeem() {
         }
         setCollTokenAddress(address);
         setTimeout(() => {
-            console.log("Selected button:", buttonId, "Collateral Token Address:", address);
         }, 0);
     };
 
@@ -101,10 +99,10 @@ export default function Redeem() {
 
     useEffect(() => {
         const fetchPrice = async () => {
+            if (!walletClient) return null
             const pusdBalanceValue = await erc20Contract.balanceOf(
                 walletClient?.account?.address
             );
-            console.log("PUSD Balance: ", pusdBalanceValue);
             const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
             setPusdBalance(pusdBalanceFormatted);
         };
@@ -152,8 +150,8 @@ export default function Redeem() {
         try {
             if (!walletClient) {
                 return null;
-              }
-            
+            }
+
             const pow = Decimal.pow(10, 18);
             const inputBeforeConv = new Decimal(userInput);
 
@@ -168,10 +166,6 @@ export default function Redeem() {
             const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
             // const maxFee = (5 * 10**16).toString(); // Represents 6% in wei
             const maxFee = BigInt(5e16);
-            console.log('Max Fee:', maxFee);
-            console.log(collTokenAddress, "collTokenAddress")
-
-            console.log("starting")
             const result = await writeContract({
                 address: "0x21F46c75F3c12FE2cA6714e6085B65FACA61102f",
                 abi: hintHelpersAbi, // Replace with your contract's ABI
@@ -248,7 +242,7 @@ export default function Redeem() {
                     </div>
                     <div className='my-4'>
                         <div className="flex mb-2 items-center">
-                            <Input id="items" placeholder="0.000 BTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-[#3b351b] rounded-lg body-text w-[20rem] md:w-full text-lg h-14 border border-[#88e273] text-white " />
+                            <Input id="items" placeholder="0.000 WBTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-transparent  rounded-lg body-text w-[20rem] md:w-full text-lg h-14 border border-[#88e273] text-white " />
                         </div>
                         <span className=" ml-[56%] md:ml-[66%] body-text  font-medium balance ">
                             {isLoading ?
@@ -273,9 +267,19 @@ export default function Redeem() {
 
                     {isConnected ? (
                         <div className="space-y-2">
-                            <button style={{ backgroundColor: "#88e273" }} onClick={handleConfirmClick} className={`mt-5  text-black title-text font-semibold w-[20rem] md:w-full rounded-lg border border-black h-10 ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
-                                {isLoading ? 'LOADING...' : 'REDEEM'}
-                            </button>
+                            {chainId !== coreTestNetChain.id ? (
+                                <button
+                                    onClick={() => switchChain({ chainId: coreTestNetChain.id })}
+                                    className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+                                >
+                                    Switch to Core
+                                </button>
+                            ) : (
+                                <button style={{ backgroundColor: "#88e273" }} onClick={handleConfirmClick} className={`mt-5  text-black title-text font-semibold w-[20rem] md:w-full rounded-lg border border-black h-10 ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
+                                    {isLoading ? 'LOADING...' : 'REDEEM'}
+                                </button>
+                            )}
+
                             <div>
                                 {isRecoveryMode && <span className="body-text pt-2 text-gray-300 text-xl w-2">System Is In Recovery Mode !</span>}
                             </div>

@@ -87,8 +87,8 @@ function NavBar() {
               onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
               onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
               onClick={() => handleAddToken("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", "WCORE", 18)}>
-              <Image src={core} alt="WCORE" width={40} />
-              <div>
+              <Image src={core} alt="WCORE" width={38} />
+              <div className="ml-[1px]">
                 <h1 className="text-white title-text2 text-sm">WCORE</h1>
                 <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPrice).toFixed(2)}</h1>
                 <span className="popup body-text text-xs">Click to import WCORE</span>
@@ -98,7 +98,7 @@ function NavBar() {
               onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
               onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
               onClick={() => handleAddToken("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", "WBTC", 18)}>
-              <Image src={btc} alt="WBTC" width={40} />
+              <Image src={btc} alt="WBTC" width={50} />
               <div>
                 <h1 className="text-white title-text2 text-sm">WBTC</h1>
                 <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPriceBTC).toFixed(2)}</h1>

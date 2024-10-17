@@ -124,8 +124,8 @@ export const StabilityPool = () => {
     setUserModal(false);
     setIsModalVisible(false);
     setTransactionRejected(false);
-    fetchPrice()
-  }, [fetchPrice])
+    window.location.reload();
+  }, []);
 
 
   const handleConfirmClick = async () => {
@@ -209,12 +209,23 @@ export const StabilityPool = () => {
           className="flex items-center mb-2 mt-4 md:-ml-0 -ml- border rounded-lg border-[#88e273]"
           style={{ backgroundColor: "black" }}
         >
-          <div className="flex items-center h-[3.5rem]">
+          <div className="flex items-center w-full h-[3.5rem]">
             <Image src={pusdbtc} alt="home" className="ml-1" width={30} />
             <h3 className="text-white body-text ml-1 hidden md:block">ORE</h3>
-            <h3 className="h-full border rounded-lg border-[#88e273] mx-3 text-[#88e273]"></h3>
-            <div className="justify-between items-center flex gap-x-24">
-              <input id="items" placeholder="Enter Collateral Amount" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="body-text text-sm whitespace-nowrap ml-1 text-white" style={{ backgroundColor: "black" }} />
+            <div className="h-full border border-[#88e273] rounded-lg mx-3"></div>
+            <div className="flex-grow h-full">
+              <input id="items" placeholder="Enter Collateral Amount" 
+              disabled={!isConnected} value={userInput}
+               onChange={(e) => { const input = e.target.value; setUserInput(input); }} 
+               className="w-full h-full 
+               body-text text-sm text-white full-input px-2"
+               style={{
+                 backgroundColor: "black",
+                 outline: "none",
+                 borderRight: "1px solid #88e273",
+                 borderRadius: "0 0.5rem 0.5rem 0",
+               }} 
+               />
             </div>
           </div>
         </div>
@@ -243,17 +254,17 @@ export const StabilityPool = () => {
         </div>
       </div>
       <div className="flex w-full justify-between gap-x-2 md:gap-x-6  mt-2 mb-2">
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
-        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-lg border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-3xl border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(25)}>  25%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-3xl border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(50)}>  50%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-3xl border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(75)}>  75%</Button>
+        <Button disabled={!isConnected || isDataLoading} className={`text-xs md:text-lg border-2 rounded-3xl border-[#88e273] body-text ${isDataLoading ? "cursor-not-allowed" : ""}`} style={{ backgroundColor: "#" }} onClick={() => handlePercentageClick(100)}>  100%</Button>
       </div>
       {isConnected ? (
         <div className=" my-2">
           {chainId !== coreTestNetChain.id ? (
             <button
               onClick={() => switchChain({ chainId: coreTestNetChain.id })}
-              className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+              className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
             >
               Switch to Core
             </button>
@@ -261,7 +272,7 @@ export const StabilityPool = () => {
             <button
               style={{ backgroundColor: "#88e273" }}
               onClick={handleConfirmClick}
-              className={`mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none 
+              className={`mt-2 text-black text-md font-semibold w-full border border-black bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] h-12 rounded-3xl title-text border-none 
               ${isDataLoading ||
                   Number(userInput) <= 0 ||
                   Number(userInput) >

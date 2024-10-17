@@ -1,15 +1,19 @@
+/* eslint-disable */
+"use client";
+
+import { useEffect } from "react"
 import Web3 from "web3"
 
 const TARGET_NETWORK_ID = 1115
 const TARGET_CHAIN_NAME = "Core Testnet"
-const RPC_URL = "https://rpc.test.btcs.network"
+const BOTANIX_RPC_URL = "https://rpc.test.btcs.network"
 const EXPLORER_URL = "https://scan.test.btcs.network"
 
 export const switchNetwork = async () => {
   try {
-    if (window.ethereum) {
-      const web3Instance = new Web3(window.ethereum)
-      const currentChainId = await web3Instance.eth.getChainId()
+    if (typeof window !== "undefined" && window.ethereum) {
+      const web3Instance = new Web3(window.ethereum);
+      const currentChainId = await web3Instance.eth.getChainId();
 
       if (currentChainId !== BigInt(TARGET_NETWORK_ID)) {
         try {
@@ -30,7 +34,7 @@ export const switchNetwork = async () => {
                     symbol: "tCORE",
                     decimals: 18
                   },
-                  rpcUrls: [RPC_URL],
+                  rpcUrls: [BOTANIX_RPC_URL],
                   blockExplorerUrls: [EXPLORER_URL]
                 }
               ]
@@ -58,23 +62,24 @@ export const coreTestNetChain = {
   },
   rpcUrls: {
     default: {
-      http: ["https://rpc.test.btcs.network"],
+      http: [BOTANIX_RPC_URL]
     },
     public: {
-      http: ["https://rpc.test.btcs.network"],
+      http: [BOTANIX_RPC_URL]
     },
   },
   blockExplorers: {
     default: {
-      url: "https://scan.test.btcs.network",
+      url: BOTANIX_RPC_URL,
       name: "Core TestNet Explorer"
     }
   }
 };
 
 export const useEthereumChainId = (setChainId: any) => {
+useEffect(() => {
   const fetchChainId = async () => {
-    if (window.ethereum) {
+    if (typeof window !== "undefined" && window.ethereum) {
       try {
         const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
         const chainIdDecimal = parseInt(chainIdHex, 16);
@@ -92,14 +97,15 @@ export const useEthereumChainId = (setChainId: any) => {
 
   fetchChainId();
 
-  if (window.ethereum) {
+  if (typeof window !== "undefined" && window.ethereum) {
     window.ethereum.on('chainChanged', handleChainChanged);
   }
 
   return () => {
-    if (window.ethereum) {
+    if (typeof window !== "undefined" && window.ethereum) {
       window.ethereum.removeListener('chainChanged', handleChainChanged);
     }
   };
+}, [setChainId])
 };
 

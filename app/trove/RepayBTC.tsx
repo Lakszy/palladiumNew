@@ -445,17 +445,17 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
               <button
                 onClick={() => switchChain({ chainId: coreTestNetChain.id })
                 }
-                className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+                className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
               >
                 Switch to Core
               </button>
             ) : (
               <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}
-                className={`mt-5 md:-ml-0 rounded-2xl -ml-11 w-[19.5rem] md:w-full title-text h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685]
+                className={`mt-5 md:-ml-0 -ml-11 w-[19.5rem] md:w-full title-text h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] rounded-3xl hover:via-[#82c16a] hover:to-[#9cd685]
              ${isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0)
                     ? 'bg-[#88e273] text-black cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
                 disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0))}>
-                UPDATE VESSEL
+                Update Trove
               </button>
             )}
 

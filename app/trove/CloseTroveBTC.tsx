@@ -202,7 +202,7 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
         {chainId !== coreTestNetChain.id ? (
           <button
             onClick={() => switchChain({ chainId: coreTestNetChain.id })}
-            className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+            className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
           >
             Switch to Core
           </button>
@@ -210,9 +210,11 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
           <button
             onClick={handleConfirmClick}
             disabled={isLowBalance || afterLoad}
-            className={`mt-20 md:w-full md:ml-0 ml-1 w-[18.2rem] h-[3rem] rounded-3xl bg-[#88e273] text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer'}`}
+            className={`mt-20 md:w-full
+              bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] h-12 rounded-3xl
+              md:ml-0 ml-1 w-[18.2rem]  bg-[#88e273] text-black title-text ${isLowBalance || afterLoad ? 'cursor-not-allowed opacity-50' : 'hover:scale-95 cursor-pointer'}`}
           >
-            Close Vessel
+            Close Trove
           </button>
         )}
 

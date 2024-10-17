@@ -23,12 +23,12 @@ export default function Home() {
             <div className="md:-mt-7 w-[40%] p-6 mr-16">
               <h1 className="text-lg font-semibold whitespace-nowrap font-sans text-[#88e273] title-text2">About Redemptions</h1>
               <div className="text-gray-400 w-72 md:w-full text-sm body-text leading-normal">
-                Redemptions are one of EarthFi’s most unique and important title-text protocol features. The redemption mechanism gives ORE holders the ability to redeem the underlying collateral at face value at any time.
+                Redemptions are one of EarthFi’s most unique and important protocol features. The redemption mechanism gives ORE holders the ability to redeem the underlying collateral at face value at any time.
                 <span className="mt-5 block body-text">
                   Redemptions pay off debt of lowest collateral vaults, in return for their collateral.
                 </span>
                 <span className="mt-5 block body-text">
-                  IMPORTANT: Redemptions are not the same as paying back your debt. To repay your loan, adjust your vessel on the Repay tab of the Borrow ORE page
+                  IMPORTANT: Redemptions are not the same as paying back your debt. To repay your loan, adjust your Trove on the Repay tab of the Borrow ORE page
                 </span>
               </div>
             </div>

@@ -9,7 +9,7 @@ import adminConAbi from "../src/constants/abi/AdminContract.sol.json"
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
-import { ethers, JsonRpcSigner } from "ethers";
+import { ethers } from "ethers";
 import info from "../assets/images/info.svg";
 import btc from "../assets/images/Group 666.svg";
 import rej from "../assets/images/TxnError.gif";
@@ -67,7 +67,7 @@ export const OpenTroveBTC = () => {
             setLoadingMessage("Waiting for transaction to confirm..");
             setLoadingModalVisible(true);
         } else if (isSuccess) {
-            setLoadingMessage("Open vessel Transaction completed successfully");
+            setLoadingMessage("Open Trove Transaction completed successfully");
             setLoadingModalVisible(true);
         } else if (transactionRejected) {
             setLoadingMessage("Transaction was rejected");
@@ -89,23 +89,6 @@ export const OpenTroveBTC = () => {
     const { data: walletClient } = useWalletClient();
     const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
     const erc20Contract = getContract("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", erc20Abi, provider);
-    // const signer = provider.getSigner(walletClient?.account?.address);
-    const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)
-    const signerToken = new JsonRpcSigner(provider, "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f")
-    const collToken = new ethers.Contract(
-        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", // ERC20 token address
-        erc20Abi, // ERC20 token ABI
-        signer
-    )
-    const getEtherContract = (address: string, abi: any, provider: any) => {
-        return new ethers.Contract(address, abi, provider);
-    };
-
-    const contract = getEtherContract(
-        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
-        erc20Abi,
-        signerToken
-    );
 
     const sortedTrovesContract = getContract(
         botanixTestnet.addresses.SortedVessels,
@@ -399,13 +382,10 @@ export const OpenTroveBTC = () => {
         }
     }, [newApprovedAmount, modiff, aprvAmnt, userInputs.collatoral]);
 
-    const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
-    const amountToApprove = aprvAmntInDecimals === 0 ? userInputs.collatoral : (newApprovedAmount !== null ? newApprovedAmount.toString() : null)
-
     return (
         <>
-            <div className="h-full pt-3 body-text md:ml-0 bg-black">
-                <div className="p-10 ">
+            <div className="h-full pl-16 pt-3 body-text md:ml-0 bg-black">
+                <div className="p-10 pl-0">
                     <div className="md:ml-2 flex items-center gap-x-3 -ml-6 h-[2rem] p-2 md:w-full w-[22.5rem]">
                         <button onClick={() => window.history.back()} className="text-white hover:text-gray-400">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
@@ -413,7 +393,7 @@ export const OpenTroveBTC = () => {
                             </svg>
                         </button>
                         <Image src={trove1} alt="btc" width={50} />
-                        <p className="body-text text-2xl font-semibold text-white">WBTC Vessel</p>
+                        <p className="body-text text-2xl font-semibold text-white">WBTC Trove</p>
                     </div>
                 </div>
 
@@ -423,23 +403,35 @@ export const OpenTroveBTC = () => {
                             <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collateral</Label>
                             <div className="flex md:w-[90%] rounded-3xl items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-[#88e273]">
                                 <div className='flex items-center  h-[3.5rem] '>
-                                    <Image src={btc} alt="home" className='ml-1' />
+                                    <Image src={btc} alt="home" className='ml-1'width={43} />
                                     <h3 className='text-gray-400 body-text font-medium ml-1 mr-3 hidden md:block'>WBTC</h3>
-                                    <h3 className='h-full border border-[#88e273] text-[#88e273] mx-3'></h3>
+                                    <div className='h-full border border-[#88e273] mx-3'></div>
                                 </div>
-                                <input id="items" placeholder="" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[20.75rem] body-text font-medium h-[4rem] pl-3 text-gray-400" style={{ backgroundColor: "black" }} />
-                                <span className="md:max-w-[fit]  md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text h-full">${totalCollateral.toFixed(2)}</span>
+                                <div className="flex-grow h-[3.5rem]">
+                                    <input
+                                        id="items"
+                                        placeholder=""
+                                        value={userInputs.collatoral}
+                                        onChange={(e) => {
+                                            const newCollValue = e.target.value;
+                                            setUserInputs({ ...userInputs, collatoral: newCollValue });
+                                            makeCalculations(userInputs.borrow, newCollValue || "0");
+                                        }}
+                                        className="w-[90%] ml-1 h-full body-text font-medium text-gray-400 pl-3"
+                                        style={{ backgroundColor: "black", outline: "none", border: "none" }}
+                                    />
+                                </div>
+                                <span className="md:max-w-[fit] md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text  ">${totalCollateral.toFixed(2)}</span>
                             </div>
                             <div className="pt-2 w-[90%] flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
                                 <span className={`text-sm body-text w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData) ? 'text-red-500' : 'text-white'}`}>
                                     <span className="body-text text-gray-400 font-medium ">Available</span> {Number(balanceData).toFixed(2)}{" "}
                                 </span>
-                                {/* <Button onClick={() => handleApproveClick(userInputs.collatoral)}>Approve</Button> */}
                                 <div className="flex gap-x-4 md:gap-x-2 w-full   mt-2">
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  rounded-3xl body-text`} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] rounded-3xl body-text`} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] rounded-3xl body-text`} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] rounded-3xl body-text`} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                                 </div>
                             </div>
                         </div>
@@ -449,19 +441,26 @@ export const OpenTroveBTC = () => {
                                 <div className='flex items-center h-[3.5rem] '>
                                     <Image src={img4} alt="home" className='ml-1' />
                                     <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1'>ORE</h3>
-                                    <h3 className='h-full border border-[#88e273] text-[#88e273] mx-4'></h3>
+                                    <div className='h-full border border-[#88e273] mx-3'></div>
                                 </div>
-                                <input id="quantity" placeholder="" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className="md:w-[23.75rem] h-[4rem] text-gray-400 body-text font-medium border-[#88e273]" style={{ backgroundColor: "black", border: "" }} />
+                                <input id="quantity" placeholder=""
+                                 value={userInputs.borrow}
+                                  onChange={(e) => { const newBorrowValue = e.target.value; 
+                                  setUserInputs({ ...userInputs, borrow: newBorrowValue }); 
+                                  makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} 
+                                  className="w-[90%] ml-1 h-full body-text font-medium text-gray-400 pl-3"
+                                  style={{ backgroundColor: "black", outline: "none", border: "none" }}
+                                    />
                             </div>
                             <div className="pt-2 w-[90%] flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
                                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
                                     <span className="body-text text-gray-400 font-medium ">Available</span> {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
                                 </span>
                                 <div className="flex gap-x-4 md:gap-x-2 w-full -mr-2  mt-2">
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                                    <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border  rounded-3xl border-[#88e273]  body-text`} onClick={() => handlePercentageClick(25)}>25%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border rounded-3xl  border-[#88e273] body-text`} onClick={() => handlePercentageClick(50)}>50%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border rounded-3xl  border-[#88e273] body-text`} onClick={() => handlePercentageClick(75)}>75%</Button>
+                                    <Button disabled={!(isConnected)} className={`text-sm border rounded-3xl  border-[#88e273] body-text`} onClick={() => handlePercentageClick(100)}>100%</Button>
                                 </div>
                             </div>
                             {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (
@@ -473,7 +472,7 @@ export const OpenTroveBTC = () => {
                                 <button
                                     onClick={() => switchChain({ chainId: coreTestNetChain.id })
                                     }
-                                    className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+                                    className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
                                 >
                                     Switch to Core
                                 </button>
@@ -500,7 +499,7 @@ export const OpenTroveBTC = () => {
                                             parseFloat(userInputs.borrow) <= minDebt)
                                             ? 0.5 : 1
                                     }}>
-                                    {isModalVisible ? "Opening Vessel..." : modiff >= 0 ? "Approve" : "Open Vessel"}
+                                    {isModalVisible ? "Opening Trove..." : modiff >= 0 ? "Approve" : "Open Trove"}
                                 </button>
                             )}
 
@@ -660,7 +659,7 @@ export const OpenTroveBTC = () => {
                                     <Image src={conf} alt="rectangle" width={150} />
                                     <div className="my-5 ml-[6rem] mb-5"></div>
                                 </>
-                            ) : loadingMessage === 'Open vessel Transaction completed successfully' ? (
+                            ) : loadingMessage === 'Open Trove Transaction completed successfully' ? (
                                 <Image src={tick} alt="tick" width={200} />
                             ) : transactionRejected ? (
                                 <Image src={rej} alt="rejected" width={140} />

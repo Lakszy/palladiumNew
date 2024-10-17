@@ -66,7 +66,7 @@ export const OpenTrove = () => {
       setLoadingMessage("Waiting for transaction to confirm..");
       setLoadingModalVisible(true);
     } else if (isSuccess) {
-      setLoadingMessage("Open vessel Transaction completed successfully");
+      setLoadingMessage("Open Trove Transaction completed successfully");
       setLoadingModalVisible(true);
     } else if (transactionRejected) {
       setLoadingMessage("Transaction was rejected");
@@ -89,17 +89,17 @@ export const OpenTrove = () => {
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const erc20Contract = getContract("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", erc20Abi, provider);
-  // const signer = provider.getSigner(walletClient?.account?.address);
-  const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)
-  const signerToken = new JsonRpcSigner(provider, "0x5FB4E66C918f155a42d4551e871AD3b70c52275d")
-  const collToken = new ethers.Contract(
-    "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", // ERC20 token address
-    erc20Abi, // ERC20 token ABI
-    signer
-  )
-  const getEtherContract = (address: string, abi: any, provider: any) => {
-    return new ethers.Contract(address, abi, provider);
-  };
+  // // const signer = provider.getSigner(walletClient?.account?.address);
+  // const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)
+  // const signerToken = new JsonRpcSigner(provider, "0x5FB4E66C918f155a42d4551e871AD3b70c52275d")
+  // // const collToken = new ethers.Contract(
+  // //   "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", // ERC20 token address
+  // //   erc20Abi, // ERC20 token ABI
+  // //   signer
+  // // )
+  // const getEtherContract = (address: string, abi: any, provider: any) => {
+  //   return new ethers.Contract(address, abi, provider);
+  // };
 
 
   const web3 = new Web3(window.ethereum)
@@ -388,9 +388,9 @@ export const OpenTrove = () => {
 
   return (
     <>
-      <div className="h-full pt-3 body-text md:ml-0 bg-black">
-        <div className="p-10 ">
-          <div className="md:ml-2 flex items-center gap-x-3 -ml-6 h-[2rem] p-2 md:w-full w-[22.5rem]">
+      <div className="h-full  pl-16 pt- body-text md:ml-0 bg-black">
+        <div className="p-10 pl-0">
+          <div className="md:ml-2  flex items-center gap-x-3 -ml-6 h-[2rem] p-2 md:w-full w-[22.5rem]">
             <button onClick={() => window.history.back()} className="text-white hover:text-gray-400">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -405,14 +405,29 @@ export const OpenTrove = () => {
           <div className="grid w-1/2 items-start space-y-7 gap-2 text-white md:p-5">
             <div className="w-full">
               <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collateral</Label>
-              <div className="flex md:w-[90%] items-center rounded-3xl space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-[#88e273]">
+              <div className="flex md:w-[90%] items-center rounded-2xl space-x-2 mt-[10px] -ml-3 w-[22rem] md:-ml-0 border border-[#88e273]">
                 <div className='flex items-center  h-[3.5rem] '>
                   <Image src={btc} alt="home" className='ml-1' width={30} />
-                  <h3 className='text-gray-400 body-text font-medium ml-1 mr-3 hidden md:block'>WCORE</h3>
-                  <h3 className='h-full border rounded-3xl border-[#88e273] text-[#88e273] mx-3'></h3>
+                  <h3 className='text-gray-400 body-text font-medium ml-1  hidden md:block'>WCORE</h3>
+                  <div className='h-full border rounded-lg border-[#88e273] mx-3'></div>
                 </div>
-                <input id="items" placeholder="" value={userInputs.collatoral} onChange={(e) => { const newCollValue = e.target.value; setUserInputs({ ...userInputs, collatoral: newCollValue }); makeCalculations(userInputs.borrow, newCollValue || "0"); }} className=" w-[12.5rem] md:w-[20.75rem] body-text font-medium h-[4rem] pl-3 text-gray-400" style={{ backgroundColor: "black" }} />
-                <span className="md:max-w-[fit]  md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text h-full">${totalCollateral.toFixed(2)}</span>
+                <div className="flex-grow h-full">
+                  <input
+                    id="items"
+                    placeholder=""
+                    value={userInputs.collatoral}
+                    onChange={(e) => {
+                      const newCollValue = e.target.value;
+                      setUserInputs({ ...userInputs, collatoral: newCollValue });
+                      makeCalculations(userInputs.borrow, newCollValue || "0");
+                    }}
+                    className="w-[80%] h-full ml-1 body-text font-medium text-gray-400 pl-3"
+                    style={{ backgroundColor: "black", outline: "none", border: "none" }}
+                  />
+                </div>
+                <span className="md:max-w-[fit] md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text">
+                  ${totalCollateral.toFixed(2)}
+                </span>
               </div>
               <div className="pt-2 w-[90%] flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
                 <span className={`text-sm body-text w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData) ? 'text-red-500' : 'text-white'}`}>
@@ -420,32 +435,37 @@ export const OpenTrove = () => {
                 </span>
                 {/* <Button onClick={() => handleApproveClick(userInputs.collatoral)}>Approve</Button> */}
                 <div className="flex gap-x-4 md:gap-x-2 w-full   mt-2">
-                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
-                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
-                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
-                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  rounded-3xl body-text`} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] rounded-3xl body-text`} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] rounded-3xl body-text`} onClick={() => handlePercentageClickBTC(75)}>75%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] rounded-3xl body-text`} onClick={() => handlePercentageClickBTC(100)}>100%</Button>
                 </div>
               </div>
             </div>
             <div className="w-full">
               <Label className="text-[#827f77] md:-ml-0 -ml-2   body-text text-lg" htmlFor="quantity">Borrow ORE</Label>
-              <div className="flex  md:w-[90%] items-center md:space-x-2 mt-[10px] rounded-3xl -ml-3 md:-ml-0 border border-[#88e273]">
+              <div className="flex  md:w-[90%] items-center md:space-x-2 mt-[10px] rounded-2xl -ml-3 md:-ml-0 border border-[#88e273]">
                 <div className='flex items-center h-[3.5rem] '>
                   <Image src={img4} alt="home" className='ml-1' />
-                  <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1'>ORE</h3>
-                  <h3 className='h-full border rounded-3xl border-[#88e273] text-[#88e273] mx-4'></h3>
+                  <h3 className='text-gray-400 body-text mr-3 font-medium hidden md:block ml-1'>ORE</h3>
+                  <div className='h-full border rounded-lg border-[#88e273] mx-3'></div>
                 </div>
-                <input id="quantity" placeholder="" value={userInputs.borrow} onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, borrow: newBorrowValue }); makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} className=" h-[4rem] border-2 rounded-2xl border-none  text-gray-400 body-text font-medium" style={{ backgroundColor: "black" }} />
+                <input id="quantity" placeholder="" value={userInputs.borrow}
+                 onChange={(e) => { const newBorrowValue = e.target.value; 
+                 setUserInputs({ ...userInputs, borrow: newBorrowValue });
+                  makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} 
+                  className="w-[80%] h-full body-text font-medium text-gray-400 pl-3 ml-2"
+                    style={{ backgroundColor: "black",  outline: "none", border: "none"}} />
               </div>
               <div className="pt-2 w-[90%] flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
                   <span className="body-text text-gray-400 font-medium ">Available</span> {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
                 </span>
                 <div className="flex gap-x-4 md:gap-x-2 w-full -mr-2  mt-2">
-                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] body-text`} style={{ backgroundColor: "#", borderRadius: "0" }} onClick={() => handlePercentageClick(100)}>100%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  rounded-3xl body-text`} onClick={() => handlePercentageClick(25)}>25%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] rounded-3xl body-text`} onClick={() => handlePercentageClick(50)}>50%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] rounded-3xl body-text`} onClick={() => handlePercentageClick(75)}>75%</Button>
+                  <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] rounded-3xl body-text`} onClick={() => handlePercentageClick(100)}>100%</Button>
                 </div>
               </div>
               {Number(userInputs.borrow) < minDebt && (Number(userInputs.borrow) > 0) && (

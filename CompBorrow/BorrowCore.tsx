@@ -154,7 +154,6 @@ const BorrowCore = () => {
   const pow18 = Decimal.pow(10, 18);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
       const fetchData = async () => {
         try {
           const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
@@ -179,12 +178,10 @@ const BorrowCore = () => {
       };
       fetchPrice();
       fetchData();
-    }
   }, [walletClient?.account?.address, walletClient]);
 
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
       const pow = Decimal.pow(10, 18);
       const _1e18 = toBigInt(pow.toFixed());
       const fetchedData = async () => {
@@ -238,7 +235,6 @@ const BorrowCore = () => {
       getTroveStatus();
       fetchedData();
       getStaticData();
-    }
   }, [walletClient]);
 
   useDebounce(
@@ -459,13 +455,11 @@ const BorrowCore = () => {
   };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
       if (writeError) {
         console.error('Write contract error:', writeError);
         setTransactionRejected(true);
         setUserModal(true);
       }
-    }
   }, [writeError]);
 
   useEffect(() => {
@@ -483,12 +477,10 @@ const BorrowCore = () => {
   }, [isSuccess, isLoading, transactionRejected]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
       const timer = setTimeout(() => {
         setShowCloseButton(true);
       }, 200000);
       return () => clearTimeout(timer);
-    }
   }, []);
 
 
@@ -519,7 +511,7 @@ const BorrowCore = () => {
               <div className="w-[103%] -ml-2 h-[35rem] rounded-2xl md:h-fit md:w-[97%] md:ml-4 p-3 justify-between flex flex-col md:flex-row" style={{ backgroundColor: "#222222" }}>
                 <div className="p-2 px-4 ">
                   <p className=" title-text2 text-2xl text-white mb-4">
-                    WCORE Vessel
+                    WCORE Trove
                   </p>
                   <p className=" title-text2 text-gray-500 text-base mb-4">
                     Available to borrow
@@ -550,7 +542,7 @@ const BorrowCore = () => {
                     <span></span>
                     <span></span>
                     <div className="flex flex-col">
-                      <span className="text-gray-500 -mt-[7px]  body-text font-medium">Vessel Status</span>
+                      <span className="text-gray-500 -mt-[7px]  body-text font-medium">Trove Status</span>
                       {troveStatus === "ACTIVE" ? <Image className="mt-[5px]" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                     </div>
                   </div>
@@ -564,7 +556,7 @@ const BorrowCore = () => {
                         <span className="text-sm text-gray-500 body-text">${Number(fetchedPrice).toFixed(2)}</span>
                       </div>
                       <div className="flex  md:hidden -mt-12 md:-mt-6 flex-col">
-                        <span className="text-xs text-gray-500 body-text body-text">Vessel Status</span>
+                        <span className="text-xs text-gray-500 body-text body-text">Trove Status</span>
                         {troveStatus === "ACTIVE" ? <Image className="" width={120} src={ACTIVE} alt={""} /> : <Image className="mt-[5px]" width={120} src={INACTIVE} alt={""} />}
                       </div>
                       <div className="flex  fee -mt-6 flex-col">
@@ -683,7 +675,7 @@ const BorrowCore = () => {
                                       <button
                                         onClick={() => switchChain({ chainId: coreTestNetChain.id })
                                         }
-                                        className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
+                                        className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
                                       >
                                         Switch to Core
                                       </button>
@@ -695,7 +687,7 @@ const BorrowCore = () => {
                                             ? 'bg-[#88e273] text-black opacity-50 cursor-not-allowed'
                                             : 'hover:scale-95 cursor-pointer bg-[#88e273] text-black'}`}
                                         disabled={(isDebtInValid || isCollInValid || (userInputColl + userInputDebt == 0) || ltv > (100 / Number(divideBy)))}>
-                                        {(userInputColl !== undefined && !isNaN(Number(userInputColl)) && Number(userInputColl) > 0 && modiff >= 0) ? 'APPROVE' : 'UPDATE VESSEL'}
+                                        {(userInputColl !== undefined && !isNaN(Number(userInputColl)) && Number(userInputColl) > 0 && modiff >= 0) ? 'APPROVE' : 'UPDATE Trove'}
                                       </button>
                                     )}
                                 </div>
