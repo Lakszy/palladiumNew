@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
-import troveManagerAbi from "../src/constants/abi/TroveManager.sol.json";
 import adminConAbi from "../src/constants/abi/AdminContract.sol.json"
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
@@ -50,13 +49,12 @@ export const OpenTroveBTC = () => {
     const [mCR, setMCR] = useState(0)
     const [fetchedPrice, setFetchedPrice] = useState(0)
     const [recoveryMode, setRecoveryMode] = useState<boolean>()
-    const [message, setMessage] = useState("");
     const [showCloseButton, setShowCloseButton] = useState(false);
     const [loadingModalVisible, setLoadingModalVisible] = useState(false);
     const [userModal, setUserModal] = useState(false);
     const [loadingMessage, setLoadingMessage] = useState("");
     const { data: hash, writeContract, error: writeError } = useWriteContract()
-    const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
+    const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
     const [transactionRejected, setTransactionRejected] = useState(false);
     const [balanceData, setBalanceData] = useState<any>()
     const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
@@ -93,12 +91,6 @@ export const OpenTroveBTC = () => {
     const sortedTrovesContract = getContract(
         botanixTestnet.addresses.SortedVessels,
         sortedTroveAbi,
-        provider
-    );
-
-    const troveManagerContract = getContract(
-        botanixTestnet.addresses.VesselManager,
-        troveManagerAbi,
         provider
     );
 
@@ -328,7 +320,6 @@ export const OpenTroveBTC = () => {
 
                 const userAddress = walletClient?.account?.address;
                 const gasPrice = (await web3.eth.getGasPrice()).toString();
-                // const amountInWei = (parseFloat(amount) * 1000000).toString();
                 const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
                 const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
@@ -404,7 +395,7 @@ export const OpenTroveBTC = () => {
                             <div className="flex md:w-[90%] rounded-3xl items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-[#88e273]">
                                 <div className='flex items-center  h-[3.5rem] '>
                                     <Image src={btc} alt="home" className='ml-1'width={43} />
-                                    <h3 className='text-gray-400 body-text font-medium ml-1 mr-3 hidden md:block'>WBTC</h3>
+                                    <h3 className='text-gray-400 body-text font-medium ml-1 hidden md:block'>WBTC</h3>
                                     <div className='h-full border border-[#88e273] mx-3'></div>
                                 </div>
                                 <div className="flex-grow h-[3.5rem]">
@@ -417,13 +408,13 @@ export const OpenTroveBTC = () => {
                                             setUserInputs({ ...userInputs, collatoral: newCollValue });
                                             makeCalculations(userInputs.borrow, newCollValue || "0");
                                         }}
-                                        className="w-[90%] ml-1 h-full body-text font-medium text-gray-400 pl-3"
+                                        className="w-[80%] ml-1 h-full body-text font-medium text-gray-400 pl-3"
                                         style={{ backgroundColor: "black", outline: "none", border: "none" }}
                                     />
                                 </div>
                                 <span className="md:max-w-[fit] md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text  ">${totalCollateral.toFixed(2)}</span>
                             </div>
-                            <div className="pt-2 w-[90%] flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
+                            <div className="pt-2  flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
                                 <span className={`text-sm body-text w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData) ? 'text-red-500' : 'text-white'}`}>
                                     <span className="body-text text-gray-400 font-medium ">Available</span> {Number(balanceData).toFixed(2)}{" "}
                                 </span>
@@ -440,23 +431,23 @@ export const OpenTroveBTC = () => {
                             <div className="flex  md:w-[90%] rounded-3xl items-center md:space-x-2 mt-[10px] -ml-3 md:-ml-0 border border-[#88e273]">
                                 <div className='flex items-center h-[3.5rem] '>
                                     <Image src={img4} alt="home" className='ml-1' />
-                                    <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1'>ORE</h3>
+                                    <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1 ml-[0.9rem]'>ORE</h3>
                                     <div className='h-full border border-[#88e273] mx-3'></div>
                                 </div>
                                 <input id="quantity" placeholder=""
-                                 value={userInputs.borrow}
-                                  onChange={(e) => { const newBorrowValue = e.target.value; 
-                                  setUserInputs({ ...userInputs, borrow: newBorrowValue }); 
-                                  makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} 
-                                  className="w-[90%] ml-1 h-full body-text font-medium text-gray-400 pl-3"
-                                  style={{ backgroundColor: "black", outline: "none", border: "none" }}
+                                value={userInputs.borrow}
+                                onChange={(e) => { const newBorrowValue = e.target.value; 
+                                setUserInputs({ ...userInputs, borrow: newBorrowValue }); 
+                                makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} 
+                                className="w-[80%] ml-1 h-full body-text font-medium text-gray-400 pl-3"
+                                style={{ backgroundColor: "black", outline: "none", border: "none" }}
                                     />
                             </div>
-                            <div className="pt-2 w-[90%] flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
+                            <div className="pt-2 flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
                                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
                                     <span className="body-text text-gray-400 font-medium ">Available</span> {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
                                 </span>
-                                <div className="flex gap-x-4 md:gap-x-2 w-full -mr-2  mt-2">
+                                <div className="flex ml-2 gap-x-4 md:gap-x-2 w-full -mr-2  mt-2">
                                     <Button disabled={!(isConnected)} className={`text-sm border  rounded-3xl border-[#88e273]  body-text`} onClick={() => handlePercentageClick(25)}>25%</Button>
                                     <Button disabled={!(isConnected)} className={`text-sm border rounded-3xl  border-[#88e273] body-text`} onClick={() => handlePercentageClick(50)}>50%</Button>
                                     <Button disabled={!(isConnected)} className={`text-sm border rounded-3xl  border-[#88e273] body-text`} onClick={() => handlePercentageClick(75)}>75%</Button>
@@ -505,7 +496,7 @@ export const OpenTroveBTC = () => {
 
                     </div>
                     {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData) ? (
-                        <div className="md:w-4/5 w-full mt-[55px] p-5 border-[#88e273] h-fit space-y-10  text-white"
+                        <div className="md:w-4/5 w-full mt-[55px] p-5 mr-10 border-[#88e273] h-fit space-y-10  text-white"
                             style={{ backgroundColor: "#222222" }}>
                             <div className="flex whitespace-nowrap justify-between">
                                 <div className="flex items-center">

@@ -10,7 +10,7 @@ import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
-import { EVMConnect } from '@/components/EVMConnect';
+import { EVMConnect } from '@/app/src/config/EVMConnect';
 import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt, useSwitchChain } from "wagmi";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useState } from "react";
@@ -28,7 +28,7 @@ import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import '../App.css';
 import "./redeem.css"
-import { coreTestNetChain, switchNetwork, useEthereumChainId } from "@/components/NetworkChecker";
+import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
@@ -242,7 +242,7 @@ export default function Redeem() {
                     </div>
                     <div className='my-4'>
                         <div className="flex mb-2 items-center">
-                            <Input id="items" placeholder="0.000 WBTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-transparent  rounded-lg body-text w-[20rem] md:w-full text-lg h-14 border border-[#88e273] text-white " />
+                            <Input id="items" placeholder="0.00 ORE" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-transparent  rounded-lg body-text w-[20rem] md:w-full text-lg h-14 border border-[#88e273] text-white " />
                         </div>
                         <span className=" ml-[56%] md:ml-[66%] body-text  font-medium balance ">
                             {isLoading ?
@@ -252,7 +252,7 @@ export default function Redeem() {
                                 ) : (
                                     <span className="whitespace-nowrap -ml-2 text-white body-text">Wallet: {" "}
                                         <span className="body-text text-sm">
-                                            {Number(pusdBalance).toFixed(2) || ".."} PUSD
+                                            {Number(pusdBalance).toFixed(2) || ".."} ORE
                                         </span>
                                     </span>
                                 )}

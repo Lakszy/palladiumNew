@@ -6,7 +6,7 @@ import floatPUSD from "../assets/images/floatPUSD2.png";
 import img4 from "../assets/images/Group 666.svg";
 import Image from 'next/image';
 import "../../app/App.css"
-import { EVMConnect } from '@/components/EVMConnect';
+import { EVMConnect } from '@/app/src/config/EVMConnect';
 import { Label } from "@radix-ui/react-label";
 
 

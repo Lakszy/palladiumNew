@@ -3460,7 +3460,7 @@ sd1 {
 }
 
 .p-tabview-selected {
-  background-color: #88e273 !important; /* bg-[#88e273] corresponds to this color */
+  background-image: linear-gradient(to right, #88e273, #9cd685, #b5f2a4) !important;
 }
 .p-tabview-header {
   background-color: transparent; /* transparent for unselected tabs */

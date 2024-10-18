@@ -366,13 +366,13 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={img4} alt="home" className='ml-1' width={35} />
                 <h3 className='text-white body-text font-medium hidden md:block ml-1 text-sm'>ORE</h3>
-                <h3 className='h-full border border-[#88e273] mx-4 text-[#88e273]'></h3>
+                <div className='h-full border rounded-lg border-[#88e273] mx-3'></div>
               </div>
               <input id="items" placeholder=''
                 disabled={!(isConnected)}
                 value={userInputs.lusdAmount}
                 onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }}
-                className="body-text text-sm whitespace-nowrap h-[4rem] text-gray-400" style={{ backgroundColor: "black" }}
+                className="w-[80%] h-full ml-1 body-text font-medium text-gray-400 pl-3" style={{ backgroundColor: "black", outline: "none", border: "none" }}
               />
             </div>
             <div className="flex flex-col md:flex-row gap-x-5 mt-[7px]  justify-between">
@@ -408,16 +408,17 @@ export const Repay: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recoveryM
                 <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>WCORE</h6>
                 <h3 className='h-full border border-[#88e273] ml-3 text-[#88e273]'></h3>
               </div>
-              <div className=" justify-between items-center flex gap-x-24">
+              <div className="lex-grow h-full">
                 <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.coll} onChange={(e) => {
                   const newCollValue = e.target.value;
                   setUserInputs({ ...userInputs, coll: newCollValue, });
                 }}
-                  className="body-text text-gray-400 w-full text-sm whitespace-nowrap ml-1 h-[4rem] " style={{ backgroundColor: "black" }} />
-                <span className={`text-sm body-text text-gray-400 -ml-36 ${marginClass}`}>
-                  ${(parseFloat(userInputs.coll) * Number(fetchedPrice)).toFixed(2)}
-                </span>
+                  className="w-[80%] h-full ml-1 body-text font-medium text-gray-400 pl-3"
+                  style={{ backgroundColor: "black", outline: "none", border: "none" }} />
               </div>
+              <span className={`md:max-w-[fit] md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text`}>
+                ${(parseFloat(userInputs.coll) * Number(fetchedPrice)).toFixed(2)}
+              </span>
             </div>
             <div className="flex flex-col md:flex-row gap-x-5 ">
               <span className="text-white gap-x-2 flex flex-col w-full  md:-ml-0 -ml-10 ">

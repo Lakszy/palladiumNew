@@ -600,22 +600,24 @@ const BorrowBTCNEW = () => {
                                   <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-11 ">
                                     Deposit Collateral
                                   </Label>
-                                  <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 border rounded-2xl border-[#88e273] " style={{ backgroundColor: "black" }}>
+                                  <div className="flex items-center mt-4 md:-ml-0 -ml-11 border rounded-2xl border-[#88e273] " style={{ backgroundColor: "black" }}>
                                     <div className='flex items-center h-[3.5rem] '>
                                       <Image src={img3} alt="home" className='ml-1' width={41} />
                                       <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>WBTC</h6>
                                       <h3 className='h-full border border-[#88e273] mx-6 text-[#88e273]'></h3>
                                     </div>
-                                    <div className=" justify-between items-center flex gap-x-24">
-                                      <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e) => {
+                                    <div className="flex-grow h-full">
+                                      <input id="items" placeholder='' disabled={!(isConnected)}
+                                      value={userInputs.depositCollateral} onChange={(e) => {
                                         const newCollValue = e.target.value;
                                         setUserInputs({ ...userInputs, depositCollateral: newCollValue });
                                       }}
-                                        className="body-text w-full text-sm whitespace-nowrap ml-1 h-[4rem] text-gray-400" style={{ backgroundColor: "black" }} />
-                                      <span className={`text-sm body-text text-gray-400 -ml-36 ${marginClass}`}>
+                                        className=" h-full ml-5 w-[90%] body-text  font-medium text-gray-400"
+                                      style={{ backgroundColor: "black", outline: "none", border: "none" }} />
+                                    </div>
+                                    <span className={`md:max-w-[fit] md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text`}>
                                         ${(parseFloat(userInputs.depositCollateral || "0") * Number(fetchedPrice)).toFixed(2)}
                                       </span>
-                                    </div>
                                   </div>
                                   <div className="flex flex-col mt-[15px] gap-x-5 justify-between">
                                     <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
@@ -644,17 +646,20 @@ const BorrowBTCNEW = () => {
                                   <div className="flex  items-center  md:mt-0 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl  border border-[#88e273] " style={{ backgroundColor: "black" }}>
                                     <div className='flex items-center h-[3.5rem] mx-1'>
                                       <Image src={img4} alt="home" className='ml-1' />
-                                      <h3 className='text-white body-text ml-1 font-medium hidden md:block '>ORE</h3>
+                                      <h3 className='text-white body-text ml-1 font-medium hidden md:block mr-2 mx-3'>ORE</h3>
                                       <h3 className='h-full border  border-[#88e273] mx-2  text-[#88e273]'></h3>
                                     </div>
+                                  <div className="flex-grow h-full">
                                     <input id="items" placeholder='Enter Collateral Amount'
                                       disabled={!(isConnected)} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
                                       onChange={(e) => {
                                         const newBorrowValue = e.target.value;
                                         setUserInputs({ ...userInputs, borrow: newBorrowValue, });
                                       }}
-                                      className="body-text text-sm whitespace-nowrap h-[4rem] text-gray-400 " style={{ backgroundColor: "black" }}
+                                      className="w-[80%] h-full ml-1 body-text font-medium text-gray-400 pl-3"
+                                      style={{ backgroundColor: "black", outline: "none", border: "none" }}
                                     />
+                                  </div>
                                   </div>
                                   <div className="flex flex-col mt-[15px] gap-x-5 justify-between">
                                     <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
@@ -673,7 +678,7 @@ const BorrowBTCNEW = () => {
                                         </h6>
                                         )}
                                     </span>
-                                    <div className="flex w-full py-3 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3 -mt-4 ">
+                                    <div className="flex w-full mt-[4px] py-3 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3">
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(25)}>25%</Button>
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(50)}>50%</Button>
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(75)}>75%</Button>

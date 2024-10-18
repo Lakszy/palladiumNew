@@ -24,7 +24,7 @@ import "../../app/App.css";
 import wcore from "../../app/assets/images/btcc.svg";
 import wbtc from "../../app/assets/images/btccc.svg";
 import susdt from "../../app/assets/images/bbn.svg";
-import { EVMConnect } from "../EVMConnect";
+import { EVMConnect } from "../../app/src/config/EVMConnect";
 import { coreTestNetChain, useEthereumChainId } from "../NetworkChecker";
 import { useSwitchChain } from 'wagmi'
 

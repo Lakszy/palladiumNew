@@ -24,7 +24,7 @@ import { Dialog } from "primereact/dialog";
 import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
 import { coreTestNetChain, useEthereumChainId } from "../NetworkChecker";
 import { useSwitchChain } from 'wagmi'
-import { EVMConnect } from "../EVMConnect";
+import { EVMConnect } from "../../app/src/config/EVMConnect";
 
 
 const Claim = () => {

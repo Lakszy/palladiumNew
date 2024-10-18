@@ -78,8 +78,6 @@ const BorrowCore = () => {
   const [recoveryMode, setRecoveryMode] = useState<boolean>(false)
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
-  const [isApproving, setIsApproving] = useState(false);
-  const [approveMessage, setApproveMessage] = useState("");
   const [showCloseButton, setShowCloseButton] = useState(false);
   const [userModal, setUserModal] = useState(false);
   const [transactionRejected, setTransactionRejected] = useState(false);
@@ -101,13 +99,6 @@ const BorrowCore = () => {
 
   const { data: hash, writeContract, error: writeError } = useWriteContract()
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
-  if (walletClient) {
-
-    const web3 = new Web3(window.ethereum)
-    const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
-    const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
-    const { toBigInt } = web3.utils;
-  }
 
   const { switchChain } = useSwitchChain()
   const [chainId, setChainId] = useState(1115);
@@ -587,25 +578,25 @@ const BorrowCore = () => {
                             <div>
                               <div className="grid w-full  space-y-7  max-w-sm items-start gap-2 mx-auto p-7  md:p-5">
                                 <div className="relative">
-                                  <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-11 ">
-                                    Deposit Collateral
-                                  </Label>
-                                  <div className="flex items-center mt-4 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl border border-[#88e273] " style={{ backgroundColor: "black" }}>
+                                  <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-11 ">  Deposit Collateral</Label>
+                                  <div className="flex md:w-[90%] items-center rounded-2xl space-x-2 mt-[10px] -ml-3 w-[22rem] md:-ml-0 border border-[#88e273]">
                                     <div className='flex items-center h-[3.5rem] '>
-                                      <Image src={img3} alt="home" className='ml-1' width={41} />
-                                      <h6 className='text-white text-sm font-medium hidden md:block body-text ml-'>WCORE</h6>
-                                      <h3 className='h-full border border-[#88e273] ml-1 text-[#88e273]'></h3>
+                                      <Image src={img3} alt="home" className='ml-1' width={30} />
+                                      <h3 className='ml-1 text-white text-sm font-medium hidden md:block body-text ml-'>WCORE</h3>
+                                      <div className='h-full border rounded-lg border-[#88e273] mx-3'></div>
                                     </div>
-                                    <div className=" justify-between items-center flex gap-x-24">
+                                    <div className="flex-grow h-full">
                                       <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e: { target: { value: any; }; }) => {
                                         const newCollValue = e.target.value;
                                         setUserInputs({ ...userInputs, depositCollateral: newCollValue });
                                       }}
-                                        className="body-text w-full text-sm whitespace-nowrap ml-1 h-[4rem] text-gray-400" style={{ backgroundColor: "black" }} />
-                                      <span className={`text-sm body-text text-gray-400 -ml-36 ${marginClass}`}>
-                                        ${(parseFloat(userInputs.depositCollateral || "0") * Number(fetchedPrice)).toFixed(2)}
-                                      </span>
+                                        className="w-[80%] h-full ml-1 body-text font-medium text-gray-400 pl-3"
+                                        style={{ backgroundColor: "black", outline: "none", border: "none" }}
+                                      />
                                     </div>
+                                    <span className={`md:max-w-[fit] md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text`}>
+                                      ${(parseFloat(userInputs.depositCollateral || "0") * Number(fetchedPrice)).toFixed(2)}
+                                    </span>
                                   </div>
                                   <div className="flex flex-col mt-[15px] gap-x-5 justify-between">
                                     <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
@@ -633,18 +624,21 @@ const BorrowCore = () => {
                                   <div className="flex  items-center  md:mt-0 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11  rounded-2xl border border-[#88e273] " style={{ backgroundColor: "black" }}>
                                     <div className='flex items-center h-[3.5rem] mx-1'>
                                       <Image src={img4} alt="home" className='ml-1' />
-                                      <h3 className='text-white body-text ml-1 font-medium hidden md:block '>ORE</h3>
-                                      <h3 className='h-full border  border-[#88e273] mx-2 ml-3 text-[#88e273]'></h3>
+                                      <h3 className='text-white body-text ml-1 font-medium hidden md:block mr-3'>ORE</h3>
+                                      <div className='h-full border rounded-lg border-[#88e273] mx-3'></div>
                                     </div>
+                                    <div className="flex-grow h-full">
+
                                     <input id="items" placeholder='Enter Collateral Amount'
                                       disabled={!(isConnected)} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
                                       onChange={(e) => {
                                         const newBorrowValue = e.target.value;
                                         setUserInputs({ ...userInputs, borrow: newBorrowValue, });
                                       }}
-                                      className="body-text text-sm whitespace-nowrap h-[4rem] text-gray-400 " style={{ backgroundColor: "black" }}
+                                      className="w-[80%] h-full ml-1 body-text font-medium text-gray-400 pl-3"
+                                    style={{ backgroundColor: "black", outline: "none", border: "none" }}
                                     />
-
+                                    </div>
                                   </div>
                                   <div className="flex flex-col mt-[15px] gap-x-5 justify-between">
                                     <span className="text-white gap-x-2 flex flex-row w-full md:-ml-0 -ml-10 ">
@@ -663,7 +657,7 @@ const BorrowCore = () => {
                                         </h6>
                                         )}
                                     </span>
-                                    <div className="flex w-full py-3 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3 -mt-4 ">
+                                    <div className="flex w-full mt-[4px] py-3 -ml-11  md:-ml-0 gap-x-3 md:gap-x-3 ">
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273]  body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(25)}>25%</Button>
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(50)}>50%</Button>
                                       <Button disabled={(!isConnected)} className={`text-sm border-2 rounded-2xl border-[#88e273] body-text`} style={{ backgroundColor: "#", }} onClick={() => handlePercentageClick(75)}>75%</Button>

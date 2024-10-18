@@ -5,7 +5,7 @@ import btc from "../app/assets/images/Group 666.svg";
 import core from "../app/assets/images/wbtc.svg";
 import { Toast } from "primereact/toast";
 import { useWalletClient } from "wagmi";
-import { EVMConnect } from "./EVMConnect";
+import { EVMConnect } from "../app/src/config/EVMConnect";
 import MobileNav from "./MobileNav";
 import "./navbar.css";
 

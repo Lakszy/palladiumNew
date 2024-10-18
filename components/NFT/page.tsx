@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 import CB from "../../app/assets/images/CB.svg"
 import crate from "../../app/assets/images/crate.svg"
 import btc from "../../app/assets/images/btc.svg"
-import { EVMConnect } from "../EVMConnect";
+import { EVMConnect } from "../../app/src/config/EVMConnect";
 import { useEffect, useState } from "react";
 import {
     useAccount,

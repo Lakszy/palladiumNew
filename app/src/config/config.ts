@@ -4,14 +4,17 @@ import { Chain, getDefaultConfig } from "@rainbow-me/rainbowkit";
 import { http, createConfig } from '@wagmi/core'
 import { mainnet, sepolia } from '@wagmi/core/chains'
 import '@rainbow-me/rainbowkit/styles.css'
+import coreImg from "../../assets/images/coretestnet.svg"
 
 
 const coreTestNetChain: Chain = {
 	id: 1115,
-	name: "Core Blockchain TestNet",
+	name: "Core TestNet",
+	iconBackground: "black",
+	iconUrl: coreImg,
 	nativeCurrency: {
 		decimals: 18,
-		name: "Core Blockchain TestNet",
+		name: "Core TestNet",
 		symbol: "tCORE",
 	},
 	rpcUrls: {

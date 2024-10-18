@@ -15,7 +15,7 @@ import Decimal from 'decimal.js';
 import { ethers, toBigInt } from 'ethers';
 import { getContract } from '@/app/src/utils/getContract';
 import { Knob } from 'primereact/knob';
-import { EVMConnect } from './EVMConnect';
+import { EVMConnect } from '../app/src/config/EVMConnect';
 import formatLargeNumber from './getActualDecimal';
 import { BOTANIX_RPC_URL } from '@/app/src/constants/botanixRpcUrl';
 
@@ -435,7 +435,7 @@ const ThreeTroveCard = () => {
                     )}
                    <div className={`${troveStatuscore === "ACTIVE" ? "py-10" : "py-5"}`}>
                         <>
-                            <div className="border-t border-gray-400 mb-6 md:-ml-[1.5rem] md:w-[108.5%]"></div>
+                            <div className={`border-t border-gray-400 mb-6 md:-ml-[1.5rem] md:w-[108.5%] ${troveStatuscore === 'ACTIVE' ? '-m-4' : ''}`}></div>
                         {isConnected ? (<>
                             <Link href="/trove/wbtc/" passHref>
                                 {troveStatusBTC === "ACTIVE" ? (

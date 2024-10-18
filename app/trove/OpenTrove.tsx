@@ -8,7 +8,7 @@ import adminConAbi from "../src/constants/abi/AdminContract.sol.json"
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
-import { ethers, JsonRpcSigner } from "ethers";
+import { ethers } from "ethers";
 import info from "../assets/images/info.svg";
 import btc from "../assets/images/wbtc.svg";
 import rej from "../assets/images/TxnError.gif";
@@ -53,7 +53,7 @@ export const OpenTrove = () => {
   const [userModal, setUserModal] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const { data: hash, writeContract, error: writeError } = useWriteContract()
-  const { isLoading, isSuccess, isError } = useWaitForTransactionReceipt({ hash });
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
   const [balanceData, setBalanceData] = useState<any>()
   const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
@@ -89,18 +89,6 @@ export const OpenTrove = () => {
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const erc20Contract = getContract("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", erc20Abi, provider);
-  // // const signer = provider.getSigner(walletClient?.account?.address);
-  // const signer = new JsonRpcSigner(provider, walletClient?.account?.address as string)
-  // const signerToken = new JsonRpcSigner(provider, "0x5FB4E66C918f155a42d4551e871AD3b70c52275d")
-  // // const collToken = new ethers.Contract(
-  // //   "0x5FB4E66C918f155a42d4551e871AD3b70c52275d", // ERC20 token address
-  // //   erc20Abi, // ERC20 token ABI
-  // //   signer
-  // // )
-  // const getEtherContract = (address: string, abi: any, provider: any) => {
-  //   return new ethers.Contract(address, abi, provider);
-  // };
-
 
   const web3 = new Web3(window.ethereum)
   const tokenAddress = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d"
@@ -333,7 +321,6 @@ export const OpenTrove = () => {
     try {
       const userAddress = walletClient?.account?.address;
       const gasPrice = (await web3.eth.getGasPrice()).toString();
-      // const amountInWei = (parseFloat(amount) * 1000000).toString();
       const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
       const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
@@ -400,7 +387,6 @@ export const OpenTrove = () => {
             <p className="body-text text-2xl font-semibold text-white">WCORE Vessel</p>
           </div>
         </div>
-
         <div className="container flex flex-col md:flex-row justify-between gap-x-28 md:-mt-6">
           <div className="grid w-1/2 items-start space-y-7 gap-2 text-white md:p-5">
             <div className="w-full">
@@ -429,11 +415,10 @@ export const OpenTrove = () => {
                   ${totalCollateral.toFixed(2)}
                 </span>
               </div>
-              <div className="pt-2 w-[90%] flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
+              <div className="pt-2 gap-x-10 flex md:-ml-0 -ml-2 mt-[10px]  md:flex-row flex-col items-center justify-between ">
                 <span className={`text-sm body-text w-full body-text font-medium whitespace-nowrap ${parseFloat(userInputs.collatoral) > Number(balanceData) ? 'text-red-500' : 'text-white'}`}>
                   <span className="body-text text-gray-400 font-medium ">Available</span> {Number(balanceData).toFixed(2)}{" "}
                 </span>
-                {/* <Button onClick={() => handleApproveClick(userInputs.collatoral)}>Approve</Button> */}
                 <div className="flex gap-x-4 md:gap-x-2 w-full   mt-2">
                   <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273]  rounded-3xl body-text`} onClick={() => handlePercentageClickBTC(25)}>25%</Button>
                   <Button disabled={!(isConnected)} className={`text-sm border border-[#88e273] rounded-3xl body-text`} onClick={() => handlePercentageClickBTC(50)}>50%</Button>
@@ -457,7 +442,7 @@ export const OpenTrove = () => {
                   className="w-[80%] h-full body-text font-medium text-gray-400 pl-3 ml-2"
                     style={{ backgroundColor: "black",  outline: "none", border: "none"}} />
               </div>
-              <div className="pt-2 w-[90%] flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
+              <div className="pt-2 flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
                   <span className="body-text text-gray-400 font-medium ">Available</span> {maxBorrow >= 0 ? Math.floor(maxBorrow * 100) / 100 : "0.00"}
                 </span>
@@ -508,7 +493,7 @@ export const OpenTrove = () => {
 
           </div>
           {bothInputsEntered && Number(userInputs.borrow) >= minDebt && parseFloat(userInputs.collatoral) < Number(balanceData) ? (
-            <div className="md:w-4/5 w-full mt-[55px] p-5 border-[#88e273] h-fit space-y-10  text-white"
+            <div className="md:w-4/5 w-full mt-[55px] p-5 mr-10 border-[#88e273] h-fit space-y-10  text-white"
               style={{ backgroundColor: "#222222" }}>
               <div className="flex whitespace-nowrap justify-between">
                 <div className="flex items-center">

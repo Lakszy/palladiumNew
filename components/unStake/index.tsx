@@ -25,7 +25,7 @@ import Image from "next/image";
 import "../../app/App.css";
 import "../../components/stabilityPool/Modal.css";
 import { StabilityPoolbi } from "@/app/src/constants/abi/StabilityPoolbi";
-import { EVMConnect } from "../EVMConnect";
+import { EVMConnect } from "../../app/src/config/EVMConnect";
 import wcore from "../../app/assets/images/btcc.svg";
 import wbtc from "../../app/assets/images/btccc.svg";
 import susdt from "../../app/assets/images/bbn.svg";
@@ -326,7 +326,7 @@ export const Unstake = () => {
                 Number(Math.trunc(Number(totalStakedValue) * 100) / 100)
               }
             >
-              {isStateLoading ? "Loading" : "Unstake"}
+              {isStateLoading ? "Loading" : "UNSTAKE"}
             </button>
           )}
           </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '../ui/button';
 import { Dialog } from "primereact/dialog";
 import { MdClose } from 'react-icons/md';
-import { EVMConnect } from '../EVMConnect';
+import { EVMConnect } from '../../app/src/config/EVMConnect';
 import { CustomConnectButton } from '../connectBtn';
 import WalletConnectButton from '../WalletConnectButton';
 interface WalletConnectionProps {

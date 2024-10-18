@@ -7,7 +7,7 @@ import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import botanixTestnet from "../src/constants/botanixTestnet.json";
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
-import { EVMConnect } from "@/components/EVMConnect";
+import { EVMConnect } from "@/app/src/config/EVMConnect";
 import { ethers } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
@@ -430,7 +430,7 @@ const Portfolio = () => {
                     <section id="content1" className="tab-content flex md:flex-row flex-col" style={{ borderTop: "1px solid #88e273", backgroundColor: "black", display: "flex", gap: "1rem" }}>
 
                       {/* CARD1 */}
-                      <div className={`bg-[#222222]  rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3 md:h-[38rem]  flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-28"}`}>
+                      <div className={`bg-[#222222]  rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3 md:h-[36.5rem]  flex-1 mx-2 ${troveStatuscore === "ACTIVE" ? "space-y-4" : "space-y-28"}`}>
                         <div className="flex  gap-x-2  justify-between items-center">
                           <div className='flex  items-center gap-x-1'>
                             <Image src={trove1} alt="btc" width={50} height={10} />
@@ -468,33 +468,33 @@ const Portfolio = () => {
                                 <p className="text-gray-500 body-text">Your LTV</p>
                               </div>
                             </div>
-                            <div className='p-3 grid grid-cols-3 space-y-8 items-center justify-around'>
-                              <div className="text-left mt-1">
-                                <p className="text-gray-500 text-sm body-text">Collateral</p>
-                                <p className="body-text font-medium">{Number(entireDebtAndCollCore.collCore).toFixed(2)} WCORE</p>
+                            <div className='p-3 grid pt-1 grid-cols-3 gap-y-8 items-center justify-around'>
+                              <div className="text-left">
+                                <p className="text-gray-500 text-sm body-text  mt-[25px]">Collateral</p>
+                                <p className="body-text font-medium text-[14px]  whitespace-nowrap">{Number(entireDebtAndCollCore.collCore).toFixed(2)} WCORE</p>
                                 <p className="text-sm body-text text-gray-500">
                                   ${(Number(entireDebtAndCollCore.collCore) * fetchedPrice).toFixed(2)}
                                 </p>
                               </div>
                               <div className="text-center">
                                 <p className="text-gray-500 text-sm body-text">Debt</p>
-                                <p className="body-text font-medium">{entireDebtAndCollCore.debtCore} ORE</p>
+                                <p className="body-text font-medium text-[14px]">{entireDebtAndCollCore.debtCore} ORE</p>
                               </div>
                               <div className="text-right">
                                 <p className="text-gray-500 text-sm body-text">Max LTV</p>
-                                <p className="body-text font-medium ">{(100 / mCR).toFixed(2)}%</p>
+                                <p className="body-text font-medium text-[14px]">{(100 / mCR).toFixed(2)}%</p>
                               </div>
                               <div className="text-left">
                                 <p className="text-gray-500 text-sm body-text">One-time Fee</p>
-                                <p className="body-text font-medium">{borrowRate * 100}%</p>
+                                <p className="body-text font-medium text-[14px]">{borrowRate * 100}%</p>
                               </div>
                               <div className="text-center">
                                 <p className="text-gray-500 text-sm body-text">Min Debt</p>
-                                <p className="body-text font-medium">{minDebt} ORE</p>
+                                <p className="body-text font-medium text-[14px]">{minDebt} ORE</p>
                               </div>
                               <div className="text-right">
                                 <p className="text-gray-500 text-sm body-text">ORE Minted</p>
-                                <p className="body-text font-medium">{formatLargeNumber(pusdMintedCore)} / 2.5M</p>
+                                <p className="body-text font-medium text-[14px]">{formatLargeNumber(pusdMintedCore)} / 2.5M</p>
                               </div>
                             </div>
                           </>
@@ -550,7 +550,7 @@ const Portfolio = () => {
                       </div>
 
                       {/* Card 2 */}
-                      <div className={`bg-[#222222]  rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  md:h-[38rem] flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-24"}`}>
+                      <div className={`bg-[#222222]  rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  md:h-[36.5rem] flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-24"}`}>
                         <div className="flex  gap-x-2 justify-between items-center ">
                           <div className='flex  items-center gap-x-1'>
                             <Image src={trove2} alt="btc" />
@@ -588,39 +588,39 @@ const Portfolio = () => {
                                 <p className="text-gray-500 body-text">Your LTV</p>
                               </div>
                             </div>
-                            <div className='p-3 grid grid-cols-3 space-y-8  items-center justify-around'>
-                              <div className="text-left mt-1">
-                                <p className="text-gray-500  text-sm body-text">Collateral</p>
-                                <p className="body-text font-medium mt-">{Number(entireDebtAndCollBTC.collBTC).toFixed(8)} WBTC</p>
-                                <p className="text-sm body-text text-gray-500">
+                            <div className='p-3 grid grid-cols-3 pt-0 gap-y-8  items-center justify-around'>
+                              <div className="text-left ">
+                                <p className="text-gray-500 mt-[18px]  text-sm body-text">Collateral</p>
+                                <p className="body-text font-medium text-[13px] whitespace-nowrap ">{Number(entireDebtAndCollBTC.collBTC).toFixed(8)} WBTC</p>
+                                <p className=" body-text text-xs text-gray-500">
                                   ${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(8)}
                                 </p>
                               </div>
                               <div className="text-center">
                                 <p className="text-gray-500 text-sm body-text">Debt</p>
-                                <p className="body-text font-medium">{entireDebtAndCollBTC.debtBTC} ORE</p>
+                                <p className="body-text font-medium text-[14px] " >{entireDebtAndCollBTC.debtBTC} ORE</p>
                               </div>
                               <div className="text-right">
                                 <p className="text-gray-500 text-sm body-text">Max LTV</p>
-                                <p className="body-text font-medium ">{(100 / mCRBTC).toFixed(2)}%</p>
+                                <p className="body-text font-medium text-[14px]">{(100 / mCRBTC).toFixed(2)}%</p>
                               </div>
                               <div className="text-left">
                                 <p className="text-gray-500 text-sm body-text">One-time Fee</p>
-                                <p className="body-text font-medium">{borrowRateBTC * 100}%</p>
+                                <p className="body-text font-medium text-[14px]">{borrowRateBTC * 100}%</p>
                               </div>
                               <div className="text-center">
                                 <p className="text-gray-500 text-sm body-text">Min Debt</p>
-                                <p className="body-text font-medium">{minDebtBTC} ORE</p>
+                                <p className="body-text font-medium text-[14px]">{minDebtBTC} ORE</p>
                               </div>
                               <div className="text-right">
                                 <p className="text-gray-500 text-sm body-text">ORE Minted</p>
-                                <p className="body-text font-medium">{formatLargeNumber(pusdMintedBTC)} / 2.5M</p>
+                                <p className="body-text font-medium text-[14px]">{formatLargeNumber(pusdMintedBTC)} / 2.5M</p>
                               </div>
                             </div>
                           </>
                         ) : (
                           <>
-                            <div className='space-y-20'>
+                            <div className='space-y-24'>
                               <div className="flex justify-between mb-4">
                                 <div className='whitespace-nowrap'>
                                   <p className="body-text font-medium text-gray-400">MAX LTV</p>
@@ -674,11 +674,11 @@ const Portfolio = () => {
 
                   {activeTab === 'tab2' && (
                     <section id="content2" className="tab-content">
-                      <div className="lg:w-[39rem]  h-auto rounded-sm" style={{ backgroundColor: "#222222" }}>
+                      <div className="lg:w-[39rem]  h-[22rem] rounded-sm" style={{ backgroundColor: "#222222" }}>
                         <div className="flex items-center flex-row justify-between p-5 border-b-1" style={{ backgroundColor: "#282828" }}>
                           <span className="text-white title-text2 ml-[10px]">STABILITY POOL</span>
                           <Link href="/stake/">
-                            <button className="h-8 px-6 title-text2 border-[#88e273] border bg-transparent text-[#88e273] font-bold">
+                            <button className="h-8 px-6 title-text2 whitespace-nowrap border-[#88e273] border bg-transparent text-[#88e273] font-bold">
                               {troveStatuscore === 'INACTIVE' && troveStatusBTC === 'INACTIVE' ? 'STAKE ORE' : 'Details'}
                             </button>
                           </Link>
@@ -733,7 +733,7 @@ const Portfolio = () => {
                     Portfolio Value
                   </h6>
                   <span className="text-white body-text text-2xl font-bold whitespace-nowrap flex text-left">
-                    {portfolioValue} ORE
+                    ${portfolioValue}
                   </span>
                 </div>
                 <div className="w-5/12 h-2 -ml-[12rem] md:ml-0 md:mr-10 mt-10 pb-12">
@@ -747,10 +747,10 @@ const Portfolio = () => {
                         <span className="body-text font-normal">Borrowed</span>
                       </div>
                       <span className="body-text text-right whitespace-nowrap font-medium">
-                        {(
+                        ${(
                           Number(entireDebtAndCollCore.debtCore) +
                           Number(entireDebtAndCollBTC.debtBTC)
-                        ).toFixed(2)} ORE
+                        ).toFixed(2)}
                       </span>
                     </div>
 
@@ -761,10 +761,10 @@ const Portfolio = () => {
                         <span className="body-text font-normal">Supplied</span>
                       </div>
                       <span className="body-text text-right whitespace-nowrap font-medium">
-                        {(
+                        ${(
                           Number(entireDebtAndCollCore.collCore) * fetchedPrice +
                           Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC
-                        ).toFixed(2)} ORE
+                        ).toFixed(2)}
                       </span>
                     </div>
 
@@ -839,7 +839,7 @@ const Portfolio = () => {
                           <div className='p-3 grid grid-cols-3 space-y-8 items-center justify-around'>
                             <div className="text-left mt-1">
                               <p className="text-gray-500 text-sm body-text">Collateral</p>
-                              <p className="body-text font-medium">{Number(entireDebtAndCollCore.collCore).toFixed(2)} WCORE</p>
+                              <p className="body-text font-medium whitespace-nowrap">{Number(entireDebtAndCollCore.collCore).toFixed(2)} WCORE</p>
                               <p className="text-sm body-text text-gray-500">
                                 ${(Number(entireDebtAndCollCore.collCore) * fetchedPrice).toFixed(2)}
                               </p>
@@ -918,7 +918,7 @@ const Portfolio = () => {
                     </div>
 
                     {/* Card 2 */}
-                    <div className={`bg-[#222222]  rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  md:h-[38rem] flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-24"}`}>
+                    <div className={`bg-[#222222] rounded-lg text-white w-full md:p-6 md:mb-0 mb-3 p-3  md:h-[38rem] flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-24"}`}>
                       <div className="flex  gap-x-2 justify-between items-center ">
                         <div className='flex  items-center gap-x-1'>
                           <Image src={trove2} alt="btc" />
@@ -959,7 +959,7 @@ const Portfolio = () => {
                           <div className='p-3 grid grid-cols-3 space-y-8  items-center justify-around'>
                             <div className="text-left mt-1">
                               <p className="text-gray-500  text-sm body-text">Collateral</p>
-                              <p className="body-text font-medium mt-">{Number(entireDebtAndCollBTC.collBTC).toFixed(8)} WBTC</p>
+                              <p className="body-text font-medium  whitespace-nowrap">{Number(entireDebtAndCollBTC.collBTC).toFixed(8)} WBTC</p>
                               <p className="text-sm body-text text-gray-500">
                                 ${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(8)}
                               </p>
@@ -1046,7 +1046,7 @@ const Portfolio = () => {
                       <div className="flex items-center flex-row justify-between p-5 border-b-1" style={{ backgroundColor: "#282828" }}>
                         <span className="text-white title-text2 ml-[10px]">STABILITY POOL</span>
                         <Link href="/stake/">
-                          <button className="h-8 px-6 title-text2 border-[#88e273] border bg-transparent text-[#88e273] font-bold">
+                          <button className="h-8 px-6 title-text2 whitespace-nowrap border-[#88e273] border bg-transparent text-[#88e273] font-bold">
                             {troveStatuscore === 'INACTIVE' && troveStatusBTC === 'INACTIVE' ? 'STAKE ORE' : 'Details'}
                           </button>
                         </Link>

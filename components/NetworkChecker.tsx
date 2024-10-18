@@ -30,7 +30,7 @@ export const switchNetwork = async () => {
                   chainId: `0x${TARGET_NETWORK_ID.toString(16)}`,
                   chainName: TARGET_CHAIN_NAME,
                   nativeCurrency: {
-                    name: "Core Blockchain TestNet",
+                    name: "Core TestNet",
                     symbol: "tCORE",
                     decimals: 18
                   },
@@ -54,10 +54,10 @@ export const switchNetwork = async () => {
 
 export const coreTestNetChain = {
   id: 1115,
-  name: "Core Blockchain TestNet",
+  name: "Core TestNet",
   nativeCurrency: {
     decimals: 18,
-    name: "Core Blockchain TestNet",
+    name: "Core TestNet",
     symbol: "tCORE",
   },
   rpcUrls: {

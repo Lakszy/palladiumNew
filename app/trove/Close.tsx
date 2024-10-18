@@ -76,7 +76,7 @@ export const CloseTrove: React.FC<Props> = ({ entireDebtAndColl, debt, liquidati
       walletClient?.account?.address
     );
     const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
-    if (Number(pusdBalanceFormatted) < (debt - liquidationReserve)) {
+    if (Number(pusdBalanceFormatted) < (debt - liquidationReserve - Number(calculatedFee))) {
       setIsLowBalance(true);
     }
     setPusdBalance(pusdBalanceFormatted);
