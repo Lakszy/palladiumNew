@@ -2,7 +2,7 @@
 const nextConfig = {
 	output: "export",
 	images: { unoptimized: true },
-	trailingSlash: true,
+	// trailingSlash: true,
 	webpack: (config, { isServer }) => {
 		if (!isServer) {
 			config.resolve.fallback.fs = false;
