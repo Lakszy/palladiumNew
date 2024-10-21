@@ -16,8 +16,8 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import { useDebounce } from "react-use";
 import { useAccount, useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import Image from "next/image";
-import img3 from "../assets/images/Group 666.svg";
-import img4 from "../assets/images/Core.svg";
+import earthBTC from "../assets/images/earthBTC.png";
+import ORE from "../assets/images/ORE.png";
 import info from "../assets/images/info.svg";
 import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
@@ -27,7 +27,7 @@ import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
 import Web3 from "web3";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
-import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
+import { bitfinityTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 interface Props {
   coll: number;
@@ -70,12 +70,12 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
   const web3 = new Web3(window.ethereum)
-  const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+  const tokenAddress = "0x222c21111dDde68e6eaC2fCde374761E72c45FFe"
   const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
   const spenderAddress = walletClient?.account?.address
 
   const { switchChain } = useSwitchChain()
-  const [chainId, setChainId] = useState(1115);
+  const [chainId, setChainId] = useState(355113);
   useEthereumChainId(setChainId)
 
   const handleClose = useCallback(() => {
@@ -139,7 +139,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
 
       const lusdValue = Number(xLusdAmount);
       const collValue = Number(xColl);
-      const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
+      const allowance = await tokenContract.methods.allowance("0x222c21111dDde68e6eaC2fCde374761E72c45FFe", spenderAddress).call();
 
       const newDebt = Number(debt) - lusdValue;
       const newColl = Number(coll) - collValue;
@@ -148,18 +148,18 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
 
-      const numTroves = await sortedTrovesContract.getSize("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f");
+      const numTroves = await sortedTrovesContract.getSize("0x222c21111dDde68e6eaC2fCde374761E72c45FFe");
       const numTrials = numTroves * BigInt("15");
 
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
-        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+        "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
         NICRBigint,
         numTrials,
         42
       );
 
       const { 0: upperHint, 1: lowerHint } = await sortedTrovesContract.findInsertPosition(
-        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+        "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
         NICRBigint,
         approxHint,
         approxHint
@@ -173,10 +173,10 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
 
       const borrowOpt = await writeContract({
         abi: BorrowerOperationbi,
-        address: '0xFe59041c88c20aB6ed87A0452601007a94FBf83C',
+        address: '0x9d4ecfC15D9FcfC804a838F495DEA21aAEaC5628',
         functionName: 'adjustVessel',
         args: [
-          "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", //tokenAddress
+          "0x222c21111dDde68e6eaC2fCde374761E72c45FFe", //tokenAddress
           0, //_assetSent
           collBigint, // collateral withdraw 0 in case of borrow
           lusdBigint, // debt change how much is added in case of borrow
@@ -184,8 +184,6 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
           upperHint, lowerHint
         ]
       });
-
-      // address _asset, _assetSent, //  _collWithdrawal,// _debtChange,bool// isDebtIncrease,address _upperHint,address _lowerHint)
 
     } catch (error) {
       console.error(error, "Error");
@@ -282,28 +280,6 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
     }
   }, [walletClient?.account?.address, spenderAddress]);
 
-  const handleApproveClick = async (amount: string) => {
-    try {
-      const userAddress = walletClient?.account?.address;
-      const gasPrice = (await web3.eth.getGasPrice()).toString();
-      const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-      const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
-
-      if (tx.status) {
-      } else {
-      }
-    } catch (error) {
-      const e = error as { code?: number; message?: string };
-      if (e.code === 4001) {
-        console.error("User rejected the transaction:", e.message);
-
-      } else {
-        console.error("Error during token approval:", e.message);
-
-      }
-    }
-  };
-
   const divideBy = recoveryMode ? cCR : mCR;
   const availableToBorrow = price / divideBy - Number(debt);
   const liquidation = divideBy * (Number(debt) / Number(coll));
@@ -364,7 +340,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
             </Label>
             <div className="flex items-center mt-4 w-[19rem] bg-black md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl  border border-[#88e273] " style={{ backgroundColor: "bg-transparent" }}>
               <div className='flex items-center h-[3.5rem] '>
-                <Image src={img4} alt="home" className='ml-1' width={35} />
+                <Image src={ORE} alt="home" className='ml-1' width={35} />
                 <h3 className='text-white body-text font-medium hidden md:block ml-1 text-sm'>ORE</h3>
                 <h3 className='h-full border border-[#88e273] mx-4 text-[#88e273]'></h3>
               </div>
@@ -406,8 +382,8 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
             </div>
             <div className="flex mt-2 md:mt-0 items-center w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl  border border-[#88e273] " style={{ backgroundColor: "black" }}>
               <div className='flex items-center h-[3.5rem] '>
-                <Image src={img3} alt="home" className='ml-1' width={41} />
-                <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>WBTC</h6>
+                <Image src={earthBTC} alt="home" className='ml-1' width={41} />
+                <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>earthBTC</h6>
                 <div className='h-full border rounded-lg border-[#88e273] mx-3'></div>
               </div>
               <div className="flex-grow h-full">
@@ -445,13 +421,13 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
             </div>
           </div>
           {
-            chainId !== coreTestNetChain.id ? (
+            chainId !== bitfinityTestNetChain.id ? (
               <button
-                onClick={() => switchChain({ chainId: coreTestNetChain.id })
+                onClick={() => switchChain({ chainId: bitfinityTestNetChain.id })
                 }
                 className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
               >
-                Switch to Core
+                Switch to Bitfinity
               </button>
             ) : (
               <button onClick={() => handleConfirmClick(userInputs.lusdAmount, userInputs.coll)}
@@ -543,14 +519,14 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
             <span className="body-text text-xs my-1 w-full whitespace-nowrap">
               <div className="flex items-center gap-x-2">
                 <span className="p-1 body-text font-medium -ml-[5px] w-28">
-                  {Number(coll).toFixed(8)} WBTC
+                  {Number(coll).toFixed(8)} earthBTC
                 </span>
                 {(userInputColl == 1) && (parseFloat(userInputs.coll) < Number(coll)) && (
                   <>
                     <span className="text-[#88e273] text-lg">
                       <FaArrowRightLong />
                     </span>
-                    <span className="ml-05 p-1 w-28 body-text font-medium ">{" "}{Number(totalColl).toFixed(8)} WBTC</span>
+                    <span className="ml-05 p-1 w-28 body-text font-medium ">{" "}{Number(totalColl).toFixed(8)} earthBTC</span>
                   </>
                 )}
               </div>

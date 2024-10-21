@@ -20,15 +20,15 @@ import { useDebounce } from "react-use";
 import { useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import Image from "next/image";
-import img4 from "../assets/images/Core.svg";
-import trove1 from "../assets/images/Group 666.svg";
+import ORE from "../assets/images/ORE.png";
+import earthBTC from "../assets/images/earthBTC.png";
 import { Button } from "@/components/ui/button";
 import "./opentroves.css"
 import { Dialog } from "primereact/dialog";
 import { Tooltip } from "primereact/tooltip";
 import Web3 from "web3";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
-import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
+import { bitfinityTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 export const OpenTroveBTC = () => {
     const [userInputs, setUserInputs] = useState({
@@ -39,7 +39,7 @@ export const OpenTroveBTC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
 
     const { switchChain } = useSwitchChain()
-    const [chainId, setChainId] = useState(1115);
+    const [chainId, setChainId] = useState(355113);
     useEthereumChainId(setChainId)
 
     const [minDebt, setMinDebt] = useState(0)
@@ -86,8 +86,8 @@ export const OpenTroveBTC = () => {
     const { data: isConnected } = useWalletClient();
     const { data: walletClient } = useWalletClient();
     const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-    const erc20Contract = getContract("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", erc20Abi, provider);
-
+    const erc20Contract = getContract("0x222c21111dDde68e6eaC2fCde374761E72c45FFe", erc20Abi, provider);
+    console.log(erc20Contract, 'allallaa')
     const sortedTrovesContract = getContract(
         botanixTestnet.addresses.SortedVessels,
         sortedTroveAbi,
@@ -114,9 +114,9 @@ export const OpenTroveBTC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
+                const response = await fetch("https://api.palladiumlabs.org/bitfinity/protocol/metrics");
                 const data = await response.json();
-                const protocolMetrics = data[0].metrics[0]; // Fetch the metrics for WCORE (at index 1)
+                const protocolMetrics = data[0].metrics[0];
                 setRecoveryMode(protocolMetrics.recoveryMode);
                 setFetchedPrice(protocolMetrics.price);
                 setMCR(protocolMetrics.MCR);
@@ -137,7 +137,7 @@ export const OpenTroveBTC = () => {
             if (!walletClient) return null;
             setIsModalVisible(true);
             if (modiff >= 0) { await handleApproveClick(xCollatoral); }
-            // const allowance = await tokenContract.methods.allowance("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", spenderAddress).call();
+            // const allowance = await tokenContract.methods.allowance("0x222c21111dDde68e6eaC2fCde374761E72c45FFe", spenderAddress).call();
             const collValue = Number(xCollatoral);
             const borrowValue = Number(xBorrow);
             const expectedFeeFormatted = (borrowRate * borrowValue) / 100;
@@ -146,19 +146,19 @@ export const OpenTroveBTC = () => {
             const NICRDecimal = new Decimal(NICR.toString());
             const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed());
 
-            const numTroves = await sortedTrovesContract.getSize("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f");
-            const minDebt = await adminContract.getMinNetDebt("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f");
+            const numTroves = await sortedTrovesContract.getSize("0x222c21111dDde68e6eaC2fCde374761E72c45FFe");
+            const minDebt = await adminContract.getMinNetDebt("0x222c21111dDde68e6eaC2fCde374761E72c45FFe");
             const minDebtInDecimal = new Decimal(minDebt.toString()).div(pow18);
             const numTrials = numTroves * BigInt("15");
             const { 0: approxHint } = await hintHelpersContract.getApproxHint(
-                "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+                "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
                 NICRBigint,
                 numTrials,
                 42
             );
 
             const { 0: upperHint, 1: lowerHint } = await sortedTrovesContract.findInsertPosition(
-                "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+                "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
                 NICRBigint,
                 approxHint,
                 approxHint
@@ -172,9 +172,9 @@ export const OpenTroveBTC = () => {
 
             await writeContract({
                 abi: BorrowerOperationbi,
-                address: "0xFe59041c88c20aB6ed87A0452601007a94FBf83C",
+                address: "0x9d4ecfC15D9FcfC804a838F495DEA21aAEaC5628",
                 functionName: "openVessel",
-                args: ["0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", collBigint, borrowBigint, upperHint, lowerHint],
+                args: ["0x222c21111dDde68e6eaC2fCde374761E72c45FFe", collBigint, borrowBigint, upperHint, lowerHint],
             });
 
         } catch (error) {
@@ -227,8 +227,8 @@ export const OpenTroveBTC = () => {
 
     const fetchPrice = async () => {
         if (!walletClient) return null;
-
         const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
+        console.log(collateralValue,"collateralValue")
         const collateralValueFormatted = ethers.formatUnits(collateralValue, 18)
         setBalanceData(collateralValueFormatted)
     };
@@ -273,7 +273,7 @@ export const OpenTroveBTC = () => {
         try {
             if (walletClient) {
                 const web3 = new Web3(window.ethereum)
-                const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+                const tokenAddress = "0x222c21111dDde68e6eaC2fCde374761E72c45FFe"
                 // Owner ->user // Spender ->Contract ka address borrowroperation , STABILITY POOL or any other
                 const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
@@ -293,7 +293,7 @@ export const OpenTroveBTC = () => {
     };
 
     const handleCheckApprovedClick = async () => {
-        const spenderAddress = "0xFe59041c88c20aB6ed87A0452601007a94FBf83C"
+        const spenderAddress = "0x9d4ecfC15D9FcfC804a838F495DEA21aAEaC5628"
         const userAddress = walletClient?.account?.address;
         const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
         if (approvedAmount) {
@@ -315,13 +315,13 @@ export const OpenTroveBTC = () => {
 
             if (walletClient) {
                 const web3 = new Web3(window.ethereum)
-                const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+                const tokenAddress = "0x222c21111dDde68e6eaC2fCde374761E72c45FFe"
                 const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
                 const userAddress = walletClient?.account?.address;
                 const gasPrice = (await web3.eth.getGasPrice()).toString();
                 const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-                const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+                const tx = await tokenContract.methods.approve("0x9d4ecfC15D9FcfC804a838F495DEA21aAEaC5628", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
 
                 if (tx.status) {
                 } else {
@@ -358,7 +358,7 @@ export const OpenTroveBTC = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    getApprovedAmount(walletClient?.account?.address, "0xFe59041c88c20aB6ed87A0452601007a94FBf83C")
+    getApprovedAmount(walletClient?.account?.address, "0x9d4ecfC15D9FcfC804a838F495DEA21aAEaC5628")
     useEffect(() => {
         const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
         const modDifference = Number(userInputs.collatoral) - aprvAmntInDecimals;
@@ -383,8 +383,8 @@ export const OpenTroveBTC = () => {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                             </svg>
                         </button>
-                        <Image src={trove1} alt="btc" width={50} />
-                        <p className="body-text text-2xl font-semibold text-white">WBTC Trove</p>
+                        <Image src={earthBTC} alt="btc" width={50} />
+                        <p className="body-text text-2xl font-semibold text-white">earthBTC Trove</p>
                     </div>
                 </div>
 
@@ -394,8 +394,8 @@ export const OpenTroveBTC = () => {
                             <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collateral</Label>
                             <div className="flex md:w-[90%] rounded-3xl items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-[#88e273]">
                                 <div className='flex items-center  h-[3.5rem] '>
-                                    <Image src={btc} alt="home" className='ml-1'width={43} />
-                                    <h3 className='text-gray-400 body-text font-medium ml-1 hidden md:block'>WBTC</h3>
+                                    <Image src={earthBTC} alt="home" className='ml-1' width={43} />
+                                    <h3 className='text-gray-400 body-text font-medium ml-1 hidden md:block'>earthBTC</h3>
                                     <div className='h-full border border-[#88e273] mx-3'></div>
                                 </div>
                                 <div className="flex-grow h-[3.5rem]">
@@ -430,18 +430,20 @@ export const OpenTroveBTC = () => {
                             <Label className="text-[#827f77] md:-ml-0 -ml-2   body-text text-lg" htmlFor="quantity">Borrow ORE</Label>
                             <div className="flex  md:w-[90%] rounded-3xl items-center md:space-x-2 mt-[10px] -ml-3 md:-ml-0 border border-[#88e273]">
                                 <div className='flex items-center h-[3.5rem] '>
-                                    <Image src={img4} alt="home" className='ml-1' />
+                                    <Image src={ORE} alt="home" className='ml-1' width={40}/>
                                     <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1 ml-[0.9rem]'>ORE</h3>
                                     <div className='h-full border border-[#88e273] mx-3'></div>
                                 </div>
                                 <input id="quantity" placeholder=""
-                                value={userInputs.borrow}
-                                onChange={(e) => { const newBorrowValue = e.target.value; 
-                                setUserInputs({ ...userInputs, borrow: newBorrowValue }); 
-                                makeCalculations(userInputs.collatoral, newBorrowValue || "0"); }} 
-                                className="w-[80%] ml-1 h-full body-text font-medium text-gray-400 pl-3"
-                                style={{ backgroundColor: "black", outline: "none", border: "none" }}
-                                    />
+                                    value={userInputs.borrow}
+                                    onChange={(e) => {
+                                        const newBorrowValue = e.target.value;
+                                        setUserInputs({ ...userInputs, borrow: newBorrowValue });
+                                        makeCalculations(userInputs.collatoral, newBorrowValue || "0");
+                                    }}
+                                    className="w-[80%] ml-1 h-full body-text font-medium text-gray-400 pl-3"
+                                    style={{ backgroundColor: "black", outline: "none", border: "none" }}
+                                />
                             </div>
                             <div className="pt-2 flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
                                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>
@@ -459,13 +461,13 @@ export const OpenTroveBTC = () => {
                             )}
                         </div>
                         {
-                            chainId !== coreTestNetChain.id ? (
+                            chainId !== bitfinityTestNetChain.id ? (
                                 <button
-                                    onClick={() => switchChain({ chainId: coreTestNetChain.id })
+                                    onClick={() => switchChain({ chainId: bitfinityTestNetChain.id })
                                     }
                                     className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
                                 >
-                                    Switch to Core
+                                    Switch to Bitfinity
                                 </button>
                             ) : (
                                 <button

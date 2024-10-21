@@ -14,18 +14,16 @@ import { Button } from "../ui/button";
 import { useAccount } from "wagmi";
 import { Dialog } from "primereact/dialog";
 import "./stake.css";
-import pusdbtc from "../../app/assets/images/Core.svg";
+import ORE from "../../app/assets/images/ORE.png";
 import conf from "../../app/assets/images/conf.gif";
 import rec2 from "../../app/assets/images/rec2.gif";
 import tick from "../../app/assets/images/tick.gif";
 import Image from "next/image";
 import "./Modal.css";
 import "../../app/App.css";
-import wcore from "../../app/assets/images/btcc.svg";
 import wbtc from "../../app/assets/images/btccc.svg";
-import susdt from "../../app/assets/images/bbn.svg";
 import { EVMConnect } from "../../app/src/config/EVMConnect";
-import { coreTestNetChain, useEthereumChainId } from "../NetworkChecker";
+import { bitfinityTestNetChain, useEthereumChainId } from "../NetworkChecker";
 import { useSwitchChain } from 'wagmi'
 
 export const StabilityPool = () => {
@@ -36,7 +34,6 @@ export const StabilityPool = () => {
   const [isDataLoading, setIsDataLoading] = useState(true);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [userModal, setUserModal] = useState(false);
-  const [message, setMessage] = useState("");
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [showCloseButton, setShowCloseButton] = useState(false);
@@ -55,27 +52,14 @@ export const StabilityPool = () => {
 
   const { data: hash, writeContract, error: writeError } = useWriteContract();
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
-  const [chainId, setChainId] = useState(1115);
+  const [chainId, setChainId] = useState(355113);
   useEthereumChainId(setChainId)
 
   const collateralTokens = [
     {
-      name: "WCORE",
-      address: "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
-      oracle: "0xdd68eE1b8b48e63909e29379dBe427f47CFf6BD0",
-      img: wcore,
-    },
-    {
-      name: "WBTC",
-      address: "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
-      oracle: "0x81A64473D102b38eDcf35A7675654768D11d7e24",
+      name: "earthBTC",
+      address: "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
       img: wbtc,
-    },
-    {
-      name: "sUSDT",
-      address: "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
-      oracle: "0x6e9Cd926Bf8F57FCe14b5884d9Ee0323126A772E",
-      img: susdt,
     },
   ];
 
@@ -146,15 +130,11 @@ export const StabilityPool = () => {
       const assets = sortedAssets.map((token) => token.address);
       writeContract({
         abi: StabilityPoolbi,
-        address: "0x12B1c7fC9C02fe522Eb53F5654F31155FAa855b4",
+        address: "0x955494Ae78369d0A224D05d7DD5Bc8d9804bF082",
         functionName: "provideToSP",
         args: [
           inputBigInt,
-          [
-            "0x3786495F5d8a83B7bacD78E2A0c61ca20722Cce3",
-            "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
-            "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
-          ],
+          ["0x222c21111dDde68e6eaC2fCde374761E72c45FFe"],
         ],
       });
     } catch (error) {
@@ -210,22 +190,22 @@ export const StabilityPool = () => {
           style={{ backgroundColor: "black" }}
         >
           <div className="flex items-center w-full h-[3.5rem]">
-            <Image src={pusdbtc} alt="home" className="ml-1" width={30} />
+            <Image src={ORE} alt="home" className="ml-1" width={30} />
             <h3 className="text-white body-text ml-1 hidden md:block">ORE</h3>
             <div className="h-full border border-[#88e273] rounded-lg mx-3"></div>
             <div className="flex-grow h-full">
-              <input id="items" placeholder="Enter Collateral Amount" 
-              disabled={!isConnected} value={userInput}
-               onChange={(e) => { const input = e.target.value; setUserInput(input); }} 
-               className="w-full h-full 
+              <input id="items" placeholder="Enter Collateral Amount"
+                disabled={!isConnected} value={userInput}
+                onChange={(e) => { const input = e.target.value; setUserInput(input); }}
+                className="w-full h-full 
                body-text text-sm text-white full-input px-2"
-               style={{
-                 backgroundColor: "black",
-                 outline: "none",
-                 borderRight: "1px solid #88e273",
-                 borderRadius: "0 0.5rem 0.5rem 0",
-               }} 
-               />
+                style={{
+                  backgroundColor: "black",
+                  outline: "none",
+                  borderRight: "1px solid #88e273",
+                  borderRadius: "0 0.5rem 0.5rem 0",
+                }}
+              />
             </div>
           </div>
         </div>
@@ -261,12 +241,12 @@ export const StabilityPool = () => {
       </div>
       {isConnected ? (
         <div className=" my-2">
-          {chainId !== coreTestNetChain.id ? (
+          {chainId !== bitfinityTestNetChain.id ? (
             <button
-              onClick={() => switchChain({ chainId: coreTestNetChain.id })}
+              onClick={() => switchChain({ chainId: bitfinityTestNetChain.id })}
               className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
             >
-              Switch to Core
+              Switch to Bitfinity
             </button>
           ) : (
             <button

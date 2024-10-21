@@ -29,9 +29,6 @@ import info from "../assets/images/info.svg"
 import tick from "../assets/images/tick.gif"
 import { Knob } from "primereact/knob";
 import { TabView, TabPanel } from "primereact/tabview";
-import { Repay } from "./Repay";
-import { CloseTrove } from "./Close";
-import { OpenTrove } from "./OpenTrove";
 import Layout from "./layout";
 import { FaArrowRightLong } from "react-icons/fa6";
 import "../../app/App.css"
@@ -134,9 +131,9 @@ const Borrow = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
+        const response = await fetch("https://api.palladiumlabs.org/bitfinity/protocol/metrics");
         const data = await response.json();
-        const protocolMetrics = data[0].metrics[1]; // Fetch the metrics for WCORE (at index 1)
+        const protocolMetrics = data[0].metrics[0]; // Fetch the metrics for WCORE (at index 1)
         setRecoveryMode(protocolMetrics.recoveryMode);
         setFetchedPrice(protocolMetrics.price);
         setMCR(protocolMetrics.MCR);
@@ -756,12 +753,10 @@ const Borrow = () => {
                       </TabPanel>
                       <TabPanel className="p-[2px] bg-[#88e273] text-sm body-text " header="Repay">
                         <div className="w-full h-full border p-5 border-[#88e273]" style={{ backgroundColor: "#272315" }}>
-                          <Repay coll={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} lr={lr} fetchedPrice={Number(fetchedPrice)} borrowRate={borrowRate} minDebt={minDebt} recoveryMode={recoveryMode} cCR={cCr} mCR={mCR} troveStatus={troveStatus} />
                         </div>
                       </TabPanel>
                       <TabPanel className="p-[2px] bg-[#88e273] text-sm title-text" header="Close">
                         <div className="w-full h-full" style={{ backgroundColor: "#272315" }}  >
-                          <CloseTrove entireDebtAndColl={parseFloat(entireDebtAndColl.coll)} debt={parseFloat(entireDebtAndColl.debt)} liquidationReserve={lr} />
                         </div>
                       </TabPanel>
                     </TabView>
@@ -770,11 +765,7 @@ const Borrow = () => {
               </div>
             </div>
           )}
-          {troveStatus === "INACTIVE" && (
-            <div className="w-full h-auto" style={{ backgroundColor: "#272315" }}>
-              <OpenTrove />
-            </div>
-          )}
+          
           {!isConnected && (
             <OpenTroveNotConnected />
           )}

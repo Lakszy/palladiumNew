@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import { useConnectModal, useAccounts, useBTCProvider } from '@particle-network/btc-connectkit';
+import React, { useState, useMemo, useCallback } from 'react';
+import { useConnectModal, useAccounts } from '@particle-network/btc-connectkit';
 import { useETHProvider } from '@particle-network/btc-connectkit';
 import { Button } from './ui/button';
 import { Dialog } from 'primereact/dialog';
@@ -16,7 +16,6 @@ const WalletConnectButton = () => {
     const [balance, setBalance] = useState<string | null>(null);
     const [address, setAddress] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const { provider, getNetwork, switchNetwork, signMessage, getPublicKey, sendBitcoin } = useBTCProvider();
     const [showPopup, setShowPopup] = useState(false);
 
     const fetchBalance = useCallback(async (accountAddress: any) => {

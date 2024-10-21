@@ -33,7 +33,7 @@ a {
 }
 
 .tab_container {
-    width: 90%;
+    width: 100%;
     margin: 0 auto;
     padding-top: 70px;
     position: relative;
@@ -88,7 +88,6 @@ label .fa {
 }
 
 @media only screen and (max-width: 900px) {
-
     .tab_container {
         width: 95%;
     }

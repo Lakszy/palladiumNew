@@ -42,7 +42,7 @@ const OpenTroveNotConnected = () => {
                 style={{ backgroundColor: "black" }}>
                 <div className='flex items-center h-[3.5rem] rounded-2xl'>
                   <Image src={img3} alt="home" className='ml-1' />
-                  <h3 className='text-white body-text ml-1 font-medium '>WBTC</h3>
+                  <h3 className='text-white body-text ml-1 font-medium '>earthBTC</h3>
                   <h3 className='h-full border   border-[#88e273] mx-3  text-[#88e273]'></h3>
                 </div>
                 <input id="items" placeholder="" disabled onChange={(e) => { const newCollValue = e.target.value; }} className="w-full body-text text-sm text-gray-400 whitespace-nowrap cursor-not-allowed ml-1 h-[4rem] rounded-2xl " style={{ backgroundColor: "black" }} />

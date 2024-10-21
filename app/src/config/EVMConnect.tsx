@@ -6,7 +6,6 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { Button } from "../../../components/ui/button";
 import React from "react";
-import coreImg from "../../assets/images/coretestnet.svg"
 import Image from "next/image";
 
 interface Props {

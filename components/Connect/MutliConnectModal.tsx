@@ -71,7 +71,7 @@ interface WalletConnectionProps {
             )}
           </div> */}
           <div>
-            <h3 className="text-white title-text">WBTC Wallets</h3>
+            <h3 className="text-white title-text">earthBTC Wallets</h3>
             {isConnected ? (
               <button className="text-gray-400 cursor-not-allowed" disabled>
                 Connected

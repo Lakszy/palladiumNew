@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
 import Decimal from "decimal.js";
-import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
+import { bitfinityTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 
 interface Props {
@@ -47,7 +47,7 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
   const [calculatedFee, setCalculatedFee] = useState("0");
-  const [chainId, setChainId] = useState(1115);
+  const [chainId, setChainId] = useState(355113);
   useEthereumChainId(setChainId)
   const erc20Contract = getContract(
     botanixTestnet.addresses.DebtToken,
@@ -87,7 +87,7 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
     const fetchRefundfee = async () => {
       const pow = Decimal.pow(10, 18);
       const _1e18 = toBigInt(pow.toFixed());
-      const Refundfee = await feeCollectorContract.simulateRefund(walletClient?.account?.address, "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", 1000000000000000000n);
+      const Refundfee = await feeCollectorContract.simulateRefund(walletClient?.account?.address, "0x222c21111dDde68e6eaC2fCde374761E72c45FFe", 1000000000000000000n);
       const RefundfeeDecimal = new Decimal(Refundfee.toString());
       const RefundfeeFormatted = RefundfeeDecimal.div(_1e18.toString()).toString();
       setCalculatedFee(RefundfeeFormatted)
@@ -103,9 +103,9 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
 
       const tx = writeContract({
         abi: BorrowerOperationbi,
-        address: '0xFe59041c88c20aB6ed87A0452601007a94FBf83C',
+        address: '0x9d4ecfC15D9FcfC804a838F495DEA21aAEaC5628',
         functionName: 'closeVessel',
-        args: ["0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"],
+        args: ["0x222c21111dDde68e6eaC2fCde374761E72c45FFe"],
       });
     } catch (error) {
       console.error('Error sending transaction:', error);
@@ -162,15 +162,15 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
             <span className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Collateral</span>
               <Image width={15} className="toolTipHolding5 ml_5 -mt-[3px]" src={info} data-pr-tooltip="" alt="info" />
-              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding5" mouseTrack content="The WBTC you’ve staked to receive ORE. This Bitcoin acts as security for the loan or transaction." mouseTrackLeft={10} />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding5" mouseTrack content="The earthBTC you’ve staked to receive ORE. This Bitcoin acts as security for the loan or transaction." mouseTrackLeft={10} />
             </span>
-            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(8)} WBTC</span>}
+            {Number(entireDebtAndColl) <= 0 ? "--" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(entireDebtAndColl).toFixed(8)} earthBTC</span>}
           </div>
           <div className="flex justify-between">
             <div className="flex">
               <span className="md:ml-0 ml-1 text-sm body-text text-[#84827a] font-medium">Debt</span>
               <Image width={15} className="toolTipHolding6 ml_5 -mt-[5px]" src={info} data-pr-tooltip="" alt="info" />
-              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding6" mouseTrack content="The amount of ORE you owe. This is the value you need to repay, with your WBTC collateral backing it." mouseTrackLeft={10} />
+              <Tooltip className="custom-tooltip title-text2" target=".toolTipHolding6" mouseTrack content="The amount of ORE you owe. This is the value you need to repay, with your earthBTC collateral backing it." mouseTrackLeft={10} />
             </div>
             {Number(updatedDebt) <= 0 ? "---" : <span className="body-text font-medium text-sm md:mr-0 mr-4 whitespace-nowrap">{Number(updatedDebt).toFixed(2)} ORE</span>}
           </div>
@@ -199,12 +199,12 @@ export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquid
             </span>
           </div>
         </div>
-        {chainId !== coreTestNetChain.id ? (
+        {chainId !== bitfinityTestNetChain.id ? (
           <button
-            onClick={() => switchChain({ chainId: coreTestNetChain.id })}
+            onClick={() => switchChain({ chainId: bitfinityTestNetChain.id })}
             className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
           >
-            Switch to Core
+            Switch to Bitfinity
           </button>
         ) : (
           <button

@@ -1,17 +1,20 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import pusdbtc from "../app/assets/images/Core.svg";
-import btc from "../app/assets/images/Group 666.svg";
-import core from "../app/assets/images/wbtc.svg";
 import { Toast } from "primereact/toast";
-import { useWalletClient } from "wagmi";
+import ORE from "../app/assets/images/ORE.png";
+import earthBTC from "../app/assets/images/earthBTC.png";
+import FaucetAbi from "./FaucetAbi.sol.json";
 import { EVMConnect } from "../app/src/config/EVMConnect";
+import { useWalletClient, useWriteContract } from "wagmi";
 import MobileNav from "./MobileNav";
+import { ethers } from "ethers";
 import "./navbar.css";
+import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
 
 function NavBar() {
-  const [fetchedPrice, setFetchedPrice] = useState(0);
   const [fetchedPriceBTC, setFetchedPriceBTC] = useState(0);
+  const { data: isConnected } = useWalletClient();
+  const { data: hash, writeContract, error: writeError } = useWriteContract()
   const [fetchedPriceORE, setFetchedPriceORE] = useState(0);
   const toast = useRef<Toast>(null);
   const { data: walletClient } = useWalletClient();
@@ -20,13 +23,11 @@ function NavBar() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
+        const response = await fetch("https://api.palladiumlabs.org/bitfinity/protocol/metrics");
         const data = await response.json();
-        const protocolMetrics = data[0].metrics[1]; // WCORE metrics
-        const protocolMetricsBTC = data[0].metrics[0]; // WBTC metrics
-        const priceORE = data[0].pricePUSD
+        const protocolMetricsBTC = data[0].metrics[0]
+        const priceORE = data[0].pricePUSD;
         setFetchedPriceBTC(protocolMetricsBTC.price);
-        setFetchedPrice(protocolMetrics.price);
         setFetchedPriceORE(priceORE);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -57,17 +58,33 @@ function NavBar() {
             decimals: tokenDecimals,
           },
         },
-      }).then((success: any) => {
-        if (success) {
-          showSuccess(`${tokenSymbol} token added to MetaMask!`);
-        }
-      }).catch((error: any) => {
-        console.error(`Error adding ${tokenSymbol} token:`, error);
-      });
+      })
+        .then((success: any) => {
+          if (success) {
+            showSuccess(`${tokenSymbol} token added to MetaMask!`);
+          }
+        })
+        .catch((error: any) => {
+          console.error(`Error adding ${tokenSymbol} token:`, error);
+        });
     }
   };
 
-
+  const handleClaimTokens = async () => {
+    if (!walletClient) {
+      console.error("Wallet not connected");
+      return;
+    }
+    try {
+      await writeContract({
+        abi: FaucetAbi,
+        address: "0xDf2Fe2159e9801B3C520665a8a5039705927b360",
+        functionName: "claimTokens",
+      });
+    } catch (error) {
+      console.error("Error claiming tokens:", error);
+    }
+  };
 
   return (
     <>
@@ -86,40 +103,40 @@ function NavBar() {
             <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
               onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
               onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
-              onClick={() => handleAddToken("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", "WCORE", 18)}>
-              <Image src={core} alt="WCORE" width={38} />
-              <div className="ml-[1px]">
-                <h1 className="text-white title-text2 text-sm">WCORE</h1>
-                <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPrice).toFixed(2)}</h1>
-                <span className="popup body-text text-xs">Click to import WCORE</span>
-              </div>
-            </div>
-            <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
-              onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
-              onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
-              onClick={() => handleAddToken("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", "WBTC", 18)}>
-              <Image src={btc} alt="WBTC" width={50} />
+              onClick={() => handleAddToken("0x222c21111dDde68e6eaC2fCde374761E72c45FFe", "earthBTC", 18)}>
+              <Image src={earthBTC} alt="earthBTC" width={40} />
               <div>
-                <h1 className="text-white title-text2 text-sm">WBTC</h1>
+                <h1 className="text-white title-text2 text-sm">earthBTC</h1>
                 <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPriceBTC).toFixed(2)}</h1>
-                <span className="popup body-text text-xs">Click to import WBTC</span>
+                <span className="popup body-text text-xs">Click to import earthBTC</span>
               </div>
             </div>
             <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
               onMouseEnter={(e) => e.currentTarget.querySelector('.popup')?.classList.add('visible')}
               onMouseLeave={(e) => e.currentTarget.querySelector('.popup')?.classList.remove('visible')}
-              onClick={() => handleAddToken("0x559c43480aEd5369f7dc0f96dC680838D977B59F", "ORE", 18)}>
-              <Image src={pusdbtc} alt="ORE" className="mr-1" width={40} />
+              onClick={() => handleAddToken("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6", "ORE", 18)}>
+              <Image src={ORE} alt="ORE" className="mr-1" width={40} />
               <div>
                 <h1 className="text-white title-text2 text-sm">ORE</h1>
                 <h1 className="text-sm text-gray-400 title-text2 whitespace-nowrap -ml-[0px]">${Number(fetchedPriceORE).toFixed(2)}</h1>
                 <span className="popup body-text text-xs">Click to import ORE</span>
               </div>
             </div>
+            {isConnected ? (
+              <button
+                className="earthBTC-faucet-button rounded-3xl text-black title-text bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] font-bold py-2 px-4"
+                onClick={handleClaimTokens}
+              >
+                Claim earthBTC
+              </button>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
         <EVMConnect className="" />
       </div>
+
     </>
   );
 }

@@ -7,7 +7,7 @@ type LayoutProps = {
 };
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-    return <div className="font-mono font-bold">{children}</div>;
+    return <>{children}</>;
 };
 
 export default Layout;

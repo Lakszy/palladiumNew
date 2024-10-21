@@ -13,15 +13,11 @@ import { useEffect, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
 import "../../app/App.css";
 import { Tooltip } from "primereact/tooltip";
-import { useAccounts } from "@particle-network/btc-connectkit";
 
 
 const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
 export const StabilityStats = () => {
-  const [loanRewards, setLoanRewards] = useState("0");
-  const [liquidGains, setLiquidGains] = useState("0");
   const { isConnected } = useAccount();
-  const { accounts } = useAccounts();
   const [totalStakedValue, setTotalStakedValue] = useState("0");
   const [totalStabilityPool, setTotalStabilityPool] = useState("0");
   const [isLoading, setIsLoading] = useState(true);
@@ -38,14 +34,8 @@ export const StabilityStats = () => {
   );
   const collateralTokens = [
     {
-      name: "WCORE",
-      address: "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
-      oracle: "0xdd68eE1b8b48e63909e29379dBe427f47CFf6BD0",
-    },
-    {
-      name: "WBTC",
-      address: "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
-      oracle: "0x81A64473D102b38eDcf35A7675654768D11d7e24",
+      name: "earthBTC",
+      address: "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
     },
 
   ];
@@ -220,10 +210,7 @@ export const StabilityStats = () => {
         {/* Display all tokens, including those with 0 gains */}
         {Object.entries(allTokenGains).map(([token, amount]) => {
           let formattedAmount;
-
-          if (token === "WCORE") {
-            formattedAmount = parseFloat(amount).toFixed(2);
-          } else if (token === "WBTC") {
+          if (token === "earthBTC") {
             formattedAmount = parseFloat(amount).toFixed(8);
           } else {
             formattedAmount = parseFloat(amount).toFixed(6);

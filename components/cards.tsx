@@ -2,7 +2,7 @@
 import Image from "next/image";
 import dbBG from "../app/assets/dbBackground.png";
 import "../app/App.css"
-import coreLogo from "../app/assets/images/CoreLogo.png"
+import bitfinity from "../app/assets/images/bitlogo.png"
 import { FaArrowRightLong } from "react-icons/fa6";
 import Link from "next/link";
 
@@ -13,7 +13,7 @@ export const CardDemo = () => {
       <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center items-center text-white px-4">
         <div className="flex gap-x-2 flex-wrap items-center">
           <h1 className="text-6xl mt-5 font-bold mb-4 titleTextSub">Instant Liquidity on</h1>
-          <Image src={coreLogo} alt="corelogo" />
+          <Image src={bitfinity} alt="corelogo" width={250}/>
         </div>
         <p className="text-lg mb-6 text-center ">Grow your wealth with $ORE, Core’s native over-collateralized, yield-generating stablecoin</p>
         <Link href="trove">

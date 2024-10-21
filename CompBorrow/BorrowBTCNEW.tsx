@@ -20,9 +20,8 @@ import OpenTroveNotConnected from "@/app/trove/openTroveNotConnected";
 import Image from "next/image";
 import INACTIVE from "@/app/assets/images/INACTIVE.svg";
 import ACTIVE from "@/app/assets/images/ACTIVE.svg";
-import img2 from "@/app/assets/images/Core.svg";
-import img3 from "@/app/assets/images/Group 666.svg";
-import img4 from "@/app/assets/images/Core.svg";
+import ORE from "@/app/assets/images/ORE.png";
+import earthBTC from "@/app/assets/images/earthBTC.png";
 import rej from "@/app/assets/images/TxnError.gif";
 import conf from "@/app/assets/images/conf.gif"
 import rec2 from "@/app/assets/images/rec2.gif"
@@ -41,7 +40,7 @@ import Web3 from "web3";
 import { RepayBTC } from "@/app/trove/RepayBTC";
 import { CloseTroveBTC } from "@/app/trove/CloseTroveBTC";
 import { OpenTroveBTC } from "@/app/trove/OpenTroveBTC";
-import { coreTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
+import { bitfinityTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 
 const BorrowBTCNEW = () => {
   const [userInputs, setUserInputs] = useState({
@@ -94,13 +93,13 @@ const BorrowBTCNEW = () => {
   const [modiff, setModiff] = useState<any>(null);
 
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
-  const erc20Contract = getContract("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", erc20Abi, provider);
+  const erc20Contract = getContract("0x222c21111dDde68e6eaC2fCde374761E72c45FFe", erc20Abi, provider);
   const { data: walletClient } = useWalletClient();
   const { data: isConnected } = useWalletClient();
   const spenderAddress = walletClient?.account?.address
 
   const { switchChain } = useSwitchChain()
-  const [chainId, setChainId] = useState(1115);
+  const [chainId, setChainId] = useState(355113);
   useEthereumChainId(setChainId)
 
   const fetchPrice = async () => {
@@ -152,9 +151,9 @@ const BorrowBTCNEW = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
+        const response = await fetch("https://api.palladiumlabs.org/bitfinity/protocol/metrics");
         const data = await response.json();
-        const protocolMetrics = data[0].metrics[0]; // Fetch the metrics for WBTC (at index 0)
+        const protocolMetrics = data[0].metrics[0]; // Fetch the metrics for earthBTC (at index 0)
         setRecoveryMode(protocolMetrics.recoveryMode);
         setFetchedPrice(protocolMetrics.price);
         setMCR(protocolMetrics.MCR);
@@ -183,7 +182,7 @@ const BorrowBTCNEW = () => {
         2: pendingLUSDDebtReward,
         3: pendingETHReward,
       } = await troveManagerContract.getEntireDebtAndColl(
-        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+        "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
         walletClient?.account.address
       );
       const collDecimal = new Decimal(coll.toString());
@@ -207,7 +206,7 @@ const BorrowBTCNEW = () => {
         }
       }
 
-      const Refundfee = await feeCollectorContract.simulateRefund(walletClient?.account?.address, "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", 1000000000000000000n);
+      const Refundfee = await feeCollectorContract.simulateRefund(walletClient?.account?.address, "0x222c21111dDde68e6eaC2fCde374761E72c45FFe", 1000000000000000000n);
       const RefundfeeDecimal = new Decimal(Refundfee.toString());
       const RefundfeeFormatted = RefundfeeDecimal.div(_1e18.toString()).toString();
       setCalculatedFee(RefundfeeFormatted)
@@ -217,7 +216,7 @@ const BorrowBTCNEW = () => {
       try {
         if (!walletClient) return null;
         const troveStatusBigInt = await troveManagerContract.getVesselStatus(
-          "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+          "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
           walletClient?.account.address
         );
         const troveStatus =
@@ -276,18 +275,18 @@ const BorrowBTCNEW = () => {
       const NICRDecimal = new Decimal(NICR.toString());
       const NICRBigint = BigInt(NICRDecimal.mul(pow20).toFixed(0));
 
-      const numTroves = await sortedTrovesContract.getSize("0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f");
+      const numTroves = await sortedTrovesContract.getSize("0x222c21111dDde68e6eaC2fCde374761E72c45FFe");
       const numTrials = numTroves * BigInt("15");
 
       const { 0: approxHint } = await hintHelpersContract.getApproxHint(
-        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+        "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
         NICRBigint,
         numTrials,
         42
       );
 
       const { 0: upperHint, 1: lowerHint } = await sortedTrovesContract.findInsertPosition(
-        "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
+        "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
         NICRBigint,
         approxHint,
         approxHint
@@ -301,10 +300,10 @@ const BorrowBTCNEW = () => {
 
       const borrowOpt = await writeContract({
         abi: BorrowerOperationbi,
-        address: '0xFe59041c88c20aB6ed87A0452601007a94FBf83C',
+        address: '0x9d4ecfC15D9FcfC804a838F495DEA21aAEaC5628',
         functionName: 'adjustVessel',
         args: [
-          "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f", //tokenAddress
+          "0x222c21111dDde68e6eaC2fCde374761E72c45FFe", //tokenAddress
           collBigint, //_assetSent
           0, // collateral withdraw 0 in case of borrow
           borrowBigint, // debt change how much is added in case of borrow
@@ -385,7 +384,7 @@ const BorrowBTCNEW = () => {
     try {
       if (walletClient) {
         const web3 = new Web3(window.ethereum)
-        const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+        const tokenAddress = "0x222c21111dDde68e6eaC2fCde374761E72c45FFe"
         const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
         const approvedAmount = await tokenContract.methods.allowance(ownerAddress, spenderAddress).call() as BigInt;
@@ -405,7 +404,7 @@ const BorrowBTCNEW = () => {
 
   const handleCheckApprovedClick = async () => {
     const userAddress = walletClient?.account?.address;
-    const spenderAddress = "0xFe59041c88c20aB6ed87A0452601007a94FBf83C"
+    const spenderAddress = "0x9d4ecfC15D9FcfC804a838F495DEA21aAEaC5628"
     const approvedAmount = await getApprovedAmount(userAddress, spenderAddress);
     if (approvedAmount) {
       setAprvAmt(approvedAmount);
@@ -424,13 +423,13 @@ const BorrowBTCNEW = () => {
     try {
       if (walletClient) {
         const web3 = new Web3(window.ethereum)
-        const tokenAddress = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f"
+        const tokenAddress = "0x222c21111dDde68e6eaC2fCde374761E72c45FFe"
         const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
 
         const userAddress = walletClient?.account?.address;
         const gasPrice = (await web3.eth.getGasPrice()).toString();
         const amountInWei = web3.utils.toWei(amount, 'ether'); // Converts directly to Wei as a string
-        const tx = await tokenContract.methods.approve("0xFe59041c88c20aB6ed87A0452601007a94FBf83C", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
+        const tx = await tokenContract.methods.approve("0x9d4ecfC15D9FcfC804a838F495DEA21aAEaC5628", amountInWei).send({ from: userAddress, gasPrice: gasPrice });
       }
     } catch (error) {
       const e = error as { code?: number; message?: string };
@@ -494,7 +493,7 @@ const BorrowBTCNEW = () => {
 
   const marginClass = parseFloat(userInputs.depositCollateral) > 0 ? 'md:-ml-[7rem]' : 'md:-ml-[5rem]';
 
-  getApprovedAmount(walletClient?.account?.address, "0xFe59041c88c20aB6ed87A0452601007a94FBf83C")
+  getApprovedAmount(walletClient?.account?.address, "0x9d4ecfC15D9FcfC804a838F495DEA21aAEaC5628")
   useEffect(() => {
     const aprvAmntInDecimals = Number(aprvAmnt) / (10 ** 18);
     const modDifference = Number(userInputs.depositCollateral) - aprvAmntInDecimals;
@@ -520,13 +519,13 @@ const BorrowBTCNEW = () => {
               <div className="w-[103%] -ml-2 h-[35rem] md:h-fit md:w-[97%] md:ml-4 p-3 justify-between flex flex-col md:flex-row" style={{ backgroundColor: "#222222" }}>
                 <div className="p-2 px-4  ">
                   <p className=" title-text2 text-2xl text-white mb-4">
-                    WBTC Trove
+                    earthBTC Trove
                   </p>
                   <p className=" title-text2 text-gray-500 text-base mb-4">
                     Available to borrow
                   </p>
                   <div className="flex flex-row gap-2 items-center ">
-                    <Image src={img2} alt="home" />
+                    <Image src={ORE} alt="home" width={40} />
                     {Number(availableToBorrow) >= 0 && (
                       <h6 className={`text-white tracking-wider title-text2 text-3xl`}>
                         {Number(availableToBorrow).toFixed(2)}
@@ -536,7 +535,7 @@ const BorrowBTCNEW = () => {
                   <div className="flex -ml-5 flex-row justify-between mt-3 md:mt-5 md:gap-4">
                     <div className="flex flex-col text-white  h-28 p-5" style={{ backgroundColor: "" }}>
                       <span className="body-text font-medium  text-gray-500">Collateral</span>
-                      <span className="body-text font-medium text-xl">{Number(entireDebtAndColl.coll).toFixed(8)} WBTC</span>
+                      <span className="body-text font-medium text-xl">{Number(entireDebtAndColl.coll).toFixed(8)} earthBTC</span>
                       <span className="body-text font-medium text-xs  p-1 text-gray-500">${(Number(fetchedPrice) * Number(entireDebtAndColl.coll)).toFixed(2)}</span>
                     </div>
                     <div className="flex flex-col text-white w-[9rem]  h-28 p-5" style={{ backgroundColor: "" }} >
@@ -602,8 +601,8 @@ const BorrowBTCNEW = () => {
                                   </Label>
                                   <div className="flex items-center mt-4 md:-ml-0 -ml-11 border rounded-2xl border-[#88e273] " style={{ backgroundColor: "black" }}>
                                     <div className='flex items-center h-[3.5rem] '>
-                                      <Image src={img3} alt="home" className='ml-1' width={41} />
-                                      <h6 className='text-white text-sm font-medium hidden md:block body-text ml-1'>WBTC</h6>
+                                      <Image src={earthBTC} alt="home" className='ml-1' width={41} />
+                                      <h6 className='text-white text-sm font-medium hidden md:block body-text mx-2'>earthBTC</h6>
                                       <h3 className='h-full border border-[#88e273] mx-6 text-[#88e273]'></h3>
                                     </div>
                                     <div className="flex-grow h-full">
@@ -645,7 +644,7 @@ const BorrowBTCNEW = () => {
                                   </div>
                                   <div className="flex  items-center  md:mt-0 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl  border border-[#88e273] " style={{ backgroundColor: "black" }}>
                                     <div className='flex items-center h-[3.5rem] mx-1'>
-                                      <Image src={img4} alt="home" className='ml-1' />
+                                      <Image src={ORE} alt="home" className='ml-1' width={40} />
                                       <h3 className='text-white body-text ml-1 font-medium hidden md:block mr-2 mx-3'>ORE</h3>
                                       <h3 className='h-full border  border-[#88e273] mx-2  text-[#88e273]'></h3>
                                     </div>
@@ -686,13 +685,13 @@ const BorrowBTCNEW = () => {
                                     </div>
                                   </div>
                                   {
-                                    chainId !== coreTestNetChain.id ? (
+                                    chainId !== bitfinityTestNetChain.id ? (
                                       <button
-                                        onClick={() => switchChain({ chainId: coreTestNetChain.id })
+                                        onClick={() => switchChain({ chainId: bitfinityTestNetChain.id })
                                         }
                                         className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
                                       >
-                                        Switch to Core
+                                        Switch to Bitfinity
                                       </button>
                                     ) : (
                                       <button onClick={() => handleConfirmClick(userInputs.borrow, userInputs.depositCollateral)}
@@ -784,14 +783,14 @@ const BorrowBTCNEW = () => {
                                   <span className="body-text my-1  text-xs w-full whitespace-nowrap">
                                     <div className="flex items-center gap-x-1 md:gap-x-3">
                                       <span className="p-1 w-28 -ml-[5px] body-text  font-medium">
-                                        {Number(entireDebtAndColl.coll).toFixed(8)} WBTC
+                                        {Number(entireDebtAndColl.coll).toFixed(8)} earthBTC
                                       </span>
                                       {userInputColl == 1 && (
                                         <>
                                           <span className="text-[#88e273] text-lg">
-                                            <FaArrowRightLong />
+                                            <FaArrowRightLong className="ml-1" />
                                           </span>
-                                          <span className="md:ml-05 p-1 w-28 body-text font-medium">{" "}{Number(newUserColl).toFixed(8)} WBTC</span>
+                                          <span className="md:ml-05 p-1 w-28 body-text text-xs font-medium">{" "}{Number(newUserColl).toFixed(8)} earthBTC</span>
                                         </>
                                       )}
                                     </div>

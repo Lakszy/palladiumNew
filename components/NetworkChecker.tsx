@@ -4,10 +4,10 @@
 import { useEffect } from "react"
 import Web3 from "web3"
 
-const TARGET_NETWORK_ID = 1115
-const TARGET_CHAIN_NAME = "Core Testnet"
-const BOTANIX_RPC_URL = "https://rpc.test.btcs.network"
-const EXPLORER_URL = "https://scan.test.btcs.network"
+const TARGET_NETWORK_ID = 355113
+const TARGET_CHAIN_NAME = "Bitfinity Testnet"
+const BOTANIX_RPC_URL = "https://testnet.bitfinity.network"
+const EXPLORER_URL = "https://explorer.testnet.bitfinity.network"
 
 export const switchNetwork = async () => {
   try {
@@ -30,8 +30,8 @@ export const switchNetwork = async () => {
                   chainId: `0x${TARGET_NETWORK_ID.toString(16)}`,
                   chainName: TARGET_CHAIN_NAME,
                   nativeCurrency: {
-                    name: "Core TestNet",
-                    symbol: "tCORE",
+                    name: "Bitfinity",
+                    symbol: "BFT",
                     decimals: 18
                   },
                   rpcUrls: [BOTANIX_RPC_URL],
@@ -52,13 +52,13 @@ export const switchNetwork = async () => {
   }
 }
 
-export const coreTestNetChain = {
-  id: 1115,
-  name: "Core TestNet",
+export const bitfinityTestNetChain = {
+  id: 355113,
+  name: "Bitfinity TestNet",
   nativeCurrency: {
     decimals: 18,
-    name: "Core TestNet",
-    symbol: "tCORE",
+    name: "Bitfinity",
+    symbol: "BFT",
   },
   rpcUrls: {
     default: {
@@ -70,8 +70,8 @@ export const coreTestNetChain = {
   },
   blockExplorers: {
     default: {
-      url: BOTANIX_RPC_URL,
-      name: "Core TestNet Explorer"
+      url: EXPLORER_URL,
+      name: "Bitfinity TestNet Explorer"
     }
   }
 };
@@ -82,13 +82,12 @@ useEffect(() => {
     if (typeof window !== "undefined" && window.ethereum) {
       try {
         const chainIdHex = await window.ethereum.request({ method: 'eth_chainId' });
-        const chainIdDecimal = parseInt(chainIdHex, 16);
-        setChainId(chainIdDecimal);
+        const chainIdDecimal = parseInt(chainIdHex, 16)
+        setChainId(chainIdDecimal)
       } catch (error) {
-        console.error('Error fetching chain ID:', error);
+        console.error('Error fetching chain ID:', error)}
       }
     }
-  };
 
   const handleChainChanged = (newChainId: string) => {
     const newChainIdDecimal = parseInt(newChainId, 16);

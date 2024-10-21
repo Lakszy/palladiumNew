@@ -22,7 +22,7 @@ import { StabilityPoolbi } from "@/app/src/constants/abi/StabilityPoolbi";
 import { Button } from "../ui/button";
 import { Dialog } from "primereact/dialog";
 import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
-import { coreTestNetChain, useEthereumChainId } from "../NetworkChecker";
+import { bitfinityTestNetChain, useEthereumChainId } from "../NetworkChecker";
 import { useSwitchChain } from 'wagmi'
 import { EVMConnect } from "../../app/src/config/EVMConnect";
 
@@ -56,7 +56,7 @@ const Claim = () => {
   const [depositorGains, setDepositorGains] = useState<{
     [key: string]: string;
   }>({});
-  const [chainId, setChainId] = useState(1115);
+  const [chainId, setChainId] = useState(355113);
   useEthereumChainId(setChainId)
 
   const handleClose = useCallback(() => {
@@ -69,14 +69,8 @@ const Claim = () => {
 
   const collateralTokens = [
     {
-      name: "WCORE",
-      address: "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
-      oracle: "0xdd68eE1b8b48e63909e29379dBe427f47CFf6BD0",
-    },
-    {
-      name: "WBTC",
-      address: "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
-      oracle: "0x81A64473D102b38eDcf35A7675654768D11d7e24",
+      name: "earthBTC",
+      address: "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
     },
 
   ];
@@ -85,9 +79,9 @@ const Claim = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("https://api.palladiumlabs.org/core/protocol/metrics");
+        const response = await fetch("https://api.palladiumlabs.org/bitfinity/protocol/metrics");
         const data = await response.json();
-        const protocolMetrics = data[0].metrics[1];
+        const protocolMetrics = data[0].metrics[0];
         const protocolMetricsBTC = data[0].metrics[0];
         setFetchedPriceBTC(protocolMetricsBTC.price);
         setFetchedPrice(protocolMetrics.price);
@@ -140,8 +134,7 @@ const Claim = () => {
           await stabilityPoolContractReadOnly.getDepositorGains(
             walletClient?.account.address,
             [
-              "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
-              "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
+              "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
             ],
           );
         setDepositorAssets(returnedAssets);
@@ -166,13 +159,12 @@ const Claim = () => {
 
       await writeContract({
         abi: StabilityPoolbi,
-        address: "0x12B1c7fC9C02fe522Eb53F5654F31155FAa855b4", // STABILITY POOL contract address
+        address: "0x955494Ae78369d0A224D05d7DD5Bc8d9804bF082", // STABILITY POOL contract address
         functionName: "withdrawFromSP",
         args: [
           inputBigInt,
           [
-            "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f",
-            "0x5FB4E66C918f155a42d4551e871AD3b70c52275d",
+            "0x222c21111dDde68e6eaC2fCde374761E72c45FFe",
           ],
         ],
         value: undefined,
@@ -231,17 +223,13 @@ const Claim = () => {
     return acc;
   }, {} as { [key: string]: string });
 
-  const wcoreGains = Number(allTokenGains["WCORE"]);
-  const wbtcGains = Number(allTokenGains["WBTC"]);
+  const wbtcGains = Number(allTokenGains["earthBTC"]);
 
-  const totalClaimValue = Number((wcoreGains * fetchedPrice) + (wbtcGains * fetchedPriceBTC)).toFixed(2);
+  const totalClaimValue = Number((wbtcGains * fetchedPriceBTC)).toFixed(2);
 
   const isButtonEnabled = Number(totalClaimValue) > 0;
 
-  const assets = [
-    { name: "WCORE", amount: wcoreGains, marketPrice: fetchedPrice, decimals: 2 },
-    { name: "WBTC", amount: wbtcGains, marketPrice: fetchedPriceBTC, decimals: 2 },
-  ];
+  const assets = [{ name: "earthBTC", amount: wbtcGains, marketPrice: fetchedPriceBTC, decimals: 2 }];
 
   return (
     <div className="p-4 md:p-8 w-full md:h-[25.6rem] border-[#88e273] bg-black text-white border rounded-none">
@@ -251,7 +239,6 @@ const Claim = () => {
             <div className="text-gray-400 body-text font-medium pb-4 pl-2">Assets</div>
             <div className="text-gray-400 body-text font-medium whitespace-nowrap pb-4">Market Price</div>
             <div className="text-gray-400 body-text font-medium pb-4">Claim Value</div>
-
             {assets.map((asset, index) => (
               <React.Fragment key={index}>
                 <div className="py-2 px-1 md:px-2 body-text font-medium flex items-center">
@@ -282,10 +269,7 @@ const Claim = () => {
               </div>
               {Object.entries(allTokenGains).map(([token, amount]) => {
                 let formattedAmount;
-
-                if (token === "WCORE") {
-                  formattedAmount = parseFloat(amount).toFixed(2);
-                } else if (token === "WBTC") {
+                 if (token === "earthBTC") {
                   formattedAmount = parseFloat(amount).toFixed(8);
                 } else {
                   formattedAmount = parseFloat(amount).toFixed(6);
@@ -306,12 +290,12 @@ const Claim = () => {
             </div>
           </div>
           {isConnected ? (
-            chainId !== coreTestNetChain.id ? (
+            chainId !== bitfinityTestNetChain.id ? (
               <button
-                onClick={() => switchChain({ chainId: coreTestNetChain.id })}
+                onClick={() => switchChain({ chainId: bitfinityTestNetChain.id })}
                 className="mt-2 text-black text-md font-semibold w-full border  border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none rounded-3xl"
               >
-                Switch to Core
+                Switch to Bitfinity
               </button>
             ) : (
               <button
