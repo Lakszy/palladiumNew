@@ -597,9 +597,9 @@ const BorrowBTCNEW = () => {
                             <div>
                               <div className="grid w-full  space-y-7  max-w-sm items-start gap-2 mx-auto p-7  md:p-5">
                                 <div className="relative">
-                                  <Label htmlFor="items" className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-11 ">
+                                  <div className="text-[#84827a] font-medium body-text  text-base mb-2 md:-ml-0 -ml-11 ">
                                     Deposit Collateral
-                                  </Label>
+                                  </div>
                                   <div className="flex items-center mt-4 md:-ml-0 -ml-11 border rounded-2xl border-[#88e273] " style={{ backgroundColor: "black" }}>
                                     <div className='flex items-center h-[3.5rem] '>
                                       <Image src={earthBTC} alt="home" className='ml-1' width={41} />
