@@ -29,6 +29,7 @@ import { Tooltip } from "primereact/tooltip";
 import Web3 from "web3";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import { bitfinityTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
+import { Input } from "@/components/ui/input";
 
 export const OpenTroveBTC = () => {
     const [userInputs, setUserInputs] = useState({
@@ -399,7 +400,7 @@ export const OpenTroveBTC = () => {
                                     <div className='h-full border border-[#88e273] mx-3'></div>
                                 </div>
                                 <div className="flex-grow h-[3.5rem]">
-                                    <input
+                                    <Input
                                         id="items"
                                         placeholder=""
                                         value={userInputs.collatoral}
@@ -434,7 +435,7 @@ export const OpenTroveBTC = () => {
                                     <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1 ml-[0.9rem]'>ORE</h3>
                                     <div className='h-full border border-[#88e273] mx-3'></div>
                                 </div>
-                                <input id="quantity" placeholder=""
+                                <Input id="quantity" placeholder=""
                                     value={userInputs.borrow}
                                     onChange={(e) => {
                                         const newBorrowValue = e.target.value;

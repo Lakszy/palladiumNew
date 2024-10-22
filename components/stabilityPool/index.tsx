@@ -25,6 +25,7 @@ import wbtc from "../../app/assets/images/btccc.svg";
 import { EVMConnect } from "../../app/src/config/EVMConnect";
 import { bitfinityTestNetChain, useEthereumChainId } from "../NetworkChecker";
 import { useSwitchChain } from 'wagmi'
+import { Input } from "../ui/input";
 
 export const StabilityPool = () => {
   const [userInput, setUserInput] = useState("0");
@@ -194,7 +195,7 @@ export const StabilityPool = () => {
             <h3 className="text-white body-text ml-1 hidden md:block">ORE</h3>
             <div className="h-full border border-[#88e273] rounded-lg mx-3"></div>
             <div className="flex-grow h-full">
-              <input id="items" placeholder="Enter Collateral Amount"
+              <Input id="items" placeholder="Enter Collateral Amount"
                 disabled={!isConnected} value={userInput}
                 onChange={(e) => { const input = e.target.value; setUserInput(input); }}
                 className="w-full h-full 

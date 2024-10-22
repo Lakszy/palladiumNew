@@ -39,6 +39,7 @@ import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
 import { Tooltip } from "primereact/tooltip";
 import { useAccounts } from "@particle-network/btc-connectkit";
 import { useWalletAddress } from "@/components/useWalletAddress";
+import { Input } from "@/components/ui/input";
 
 const Borrow = () => {
   const [userInputs, setUserInputs] = useState({
@@ -493,7 +494,7 @@ const Borrow = () => {
                                       <h3 className='h-full border border-[#88e273] mx-4 text-[#88e273]'></h3>
                                     </div>
                                     <div className=" justify-between items-center flex gap-x-24">
-                                      <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e) => {
+                                      <Input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.depositCollateral} onChange={(e) => {
                                         const newCollValue = e.target.value;
                                         setUserInputs({ ...userInputs, depositCollateral: newCollValue });
                                       }}
@@ -532,7 +533,7 @@ const Borrow = () => {
                                       <h3 className='text-white body-text ml-1 font-medium hidden md:block '>ORE</h3>
                                       <h3 className='h-full border  border-[#88e273] mx-2  text-[#88e273]'></h3>
                                     </div>
-                                    <input id="items" placeholder='Enter Collateral Amount'
+                                    <Input id="items" placeholder='Enter Collateral Amount'
                                       disabled={!(isConnected)} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
                                       onChange={(e) => {
                                         const newBorrowValue = e.target.value;

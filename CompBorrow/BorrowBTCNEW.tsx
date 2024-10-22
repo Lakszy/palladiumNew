@@ -41,6 +41,7 @@ import { RepayBTC } from "@/app/trove/RepayBTC";
 import { CloseTroveBTC } from "@/app/trove/CloseTroveBTC";
 import { OpenTroveBTC } from "@/app/trove/OpenTroveBTC";
 import { bitfinityTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
+import { Input } from "@/components/ui/input";
 
 const BorrowBTCNEW = () => {
   const [userInputs, setUserInputs] = useState({
@@ -606,7 +607,7 @@ const BorrowBTCNEW = () => {
                                       <h3 className='h-full border border-[#88e273] mx-6 text-[#88e273]'></h3>
                                     </div>
                                     <div className="flex-grow h-full">
-                                      <input id="items" placeholder='' disabled={!(isConnected)}
+                                      <Input id="items" placeholder='' disabled={!(isConnected)}
                                       value={userInputs.depositCollateral} onChange={(e) => {
                                         const newCollValue = e.target.value;
                                         setUserInputs({ ...userInputs, depositCollateral: newCollValue });
@@ -649,7 +650,7 @@ const BorrowBTCNEW = () => {
                                       <h3 className='h-full border  border-[#88e273] mx-2  text-[#88e273]'></h3>
                                     </div>
                                   <div className="flex-grow h-full">
-                                    <input id="items" placeholder='Enter Collateral Amount'
+                                    <Input id="items" placeholder='Enter Collateral Amount'
                                       disabled={!(isConnected)} value={Math.trunc(Number(userInputs.borrow) * 100) / 100}
                                       onChange={(e) => {
                                         const newBorrowValue = e.target.value;

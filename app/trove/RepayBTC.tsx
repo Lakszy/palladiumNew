@@ -28,6 +28,7 @@ import { Tooltip } from "primereact/tooltip";
 import Web3 from "web3";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import { bitfinityTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
+import { Input } from "@/components/ui/input";
 
 interface Props {
   coll: number;
@@ -345,7 +346,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
                 <h3 className='h-full border border-[#88e273] mx-4 text-[#88e273]'></h3>
               </div>
               <div className="flex-grow h-full">
-              <input id="items" placeholder=''
+              <Input id="items" placeholder=''
                 disabled={!(isConnected)}
                 value={userInputs.lusdAmount}
                 onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }}
@@ -387,7 +388,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
                 <div className='h-full border rounded-lg border-[#88e273] mx-3'></div>
               </div>
               <div className="flex-grow h-full">
-                <input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.coll} onChange={(e) => {
+                <Input id="items" placeholder='' disabled={!(isConnected)} value={userInputs.coll} onChange={(e) => {
                   const newCollValue = e.target.value;
                   setUserInputs({ ...userInputs, coll: newCollValue, });
                 }}

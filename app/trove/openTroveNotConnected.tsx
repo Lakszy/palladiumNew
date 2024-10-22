@@ -8,6 +8,7 @@ import Image from 'next/image';
 import "../../app/App.css"
 import { EVMConnect } from '@/app/src/config/EVMConnect';
 import { Label } from "@radix-ui/react-label";
+import { Input } from '@/components/ui/input';
 
 
 const OpenTroveNotConnected = () => {
@@ -45,7 +46,7 @@ const OpenTroveNotConnected = () => {
                   <h3 className='text-white body-text ml-1 font-medium '>earthBTC</h3>
                   <h3 className='h-full border   border-[#88e273] mx-3  text-[#88e273]'></h3>
                 </div>
-                <input id="items" placeholder="" disabled onChange={(e) => { const newCollValue = e.target.value; }} className="w-full body-text text-sm text-gray-400 whitespace-nowrap cursor-not-allowed ml-1 h-[4rem] rounded-2xl " style={{ backgroundColor: "black" }} />
+                <Input id="items" placeholder="" disabled onChange={(e) => { const newCollValue = e.target.value; }} className="w-full body-text text-sm text-gray-400 whitespace-nowrap cursor-not-allowed ml-1 h-[4rem] rounded-2xl " style={{ backgroundColor: "black" }} />
               </div>
               <span className="body-text font-medium text-gray-500 text-sm">
                 Availabe
@@ -63,7 +64,7 @@ const OpenTroveNotConnected = () => {
                   <h3 className='text-white body-text ml-1 font-medium '>ORE</h3>
                   <h3 className='h-full border   border-[#88e273] mx-3   text-[#88e273]'></h3>
                 </div>
-                <input id="items" placeholder="" disabled onChange={(e) => { const newCollValue = e.target.value; }} className="md:w-[23.75rem]  body-text text-sm text-gray-400 whitespace-nowrap rounded-2xl cursor-not-allowed ml-1 h-[4rem] " style={{ backgroundColor: "black" }} />
+                <Input id="items" placeholder="" disabled onChange={(e) => { const newCollValue = e.target.value; }} className="md:w-[23.75rem]  body-text text-sm text-gray-400 whitespace-nowrap rounded-2xl cursor-not-allowed ml-1 h-[4rem] " style={{ backgroundColor: "black" }} />
               </div>
               <div className="mt-05 body-text font-medium text-gray-500 text-sm">
                 Available

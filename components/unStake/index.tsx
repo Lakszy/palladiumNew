@@ -29,6 +29,7 @@ import { EVMConnect } from "../../app/src/config/EVMConnect";
 import wbtc from "../../app/assets/images/btccc.svg";
 import { bitfinityTestNetChain, useEthereumChainId } from "../NetworkChecker";
 import { useSwitchChain } from 'wagmi'
+import { Input } from "../ui/input";
 
 export const Unstake = () => {
   const [userInput, setUserInput] = useState("0");
@@ -198,7 +199,7 @@ export const Unstake = () => {
             </h3>
             <div className="h-full border border-[#88e273] rounded-lg mx-3"></div>
             <div className="flex-grow h-full">
-              <input id="items"
+              <Input id="items"
                 placeholder="0.000 earthBTC"
                 disabled={!isConnected}
                 value={userInput}
