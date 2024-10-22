@@ -187,7 +187,7 @@ export const StabilityPool = () => {
     <div className="grid bg-[black] -mt-10 items-start h-72 space-y-8  gap-2 mx-auto rounded-lg  border-[#88e273] p-7">
       <div className=" mt-10 md:mt-0">
         <div
-          className="flex items-center mb-2 mt-4 md:-ml-0 -ml- border rounded-lg border-[#88e273]"
+          className="flex items-center mb-2 mt-4 border rounded-lg border-[#88e273]"
           style={{ backgroundColor: "black" }}
         >
           <div className="flex items-center w-full h-[3.5rem]">
@@ -198,12 +198,13 @@ export const StabilityPool = () => {
               <Input id="items" placeholder="Enter Collateral Amount"
                 disabled={!isConnected} value={userInput}
                 onChange={(e) => { const input = e.target.value; setUserInput(input); }}
-                className="w-full h-full 
-               body-text text-sm text-white full-input px-2"
+                className="w-[104%] h-full -ml-[0.75rem] 
+               body-text text-sm text-white full-input"
                 style={{
                   backgroundColor: "black",
                   outline: "none",
-                  borderRight: "1px solid #88e273",
+                  border: "none",
+                  borderRight: "0px solid #88e273",
                   borderRadius: "0 0.5rem 0.5rem 0",
                 }}
               />

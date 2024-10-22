@@ -191,7 +191,7 @@ export const Unstake = () => {
   return (
     <div className="grid space-y-8 bg-[black] items-start md:h-66 gap-2 mx-auto p-7">
       <div className="">
-        <div className="flex items-center mt-4 mb-2 md:-ml-0 -ml-0 rounded-lg parent-div border border-[#88e273]" style={{ backgroundColor: "black" }}>
+        <div className="flex items-center mt-4 mb-2 rounded-lg parent-div border border-[#88e273]" style={{ backgroundColor: "black" }}>
           <div className="flex items-center w-full h-[3.5rem]">
             <Image src={ORE} alt="home" className="ml-1" width={30} />
             <h3 className="text-white body-text ml-1 hidden md:block">
@@ -207,12 +207,13 @@ export const Unstake = () => {
                   const input = e.target.value;
                   setUserInput(input);
                 }}
-                className="w-full h-full 
+                className="w-[104%] -ml-[0.75rem]  h-full 
                   body-text text-sm text-white full-input px-2"
                 style={{
                   backgroundColor: "black",
                   outline: "none",
-                  borderRight: "1px solid #88e273",
+                  border: "none",
+                  borderRight: "0px solid #88e273",
                   borderRadius: "0 0.5rem 0.5rem 0",
                 }}
               />

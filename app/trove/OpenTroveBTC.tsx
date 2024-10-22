@@ -1,6 +1,5 @@
 "use client";
 
-import { Label } from "@/components/ui/label";
 import hintHelpersAbi from "../src/constants/abi/HintHelpers.sol.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
@@ -10,7 +9,6 @@ import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
 import info from "../assets/images/info.svg";
-import btc from "../assets/images/Group 666.svg";
 import rej from "../assets/images/TxnError.gif";
 import conf from "../assets/images/conf.gif"
 import rec2 from "../assets/images/rec2.gif"
@@ -229,7 +227,7 @@ export const OpenTroveBTC = () => {
     const fetchPrice = async () => {
         if (!walletClient) return null;
         const collateralValue = await erc20Contract.balanceOf(walletClient?.account?.address);
-        console.log(collateralValue,"collateralValue")
+        console.log(collateralValue, "collateralValue")
         const collateralValueFormatted = ethers.formatUnits(collateralValue, 18)
         setBalanceData(collateralValueFormatted)
     };
@@ -392,7 +390,7 @@ export const OpenTroveBTC = () => {
                 <div className="container flex flex-col md:flex-row justify-between gap-x-28 md:-mt-6">
                     <div className="grid w-1/2 items-start space-y-7 gap-2 text-white md:p-5">
                         <div className="w-full">
-                            <Label htmlFor="items" className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collateral</Label>
+                            <div  className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collateral</div>
                             <div className="flex md:w-[90%] rounded-3xl items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-[#88e273]">
                                 <div className='flex items-center  h-[3.5rem] '>
                                     <Image src={earthBTC} alt="home" className='ml-1' width={43} />
@@ -410,7 +408,11 @@ export const OpenTroveBTC = () => {
                                             makeCalculations(userInputs.borrow, newCollValue || "0");
                                         }}
                                         className="w-[80%] ml-1 h-full body-text font-medium text-gray-400 pl-3"
-                                        style={{ backgroundColor: "black", outline: "none", border: "none" }}
+                                        style={{
+                                            backgroundColor: "black", outline: "none", border: "none",
+                                            marginLeft: "-1.1rem",
+                                            borderRadius: "0 0.5rem 0.5rem 0",
+                                        }}
                                     />
                                 </div>
                                 <span className="md:max-w-[fit] md:p-2 mr-1 md:mr-0 font-medium text-gray-400 body-text  ">${totalCollateral.toFixed(2)}</span>
@@ -428,23 +430,35 @@ export const OpenTroveBTC = () => {
                             </div>
                         </div>
                         <div className="w-full">
-                            <Label className="text-[#827f77] md:-ml-0 -ml-2   body-text text-lg" htmlFor="quantity">Borrow ORE</Label>
-                            <div className="flex  md:w-[90%] rounded-3xl items-center md:space-x-2 mt-[10px] -ml-3 md:-ml-0 border border-[#88e273]">
-                                <div className='flex items-center h-[3.5rem] '>
-                                    <Image src={ORE} alt="home" className='ml-1' width={40}/>
+                            <div className="text-[#827f77] md:-ml-0 -ml-2   body-text text-lg">Borrow ORE</div>
+                            <div className="flex md:w-[90%] rounded-3xl h-[3.5rem] items-center md:space-x2 mt-[10px] -ml-3 md:-ml-0 border border-[#88e273] parent-div">
+                                <div className='flex items-center h-[3.5rem]'>
+                                    <Image src={ORE} alt="home" className='ml-1' width={40} />
                                     <h3 className='text-gray-400 body-text font-medium hidden md:block mx-1 ml-[0.9rem]'>ORE</h3>
                                     <div className='h-full border border-[#88e273] mx-3'></div>
                                 </div>
-                                <Input id="quantity" placeholder=""
-                                    value={userInputs.borrow}
-                                    onChange={(e) => {
-                                        const newBorrowValue = e.target.value;
-                                        setUserInputs({ ...userInputs, borrow: newBorrowValue });
-                                        makeCalculations(userInputs.collatoral, newBorrowValue || "0");
-                                    }}
-                                    className="w-[80%] ml-1 h-full body-text font-medium text-gray-400 pl-3"
-                                    style={{ backgroundColor: "black", outline: "none", border: "none" }}
-                                />
+                                <div className="flex-grow h-[3.5rem] mt-[20px]">
+
+                                    <Input
+                                        id="quantity"
+                                        placeholder=""
+                                        value={userInputs.borrow}
+                                        onChange={(e) => {
+                                            const newBorrowValue = e.target.value;
+                                            setUserInputs({ ...userInputs, borrow: newBorrowValue });
+                                            makeCalculations(userInputs.collatoral, newBorrowValue || "0");
+                                        }}
+                                        className=" h-10 border-dashed border-white text-gray-400 body-text font-medium"
+                                        style={{
+                                            backgroundColor: "black",
+                                            outline: "none",
+                                            border: "none",
+                                            // flex: "1",
+                                            marginLeft: "-0.4rem",
+                                            borderRadius: "0 0.5rem 0.5rem 0",
+                                        }}
+                                    />
+                                </div>
                             </div>
                             <div className="pt-2 flex flex-col md:flex-row md:-ml-0 -ml-5 mt-[10px]   items-center justify-between  p-2">
                                 <span className={`text-sm font-medium w-full body-text whitespace-nowrap ${parseFloat(userInputs.borrow) > maxBorrow ? 'text-red-500' : 'text-white'}`}>

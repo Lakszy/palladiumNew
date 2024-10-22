@@ -31,17 +31,17 @@ interface Props {
 }
 
 export const CloseTroveBTC: React.FC<Props> = ({ entireDebtAndColl, debt, liquidationReserve }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLowBalance, setIsLowBalance] = useState(false);
   const { switchChain } = useSwitchChain()
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [loadingModalVisible, setLoadingModalVisible] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
+  const [userModal, setUserModal] = useState(false);
   const { data: walletClient } = useWalletClient();
   const { address } = useAccount();
   const [afterLoad, setAfterload] = useState(false);
   const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
   const [pusdBalance, setPusdBalance] = useState("0");
-  const [userModal, setUserModal] = useState(false);
   const [showCloseButton, setShowCloseButton] = useState(false);
   const { data: hash, writeContract, error: writeError } = useWriteContract();
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });

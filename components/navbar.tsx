@@ -1,24 +1,51 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { Toast } from "primereact/toast";
 import ORE from "../app/assets/images/ORE.png";
+import rej from "../app/assets/images/TxnError.gif";
+import info from "../app/assets/images/info.svg";
+import conf from "../app/assets/images/conf.gif"
+import rec2 from "../app/assets/images/rec2.gif"
+import tick from "../app/assets/images/tick.gif"
 import earthBTC from "../app/assets/images/earthBTC.png";
 import FaucetAbi from "./FaucetAbi.sol.json";
 import { EVMConnect } from "../app/src/config/EVMConnect";
-import { useWalletClient, useWriteContract } from "wagmi";
+import { useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import MobileNav from "./MobileNav";
-import { ethers } from "ethers";
 import "./navbar.css";
-import { BOTANIX_RPC_URL } from "@/app/src/constants/botanixRpcUrl";
+import { bitfinityTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
+import { Dialog } from "primereact/dialog";
+import { Button } from "./ui/button";
 
 function NavBar() {
   const [fetchedPriceBTC, setFetchedPriceBTC] = useState(0);
   const { data: isConnected } = useWalletClient();
-  const { data: hash, writeContract, error: writeError } = useWriteContract()
+  const { switchChain } = useSwitchChain()
   const [fetchedPriceORE, setFetchedPriceORE] = useState(0);
   const toast = useRef<Toast>(null);
+  const [chainId, setChainId] = useState(355113);
+  useEthereumChainId(setChainId)
+
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [loadingModalVisible, setLoadingModalVisible] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+  const [userModal, setUserModal] = useState(false);
+
+  const [showCloseButton, setShowCloseButton] = useState(false);
+  const { data: hash, writeContract, error: writeError } = useWriteContract();
+  const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
+  const [transactionRejected, setTransactionRejected] = useState(false);
   const { data: walletClient } = useWalletClient();
 
+
+  const handleClose = useCallback(() => {
+    setLoadingModalVisible(false);
+    setUserModal(false);
+    setIsModalVisible(false);
+    setTransactionRejected(false);
+    window.location.reload();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -71,10 +98,9 @@ function NavBar() {
   };
 
   const handleClaimTokens = async () => {
-    if (!walletClient) {
-      console.error("Wallet not connected");
-      return;
-    }
+    setIsModalVisible(true);
+    if (!walletClient) return;
+
     try {
       await writeContract({
         abi: FaucetAbi,
@@ -83,8 +109,49 @@ function NavBar() {
       });
     } catch (error) {
       console.error("Error claiming tokens:", error);
+      setTransactionRejected(true);
     }
   };
+
+  useEffect(() => {
+    if (writeError) {
+      console.error('Write contract error:', writeError);
+      setTransactionRejected(true);
+      setUserModal(true);
+    }
+  }, [writeError]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setIsModalVisible(false);
+      setLoadingMessage("Waiting for transaction to confirm..");
+      setLoadingModalVisible(true);
+    } else if (isSuccess) {
+      setLoadingMessage("Close Transaction completed successfully");
+      setLoadingModalVisible(true);
+    } else if (transactionRejected) {
+      setLoadingMessage("Transaction was rejected");
+      setLoadingModalVisible(true);
+    }
+  }, [isSuccess, isLoading, transactionRejected]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowCloseButton(true);
+    }, 180000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const renderHeader = () => {
+    return (
+      <div className="flex justify-content-between align-items-center">
+        <Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>
+          Close
+        </Button>
+      </div>
+    );
+  };
+
 
   return (
     <>
@@ -95,6 +162,7 @@ function NavBar() {
         <div className="md:hidden m-2">
           <EVMConnect className="" />
         </div>
+
       </div>
       <Toast ref={toast} className="custom-toast" />
       <div className="md:flex border-2 hidden w-full border-gray-100 border-opacity-10 items-center justify-between gap-x-4 border-l px-4 py-4 z-50" style={{ backgroundColor: "black" }}>
@@ -123,19 +191,82 @@ function NavBar() {
               </div>
             </div>
             {isConnected ? (
-              <button
-                className="earthBTC-faucet-button rounded-3xl text-black title-text bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] font-bold py-2 px-4"
-                onClick={handleClaimTokens}
-              >
-                Claim earthBTC
-              </button>
+              chainId !== bitfinityTestNetChain?.id ? (
+                <button
+                  onClick={() => switchChain({ chainId: bitfinityTestNetChain.id })}
+                  className="earthBTC-faucet-button rounded-3xl text-black title-text bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] font-bold py-2 px-4"
+                >
+                  Switch to Bitfinity
+                </button>
+              ) : (
+                <button
+                  className="earthBTC-faucet-button rounded-3xl text-black title-text bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] font-bold py-2 px-4"
+                  onClick={handleClaimTokens}
+                >
+                  Claim earthBTC
+                </button>
+              )
             ) : (
               <></>
             )}
+
           </div>
         </div>
         <EVMConnect className="" />
       </div>
+      <Dialog visible={isModalVisible} onHide={() => setIsModalVisible(false)} className="dialog-overlay-wrapper">
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            <div className="py-5">
+              <Image src={rec2} alt="box" width={140}  className="ml-16  p-2" />
+            </div>
+            <div className="p-5">
+              <div className="waiting-message text-lg title-text2 text-[#88e273] whitespace-nowrap">Transaction is initiated</div>
+              <div className="text-sm title-text2 text-[#bebdb9] whitespace-nowrap">Please confirm in Metamask.</div>
+            </div>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog visible={userModal} onHide={() => setUserModal(false)} className="dialog-overlay-wrapper">
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            <div className="p-5">
+              <div className="waiting-message text-lg title-text text-white whitespace-nowrap">Transaction rejected</div>
+              <Button className="p-button-rounded p-button-text" onClick={() => setUserModal(false)}>Close</Button>
+            </div>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog visible={loadingModalVisible} onHide={() => setLoadingModalVisible(false)} className="dialog-overlay-wrapper">
+        <div className="dialog-overlay">
+          <div className="dialog-content">
+            <div className="p-5">
+              {loadingMessage === 'Waiting for transaction to confirm..' ? (
+                <>
+                  <Image src={conf} alt="rectangle" width={150} className="ml-20  p-2" />
+                  <div className="my-5 ml-[6rem] mb-5"></div>
+                </>
+              ) : loadingMessage === 'Close Transaction completed successfully' ? (
+                <Image src={tick} alt="tick" width={200} className="ml-20  p-2" />
+              ) : transactionRejected ? (
+                <Image src={rej} alt="rejected" width={140} className="ml-20  p-2" />
+              ) : (
+                <Image src={conf} alt="box" width={140} className="ml-20  p-2"/>
+              )}
+              <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
+              {isSuccess && (
+                <button className="mt-1 p-3 text-black title-text2 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Okay</button>
+              )}
+              {(transactionRejected || (!isSuccess && showCloseButton)) && (
+                <>
+                  <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
+                  <Button className=" mt-1 p-3 rounded-none md:w-[20rem] text-black title-text2 hover:bg-[#88e273] hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </Dialog>
 
     </>
   );

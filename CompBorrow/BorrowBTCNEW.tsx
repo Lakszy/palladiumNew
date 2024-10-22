@@ -639,9 +639,9 @@ const BorrowBTCNEW = () => {
                                 </div>
                                 <div className="relative ">
                                   <div className="mb-4">
-                                    <Label htmlFor="quantity" className="text-[#84827a] font-medium md:-ml-0 p-1 -ml-11 body-text text-base">
+                                    <div className="text-[#84827a] font-medium md:-ml-0 p-1 -ml-11 body-text text-base">
                                       Borrow
-                                    </Label>
+                                    </div>
                                   </div>
                                   <div className="flex  items-center  md:mt-0 w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl  border border-[#88e273] " style={{ backgroundColor: "black" }}>
                                     <div className='flex items-center h-[3.5rem] mx-1'>

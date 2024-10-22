@@ -336,9 +336,9 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
       <div>
         <div className="grid w-full space-y-7  max-w-sm items-start gap-2 mx-auto p-7 md:p-5">
           <div className="relative">
-            <Label htmlFor="quantity" className="text-[#84827a] font-medium md:-ml-0 mb-2 -ml-10 body-text text-base">
+            <div className="text-[#84827a] font-medium md:-ml-0 mb-2 -ml-10 body-text text-base">
               Repay ORE
-            </Label>
+            </div>
             <div className="flex items-center mt-4 w-[19rem] bg-black md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl  border border-[#88e273] " style={{ backgroundColor: "bg-transparent" }}>
               <div className='flex items-center h-[3.5rem] '>
                 <Image src={ORE} alt="home" className='ml-1' width={35} />
@@ -377,9 +377,9 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
           </div>
           <div className="relative">
             <div className="mb-4">
-              <Label htmlFor="items" className="text-[#84827a]  font-medium md:-ml-0 -ml-10 body-text text-base">
+              <div  className="text-[#84827a]  font-medium md:-ml-0 -ml-10 body-text text-base">
                 Withdraw Collateral
-              </Label>
+              </div>
             </div>
             <div className="flex mt-2 md:mt-0 items-center w-[19rem] md:w-[24rem] md:-ml-0 -ml-11 rounded-2xl  border border-[#88e273] " style={{ backgroundColor: "black" }}>
               <div className='flex items-center h-[3.5rem] '>
@@ -392,7 +392,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
                   const newCollValue = e.target.value;
                   setUserInputs({ ...userInputs, coll: newCollValue, });
                 }}
-                className="w-[80%] h-full ml-1 body-text font-medium text-gray-400 pl-3"
+                className="w-[80%] h-full ml-3 body-text font-medium text-gray-400 pl-3"
                 style={{ backgroundColor: "black", outline: "none", border: "none" }}
               />
               </div>
