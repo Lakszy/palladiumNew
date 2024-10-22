@@ -109,7 +109,7 @@ const Portfolio = () => {
         const response = await fetch("https://api.palladiumlabs.org/bitfinity/protocol/metrics");
         const data = await response.json();
         const protocolMetricsBTC = data[0].metrics[0];
-console.log(protocolMetricsBTC,'aaaa')
+        console.log(protocolMetricsBTC, 'aaaa')
         setRecoveryMode(protocolMetricsBTC.recoveryMode);
 
         setFetchedPriceBTC(protocolMetricsBTC.price)
@@ -571,23 +571,12 @@ console.log(protocolMetricsBTC,'aaaa')
                     style={{ backgroundColor: "#272315" }}
                   />
                   <label htmlFor="tab1"><span className="md:body-text body-text">Troves</span></label>
-
-                  <input
-                    id="tab2"
-                    type="radio"
-                    name="tabs"
-                    checked={activeTab === 'tab2'}
-                    onChange={() => setActiveTab('tab2')}
-                    style={{ backgroundColor: "#272315" }}
-                  />
+                  <input id="tab2" type="radio" name="tabs" checked={activeTab === 'tab2'} onChange={() => setActiveTab('tab2')} style={{ backgroundColor: "#272315" }} />
                   <label htmlFor="tab2"><span className="whitespace-nowrap md:body-text body-text">Stability Pool</span></label>
-
                   {activeTab === 'tab1' && (
-                    <section id="content1" className="tab-content flex md:flex-row flex-col" style={{ borderTop: "1px solid #88e273", backgroundColor: "black", display: "flex", gap: "1rem" }}>
-
-
+                    <section id="content1" className="tab-content w-1/2 flex md:flex-row flex-col" style={{ borderTop: "1px solid #88e273", backgroundColor: "black", display: "flex", gap: "1rem" }}>
                       {/* Card 1 */}
-                      <div className={`bg-[#222222] border w-1/2 rounded-lg text-white  md:p-6 md:mb-0 mb-3 p-3  md:h-[38rem] flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "space-y-4" : "space-y-24"}`}>
+                      <div className={`bg-[#222222] md:w-1/2   rounded-lg text-white md:p-6 md:mb-0 mb-3 p-3   flex-1 mx-2 ${troveStatusBTC === "ACTIVE" ? "-space-y-1" : "space-y-16"}`}>
                         <div className="flex  gap-x-2 justify-between items-center ">
                           <div className='flex  items-center gap-x-1'>
                             <Image src={earthBTC} alt="btc" />
@@ -613,45 +602,22 @@ console.log(protocolMetricsBTC,'aaaa')
 
                         {troveStatusBTC === "ACTIVE" ? (
                           <>
-                            <div className="flex justify-around items-center">
-                              <div className=' w-1/2 h-full space-y-1 md:-mt-10'>
-                                <p className="text-gray-500 text-sm body-text">Trove Status</p>
-                                {troveStatusBTC === "ACTIVE" && (
-                                  <Image src={ACTIVE} alt="status-icon" className='-ml-1' width={120} height={100} />
-                                )}
-                              </div>
-                              <div className=' flex items-center flex-col'>
-                                <Knob value={Number(newLTVBTC) || 0} min={0} max={90} showValue={true} size={135} valueColor="#3dde84" strokeWidth={7} readOnly className="text-[#88e273]" />
-                                <p className="text-gray-500 body-text">Your LTV</p>
-                              </div>
-                            </div>
-                            <div className='p-3 grid grid-cols-3 space-y-8  items-center justify-around'>
-                              <div className="text-left mt-1">
-                                <p className="text-gray-500  text-sm body-text">Collateral</p>
-                                <p className="body-text font-medium  whitespace-nowrap">{Number(entireDebtAndCollBTC.collBTC).toFixed(8)} earthBTC</p>
-                                <p className="text-sm body-text text-gray-500">
-                                  ${(Number(entireDebtAndCollBTC.collBTC) * fetchedPriceBTC).toFixed(8)}
-                                </p>
-                              </div>
-                              <div className="text-center">
-                                <p className="text-gray-500 text-sm body-text">Debt</p>
-                                <p className="body-text font-medium">{entireDebtAndCollBTC.debtBTC} earthBTC</p>
+                            <div className='p-3 grid grid-cols-2 pt-0 space-y-16  items-center justify-around'>
+                              <div className="text-left">
+                                <p className="text-gray-500 text-sm body-text">Max LTV</p>
+                                <p className="body-text font-medium text-[14px]">{(100 / mCRBTC).toFixed(2)}%</p>
                               </div>
                               <div className="text-right">
-                                <p className="text-gray-500 text-sm body-text">Max LTV</p>
-                                <p className="body-text font-medium ">{(100 / mCRBTC).toFixed(2)}%</p>
+                                <p className="text-gray-500 text-sm body-text">One-time Fee</p>
+                                <p className="body-text font-medium text-[14px]">{borrowRateBTC * 100}%</p>
                               </div>
                               <div className="text-left">
-                                <p className="text-gray-500 text-sm body-text">One-time Fee</p>
-                                <p className="body-text font-medium">{borrowRateBTC * 100}%</p>
-                              </div>
-                              <div className="text-center">
                                 <p className="text-gray-500 text-sm body-text">Min Debt</p>
-                                <p className="body-text font-medium">{minDebtBTC} earthBTC</p>
+                                <p className="body-text font-medium text-[14px]">{minDebtBTC} earthBTC</p>
                               </div>
                               <div className="text-right">
                                 <p className="text-gray-500 text-sm body-text">earthBTC Minted</p>
-                                <p className="body-text font-medium">{formatLargeNumber(pusdMintedBTC)} / 2.5M</p>
+                                <p className="body-text font-medium text-[14px]">{formatLargeNumber(pusdMintedBTC)} / 2.5M</p>
                               </div>
                             </div>
                           </>
@@ -705,13 +671,11 @@ console.log(protocolMetricsBTC,'aaaa')
                           </>
                         </div>
                       </div>
-
                     </section>
                   )}
-
                   {activeTab === 'tab2' && (
                     <section id="content2" className="tab-content">
-                      <div className="lg:w-[39rem]  h-auto rounded-sm" style={{ backgroundColor: "#222222" }}>
+                      <div className="lg:w-[39rem]  h-[22rem] rounded-sm" style={{ backgroundColor: "#222222" }}>
                         <div className="flex items-center flex-row justify-between p-5 border-b-1" style={{ backgroundColor: "#282828" }}>
                           <span className="text-white title-text2 ml-[10px]">STABILITY POOL</span>
                           <Link href="/stake/">
@@ -722,7 +686,7 @@ console.log(protocolMetricsBTC,'aaaa')
                         </div>
 
                         {troveStatusBTC === 'ACTIVE' || troveStatusBTC === 'ACTIVE' ? (
-                          <div className="text-white flex  justify-between ml-5 p-3">
+                          <div className="text-white flex justify-between ml-5 p-3">
                             <div>
                               <div className="mb-[2rem] mt-2 whitespace-nowrap">
                                 <p className="body-text text-sm text-[#565348]">Deposited</p>
@@ -742,11 +706,11 @@ console.log(protocolMetricsBTC,'aaaa')
                             <Image className="-ml-16 md:-ml-4" src={macPUSD} alt="home" height={210} />
                           </div>
                         ) : (
-                          <div className="grid h-[20rem] place-items-center mt-[2rem]">
+                          <div className="grid place-items-center mt-[2rem]">
                             <Image src={macPUSD} alt="home" width={200} />
-                            <EVMConnect className="w-full" />
-                            <div>
-                            </div>
+                            <p className="text-gray-400 title-text2 text-center font-semibold text-lg mt-4">
+                              You have not Staked
+                            </p>
                           </div>
                         )}
                       </div>

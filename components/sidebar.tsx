@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React from "react";
 import { usePathname } from 'next/navigation';
@@ -11,7 +11,6 @@ import { RiCoinsLine } from "react-icons/ri";
 import { LayoutGrid } from "lucide-react";
 import Image from "next/image";
 import logo from "../app/assets/images/EARTHLOGO.svg";
-import zeally from "../app/assets/images/zeally2.png";
 import tweet from "../app/assets/images/tweet.svg";
 import discord from "../app/assets/images/discord.svg";
 import medium from "../app/assets/images/medium.svg";
@@ -26,62 +25,66 @@ export const TabsDemo = () => {
   };
 
   return (
-    <div className={`sidebar hidden md:grid font-mono font-extrabold  w-72  h-screen grid-rows-[max-content_fr_max-content] 2c2819 text-white `} style={{ backgroundColor: "#222222" }}>
+    <div className={`sidebar hidden md:flex flex-col font-mono font-extrabold w-72 h-screen bg-[#222222] text-white`}>
       <div className="flex items-center gap-x-1 justify-center">
         <Link href="/">
           <Image src={logo} alt="Logo" className="mr-12 top-5 fixed absolute left-10 w-40" />
         </Link>
       </div>
-    <div className="mt-24">
-      <nav className="flex flex-col gap-y-2 px-4">
-        <Link href="/">
-          <div className={` hover:scale-95 cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
-            <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/") ? "text-black" : " text-white"}`}>
-              {React.createElement(LayoutGrid, { size: 18 })}
+      <div className="mt-24 flex-grow">
+        <nav className="flex flex-col gap-y-2 px-4">
+          <Link href="/">
+            <div className={`hover:scale-95 cursor-pointer text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
+              <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/") ? "text-black" : " text-white"}`}>
+                {React.createElement(LayoutGrid, { size: 18 })}
+              </div>
+              <span className="font-medium text-lg body-text">Dashboard</span>
             </div>
-            <span className="font-medium text-lg body-text">Dashboard</span>
-          </div>
-        </Link>
-        <Link href="/portfolio">
-          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/portfolio") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
-            <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/portfolio") ? "text-black" : " text-white"}`}>
-              {React.createElement(RiCoinsLine, { size: 18 })}
+          </Link>
+          <Link href="/portfolio">
+            <div className={`cursor-pointer hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/portfolio") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
+              <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/portfolio") ? "text-black" : " text-white"}`}>
+                {React.createElement(RiCoinsLine, { size: 18 })}
+              </div>
+              <span className="font-medium text-lg body-text">Portfolio</span>
             </div>
-            <span className="font-medium text-lg body-text">Portfolio</span>
-          </div>
-        </Link>
-        <Link href="/trove">
-          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/trove") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
-            <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/trove") ? "text-black" : " text-white"}`}>
-              {React.createElement(GrTransaction, { size: 18 })}
+          </Link>
+          <Link href="/trove">
+            <div className={`cursor-pointer hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/trove") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
+              <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/trove") ? "text-black" : " text-white"}`}>
+                {React.createElement(GrTransaction, { size: 18 })}
+              </div>
+              <span className="font-medium text-lg body-text">Mint ORE</span>
             </div>
-            <span className="font-medium text-lg body-text">Mint ORE</span>
-          </div>
-        </Link>
-        <Link href="/stake">
-          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/stake") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
-            <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/stake") ? "text-black" : " text-white"}`}>
-              {React.createElement(GiUnbalanced, { size: 18 })}
+          </Link>
+          <Link href="/stake">
+            <div className={`cursor-pointer hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/stake") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
+              <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/stake") ? "text-black" : " text-white"}`}>
+                {React.createElement(GiUnbalanced, { size: 18 })}
+              </div>
+              <span className="font-medium text-lg body-text">Stake ORE</span>
             </div>
-            <span className="font-medium text-lg body-text">Stake ORE</span>
-          </div>
-        </Link>
-        <Link href="/redeem">
-          <div className={`cursor-pointer  hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/redeem") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
-            <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/redeem") ? "text-black" : " text-white"}`}>
-              {React.createElement(LiaHandHoldingUsdSolid, { size: 18 })}
+          </Link>
+          <Link href="/redeem">
+            <div className={`cursor-pointer hover:scale-95 text-xl menu flex min-w-[200px] items-center gap-x-3 rounded-3xl p-2 ${isRoute("/redeem") ? "bg-[#88e273] rounded-3xl text-black" : "text-gray-500"}`}>
+              <div className={`cursor-pointer menu flex items-center gap-x-3 rounded-full p-2 ${isRoute("/redeem") ? "text-black" : " text-white"}`}>
+                {React.createElement(LiaHandHoldingUsdSolid, { size: 18 })}
+              </div>
+              <span className="font-medium text-lg body-text">Redeem ORE</span>
             </div>
-            <span className="font-medium text-lg body-text">Redeem ORE</span>
-          </div>
+          </Link>
+        </nav>
+      </div>
+      <div className="links h-16 mt-auto flex items-center mb-2 justify-center text-white gap-x-5 text-[19px]">
+        <Link target="_blank" href="https://x.com/EarthDeFi">
+          <Image className="hover:scale-105" src={tweet} alt="twitter" />
         </Link>
-      </nav>
-    </div>
-      <div className="space-y-1 h-16 mt-[90%]">
-        <div className="flex items-center justify-center text-white gap-x-5  text-[19px] ">
-          <Link target="_blank" href="https://x.com/EarthDeFi">  <Image className="hover:scale-105" src={tweet} alt="twitter" /></Link>
-          <Link target="_blank" href="https://discord.com/invite/PbXud77YPd">  <Image className="hover:scale-105" src={discord} alt="twitter" /></Link>
-          <Link target="_blank" href="https://medium.com/earth-protocol">  <Image className="hover:scale-105" src={medium} alt="twitter" /></Link>
-        </div>
+        <Link target="_blank" href="https://discord.com/invite/PbXud77YPd">
+          <Image className="hover:scale-105" src={discord} alt="discord" />
+        </Link>
+        <Link target="_blank" href="https://medium.com/earth-protocol">
+          <Image className="hover:scale-105" src={medium} alt="medium" />
+        </Link>
       </div>
     </div>
   );

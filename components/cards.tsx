@@ -15,7 +15,7 @@ export const CardDemo = () => {
           <h1 className="text-6xl mt-5 font-bold mb-4 titleTextSub">Instant Liquidity on</h1>
           <Image src={bitfinity} alt="corelogo" width={250}/>
         </div>
-        <p className="text-lg mb-6 text-center ">Grow your wealth with $ORE, Core’s native over-collateralized, yield-generating stablecoin</p>
+        <p className="text-lg mb-6 text-center body-text">Grow your wealth with $ORE, Core’s native over-collateralized, yield-generating stablecoin</p>
         <Link href="trove">
           <button className="bg-gradient-to-r from-green-300 to-green-500 body-text text-black font-semibold py-3 px-4 text-lg rounded-3xl shadow-lg hover:from-green-500 hover:to-green-600 transition duration-300 flex items-center">
             Mint $ORE

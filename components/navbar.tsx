@@ -176,7 +176,11 @@ function NavBar() {
               <div>
                 <h1 className="text-white title-text2 text-sm">earthBTC</h1>
                 <h1 className="text-gray-400 text-sm title-text2">${Number(fetchedPriceBTC).toFixed(2)}</h1>
-                <span className="popup body-text text-xs">Click to import earthBTC</span>
+                <span className="popup body-text text-xs">
+                  {isConnected
+                    ? 'Click to import earthBTC'
+                    : 'Connect wallet to import earthBTC'}
+                </span>
               </div>
             </div>
             <div className="items-center hovertext-addtoken flex gap-x-2 hover:cursor-pointer pusd-section"
@@ -187,7 +191,12 @@ function NavBar() {
               <div>
                 <h1 className="text-white title-text2 text-sm">ORE</h1>
                 <h1 className="text-sm text-gray-400 title-text2 whitespace-nowrap -ml-[0px]">${Number(fetchedPriceORE).toFixed(2)}</h1>
-                <span className="popup body-text text-xs">Click to import ORE</span>
+                <span className="popup body-text text-xs">
+                  {isConnected
+                    ? 'Click to import ORE'
+                    : 'Connect wallet to import ORE'}
+                </span>
+
               </div>
             </div>
             {isConnected ? (
@@ -218,7 +227,7 @@ function NavBar() {
         <div className="dialog-overlay">
           <div className="dialog-content">
             <div className="py-5">
-              <Image src={rec2} alt="box" width={140}  className="ml-16  p-2" />
+              <Image src={rec2} alt="box" width={140} className="ml-16  p-2" />
             </div>
             <div className="p-5">
               <div className="waiting-message text-lg title-text2 text-[#88e273] whitespace-nowrap">Transaction is initiated</div>
@@ -251,7 +260,7 @@ function NavBar() {
               ) : transactionRejected ? (
                 <Image src={rej} alt="rejected" width={140} className="ml-20  p-2" />
               ) : (
-                <Image src={conf} alt="box" width={140} className="ml-20  p-2"/>
+                <Image src={conf} alt="box" width={140} className="ml-20  p-2" />
               )}
               <div className="waiting-message title-text2 text-[#88e273]">{loadingMessage}</div>
               {isSuccess && (
