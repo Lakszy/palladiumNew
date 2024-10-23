@@ -12,7 +12,7 @@ import rej from "../../app/assets/images/TxnError.gif";
 import Decimal from "decimal.js";
 import "./unstake.css";
 import { ethers } from "ethers";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import {
   useAccount,
   useWaitForTransactionReceipt,
@@ -48,6 +48,8 @@ export const Unstake = () => {
   const { data: hash, writeContract, error: writeError } = useWriteContract();
   const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
   const [transactionRejected, setTransactionRejected] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null)
+
 
   const [chainId, setChainId] = useState(355113);
   useEthereumChainId(setChainId)
@@ -156,6 +158,13 @@ export const Unstake = () => {
   };
 
   useEffect(() => {
+    if (inputRef.current) {
+        inputRef.current.focus()
+        inputRef.current.select()
+    }
+}, [])
+
+  useEffect(() => {
     if (writeError) {
       console.error("Write contract error:", writeError);
       setTransactionRejected(true);
@@ -180,7 +189,7 @@ export const Unstake = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowCloseButton(true);
-    }, 180000);
+    }, 600000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -199,7 +208,9 @@ export const Unstake = () => {
             </h3>
             <div className="h-full border border-[#88e273] rounded-lg mx-3"></div>
             <div className="flex-grow h-full">
-              <Input id="items"
+              <Input 
+              ref={inputRef}
+              id="items"
                 placeholder="0.000 earthBTC"
                 disabled={!isConnected}
                 value={userInput}

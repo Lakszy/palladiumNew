@@ -12,7 +12,7 @@ import { getContract } from "@/app/src/utils/getContract";
 import { Label } from "@radix-ui/react-label";
 import Decimal from "decimal.js";
 import { ethers, toBigInt } from "ethers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDebounce } from "react-use";
 import { useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { Button } from "@/components/ui/button";
@@ -98,6 +98,7 @@ const BorrowBTCNEW = () => {
   const { data: walletClient } = useWalletClient();
   const { data: isConnected } = useWalletClient();
   const spenderAddress = walletClient?.account?.address
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const { switchChain } = useSwitchChain()
   const [chainId, setChainId] = useState(355113);
@@ -145,6 +146,13 @@ const BorrowBTCNEW = () => {
     hintHelpersAbi,
     provider
   );
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [])
 
   const pow20 = Decimal.pow(10, 20);
   const pow18 = Decimal.pow(10, 18);
@@ -607,7 +615,9 @@ const BorrowBTCNEW = () => {
                                       <h3 className='h-full border border-[#88e273] mx-6 text-[#88e273]'></h3>
                                     </div>
                                     <div className="flex-grow h-full">
-                                      <Input id="items" placeholder='' disabled={!(isConnected)}
+                                      <Input 
+                                      ref={inputRef}
+                                      id="item" placeholder='' disabled={!(isConnected)}
                                       value={userInputs.depositCollateral} onChange={(e) => {
                                         const newCollValue = e.target.value;
                                         setUserInputs({ ...userInputs, depositCollateral: newCollValue });

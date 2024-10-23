@@ -13,7 +13,7 @@ import rej from "../assets/images/TxnError.gif";
 import conf from "../assets/images/conf.gif"
 import rec2 from "../assets/images/rec2.gif"
 import tick from "../assets/images/tick.gif"
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDebounce } from "react-use";
 import { useSwitchChain, useWaitForTransactionReceipt, useWalletClient, useWriteContract } from "wagmi";
 import { BorrowerOperationbi } from "../src/constants/abi/borrowerOperationAbi";
@@ -57,6 +57,7 @@ export const OpenTroveBTC = () => {
     const [transactionRejected, setTransactionRejected] = useState(false);
     const [balanceData, setBalanceData] = useState<any>()
     const [aprvAmnt, setAprvAmt] = useState<BigInt>(BigInt(0));
+    const inputRef = useRef<HTMLInputElement>(null)
 
     useEffect(() => {
         if (isLoading) {
@@ -110,7 +111,12 @@ export const OpenTroveBTC = () => {
     const pow6 = Decimal.pow(10, 6);
     const pow20 = Decimal.pow(10, 20);
 
+
     useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus()
+            inputRef.current.select()
+        }
         const fetchData = async () => {
             try {
                 const response = await fetch("https://api.palladiumlabs.org/bitfinity/protocol/metrics");
@@ -353,7 +359,7 @@ export const OpenTroveBTC = () => {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowCloseButton(true);
-        }, 180000);
+        }, 600000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -390,7 +396,7 @@ export const OpenTroveBTC = () => {
                 <div className="container flex flex-col md:flex-row justify-between gap-x-28 md:-mt-6">
                     <div className="grid w-1/2 items-start space-y-7 gap-2 text-white md:p-5">
                         <div className="w-full">
-                            <div  className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collateral</div>
+                            <div className="text-[#827f77] md:-ml-0 -ml-2 body-text text-lg">Deposit Collateral</div>
                             <div className="flex md:w-[90%] rounded-3xl items-center space-x-2 mt-[10px] -ml-3  w-[22rem] md:-ml-0 border border-[#88e273]">
                                 <div className='flex items-center  h-[3.5rem] '>
                                     <Image src={earthBTC} alt="home" className='ml-1' width={43} />
@@ -399,6 +405,7 @@ export const OpenTroveBTC = () => {
                                 </div>
                                 <div className="flex-grow h-[3.5rem]">
                                     <Input
+                                        ref={inputRef}
                                         id="items"
                                         placeholder=""
                                         value={userInputs.collatoral}

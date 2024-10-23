@@ -8,7 +8,7 @@ import { getContract } from "../../app/src/utils/getContract";
 import Decimal from "decimal.js";
 import { ethers } from "ethers";
 import rej from "../../app/assets/images/TxnError.gif";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useWalletClient, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { Button } from "../ui/button";
 import { useAccount } from "wagmi";
@@ -44,6 +44,7 @@ export const StabilityPool = () => {
   const [collateralToken, setCollateralToken] = useState<`0x${string}`>(
     "0x0000000000000000000000000000000000000000"
   );
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const erc20Contract = getContract(
     botanixTestnet.addresses.DebtToken,
@@ -79,6 +80,14 @@ export const StabilityPool = () => {
       setLoadingModalVisible(false);
     }
   }, [isSuccess, isLoading, transactionRejected]);
+
+
+  useEffect(() => {
+    if (inputRef.current) {
+        inputRef.current.focus()
+        inputRef.current.select()
+    }
+}, [])
 
   const handlePercentageClick = (percentage: any) => {
     const percentageDecimal = new Decimal(percentage).div(100);
@@ -195,7 +204,9 @@ export const StabilityPool = () => {
             <h3 className="text-white body-text ml-1 hidden md:block">ORE</h3>
             <div className="h-full border border-[#88e273] rounded-lg mx-3"></div>
             <div className="flex-grow h-full">
-              <Input id="items" placeholder="Enter Collateral Amount"
+              <Input
+                ref={inputRef}
+                id="items" placeholder="Enter Collateral Amount"
                 disabled={!isConnected} value={userInput}
                 onChange={(e) => { const input = e.target.value; setUserInput(input); }}
                 className="w-[104%] h-full -ml-[0.75rem] 

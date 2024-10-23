@@ -10,14 +10,12 @@ import botanixTestnet from "../src/constants/botanixTestnet.json";
 import erc20Abi from "../src/constants/abi/ERC20.sol.json"
 import { getContract } from "../src/utils/getContract";
 import Decimal from "decimal.js";
-import { EVMConnect } from '@/components/EVMConnect';
 import { useAccount, useWriteContract, useWalletClient, useWaitForTransactionReceipt, useSwitchChain } from "wagmi";
 import { ethers } from "ethers";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import web3 from "web3";
 import { Dialog } from 'primereact/dialog';
-import trove2 from "../../app/assets/images/TROVE1.svg"
-import trove1 from "../../app/assets/images/TROVE2.svg"
+import trove2 from "../../app/assets/images/earthBTC.png"
 import rej from "../../app/assets/images/TxnError.gif";
 import conf from "../../app/assets/images/conf.gif"
 import sortedTroveAbi from "../src/constants/abi/SortedTroves.sol.json";
@@ -28,7 +26,9 @@ import "../../components/stabilityPool/Modal.css"
 import "../../app/App.css"
 import '../App.css';
 import "./redeem.css"
-import { coreTestNetChain, switchNetwork, useEthereumChainId } from "@/components/NetworkChecker";
+import { bitfinityTestNetChain,  useEthereumChainId } from "@/components/NetworkChecker";
+import { EVMConnect } from "../src/config/EVMConnect";
+import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 
 export default function Redeem() {
     const [userInput, setUserInput] = useState("0");
@@ -46,10 +46,11 @@ export default function Redeem() {
     const { data: hash, writeContract, error: writeError } = useWriteContract();
     const { isLoading, isSuccess } = useWaitForTransactionReceipt({ hash });
     const [transactionRejected, setTransactionRejected] = useState(false);
-    const [selectedButton, setSelectedButton] = useState("WCORE")
+    const [selectedButton, setSelectedButton] = useState("earthBTC")
     const [fetchedPrice, setFetchedPrice] = useState(0)
+    const inputRef = useRef<HTMLInputElement>(null)
 
-    const [collTokenAddress, setCollTokenAddress] = useState<string>("")
+    const [collTokenAddress, setCollTokenAddress] = useState<string>("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6")
     const [chainId, setChainId] = useState(1115);
     useEthereumChainId(setChainId)
     const handleButtonClick = (buttonId: any) => {
@@ -58,11 +59,9 @@ export default function Redeem() {
             return null;
         }
 
-        let address = '';
-        if (buttonId === 'WCORE') {
-            address = "0x5FB4E66C918f155a42d4551e871AD3b70c52275d";
-        } else if (buttonId === 'WBTC') {
-            address = "0x4CE937EBAD7ff419ec291dE9b7BEc227e191883f";
+        let address = '0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6';
+         if (buttonId === 'earthBTC') {
+            address = "0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6";
         }
         setCollTokenAddress(address);
         setTimeout(() => {
@@ -70,8 +69,7 @@ export default function Redeem() {
     };
 
 
-    const BOTANIX_RPC_URL2 = "https://rpc.test.btcs.network";
-    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL2);
+    const provider = new ethers.JsonRpcProvider(BOTANIX_RPC_URL);
     const erc20Contract = getContract(
         botanixTestnet.addresses.DebtToken,
         erc20Abi,
@@ -84,6 +82,14 @@ export default function Redeem() {
         setTransactionRejected(false);
         window.location.reload();
     }, []);
+    
+
+    useEffect(() => {
+        if (inputRef.current) {
+            inputRef.current.focus()
+            inputRef.current.select()
+        }
+    }, [])
 
     const neTrove = getContract(
         botanixTestnet.addresses.troveManager,
@@ -99,15 +105,18 @@ export default function Redeem() {
 
     useEffect(() => {
         const fetchPrice = async () => {
-            if (!walletClient) return null
-            const pusdBalanceValue = await erc20Contract.balanceOf(
-                walletClient?.account?.address
-            );
-            const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
-            setPusdBalance(pusdBalanceFormatted);
+            if (!walletClient) return null;
+            try {
+                const pusdBalanceValue = await erc20Contract.balanceOf(walletClient.account.address);
+                const pusdBalanceFormatted = ethers.formatUnits(pusdBalanceValue, 18);
+                setPusdBalance(pusdBalanceFormatted);
+            } catch (error) {
+                console.error("Error fetching balance:", error);
+            }
         };
         fetchPrice();
     }, [erc20Contract, address]);
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -142,7 +151,7 @@ export default function Redeem() {
             const roundedStakeFixed = Number(stakeFixed.toFixed(2))
             setUserInput(String(roundedStakeFixed));
         } else {
-            console.error("Invalid PUSD balance:", pusdBalance);
+            console.error("Invalid ORE balance:", pusdBalance);
         }
     };
     const handleConfirmClick = async () => {
@@ -158,16 +167,16 @@ export default function Redeem() {
             const inputValue = inputBeforeConv.mul(pow).toFixed();
             const priceAsBigInt = BigInt(Math.floor(fetchedPrice * 10 ** 18));
 
-            const redemptionhint = await hintHelpersContract.getRedemptionHints("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", BigInt(inputValue), priceAsBigInt, 50);
+            const redemptionhint = await hintHelpersContract.getRedemptionHints("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6", BigInt(inputValue), priceAsBigInt, 50);
             const { 0: firstRedemptionHint, 1: partialRedemptionNewICR, 2: truncatedLUSDAmount } = redemptionhint;
-            const numTroves = await sortedTrovesContract.getSize("0x5FB4E66C918f155a42d4551e871AD3b70c52275d");
+            const numTroves = await sortedTrovesContract.getSize("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6");
             const numTrials = numTroves * toBigInt("15");
-            const { hintAddress: approxPartialRedemptionHint } = await hintHelpersContract.getApproxHint("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", partialRedemptionNewICR, numTrials, 42);
-            const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition("0x5FB4E66C918f155a42d4551e871AD3b70c52275d", partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
+            const { hintAddress: approxPartialRedemptionHint } = await hintHelpersContract.getApproxHint("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6", partialRedemptionNewICR, numTrials, 42);
+            const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6", partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
             // const maxFee = (5 * 10**16).toString(); // Represents 6% in wei
             const maxFee = BigInt(5e16);
             const result = await writeContract({
-                address: "0x21F46c75F3c12FE2cA6714e6085B65FACA61102f",
+                address: "0x10cECa9f1af2A4b907EF448c0Ce409c94BDE032C",
                 abi: hintHelpersAbi, // Replace with your contract's ABI
                 functionName: 'redeemCollateral',
                 args: [
@@ -212,7 +221,7 @@ export default function Redeem() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowCloseButton(true);
-        }, 180000);
+        }, 600000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -231,18 +240,15 @@ export default function Redeem() {
             <div className=" ml-3 md:ml-12 md:w-[40%] w-[22.5rem]">
                 <div className="grid items-start h-[25rem] gap-x-2  mx-auto border-[2px]  rounded-lg border-[#88e273] p-5">
                     <div className='mb-2 pb-1 threeButtons gap-x-4 flex items-center  w-full h-10 my-2'>
-                        <div className={`items-center flex w-1/3 text-lg body-text border-2 rounded-lg border-[#88e273] h-fit p-1 cursor-pointer ${selectedButton === 'WCORE' ? "bg-[#88e273] opacity-80" : "opacity-50"}`} onClick={() => handleButtonClick('WCORE')}>
-                            <Image src={trove1} alt='rovbtc' width={40} className='p-1' />
-                            <p className={`font-light body-text text-xs ${selectedButton === 'WCORE' ? 'text-black body-text font-medium' : 'text-white'}`}>WCORE</p>
-                        </div>
-                        <div className={`items-center flex w-1/3 text-lg body-text border-2 rounded-lg border-[#88e273] h-fit p-1 cursor-pointer ${selectedButton === 'WBTC' ? "bg-[#88e273] opacity-90" : "opacity-50"}`} onClick={() => handleButtonClick('WBTC')}>
+                        <div className={`items-center flex w-1/3 text-lg body-text border-2 rounded-lg border-[#88e273] h-fit p-1 cursor-pointer ${selectedButton === 'earthBTC' ? "bg-[#88e273] opacity-90" : "opacity-50"}`} onClick={() => handleButtonClick('earthBTC')}>
                             <Image src={trove2} alt='bbnbtc' width={40} className='p-1' />
-                            <p className={`font-light body-text text-xs ${selectedButton === 'WBTC' ? 'text-black body-text font-medium' : 'text-white'}`}>WBTC</p>
+                            <p className={`font-light body-text text-xs ${selectedButton === 'earthBTC' ? 'text-black body-text font-medium' : 'text-white'}`}>earthBTC</p>
                         </div>
                     </div>
                     <div className='my-4'>
                         <div className="flex mb-2 items-center">
-                            <Input id="items" placeholder="0.000 WBTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-transparent  rounded-lg body-text w-[20rem] md:w-full text-lg h-14 border border-[#88e273] text-white " />
+                            <Input ref={inputRef}
+                            id="items" placeholder="0.000 earthBTC" disabled={!isConnected} value={userInput} onChange={(e) => { const input = e.target.value; setUserInput(input); }} className="bg-transparent  rounded-lg body-text w-[20rem] md:w-full text-lg h-14 border border-[#88e273] text-white " />
                         </div>
                         <span className=" ml-[56%] md:ml-[66%] body-text  font-medium balance ">
                             {isLoading ?
@@ -252,30 +258,30 @@ export default function Redeem() {
                                 ) : (
                                     <span className="whitespace-nowrap -ml-2 text-white body-text">Wallet: {" "}
                                         <span className="body-text text-sm">
-                                            {Number(pusdBalance).toFixed(2) || ".."} PUSD
+                                            {Number(pusdBalance).toFixed(2) || ".."} ORE
                                         </span>
                                     </span>
                                 )}
                         </span>
                     </div>
                     <div className="flex w-full justify-between">
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(25)}>25%</Button>
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(50)}>50%</Button>
-                        <Button disabled={!isConnected || isLoading} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0" }} onClick={() => handlePercentageClick(75)}>75%</Button>
-                        <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg body-text border-2 rounded-lg border-[#88e273] ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} style={{ backgroundColor: "#3b351b", borderRadius: "0.5rem" }} onClick={() => handlePercentageClick(100)}>100% </Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg rounded-2xl text-white body-text border-2 border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}  onClick={() => handlePercentageClick(25)}>25%</Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg rounded-2xl text-white body-text border-2 border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}  onClick={() => handlePercentageClick(50)}>50%</Button>
+                        <Button disabled={!isConnected || isLoading} className={`text-lg rounded-2xl text-white body-text border-2 border-[#88e273] ${isLoading ? 'cursor-not-allowed opacity-50' : ''}`}  onClick={() => handlePercentageClick(75)}>75%</Button>
+                        <Button disabled={!isConnected || isLoading || Number(userInput) > Number(pusdBalance)} className={`text-lg rounded-2xl text-white body-text border-2 border-[#88e273] ${isLoading || Number(userInput) > Number(pusdBalance) ? 'cursor-not-allowed opacity-50' : ''}`} onClick={() => handlePercentageClick(100)}>100% </Button>
                     </div>
 
                     {isConnected ? (
                         <div className="space-y-2">
-                            {chainId !== coreTestNetChain.id ? (
+                            {chainId !== bitfinityTestNetChain.id ? (
                                 <button
-                                    onClick={() => switchChain({ chainId: coreTestNetChain.id })}
+                                    onClick={() => switchChain({ chainId: bitfinityTestNetChain.id })}
                                     className="mt-2 text-black text-md font-semibold w-full border rounded-lg border-black h-12 bg-gradient-to-r from-[#88e273] via-[#9cd685] to-[#b5f2a4] hover:from-[#6ab95b] hover:via-[#82c16a] hover:to-[#9cd685] title-text border-none"
                                 >
                                     Switch to Core
                                 </button>
                             ) : (
-                                <button style={{ backgroundColor: "#88e273" }} onClick={handleConfirmClick} className={`mt-5  text-black title-text font-semibold w-[20rem] md:w-full rounded-lg border border-black h-10 ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
+                                <button style={{ backgroundColor: "#88e273" }} onClick={handleConfirmClick} className={`mt-5  text-black title-text font-semibold w-[20rem] md:w-full rounded-3xl h-12 border border-black  ${isLoading || Number(userInput) > Number(pusdBalance) || Number(userInput) == 0 ? 'cursor-not-allowed opacity-50' : ''}`} disabled={isLoading || Number(userInput) > Number(pusdBalance)}>
                                     {isLoading ? 'LOADING...' : 'REDEEM'}
                                 </button>
                             )}
@@ -335,7 +341,7 @@ export default function Redeem() {
                         {(transactionRejected || (!isSuccess && showCloseButton)) && (
                             <>
                                 <p className="body-text text-white text-xs">{transactionRejected ? "Transaction was rejected. Please try again." : "Some Error Occurred On Network Please Try Again After Some Time.. 🤖"}</p>
-                                <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2 hover:bg-yellow-400 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
+                                <Button className=" mt-1 p-3 text-black rounded-none md:w-[20rem] title-text2 hover:bg-green-500 hover:scale-95 bg-[#88e273]" onClick={handleClose}>Try again</Button>
                             </>
                         )}
                     </div>

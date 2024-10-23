@@ -138,7 +138,7 @@ function NavBar() {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowCloseButton(true);
-    }, 180000);
+    }, 600000);
     return () => clearTimeout(timer);
   }, []);
 

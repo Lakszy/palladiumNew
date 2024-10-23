@@ -29,6 +29,7 @@ import Web3 from "web3";
 import { BOTANIX_RPC_URL } from "../src/constants/botanixRpcUrl";
 import { bitfinityTestNetChain, useEthereumChainId } from "@/components/NetworkChecker";
 import { Input } from "@/components/ui/input";
+import { useRef } from "react";
 
 interface Props {
   coll: number;
@@ -74,6 +75,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
   const tokenAddress = "0x222c21111dDde68e6eaC2fCde374761E72c45FFe"
   const tokenContract = new web3.eth.Contract(erc20Abi, tokenAddress);
   const spenderAddress = walletClient?.account?.address
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const { switchChain } = useSwitchChain()
   const [chainId, setChainId] = useState(355113);
@@ -98,6 +100,13 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
     hintHelpersAbi,
     provider
   );
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus()
+      inputRef.current.select()
+    }
+  }, [])
 
   useEffect(() => {
     const pow = Decimal.pow(10, 18);
@@ -329,7 +338,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
     }, 200000);
     return () => clearTimeout(timer);
   }, []);
-  const marginClass = parseFloat(userInputs.coll) > 0 ? 'md:-ml-[7rem]' : 'md:-ml-[5rem]';
+
 
   return (
     <div className="flex-col mx-2  flex md:flex-row justify-between gap-10 bg-black">
@@ -346,7 +355,7 @@ export const RepayBTC: React.FC<Props> = ({ coll, debt, lr, fetchedPrice, recove
                 <h3 className='h-full border border-[#88e273] mx-4 text-[#88e273]'></h3>
               </div>
               <div className="flex-grow h-full">
-              <Input id="items" placeholder=''
+              <Input ref={inputRef} id="items" placeholder=''
                 disabled={!(isConnected)}
                 value={userInputs.lusdAmount}
                 onChange={(e) => { const newBorrowValue = e.target.value; setUserInputs({ ...userInputs, lusdAmount: newBorrowValue, }); }}
