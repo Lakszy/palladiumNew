@@ -50,7 +50,7 @@ export default function Redeem() {
     const [fetchedPrice, setFetchedPrice] = useState(0)
     const inputRef = useRef<HTMLInputElement>(null)
 
-    const [collTokenAddress, setCollTokenAddress] = useState<string>("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6")
+    const [collTokenAddress, setCollTokenAddress] = useState<string>("0x222c21111dDde68e6eaC2fCde374761E72c45FFe")
     const [chainId, setChainId] = useState(1115);
     useEthereumChainId(setChainId)
     const handleButtonClick = (buttonId: any) => {
@@ -59,9 +59,9 @@ export default function Redeem() {
             return null;
         }
 
-        let address = '0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6';
+        let address = '0x222c21111dDde68e6eaC2fCde374761E72c45FFe';
          if (buttonId === 'earthBTC') {
-            address = "0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6";
+            address = "0x222c21111dDde68e6eaC2fCde374761E72c45FFe";
         }
         setCollTokenAddress(address);
         setTimeout(() => {
@@ -167,12 +167,12 @@ export default function Redeem() {
             const inputValue = inputBeforeConv.mul(pow).toFixed();
             const priceAsBigInt = BigInt(Math.floor(fetchedPrice * 10 ** 18));
 
-            const redemptionhint = await hintHelpersContract.getRedemptionHints("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6", BigInt(inputValue), priceAsBigInt, 50);
+            const redemptionhint = await hintHelpersContract.getRedemptionHints("0x222c21111dDde68e6eaC2fCde374761E72c45FFe", BigInt(inputValue), priceAsBigInt, 50);
             const { 0: firstRedemptionHint, 1: partialRedemptionNewICR, 2: truncatedLUSDAmount } = redemptionhint;
-            const numTroves = await sortedTrovesContract.getSize("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6");
+            const numTroves = await sortedTrovesContract.getSize("0x222c21111dDde68e6eaC2fCde374761E72c45FFe");
             const numTrials = numTroves * toBigInt("15");
-            const { hintAddress: approxPartialRedemptionHint } = await hintHelpersContract.getApproxHint("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6", partialRedemptionNewICR, numTrials, 42);
-            const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition("0x67ce5fa8bef187fb54374f2dBF588dE013C96dc6", partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
+            const { hintAddress: approxPartialRedemptionHint } = await hintHelpersContract.getApproxHint("0x222c21111dDde68e6eaC2fCde374761E72c45FFe", partialRedemptionNewICR, numTrials, 42);
+            const exactPartialRedemptionHint = await sortedTrovesContract.findInsertPosition("0x222c21111dDde68e6eaC2fCde374761E72c45FFe", partialRedemptionNewICR, approxPartialRedemptionHint, approxPartialRedemptionHint);
             // const maxFee = (5 * 10**16).toString(); // Represents 6% in wei
             const maxFee = BigInt(5e16);
             const result = await writeContract({
